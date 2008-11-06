@@ -213,9 +213,13 @@ class MimeType extends Object {
 					}
 				}	
 			}
-			
-			$this->magic =& new MimeMagic($db);
-			Cache::write('mime_magic_db', $this->magic->toArray());
+
+			if (!isset($db)) {
+				trigger_error('MimeType::__loadMagic - Could not locate magic database in any of the default locations.', E_USER_WARNING);
+			} else {
+				$this->magic =& new MimeMagic($db);
+				Cache::write('mime_magic_db', $this->magic->toArray());
+			}
 		}
 	}
 /**
@@ -258,8 +262,12 @@ class MimeType extends Object {
 				}
 			}
 	
-			$this->glob =& new MimeGlob($db);
-			Cache::write('mime_glob_db', $this->glob->toArray());
+			if (!isset($db)) {
+				trigger_error('MimeType::__loadGlob - Could not locate glob database in any of the default locations.', E_USER_WARNING);
+			} else {
+				$this->glob =& new MimeGlob($db);
+				Cache::write('mime_glob_db', $this->glob->toArray());
+			}			
 		}
 	}
 }

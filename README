@@ -1,0 +1,18 @@
+ Media Plugin For CakePHP
+==============================================================================
+
+ A plugin to enabling you to transfer and manipulate media files.
+
+ Features
+ --------
+ * File Transfer with support for HTTP, local files or data from a HTML file form
+ * MIME type detection by extension and content signatures 
+ * Transparent retrieval of file metadata
+ * File manipulation with flexible backends (e.g. imagick and gd)
+ * Coupling of records of database table with files in a filesystem 
+ * A shell task for table/filesystem synchronization 
+ * A shell task for generating multiple versions of multiple files
+ * A helper to embed media files easily into your markup 
+ * Convenient attachments element to be included into your forms
+ * Ready to use attachments model
+ * Association of any number of files with any record of any model
