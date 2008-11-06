@@ -1,0 +1,99 @@
+
+ ATTM Project DEVELOPMENT 
+==============================================================================
+
+ * Introduction
+ * Tester
+ * Developer
+ * Repository
+ * Coding Standards
+ * Version Numbers
+ * Releases
+ * Contributors
+
+
+ Introduction
+-------------------------------------------------------------------------------
+  The attm project consists of two plugins which are developed mostly 
+  independent from each other but releases of major revisions between 
+  them are synchronized.
+  
+  Plugins are being packaged sperately.
+  
+  Major revisions are compatible to each other.
+  
+  This means version 0.#? of media plugin should work with version 0.#? of 
+  attachments plugin and so forth.
+  
+  Major revisions may introduce backincompatible changes.
+
+  All plugins should run with PHP >=5.2 and until CakePHP 1.2 isn't stable with 
+  the latest CakepPHP revision from the 1.2 branch.
+  
+
+ Tester
+-------------------------------------------------------------------------------
+  To stabelize the code help by testing it and file bugs here:
+  http://cakeforge.org/tracker/?atid=809&group_id=227&func=browse
+  
+
+ Developer
+-------------------------------------------------------------------------------
+  If you want to join this project please register an account on:
+  http://www.cakeforge.org
+
+  and request a join: 
+  http://cakeforge.org/project/request.php?group_id=227
+
+  If you don't know where to start check out the bugtracker:
+  http://cakeforge.org/tracker/?atid=809&group_id=227&func=browse
+
+  You may also additionally want to contact David. 
+
+
+ Repository
+-------------------------------------------------------------------------------
+  You'll find the main SVN-Repo under:
+  https://svn.cakeforge.org/svn/attm
+  
+  Development of the media plugin takes place in:
+  https://svn.cakeforge.org/svn/attm/trunk/0.#x/plugins/media
+  
+  Development of the attachments plugin takes place in:
+  https://svn.cakeforge.org/svn/attm/trunk/0.#x/plugins/attachments
+
+
+ Coding standards
+-------------------------------------------------------------------------------
+  Please visit https://trac.cakephp.org/wiki/Developement/CodingStandards 
+  for more information.
+
+
+ Version Numbers
+-------------------------------------------------------------------------------
+  Major revision		#.00
+  Moderate revision 	0.#0
+  Minor revision 		0.0#
+
+  Dev releases		0.00devel#
+  Alpha releases	0.00alpha#
+  Beta releases		0.00beta#
+  Release candiate	0.00RC#
+  Stable release	0.00
+
+
+  Releases
+-------------------------------------------------------------------------------
+  Before each release the documents in the docs/ dir should be updated.
+   
+
+  Contributors
+-------------------------------------------------------------------------------
+  David Persson
+  [email] davidpersson@qeweurope.org
+  [jabber] davidpersson@jabber.org 
+  [irc] #cakephp/davidpersson  
+  
+  Noanak
+  [email] naonak@free.fr
+   

@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# I'm a comment saying: quiche!!!
+
+# Absolute path to cake
+CAKE_CORE_INCLUDE_PATH=/usr/local/share/cake-1.2.0head
+
+# You don't need to change this
+CAKE_CONSOLE=${CAKE_CORE_INCLUDE_PATH}/cake/console/cake
+
+# Absolute path to app
+APP="/path/to/your/app"
+
+# The DB connection to be used
+CONNECTION="default"
+
+# Enable automatic repair (This may delete files and records!!)
+# ASSUME_YES="--yes"
+
+# Models sperated by one space to work on
+MODELS="media attachments"
+
+#### You may not edit below this line #####
+
+if [ ! -x $CAKE_CONSOLE ]; then
+	exit 1
+fi
+
+if [ ! -d $APP ]; then
+	exit 1
+fi
+
+for MODEL in $MODELS; do 
+	$CAKE_CONSOLE $ASSUME_YES -app $APP -connection $CONNECTION -quiet media.media sync $MODEL
+done
+
+exit 0
