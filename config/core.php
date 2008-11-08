@@ -113,5 +113,4 @@
 		'm'		=> array('convert' => 'image/png', 'fit' => array(300,300)),
 		)
 	);
-	
 ?>

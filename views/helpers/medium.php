@@ -1,7 +1,7 @@
 <?php
 /**
  * Medium Helper File
- * 
+ *
  * Copyright (c) $CopyrightYear$ David Persson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,10 +21,10 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE
- * 
+ *
  * PHP version $PHPVersion$
  * CakePHP version $CakePHPVersion$
- * 
+ *
  * @category   media handling
  * @package    attm
  * @subpackage attm.plugins.media.views.helpers
@@ -35,7 +35,7 @@
  * @version    Release: $Version$
  * @link       http://cakeforge.org/projects/attm The attm Project
  * @since      media plugin 0.50
- * 
+ *
  * @modifiedby   $LastChangedBy$
  * @lastmodified $Date$
  */
@@ -43,7 +43,7 @@ App::import('Vendor', 'Media.MimeType');
 App::import('Vendor', 'Media.Medium');
 /**
  * Medium Helper Class
- * 
+ *
  * Handles various kinds of media
  *
  * @category   media handling
@@ -81,10 +81,10 @@ class MediumHelper extends AppHelper {
 	var $settings = array(
 					/* Directory names to be scanned for */
 					'directories' => array('static' ,'transfer', 'filter'),
-	
+
 					/* Version names to be scanned for */
 					'versions' => array('xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl', 'c'),
-	
+
 					'extensions' => array(
 						'arc'	=> array('zip'),
 						'aud' 	=> array('mp3', 'ogg', 'aif', 'wma', 'wav'),
@@ -103,26 +103,26 @@ class MediumHelper extends AppHelper {
  *
  * @var array
  */
-	var $_found;
+	var $__cached;
 /**
  * Constructor
- * 
+ *
  * Sets up cache
  */
 	function __construct($settings = array()) {
 		$this->settings = Set::merge($this->settings, $settings);
-		
-		if (!$this->_found = Cache::read('media_found')) {
-			$this->_found = array();
+
+		if (!$this->__cached = Cache::read('media_found')) {
+			$this->__cached = array();
 		}
 	}
 /**
  * Destructor
- * 
+ *
  * Updates cache
  */
 	function __destruct() {
-		Cache::write('media_found', $this->_found, YEAR);
+		Cache::write('media_found', $this->__cached, YEAR);
 	}
 /**
  * Output filtering
@@ -135,13 +135,13 @@ class MediumHelper extends AppHelper {
 		if ($inline) {
 			return $content;
 		}
-		
+
 		$View =& ClassRegistry::getObject('view');
-		$View->addScript($content);		
-	}	
+		$View->addScript($content);
+	}
 /**
  * Turns a file into a (routed) url string
- * 
+ *
  * Reimplemented method from Helper
  *
  * @param string $file Absolut path or relative (to MEDIA) path to file
@@ -164,16 +164,16 @@ class MediumHelper extends AppHelper {
 		if (!$file = $this->file($path)) {
 			return null;
 		}
-		
+
 		$path = str_replace(MEDIA, null, $file);
 		$path = str_replace(DS, '/', $path); /* Normalize url path */
 		return $this->webroot . MEDIA_URL . $path;
 	}
 /**
  * Display a file inline
- * 
+ *
  * @param unknown_type $file
- * @param unknown_type $options restrict: embed to display certain medium types only 
+ * @param unknown_type $options restrict: embed to display certain medium types only
  * @return unknown
  */
 	function embed($path, $options = array()) {
@@ -191,8 +191,8 @@ class MediumHelper extends AppHelper {
 						'controls' => false, // also: controller
 						'branding' => false,
 						);
-						
-		$options = array_merge($default, $options); 
+
+		$options = array_merge($default, $options);
 
 		if (is_array($path)) {
 			$out = null;
@@ -201,26 +201,25 @@ class MediumHelper extends AppHelper {
 			}
 			return $out;
 		}
-		
+
 		if (isset($options['url'])) {
 			$link = $options['url'];
 			unset($options['url']);
-			
+
 			$out = $this->embed($path, $options);
 			return $this->Html->link($out, $link, array(), false, false);
 		}
-		
+
 		if (!$url = $this->url($path)) {
 			return null;
 		}
 
 		if (is_string($path)) {
 			$file = $this->file($path);
-			$mimeType = MimeType::guessType($file); 
 		} else {
 			$file = parse_url($url, PHP_URL_PATH);
-			$mimeType = MimeType::guessType($file);
 		}
+		$mimeType = MimeType::guessType($file);
 
 		$Medium = Medium::factory($file, $mimeType);
 
@@ -230,7 +229,7 @@ class MediumHelper extends AppHelper {
 		if (!isset($options['height'])) {
 			$options['height'] = $Medium->height();
 		}
-		
+
 		extract($options, EXTR_SKIP);
 
 		if (!empty($restrict) && !in_array(strtolower($Medium->name), (array) $restrict)) {
@@ -253,7 +252,7 @@ class MediumHelper extends AppHelper {
 					$attributes = $this->addClass($attributes, 'icon');
 				}
 				return sprintf($this->Html->tags['image'], $url, $this->_parseAttributes($attributes));
-				
+
 			/* Windows Media */
 			case 'video/x-ms-asx':
 			case 'video/x-ms-wmv': // official
@@ -270,7 +269,7 @@ class MediumHelper extends AppHelper {
 								'controller' => $controls,
 								);
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-				
+
 			/* RealVideo */
 			case 'application/vnd.rn-realmedia':	 // ?
 			case 'application/vnd.pn-realmedia':     // ?
@@ -287,7 +286,7 @@ class MediumHelper extends AppHelper {
 								'src' => $url,
 								'autostart' => $autoplay,
 								'controls' => isset($controls) ? 'ControlPanel' : null,
-								'console' => 'video' . uniqid(), 
+								'console' => 'video' . uniqid(),
 								'loop' => $loop,
 								'bgcolor' => $background,
 								'nologo' => $branding ? false : true,
@@ -296,7 +295,7 @@ class MediumHelper extends AppHelper {
 								'backgroundcolor' => $background,
 								);
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-				
+
 			/* QuickTime */
 			case 'video/quicktime':
 				$attributes = array(
@@ -315,7 +314,7 @@ class MediumHelper extends AppHelper {
 								'showlogo' => $branding,
 								);
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-				
+
 			/* Mpeg */
 			case 'video/mpeg':
 				$attributes = array(
@@ -329,7 +328,7 @@ class MediumHelper extends AppHelper {
 								'autostart' => $autoplay,
 								);
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-				
+
 			/* Flashy Flash */
 			case 'application/x-shockwave-flash':
 				$attributes = array(
@@ -365,8 +364,8 @@ class MediumHelper extends AppHelper {
 								'scrollbar' => $controls,
 								'navpanes' => $controls,
 								);
-				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);				
-				
+				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
+
 			case 'audio/x-wav':
 			case 'audio/mpeg':
 			case 'audio/ogg': // better: application/ogg?
@@ -380,9 +379,9 @@ class MediumHelper extends AppHelper {
 				$parameters = array(
 								'src' => $url,
 								'autoplay' => $autoplay,
-								);				
+								);
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-					
+
 			default:
 				$attributes = array(
 								'type' => $mimeType,
@@ -393,9 +392,9 @@ class MediumHelper extends AppHelper {
 				$parameters = array(
 								'src' => $url,
 								);
-				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);					
+				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
 		}
-	}	
+	}
 /**
  * Enter description here...
  *
@@ -404,7 +403,7 @@ class MediumHelper extends AppHelper {
  * @return unknown
  */
 	function link($path, $options = array()) {
-		$default = array( 
+		$default = array(
 						'inline' => true,
 						'restrict' => array(),
 						);
@@ -415,8 +414,8 @@ class MediumHelper extends AppHelper {
 		if (is_bool($options)) {
 			$options = array('inline' => $options);
 		}
-		$options = array_merge($default, $options); 
-		
+		$options = array_merge($default, $options);
+
 		if (is_array($path) && !array_key_exists('controller', $path)) {
 			$out = null;
 			foreach ($path as $i) {
@@ -427,28 +426,27 @@ class MediumHelper extends AppHelper {
 			}
 			return $out;
 		}
-		
+
 		$inline = $options['inline'];
 		unset($options['inline']);
-		
+
 		if (!$url = $this->url($path)) {
 			return null;
 		}
-		
+
 		if (is_string($path)) {
 			$file = $this->file($path);
-			$mimeType = MimeType::guessType($file); 
 		} else {
 			$file = parse_url($url, PHP_URL_PATH);
-			$mimeType = MimeType::guessType($file);
 		}
+		$mimeType = MimeType::guessType($file);
 
 		$Medium = Medium::factory($file, $mimeType);
-		
+
 		if (!empty($options['restrict']) && !in_array(strtolower($Medium->name), (array) $options['restrict'])) {
 			return null;
 		}
-		unset($options['restrict']);		
+		unset($options['restrict']);
 
 		switch ($mimeType) {
 			case 'text/css':
@@ -459,16 +457,16 @@ class MediumHelper extends AppHelper {
 			case 'application/x-javascript':
 				$out = sprintf($this->tags['javascriptlink'], $url);
 				return $this->output($out, $inline);
-				
+
 			case 'application/rss+xml':
 				$options = array_merge($defaultRss,$options);
 				$out = sprintf($this->tags['rsslink'], $url, $options['title']);
 				return $this->output($out, $inline);
-				
-			default: 
+
+			default:
 				return null;
 		}
-	}	
+	}
 /**
  * Get mime type for a path
  *
@@ -487,55 +485,59 @@ class MediumHelper extends AppHelper {
 	function size($path)	{
 		if ($file = $this->file($path)) {
 			return filesize($file);
-		} 
+		}
 		return false;
 	}
 /**
- * Enter description here...
+ * Resolves fragmented path to an absolute path to an existing file
  *
- * @param unknown_type $path
- * @return unknown
+ * Examples:
+ * 	css/cake.generic       >>> MEDIA/static/css/cake.generic.css
+ *  transfer/img/image.jpg >>> MEDIA/transfer/img/image.jpg
+ * 	s/img/image.jpg        >>> MEDIA/filter/s/static/img/image.jpg
+ *
+ * @param string $path
+ * @return mixed
+ * @TODO Replace for loop+file_exists with Folder::read; theme support
  */
 	function file($path) {
-		if (isset($this->_found[$path])) { /* Lookup cached */
-			return $this->_found[$path];
+		if (isset($this->__cached[$path])) {
+			return $this->__cached[$path];
 		}
-				
+
 		$path = str_replace('/', DS, trim($path)); /* Correct slashes if we are on windows */
 		$path = str_replace(MEDIA, null, $path); /* Make path relative */
-		
+
 		$parts = explode(DS, $path);
-		
+
 		if (in_array($parts[0], $this->settings['versions'])) {
 			array_unshift($parts, 'filter');
 		}
 		if (!in_array($parts[0], $this->settings['directories'])) {
 			array_unshift($parts, 'static');
 		}
-		/*
-		if (!empty($this->themeWeb) && $parts[0] === 'static') {
-			$themeParts = $parts;
-			array_splice($themeParts, 0, 1, array('static', $this->themeWeb));
-			$path = implode(DS, $themeParts);
-			$file = MEDIA . $path;
-	
-			if (isset($this->_found[$path]) || file_exists($file)) {
-				return $this->_found[$path] = $file;
-			}
-		} 
-		*/
-		
+		if (in_array($parts[1], $this->settings['versions'])
+		&& !in_array($parts[2], $this->settings['directories'])) {
+			array_splice($parts, 2, 0, 'static');
+		}
+
 		$path = implode(DS, $parts);
 		$file = MEDIA . $path;
 
-		if (isset($this->_found[$path])) {
-			return $this->_found[$path];
+		if (isset($this->__cached[$path])) {
+			return $this->__cached[$path];
 		}
-		if(file_exists($file)) {
-			return $this->_found[$path] = $file;
+		if (file_exists($file)) {
+			return $this->__cached[$path] = $file;
 		}
-	
+
 		$short = current(array_intersect(array_keys($this->settings['extensions']), $parts));
+
+		if (!$short) {
+			trigger_error('MediumHelper::file - No medium directory specified (e.g. img).', E_USER_NOTICE);
+			return false;
+		}
+
 		extract(pathinfo($file), EXTR_SKIP);
 
 		for ($i = 0; $i < 2; $i++) {
@@ -544,11 +546,11 @@ class MediumHelper extends AppHelper {
 			foreach ($this->settings['extensions'][$short] as $extension) {
 				$try = $file . '.' . $extension;
 				if (file_exists($try)) {
-					return $this->_found[$path] = $try;
+					return $this->__cached[$path] = $try;
 				}
 			}
 		}
-		
+
 		return false;
 	}
 /**
@@ -556,11 +558,11 @@ class MediumHelper extends AppHelper {
  *
  * @param unknown_type $options
  * @return unknown
- */	
+ */
 	function _parseParameters($options) {
 		$parameters = array();
 		$options = Set::filter($options);
-		
+
 		foreach ($options as $key => $value) {
 			if ($value === true) {
 				$value = 'true';
@@ -572,9 +574,9 @@ class MediumHelper extends AppHelper {
 		return implode("\n", $parameters);
 	}
 /**
- * Render a link to a file with extra information 
+ * Render a link to a file with extra information
  *
- * @deprecated 
+ * @deprecated
  * @param string $file A path to a file relative to MEDIA
  * @param array $options Valid options are: -"size" Size in bytes of file, -"name" Name to display
  * @return string
@@ -583,12 +585,12 @@ class MediumHelper extends AppHelper {
 		trigger_error('MediumHelper::nice - Deprecated: Is no longer supported and will be removed in a future version.', E_USER_WARNING);
 	}
 /**
- * Formats given option/s 
+ * Formats given option/s
  * Primarly used for parsing parameters for embedding video
  *
  * @param unknown_type $option
  * @return unknown
- * @deprecated 
+ * @deprecated
  */
 	function _format($option) {
 		trigger_error('MediumHelper::_format - Deprecated: Is no longer supported and will be removed in a future version.', E_USER_WARNING);

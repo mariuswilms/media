@@ -20,7 +20,6 @@ class MediaBehaviorTestCase extends CakeTestCase {
 		
 		$this->TestData = new MediumTestData();
 		$this->file0 = $this->TestData->getFile(array('image-png.png' => $this->TmpFolder->pwd() . 'static/img/image-png.png'));
-
 		$this->file1 = $this->TestData->getFile(array('image-jpg.jpg' => $this->TmpFolder->pwd() . 'static/img/image-jpg.jpg'));
 		$this->file2 = $this->TestData->getFile(array('text-plain.txt' => $this->TmpFolder->pwd() . 'static/txt/text-plain.txt'));
 	}
