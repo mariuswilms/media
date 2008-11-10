@@ -468,13 +468,16 @@ class MediumHelper extends AppHelper {
 		}
 	}
 /**
- * Get mime type for a path
+ * Get MIME type for a path
  *
  * @param string $path
  * @return mixed
  */
 	function mimeType($path) {
-		return MimeType::guessType($path);
+		if ($file = $this->file($path)) {
+			return MimeType::guessType($file);
+		}
+		return false;
 	}
 /**
  * Get size of file
