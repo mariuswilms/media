@@ -1,49 +1,26 @@
 <?php
 /**
  * Attachments Element File
- * 
+ *
  * Element listing associated Attachments of the View's Model
  * Add, delete (detach) an Attachment
- * 
- * Copyright (c) $CopyrightYear$ David Persson
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE
- * 
- * PHP version $PHPVersion$
- * CakePHP version $CakePHPVersion$
- * 
- * @category   media handling
- * @package    attm
- * @subpackage attm.plugins.attachments.views.elements
+ * Copyright (c) 2007-2008 David Persson
+ *
+ * Distributed under the terms of the MIT License.
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * PHP version 5
+ * CakePHP version 1.2
+ *
+ * @package    media
+ * @subpackage media.views.elemetns
  * @author     David Persson <davidpersson@qeweurope.org>
- * @copyright  $CopyrightYear$ David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2008 David Persson <davidpersson@qeweurope.org>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @version    SVN: $Id$
- * @version    Release: $Version$
- * @link       http://cakeforge.org/projects/attm The attm Project
- * @since      attachments plugin 0.50
- * 
- * @modifiedby   $LastChangedBy$
- * @lastmodified $Date$
+ * @link       http://github.com/davidpersson/media
  */
-?>
-<?php
+
 /* Set $assocAlias and $model if you're using this element multiple times in one form */
 
 if (!isset($assocAlias)) {
@@ -53,10 +30,10 @@ if (!isset($assocAlias)) {
 }
 
 if (!isset($model)) {
-	$model = $form->model();	
+	$model = $form->model();
 }
 
-$modelId = $form->value($form->model().'.id'); 
+$modelId = $form->value($form->model().'.id');
 
 if(isset($this->data[$assocAlias][0]['basename'])) {
 	array_unshift($this->data[$assocAlias],array());
@@ -82,11 +59,11 @@ if(isset($this->data[$assocAlias][0]['basename'])) {
 								'pixels'     => __('The file is too large.', true),
 								'extension'  => __('The file has wrong extension.', true),
 								'mimeType'   => __('The file has wrong mime type.', true),
-								) 
+								)
 							)
-						);		
+						);
 		echo $form->input($assocAlias . '.0.alternative', array(
-							'label' => __('Textual replacement', true), 
+							'label' => __('Textual replacement', true),
 							'value' => '',
 							'error' => __('A textual replacement must be provided.', true)
 							)
@@ -101,29 +78,29 @@ if(isset($this->data[$assocAlias][0]['basename'])) {
 		<?php
 			$item = $this->data[$assocAlias][$i];
 
-			echo $form->hidden($assocAlias . '.' . $i . '.id',array('value' => $item['id'])); 
+			echo $form->hidden($assocAlias . '.' . $i . '.id',array('value' => $item['id']));
 			echo $form->hidden($assocAlias . '.'.$i . '.model',array('value' => $model));
 			echo $form->hidden($assocAlias . '.'.$i . '.group',array('value' => $item['group']));
 			echo $form->hidden($assocAlias . '.'.$i . '.dirname',array('value' => $item['dirname']));
 			echo $form->hidden($assocAlias . '.'.$i . '.basename',array('value' => $item['basename']));
 			echo $form->hidden($assocAlias . '.'.$i . '.alternative',array('value' => $item['alternative']));
-		 	
+
 		 	if ($file = $medium->file($item['dirname'].DS.$item['basename'])) {
 		 		echo $medium->embed('xxs/' . $item['dirname'] . DS . $item['basename'], array('restrict' => array('image')));
-				
+
 		 		$Medium = Medium::factory($file);
 				$size = filesize($file);
-				
+
 				if (isset($number)) {
 					$size = $number->toReadableSize($size);
 				}
-				
-				printf(	'<span><a href="%s">%s</a>&nbsp;(%s/%s) <em>%s</em></span>', 
-						$medium->url($file), $item['basename'], 
-						strtolower($Medium->name), $size, $item['alternative']);				
+
+				printf(	'<span><a href="%s">%s</a>&nbsp;(%s/%s) <em>%s</em></span>',
+						$medium->url($file), $item['basename'],
+						strtolower($Medium->name), $size, $item['alternative']);
 			}
-			
-		 	echo $form->input($assocAlias . '.' . $i . '.delete', array('label' => __('Release', true), 'type' => 'checkbox', 'value' => 0)); 
+
+		 	echo $form->input($assocAlias . '.' . $i . '.delete', array('label' => __('Release', true), 'type' => 'checkbox', 'value' => 0));
 		?>
 		</div>
 	<?php endfor ?>

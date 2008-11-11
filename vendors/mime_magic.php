@@ -1,16 +1,28 @@
 <?php
 /**
- * MimeMagic file
- * 
- * Parser for magic files and file content analyzer
- * 
+ * Mime Magic File
+ *
+ * Copyright (c) 2007-2008 David Persson
+ *
+ * Distributed under the terms of the MIT License.
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * PHP version 5
+ * CakePHP version 1.2
+ *
+ * @package    media
+ * @subpackage media.libs
+ * @author     David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2008 David Persson <davidpersson@qeweurope.org>
+ * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @link       http://github.com/davidpersson/media
  */
-if (!class_exists('File')) {
-	uses('file');
-}
+uses('file');
 /**
- * MimeMagic class
- * 
+ * Mime Magic Class
+ *
+ * @package    media
+ * @subpackage media.libs
  */
 class MimeMagic extends Object {
 /**
@@ -22,7 +34,7 @@ class MimeMagic extends Object {
 	var $_items = array();
 /**
  * Constructor
- * 
+ *
  * @param mixed $file
  * @access private
  */
@@ -40,7 +52,7 @@ class MimeMagic extends Object {
  */
 	function analyze($file, $options = array()) {
 		$filtered = array();
-		
+
 		$default = array('minPriority' => 0, 'maxPriority' => 100);
 		$options = array_merge($default, $options);
 		extract($options, EXTR_SKIP);
@@ -50,33 +62,33 @@ class MimeMagic extends Object {
 				continue(1);
 			}
 			$filtered = array_merge($filtered, $items);
-		}		
+		}
 
 		return $this->__test($file, $filtered);
-	}	
+	}
 /**
  * Register a magic item
  *
  * Supports a nesting level up to 3
- * 
+ *
  * @param array $item A valid magic item
  * @param integer $indent The nesting depth of the item
- * @param integer $priority A value between 0 and 100. Low numbers should be used for more generic types and higher values for specific subtypes. 
+ * @param integer $priority A value between 0 and 100. Low numbers should be used for more generic types and higher values for specific subtypes.
  * @return boolean True if item has successfully been registered, false if not
  * @access public
  */
 	function register($item, $indent = 0, $priority = 50) {
 		static $keys = array();
-		
+
 		if (!is_array($item) || !isset($item['offset'], $item['value'], $item['range_length'], $item['value_length'])) {
 			return false;
 		}
-		
+
 		if (isset($item['priority'])) {
 			$priority = $item['priority'];
 			unset($item['priority']);
 		}
-		
+
 		switch ($indent) {
 			case 0:
 				$this->_items[$priority][] = $item;
@@ -101,14 +113,14 @@ class MimeMagic extends Object {
 		}
 	}
 /**
- * Exports current items as an array 
+ * Exports current items as an array
  *
  * @return array
  * @access public
  */
 	function toArray() {
 		$results = array();
-		
+
 		foreach ($this->_items as $priority => $items) {
 			foreach ($items as $item) {
 				$item['priority'] = $priority;
@@ -116,14 +128,14 @@ class MimeMagic extends Object {
 			}
 		}
 		return $results;
-	}	
+	}
 /**
  * Will load a file from various sources
- * 
+ *
  * Supported formats:
  * - Freedesktop Shared MIME-info Database
  * - Apache Module mod_mime_magic
- * - PHP file containing variables formatted like: $data[0] = array(item, item, item, ...) 
+ * - PHP file containing variables formatted like: $data[0] = array(item, item, item, ...)
  *
  * @param mixed $file An absolute path to a magic file in apache, freedesktop or a filename (without .php) of a file in the configs/ dir in CakePHP format
  * @return mixed A format string or null if format could not be determined
@@ -138,23 +150,23 @@ class MimeMagic extends Object {
 
 		if (file_exists(CONFIGS . $file . '.php')) {
 			include(CONFIGS . $file . '.php');
-			
+
 			if (!isset($data)) {
 				return null;
 			}
-			
+
 			foreach ($data as $item) {
 				$this->register($item);
 			}
-			return 'CakePHP';	
+			return 'CakePHP';
 		}
-		
+
 		$File =& new File($file);
 
 		if (!$File->readable()) {
 			return null;
 		}
-		
+
 		$File->open('rb');
 		$head = $File->read(4096);
 
@@ -162,27 +174,27 @@ class MimeMagic extends Object {
 		$apacheItemRegex         = '^(\>*)(\d+)\t+(\S+)\t+([\S^\040]+)\t*(' . $mimeTypeRegex . ')*\t*(\S*)$';
 		$freedesktopSectionRegex = '^\[(\d{1,3}):(' . $mimeTypeRegex . ')\]$';
 		$freedesktopItemRegex    = '^(\d*)\>+(\d+)=+([^&~\+]{2})([^&~\+]+)&?([^~\+]*)~?(\d*)\+?(\d*).*$';
-		
+
 		if (substr($head, 0, 12) === "MIME-Magic\0\n") {
 			$File->offset(12);
-			
+
 			while (!feof($File->handle)) {
 				$line = '';
-				
+
 				if (!isset($chars)) {
 					$chars = array(0 => $File->read(1), 1 => $File->read(1));
 				} else {
 					$chars = array(0 => $chars[1], 1 => null);
 				}
-				
+
 				while (!feof($File->handle) && !($chars[0] === "\n" && (ctype_digit($chars[1]) || $chars[1] === '>' || $chars[1] === '['))) {
-					$line .= $chars[0]; 
+					$line .= $chars[0];
 					$chars = array(0 => $chars[1], 1 => $File->read(1));
 				}
 
 				if (preg_match('/' . $freedesktopSectionRegex . '/', $line, $matches)) {
 					$section = array(
-									 'priority'  => $matches[1], 
+									 'priority'  => $matches[1],
 									 'mime_type' => $matches[2]
 									);
 				} else if (preg_match('/' . $freedesktopItemRegex . '/', $line, $matches)) {
@@ -203,14 +215,14 @@ class MimeMagic extends Object {
 		}
 		if (preg_match('/' . $apacheItemRegex . '/m', $head)) {
 			$File->offset(0);
-			
+
 			while (!feof($File->handle)) {
 				$line = trim(fgets($File->handle));
-				
+
 				if (empty($line) || $line{0} === '#') {
 					continue(1);
 				}
-				
+
 				$line = preg_replace('/(?!\B)\040+/', "\t", $line);
 				preg_match('/' . $apacheItemRegex . '/', $line, $matches);
 
@@ -224,9 +236,9 @@ class MimeMagic extends Object {
 							);
 				$item['value_length'] = strlen($item['value']);
 				$this->register($item, strlen($matches[1]), 80);
-			}	
+			}
 			return 'Apache Module mod_mime_magic';
-		} 
+		}
 		return null;
 	}
 /**
@@ -243,9 +255,9 @@ class MimeMagic extends Object {
 		if (!$File->readable()) {
 			return false;
 		}
-		
+
 		$File->open('rb');
-		
+
 		foreach ($items as $item) {
 			if ($result = $this->__testRecursive($File, $item)) {
 				return $result;
@@ -259,15 +271,15 @@ class MimeMagic extends Object {
  * @param object $File An instance of the File class
  * @param array $item A magic item
  * @return mixed A string containing the mime type of the file or false if no pattern matched
- * @access private 
+ * @access private
  */
 	function __testRecursive(&$File, $item) {
 		if (isset($item['mask'])) {
 			$item['value'] = $item['value'] & $item['mask'];
 		}
-		
+
 		$File->offset($item['offset']);
-				
+
 		if (strpos($File->read($item['value_length'] + $item['range_length']), $item['value']) !== false) {
 			if (isset($item['and'])) {
 				foreach ($item['and'] as $andedItem) {
@@ -280,7 +292,7 @@ class MimeMagic extends Object {
 			}
 		}
 		return false;
-	}	
+	}
 /**
  * Format a value for testing
  *
@@ -313,14 +325,14 @@ class MimeMagic extends Object {
 			} else if (is_numeric($value) && floatval($value) == $value) {
 				$value = floatval($value);
 			}
-			
+
 			switch ($type) {
 				case 'byte':
 					return pack('c', $value);
 				case 'short':
 					return pack('s', $value);
 				case 'date':
-				case 'long': 
+				case 'long':
 					return pack('l', $value);
 				case 'float':
 					return pack('f', $value);
@@ -345,6 +357,6 @@ class MimeMagic extends Object {
 					return $value;
 			}
 		}
-	}		
+	}
 }
 ?>

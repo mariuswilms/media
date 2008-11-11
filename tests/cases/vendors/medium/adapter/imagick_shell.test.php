@@ -1,57 +1,89 @@
 <?php
+/**
+ * Imagick Shell Medium Adapter Test Case File
+ *
+ * Copyright (c) 2007-2008 David Persson
+ *
+ * Distributed under the terms of the MIT License.
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * PHP version 5
+ * CakePHP version 1.2
+ *
+ * @package    media
+ * @subpackage media.tests.cases.libs.medium.adapter
+ * @author     David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2008 David Persson <davidpersson@qeweurope.org>
+ * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @link       http://github.com/davidpersson/media
+ */
 App::import('Vendor','Media.ImageMedium', array('file' => 'medium'.DS.'image.php'));
 App::import('Vendor','Media.DocumentMedium', array('file' => 'medium'.DS.'document.php'));
 App::import('Vendor','ImagickShellMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'imagick_shell.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
-
+/**
+ * Test Imagick Shell Image Medium Class
+ *
+ * @package    media
+ * @subpackage media.tests.cases.libs.medium.adapter
+ */
 class TestImagickShellImageMedium extends ImageMedium {
 	var $adapters = array('ImagickShell');
 }
-
+/**
+ * Test Imagick Shell Document Medium Class
+ *
+ * @package    media
+ * @subpackage media.tests.cases.libs.medium.adapter
+ */
 class TestImagickShellDocumentMedium extends DocumentMedium {
 	var $adapters = array('ImagickShell');
-
 }
-
+/**
+ * Imagick Shell Medium Adapter Test Case Class
+ *
+ * @package    media
+ * @subpackage media.tests.cases.libs.medium.adapter
+ */
 class ImagickShellMediumAdapterTest extends CakeTestCase {
 	function start() {
 		parent::start();
 		$this->TestData = new MediumTestData();
 	}
-	
+
 	function end() {
 		parent::end();
 		$this->TestData->flushFiles();
 	}
-		
+
 	function skip()	{
 		exec('which convert', $output, $return);
 		$this->skipUnless($return === 0, 'convert command not available');
 	}
-	
+
 	function showImage($string, $mimeType = null) {
 		echo '<img src="data:'.$mimeType.';base64,'.base64_encode($string).'" />';
 	}
-	
+
 	function testBasic() {
 		$result = new TestImagickShellImageMedium($this->TestData->getFile('image-jpg.jpg'));
 		$this->assertIsA($result, 'object');
-		
+
 		$Medium = new TestImagickShellImageMedium($this->TestData->getFile('image-jpg.jpg'));
 		$result = $Medium->toString();
 		$this->assertTrue(!empty($result));
 	}
-	
+
 	function testInformation() {
 		$Medium = new TestImagickShellImageMedium($this->TestData->getFile('image-jpg.jpg'));
-		
+
 		$result = $Medium->width();
 		$this->assertEqual($result, 70);
-		
+
 		$result = $Medium->height();
-		$this->assertEqual($result, 47);		
+		$this->assertEqual($result, 47);
 	}
-	
+
 	function testManipulation() {
 		$Medium = new TestImagickShellImageMedium($this->TestData->getFile('image-jpg.jpg'));
 		$Medium->fit(10,10);
@@ -63,7 +95,7 @@ class ImagickShellMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->mimeType;
 		$this->assertTrue($result, 'image/png');
 	}
-	
+
 	function testTransitions() {
 		$Medium = new DocumentMedium($this->TestData->getFile('application-pdf.pdf'));
 		$Medium->Adapters->detach(array_diff($Medium->adapters, array('ImagickShell')));
@@ -71,11 +103,11 @@ class ImagickShellMediumAdapterTest extends CakeTestCase {
 		$Medium = $Medium->convert('image/png');
 		$Medium->Adapters->detach(array_diff($Medium->adapters, array('ImagickShell')));
 		$this->assertIsA($Medium, 'ImageMedium');
-		
+
 		$tmpFile = $Medium->store(TMP . uniqid('test_suite_'));
 		$this->assertEqual(MimeType::guessType($tmpFile), 'image/png');
 		unlink($tmpFile);
-		
+
 		$Medium = new DocumentMedium($this->TestData->getFile('application-pdf.pdf'));
 		$Medium->Adapters->detach(array_diff($Medium->adapters, array('ImagickShell')));
 		$Medium = $Medium->convert('image/png');
@@ -83,15 +115,15 @@ class ImagickShellMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->fit(10, 10);
 		$this->assertTrue($result);
 		$this->assertTrue($Medium->width() <= 10);
-		$this->assertTrue($Medium->height() <= 10);		
-	}	
-	
+		$this->assertTrue($Medium->height() <= 10);
+	}
+
 	function testMake() {
 		$instructions = array('convert' => 'image/png','zoomCrop' => array(10, 10));
 		$Medium = TestImagickShellImageMedium::make($this->TestData->getFile('image-jpg.jpg'), $instructions);
 		$this->assertIsA($Medium, 'Medium');
 //		$this->showImage($Medium->toString(),'image/jpg');
-	}	
-		
+	}
+
 }
 ?>

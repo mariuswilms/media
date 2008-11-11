@@ -1,14 +1,28 @@
 <?php
 /**
- * MimeType file
- * 
+ * Mime Type File
+ *
+ * Copyright (c) 2007-2008 David Persson
+ *
+ * Distributed under the terms of the MIT License.
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * PHP version 5
+ * CakePHP version 1.2
+ *
+ * @package    media
+ * @subpackage media.libs
+ * @author     David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2008 David Persson <davidpersson@qeweurope.org>
+ * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @link       http://github.com/davidpersson/media
  */
-if (!class_exists('File')) {
-	uses('file');
-}
+uses('file');
 /**
- * MimeType Class
- * 
+ * Mime Type Class
+ *
+ * @package    media
+ * @subpackage media.libs
  */
 class MimeType extends Object {
 /**
@@ -33,14 +47,14 @@ class MimeType extends Object {
  */
 	function &getInstance() {
 		static $instance = array();
-		
+
 		if (!$instance) {
 			$instance[0] =& new MimeType();
 			$instance[0]->__loadMagic(Configure::read('Mime.magic'));
 			$instance[0]->__loadGlob(Configure::read('Mime.glob'));
 		}
 		return $instance[0];
-	}	
+	}
 /**
  * Guesses the extension (suffix) for an existing file or a mime type
  *
@@ -53,7 +67,7 @@ class MimeType extends Object {
 		$_this =& MimeType::getInstance();
 		$globMatch = array();
 		$preferred = array('jpg', 'tiff', 'txt', 'css');
-		
+
 		if (is_file($file)) {
 			$mimeType = $_this->guessType($file);
 		} else {
@@ -63,47 +77,47 @@ class MimeType extends Object {
 		if (is_a($_this->glob, 'MimeGlob')) {
 			$globMatch = $_this->glob->analyze($mimeType, true);
 		}
-		
+
 		if (count($globMatch) === 1) {
 			return array_shift($globMatch);
 		}
-		
+
 		$preferMatch = array_intersect($globMatch, $preferred);
 
 		if (count($preferMatch) === 1) {
 			return array_shift($preferMatch);
 		}
-		
+
 		return null;
-	}	
+	}
 /**
- * Guesses the mime type of the file  
- * 
+ * Guesses the mime type of the file
+ *
  * Empty results are currently not handled:
  * 	application/x-empty
  * 	application/x-not-regular-file
- * 
+ *
  * @param string $file
- * @param options $options Valid options are: 
+ * @param options $options Valid options are:
  *  - "simplify" If set to true experimental indicators are being removed from the mime type
  *  - "fast" If set to true Forces an suffix based lookup first
- * @return mixed string with mime type on success 
+ * @return mixed string with mime type on success
  * @access public
  */
 	function guessType($file, $options = array()) {
 		$_this =& MimeType::getInstance();
-		$File =& new File($file);		
-		
+		$File =& new File($file);
+
 		if (is_bool($options)) {
 			$options = array('looseProperties' => $options, 'looseExperimental' => $options);
-		} 
+		}
 		if (isset($options['simplify'])) {
 			$options = array('looseProperties' => $options['simplify'], 'looseExperimental' => $options['simplify']);;
 		}
 		$default = array('looseProperties' => true, 'looseExperimental' => false, 'paranoid' => false);
 		extract(array_merge($default, $options), EXTR_SKIP);
 		$magicMatch = $globMatch = array();
-		
+
 		if (!$paranoid) {
 			if (is_a($_this->glob, 'MimeGlob')) {
 				$globMatch = $_this->glob->analyze($file);
@@ -118,35 +132,35 @@ class MimeType extends Object {
 		} else if ($_this->magic === 'mime_magic') {
 			$magicMatch = array(mime_content_type($File->pwd()));
 		} else if (is_a($_this->magic, 'MimeMagic')) {
-			$magicMatch = $_this->magic->analyze($File->pwd() /*, array('minPriority' => 80) */); 
+			$magicMatch = $_this->magic->analyze($File->pwd() /*, array('minPriority' => 80) */);
 		}
 		if (empty($magicMatch)) {
 			if ($File->readable()) {
 				if (preg_match('/[\t\n\r]+/', $File->read(32))) {
 					return 'text/plain';
 				}
-				return 'application/octet-stream';			
+				return 'application/octet-stream';
 			}
 			return null;
 		}
-		
+
 		if (count($magicMatch) === 1) {
 			return MimeType::simplify(array_shift($magicMatch), $looseProperties, $looseExperimental);
 		}
-		
+
 		if ($globMatch && $magicMatch) {
 			$combinedMatch = array_intersect($globMatch, $magicMatch);
-			
+
 			if (count($combinedMatch) === 1) {
 				return MimeType::simplify(array_shift($combinedMatch), $looseProperties, $looseExperimental);
 			}
 		}
-				
+
 		return null;
-	}		
+	}
 /**
- * Simplifies a mime type by removing all exprimental indicators 
- * and attributes  
+ * Simplifies a mime type by removing all exprimental indicators
+ * and attributes
  *
  * @param string $mimeType
  * @return string
@@ -163,21 +177,21 @@ class MimeType extends Object {
 				$mimeType = strtok($mimeType, ' ');
 			}
 		}
-		
+
 		return $mimeType;
 	}
 /**
  * Sets magic property
  *
- * @return void 
+ * @return void
  */
 	function __loadMagic($config = array()) {
 		$engine = $db = null;
-		
+
 		if (is_array($config)) {
 			extract($config, EXTR_OVERWRITE);
 		}
-		
+
 		if (($engine === 'fileinfo' || $engine === null) && extension_loaded('fileinfo')) {
 			if (isset($db)) {
 				$this->magic =& new finfo(FILEINFO_MIME, $db);
@@ -188,30 +202,30 @@ class MimeType extends Object {
 			$this->magic = 'mime_magic';
 		} elseif ($engine === 'core' || $engine === null) {
 			App::import('Vendor', 'Media.MimeMagic');
-						
+
 			if ($cached = Cache::read('mime_magic_db')) {
 				$db = $cached;
 			}
-						
+
 			if (!isset($db)) {
 				$commonFiles = array(
 					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.freedesktop.db',
 					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.apache.db',
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.mime', 
+					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.mime',
 					APP . 'plugins' . 'vendors' . DS . 'magic.freedesktop.db',
 					APP . 'plugins' . 'vendors' . DS . 'magic.apache.db',
-					APP . 'plugins' . 'vendors' . DS . 'magic.mime', 					
+					APP . 'plugins' . 'vendors' . DS . 'magic.mime',
 					VENDORS . 'magic.freedesktop.db',
 					VENDORS . 'magic.apache.db',
 					VENDORS . 'magic.mime',
 					);
-				
+
 				foreach($commonFiles as $commonFile) {
 					if (is_readable($commonFile)) {
 						$db = $commonFile;
 						break(1);
 					}
-				}	
+				}
 			}
 
 			if (!isset($db)) {
@@ -236,24 +250,24 @@ class MimeType extends Object {
 
 		if ($engine === 'core' || $engine === null) {
 			App::import('Vendor', 'Media.MimeGlob');
-			
+
 			if ($cached = Cache::read('mime_glob_db')) {
 				$db = $cached;
 			}
-			
+
 			if (!isset($db)) {
 				$commonFiles = array(
 					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.freedesktop.db',
 					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.apache.db',
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'mime.types', 
-					APP . 'vendors' . DS . 'glob.freedesktop.db',			
+					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'mime.types',
+					APP . 'vendors' . DS . 'glob.freedesktop.db',
 					APP . 'vendors' . DS . 'glob.apache.db',
-					APP . 'vendors' . DS . 'mime.types', 
+					APP . 'vendors' . DS . 'mime.types',
 					VENDORS . 'glob.freedesktop.db',
 					VENDORS . 'glob.apache.db',
 					VENDORS . 'mime.types',
 				);
-				
+
 				foreach($commonFiles as $commonFile) {
 					if (is_readable($commonFile)) {
 						$db = $commonFile;
@@ -261,13 +275,13 @@ class MimeType extends Object {
 					}
 				}
 			}
-	
+
 			if (!isset($db)) {
 				trigger_error('MimeType::__loadGlob - Could not locate glob database in any of the default locations.', E_USER_WARNING);
 			} else {
 				$this->glob =& new MimeGlob($db);
 				Cache::write('mime_glob_db', $this->glob->toArray());
-			}			
+			}
 		}
 	}
 }

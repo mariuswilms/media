@@ -17,10 +17,9 @@
  * @lastmodified	$Date: 2008-03-07 13:56:09 +0100 (Fri, 07 Mar 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
 /**
  * Polymorphic Behavior Class
- * 
+ *
  * @author			Andy Dawson (AD7six)
  * @copyright       Andy Dawson
  * @version			$Revision: 18 $
@@ -29,11 +28,11 @@
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 class PolymorphicBehavior extends ModelBehavior {
-	
+
 	function setup(&$model, $config = array()) {
 		$this->settings[$model->name] = am (array('classField' => 'class', 'foreignKey' => 'foreign_id'),$config);
 	}
-	
+
 	function afterFind (&$model, $results, $primary = false) {
 		extract($this->settings[$model->name]);
 		if ($primary && isset($results[0][$model->alias][$classField]) && $model->recursive > 0) {

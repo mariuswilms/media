@@ -1,13 +1,34 @@
 <?php
+/**
+ * Medium Helper Test Case File
+ *
+ * Copyright (c) 2007-2008 David Persson
+ *
+ * Distributed under the terms of the MIT License.
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * PHP version 5
+ * CakePHP version 1.2
+ *
+ * @package    media
+ * @subpackage media.tests.cases.views.helpers
+ * @author     David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2008 David Persson <davidpersson@qeweurope.org>
+ * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @link       http://github.com/davidpersson/media
+ */
 if (!defined('MEDIA')) {
 	define('MEDIA', TMP . 'media' . DS);
 }
-
 App::import('Core', array('Helper', 'AppHelper', 'ClassRegistry', 'Controller', 'Model'));
 App::import('Helper', 'Media.Medium');
-
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
-
+/**
+ * Medium Helper Test Case Class
+ *
+ * @package    media
+ * @subpackage media.tests.cases.views.helpers
+ */
 class TheMediumTestController extends Controller {
 /**
  * name property

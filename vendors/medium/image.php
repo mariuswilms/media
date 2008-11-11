@@ -1,57 +1,29 @@
 <?php
 /**
  * Image Medium File
- * 
- * Copyright (c) $CopyrightYear$ David Persson
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE
- * 
- * PHP version $PHPVersion$
- * CakePHP version $CakePHPVersion$
- * 
- * @category   media handling
- * @package    attm
- * @subpackage attm.plugins.media.libs.medium
+ * Copyright (c) 2007-2008 David Persson
+ *
+ * Distributed under the terms of the MIT License.
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * PHP version 5
+ * CakePHP version 1.2
+ *
+ * @package    media
+ * @subpackage media.libs.medium
  * @author     David Persson <davidpersson@qeweurope.org>
  * @author     Naonak <noanak@free.fr>
- * @copyright  $CopyrightYear$ David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2008 David Persson <davidpersson@qeweurope.org>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @version    SVN: $Id$
- * @version    Release: $Version$
- * @link       http://cakeforge.org/projects/attm The attm Project
- * @since      media plugin 0.50
- * 
- * @modifiedby   $LastChangedBy$
- * @lastmodified $Date$
+ * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.Medium');
 /**
  * Image Medium Class
- * 
- * @category   media handling
- * @package    attm
- * @subpackage attm.plugins.media.libs.medium
- * @author     David Persson <davidpersson@qeweurope.org>
- * @author     Naonak <noanak@free.fr>
- * @copyright  $CopyrightYear$ David Persson <davidpersson@qeweurope.org>
- * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @link       http://cakeforge.org/projects/attm The attm Project
+ *
+ * @package    media
+ * @subpackage media.libs.medium
  */
 class ImageMedium extends Medium {
 /**
@@ -71,7 +43,7 @@ class ImageMedium extends Medium {
 		return $this->fitInside($width, $height);
 	}
 /**
- * Resizes medium proportionally 
+ * Resizes medium proportionally
  * keeping both sides within given dimensions
  *
  * @param int $width
@@ -87,16 +59,16 @@ class ImageMedium extends Medium {
 		} else {
 			$r = $ry;
 		}
-		
+
 		$width = $this->width() / $r;
 		$height = $this->height() / $r;
-		
+
 		$args = $this->_normalizeDimensions($width, $height, 'maximum'); // maximum ???
 		return $this->Adapters->dispatchMethod($this, 'resize', $args);
 	}
 /**
  * Resizes medium proportionally
- * keeping smaller side within corresponding dimension 
+ * keeping smaller side within corresponding dimension
  *
  * @param int $width
  * @param int $height
@@ -111,10 +83,10 @@ class ImageMedium extends Medium {
 		} else {
 			$r = $ry;
 		}
-		
+
 		$width = $this->width() / $r;
 		$height = $this->height() / $r;
-		
+
 		$args = $this->_normalizeDimensions($width, $height, 'ratio');
 		return $this->Adapters->dispatchMethod($this, 'resize', $args);
 	}
@@ -152,7 +124,7 @@ class ImageMedium extends Medium {
 
 		$width = $width * $factor;
 		$height = $height * $factor;
-					
+
 		return $this->fitOutside($width, $height);
 	}
 /**
@@ -166,11 +138,11 @@ class ImageMedium extends Medium {
  */
 	function zoomCrop($width, $height, $gravity = 'center') {
 		$factor = 2;
-		
+
 		list($zoomWidth, $zoomHeight) = $this->_normalizeDimensions($width * $factor, $height * $factor, 'maximum');
 		list($zoomLeft, $zoomTop) = $this->_boxify($zoomWidth, $zoomHeight, $gravity);
 		list($width, $height) = array($zoomWidth / $factor, $zoomHeight / $factor);
-		
+
 		return $this->Adapters->dispatchMethod($this, 'cropAndResize', array($zoomLeft, $zoomTop, $zoomWidth, $zoomHeight, $width, $height));
 	}
 /**
@@ -218,7 +190,7 @@ class ImageMedium extends Medium {
 /**
  * Determines the quality of the medium by
  * taking amount of megapixels into account
- * 
+ *
  * @return integer A number indicating quality between 0 (worst) and 10 (best)
  */
 	function quality() {
@@ -229,17 +201,17 @@ class ImageMedium extends Medium {
 		$megapixelMin = 0.5;
 		$qualityMax = 5.0;
 		$qualityMin = 0.0;
-		
+
 		if ($megapixel > $megapixelMax) {
 			$quality = $qualityMax;
 		} else if ($megapixel < $megapixelMin) {
 			$quality = $qualityMin;
 		} else {
-			$quality = 
-				(($megapixel - $qualityMin) / ($megapixelMax - $qualityMin)) 
-				* ($qualityMax * 1.0) 
+			$quality =
+				(($megapixel - $qualityMin) / ($megapixelMax - $qualityMin))
+				* ($qualityMax * 1.0)
 				+ 1.0;
-		}	
+		}
 
 		return intval($quality);
 	}
@@ -264,29 +236,29 @@ class ImageMedium extends Medium {
 	}
 /**
  * Normalizes dimensions
- * 
+ *
  * @param int $width
  * @param int $height
  * @param int $set Either "ratio" or "maximum" Maximum replaces sizes execeeding limits with medium's corresponding size
- * @return array An array containing width and height 
+ * @return array An array containing width and height
  */
 	function _normalizeDimensions($width, $height, $set = 'ratio') {
 		if ($width > $this->width()) {
-			$width = null;	
-		} 
+			$width = null;
+		}
 		if ($height > $this->height()) {
 			$height = null;
 		}
-		
+
 		if (is_null($width) && is_null($height)) {
 			$width = $this->width();
 			$height = $this->height();
 		}
-		
+
 		if ($set == 'maximum') {
 			if (empty($width)) {
 				$width = $this->width();
-			} 
+			}
 			if (empty($height)) {
 				$height = $this->height();
 			}
@@ -298,9 +270,9 @@ class ImageMedium extends Medium {
 			if (empty($height)) {
 				$ratio = $width / $this->width();
 				$height = $ratio * $this->height();
-			}			
+			}
 		}
-		
+
 		return array($width, $height);
 	}
 /**
@@ -317,13 +289,13 @@ class ImageMedium extends Medium {
 		} else {
 			$left = ($this->width() - $width) / 2;
 		}
-		
+
 		if ($height > $this->width()) {
 			$top = 0;
 		} else {
-			$top = ($this->height() - $height) / 2;		
+			$top = ($this->height() - $height) / 2;
 		}
-		
+
 		return array($left, $top);
 	}
 }

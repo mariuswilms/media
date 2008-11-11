@@ -1,57 +1,28 @@
 <?php
 /**
  * Medium File
- * 
- * Copyright (c) $CopyrightYear$ David Persson
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE
- * 
- * PHP version $PHPVersion$
- * CakePHP version $CakePHPVersion$
- * 
- * @category   media handling
- * @package    attm
- * @subpackage attm.plugins.media.libs.medium
+ * Copyright (c) 2007-2008 David Persson
+ *
+ * Distributed under the terms of the MIT License.
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * PHP version 5
+ * CakePHP version 1.2
+ *
+ * @package    media
+ * @subpackage media.libs.medium
  * @author     David Persson <davidpersson@qeweurope.org>
- * @copyright  $CopyrightYear$ David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2008 David Persson <davidpersson@qeweurope.org>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @version    SVN: $Id$
- * @version    Release: $Version$
- * @link       http://cakeforge.org/projects/attm The attm Project
- * @since      media plugin 0.50
- * 
- * @modifiedby   $LastChangedBy$
- * @lastmodified $Date$
+ * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.MimeType');
 /**
  * Medium Class
- * 
- * Base class for various medium types 
- * 
- * @category   media handling
- * @package    attm
- * @subpackage attm.plugins.media.libs.medium
- * @author     David Persson <davidpersson@qeweurope.org>
- * @copyright  $CopyrightYear$ David Persson <davidpersson@qeweurope.org>
- * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @link       http://cakeforge.org/projects/attm The attm Project
+ *
+ * @package    media
+ * @subpackage media.libs.medium
  */
 class Medium extends Object {
 /**
@@ -71,19 +42,19 @@ class Medium extends Object {
 /**
  * These Adapters will be tried to be loaded in given order
  * works similiar to helpers or components properterties
- * 
+ *
  * @var array
  * @access public
  */
 	var $adapters = array();
 /**
- * Holds a reference to the 'original' or 'temporary' file of the files property 
+ * Holds a reference to the 'original' or 'temporary' file of the files property
  *
  * @var string
  */
 	var $file;
 /**
- * Related files 
+ * Related files
  *
  * @var array
  */
@@ -102,7 +73,7 @@ class Medium extends Object {
 	var $objects = array();
 /**
  * Related contents (text or binary)
- * The 'raw' key of this property holds - if present - 
+ * The 'raw' key of this property holds - if present -
  * a dump of the complete files contents
  *
  * @var array
@@ -161,8 +132,8 @@ class Medium extends Object {
  *  array of resources
  *  array of objects
  *  array of absolute paths to files
- * 
- * @param mixed $file See description above 
+ *
+ * @param mixed $file See description above
  * @param string $mimeType A valid mime type, provide if autodetection fails upon $file or to save the cost for an extra MimeType::detectType call
  */
 	function __construct($file, $mimeType = null) {
@@ -204,7 +175,7 @@ class Medium extends Object {
  * Destructor
  * Deletes temporary files
  *
- */	
+ */
 	function __destruct() {
 		if (isset($this->files['temporary']) && file_exists($this->files['temporary'])) {
 			unlink($this->files['temporary']);
@@ -220,26 +191,26 @@ class Medium extends Object {
 	}
 /**
  * Factory method
- * 
+ *
  * Takes a file and determines type of medium to use for it
  * Falls back to generic medium
- * 
+ *
  * @param mixed $file See description of the constructor
- * @param string $mimeType Sets the mimeType of the new medium  
+ * @param string $mimeType Sets the mimeType of the new medium
  * @return object
  */
 	static function &factory($file, $mimeType = null) {
 		if ($mimeType === null) {
 			$mimeType = MimeType::guessType($file, array('simplify' => true));
-		}		
+		}
 
 		$name = Medium::name(null, $mimeType);
 		$class = $name . 'Medium';
-		
+
 		if (!class_exists($class)) {
 			App::import('Vendor', 'Media.' . $class, array('file' => 'medium' . DS . strtolower($name) . '.php'));
 		}
-		
+
 		$Object = new $class($file, $mimeType);
 		return $Object;
 	}
@@ -248,7 +219,7 @@ class Medium extends Object {
  *
  * In the case of there are no arguments passed to this method
  * the values of $_mimeTypesToNames are returned
- * 
+ *
  * @param string $file
  * @param string $mimeType
  * @return mixed
@@ -273,7 +244,7 @@ class Medium extends Object {
  *
  * In the case of there are no arguments passed to this method
  * the values of $_nameToShort are returned
- * 
+ *
  * @param string $file
  * @param string $mimeType
  * @return mixed
@@ -281,16 +252,16 @@ class Medium extends Object {
 	static function short($file = null, $mimeType = null) {
 		if ($file === null && $mimeType === null) {
 			return array_values(self::$_namesToShort);
-		}		
+		}
 		return self::$_namesToShort[self::name($file, $mimeType)];
-	}	
+	}
 /**
  * Automatically processes a file and returns a Medium instance
  *
  * Possible values for $instructions:
  * 	array('name of method', 'name of other method')
  *  array('name of method' => array('arg1', 'arg2'))
- *  
+ *
  * @param string $file Absolute path to a file
  * @param array $instructions See description above
  * @return object
@@ -310,12 +281,12 @@ class Medium extends Object {
 					$args = array($value);
 				}
 			}
-			
+
 			if (!method_exists($Medium, $method)) {
 				trigger_error('Medium::make - Invalid instruction ' . get_class($Medium) . '::' . $method . '().', E_USER_WARNING);
 				return false;
 			}
-			
+
 			$result = call_user_func_array(array($Medium, $method), $args);
 
 			if ($result === false) {
@@ -336,7 +307,7 @@ class Medium extends Object {
  */
 	function store($file, $overwrite = false) {
 		$File = new File($file);
-		
+
 		if ($overwrite) {
 			$File->delete();
 		}
@@ -347,7 +318,7 @@ class Medium extends Object {
 
 		$file = $File->Folder->pwd() . DS . $File->name();
 		$correctExtension = MimeType::guessExtension($this->mimeType);
-		
+
 		if ($correctExtension) {
 			$file .= '.' . $correctExtension;
 		} else if (isset($extension)) {
@@ -356,31 +327,31 @@ class Medium extends Object {
 
 		if ($this->Adapters->dispatchMethod($this, 'store', array($file))) {
 			return $file;
-		} 
-		
+		}
+
 		return false;
 	}
 /**
  * Convert
- * 
+ *
  * @param string $mimeType
  * @return bool|object false on error or a Medium object on success
  */
 	function convert($mimeType) {
 		$result = $this->Adapters->dispatchMethod($this, 'convert', array($mimeType));
-		
+
 		if (!$result) {
 			return false;
 		}
-		
+
 		$this->mimeType = $mimeType;
 
 		if (is_a($result, 'Medium')) {
 			return $result;
 		}
-		
+
 		return $this;
-	}	
+	}
 /**
  * Figures out which known ratio is closest to provided one
  *
@@ -398,26 +369,26 @@ class Medium extends Object {
 						'16:9' 		=> 16/9,
 						'1.85:1' 	=> 1.85,
 						'1.96:1' 	=> 1.96,
-						'2.35:1' 	=> 2.35, 
+						'2.35:1' 	=> 2.35,
 						'√2:1' 		=> pow(2, 1/2), 				/* dina4 quer */
 						'1:√2' 		=> 1 / (pow(2, 1/2)), 			/* dina4 hoch */
 						'Φ:1'		=> (1 + pow(5,1/2)) / 2, 		/* goldener schnitt */
 						'1:Φ'		=> 1 / ((1 + pow(5,1/2)) / 2), 	/* goldener schnitt */
 						);
-						
+
 		foreach ($knownRatios as $knownRatioName => &$knownRatio) {
 			$knownRatio = abs(($width / $height) - $knownRatio);
 		}
-		
+
 		asort($knownRatios);
 		return array_shift(array_keys($knownRatios));
 	}
 }
 /**
  * MediumAdapterCollection Class
- * 
+ *
  * Manages instanciation of MediumAdapter and dispatches calls
- * 
+ *
  * @category   media handling
  * @package    attm
  * @subpackage attm.plugins.media.libs.medium
@@ -441,8 +412,8 @@ class MediumAdapterCollection extends Object {
 	var $_initialized = array();
 /**
  * Mapped methods of adapters
- * 
- * Keyed by method name 
+ *
+ * Keyed by method name
  * @var array
  */
 	var $__methods = array();
@@ -486,11 +457,11 @@ class MediumAdapterCollection extends Object {
 			$this->__errors[] = "MediumAdapterCollection::attach() - Adapter $adapter not found!";
 			return false;
 		}
-		
+
 		$this->{$adapter} = new $class();
 		$this->_attached[] = $adapter;
 		return true;
-	}		
+	}
 /**
  * Detaches adapter and does some cleanup
  *
@@ -512,18 +483,18 @@ class MediumAdapterCollection extends Object {
  */
 	function dispatchMethod(&$Medium, $method, $params = array()) {
 		array_unshift($params, $Medium);
-		
+
 		if (isset($this->__methods[$method])) {
 			list($method, $name) = $this->__methods[$method];
 			$this->__messages[] = "MediumCollection::dispatchMethod() - Calling {$name}MediumAdapter::{$method}().";
 			return $this->{$name}->dispatchMethod($method, $params);
 		}
-		
+
 		foreach ($this->_attached as $adapter) {
 			if (!method_exists($this->{$adapter}, $method)) { // optional
 				continue(1);
 			}
-			
+
 			if (!$this->_initialized($adapter)) {
 				if ($this->_initialize($Medium, $adapter)) {
 					$this->__messages[] = "MediumCollection::dispatchMethod() - Initialized {$adapter}MediumAdapter.";
@@ -534,15 +505,15 @@ class MediumAdapterCollection extends Object {
 					continue(1);
 				}
 			}
-			
+
 			if (isset($this->__methods[$method])) {
 				list($method, $name) = $this->__methods[$method];
 				$this->__messages[] = "MediumCollection::dispatchMethod() - Calling {$adapter}MediumAdapter::{$method}().";
 				return $this->{$name}->dispatchMethod($method, $params);
 			}
 		}
-		$this->__errors[] = "MediumCollection::dispatchMethod() - Method {$method} not found in any attached adapter"; 
-	}	
+		$this->__errors[] = "MediumCollection::dispatchMethod() - Method {$method} not found in any attached adapter";
+	}
 /**
  * Checks if $adapter is compatible and initializes it with $Medium
  *
@@ -560,9 +531,9 @@ class MediumAdapterCollection extends Object {
 		if (!$this->{$adapter}->compatible($Medium) || !$this->{$adapter}->initialize($Medium)) {
 			return false;
 		}
-		
+
 		$this->_initialized[] = $adapter;
-		
+
 		return true;
 	}
 /**
@@ -577,9 +548,9 @@ class MediumAdapterCollection extends Object {
 			return in_array($name, $this->_initialized);
 		}
 		return $this->_initialized;
-	}	
+	}
 /**
- * Adds methods of adapter(s) 
+ * Adds methods of adapter(s)
  *
  * @param mixed $name
  * @return void
@@ -590,7 +561,7 @@ class MediumAdapterCollection extends Object {
 				if ($method[0] !== '_') {
 					$this->__methods[$method] = array($method, $adapter);
 				}
-			}	
+			}
 		}
 		$this->__messages[] = "MediumCollection::_overlay() - Regenerated method overlays.";
 	}
@@ -609,13 +580,13 @@ class MediumAdapterCollection extends Object {
  */
 	function errors() {
 		return $this->__errors;
-	}	
+	}
 }
 /**
  * Medium Adapter Class
- * 
+ *
  * Base class for adapters
- * 
+ *
  * @category   media handling
  * @package    attm
  * @subpackage attm.plugins.media.libs.medium.adapter
@@ -633,10 +604,10 @@ class MediumAdapter extends Object {
 	var $require;
 /**
  * Method for checking if the adapter is going to work with the provided $Medium
- * 
+ *
  * Called before the adapter is going to be initialized
  * May be overridden
- * 
+ *
  * @param object $Medium
  * @return boolean
  */
@@ -644,16 +615,16 @@ class MediumAdapter extends Object {
 		$default = array(
 				/* sourceFile must have one out of given mime types */
 				'mimeTypes' => array(),
-				/* PHP extensions which must be loaded */ 
+				/* PHP extensions which must be loaded */
 				'extensions' => array(),
 				/* Functions that must exist */
 				'functions' => array(),
 				/* Files that are required */
 				'imports' => array(),
 				);
-		
+
 		$require = array_merge($default, $this->require);
-				
+
 		if (!empty($require['mimeTypes'])) {
 			foreach ($require['mimeTypes'] as $check) {
 				if($check === $Medium->mimeType) {
@@ -681,20 +652,20 @@ class MediumAdapter extends Object {
 			if (!App::import($import)) {
 				return false;
 			}
-		}	
-		return true;		
-	}	
+		}
+		return true;
+	}
 /**
- * To-be-overridden 
- * 
+ * To-be-overridden
+ *
  * Called after compatible
- * 
+ *
  * @param object $Medium
  * @return boolean
  */
 	function initialize(&$Medium) {
 		return true;
-	}	
+	}
 /**
  * Do system calls
  *
@@ -706,7 +677,7 @@ class MediumAdapter extends Object {
 		if (!$data['command'] = $this->_which($data['command'])) {
 			return false;
 		}
-		
+
 		$line = String::insert($string, $data, array('before' => ':', 'after' => ':', 'clean' => true));
 		exec(escapeshellcmd($line) , $output, $return);
 		return $return !== 0 ? false : (empty($output) ? true : array_pop($output));
@@ -719,11 +690,11 @@ class MediumAdapter extends Object {
  */
 	function _which($command) {
 		static $found = array();
-		
+
 		if (isset($found[$command])) {
 			return $found[$command];
 		}
-		
+
 		if (!ini_get('safe_mode')) {
 			$paths = ini_get('safe_mode_exec_dir');
 		}
@@ -732,21 +703,21 @@ class MediumAdapter extends Object {
 		}
 		$paths = explode(PATH_SEPARATOR, $paths);
 		$paths[] = getcwd();
-		
+
 		$os = env('OS');
 		$windows = !empty($os) && strpos($os, 'Windows') !== false;
-		
+
 		if (!$windows) {
 			exec('which ' . $command, $output, $return);
-			
+
 			if ($return == 0) {
-				return $found[$command] = current($output); 
+				return $found[$command] = current($output);
 			}
 		}
-		
+
 		if ($windows) {
 			if($extensions = env('PATHEXT')) {
-				$extensions = explode(PATH_SEPARATOR, $extensions); 
+				$extensions = explode(PATH_SEPARATOR, $extensions);
 			} else {
 				$extensions = array('exe', 'bat', 'cmd', 'com');
 			}
@@ -756,11 +727,11 @@ class MediumAdapter extends Object {
 		foreach ($paths as $path) {
 			foreach($extensions as $extension) {
 				$file = $path . DS . $command;
-				
+
 				if (!empty($extension)) {
 					$file .= '.' . $extension;
 				}
-				
+
 				if (is_file($file)) {
 					return $found[$command] = $file;
 				}
@@ -772,7 +743,7 @@ class MediumAdapter extends Object {
 /**
  * Enter description here...
  *
- * @deprecated 
+ * @deprecated
  */
 class CakeMedium extends Medium {
 	function __construct($file, $mimeType = null) {

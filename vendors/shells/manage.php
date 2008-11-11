@@ -1,56 +1,40 @@
 <?php
 /**
- * ManageShell file
- * 
- * Copyright (c) $CopyrightYear$ David Persson
+ * Manage Shell File
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- * @author 			David Persson <davidpersson at qeweurope dot org>
- * @copyright 		David Persson <davidpersson at qeweurope dot org>
- * @link			http://cakeforge.org/projects/attm Attm Project
- * @package 		media
- * @subpackage  	media.shells
- * @since			media plugin 0.50
- * @version			$Revision$
- * @modifiedby		$LastChangedBy$
- * @lastmodified	$Date$
- * @license 		http://www.opensource.org/licenses/mit-license.php The MIT License
+ * Copyright (c) 2007-2008 David Persson
+ *
+ * Distributed under the terms of the MIT License.
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * PHP version 5
+ * CakePHP version 1.2
+ *
+ * @package    media
+ * @subpackage media.shells
+ * @author     David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2008 David Persson <davidpersson@qeweurope.org>
+ * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @link       http://github.com/davidpersson/media
  */
 App::import('Core',array('Folder'));
 App::import('Core','ConnectionManager');
 require_once(APP.'plugins'.DS.'media'.DS.'config'.DS.'core.php');
 Configure::write('Cache.disable', true);
 /**
- * ManageShell
- * 
- * @package 		media
- * @subpackage  	media.shells
+ * Manage Shell Class
+ *
+ * @package    media
+ * @subpackage media.shells
  */
 class ManageShell extends Shell {
 	var $tasks = array('Sync','Make');
 	var $verbose = false;
 	var $quiet = false;
-	
+
 	/**
 	 * Width of shell in number of characters per line
-	 * 
+	 *
 	 * @var int
 	 */
 	var $width = 80;
@@ -67,7 +51,7 @@ class ManageShell extends Shell {
 		if (isset($this->params['quiet'])) {
 			$this->quiet = true;
 		}
-		
+
 		$this->out('[S]ynchronize');
 		$this->out('[M]ake');
 		// $this->out('[C]lear');
@@ -80,15 +64,15 @@ class ManageShell extends Shell {
 				break;
 			case 'M':
 				$this->Make->execute();
-				break;				
+				break;
 			case 'H':
 				$this->help();
-				break;				
+				break;
 			case 'Q':
 				exit(0);
 				break;
 		}
-		
+
 		$this->main();
 	}
 
@@ -113,10 +97,10 @@ class ManageShell extends Shell {
 		$this->out('');
 		$this->out('Args:');
 		$this->out("\t<model> Name of the Model to use.");
-		
+
 		$this->out("");
-		
-	}	
+
+	}
 
 	/**
 	 * Outputs to the stdout filehandle.
@@ -131,11 +115,11 @@ class ManageShell extends Shell {
 		}
 		$this->Dispatch->stdout($string, $newline);
 	}
-	
+
 	function clear() {
 		$this->out(chr(27).'[H'.chr(27).'[2J');
 	}
-	
+
 	function _stop($status = 0) {
 		if($status === 0) {
 			$this->out(__('Quitting.', true));
@@ -143,8 +127,8 @@ class ManageShell extends Shell {
 			$this->out(__('Aborting.', true));
 		}
 		parent::_stop($status);
-	}	
-	
+	}
+
 	/**
 	 * Returns a string padded to specified width
 	 *
@@ -156,8 +140,8 @@ class ManageShell extends Shell {
 	 */
 	function pad($string, $width, $character = ' ', $type = STR_PAD_RIGHT) {
 		return str_pad($string, $width, $character, $type);
-	}	
-	
+	}
+
 	function heading($string, $width = null, $character = '=') {
 		if(is_string($width)) {
 			$character = $width;
@@ -169,21 +153,21 @@ class ManageShell extends Shell {
 		$this->out($this->pad($string.' ', $width, $character));
 		$this->out();
 	}
-	
+
 	function hr($character = '-', $width = null) {
 		if($width === null) {
 			$width = $this->width;
 		}
 		$this->out(str_repeat($character, $width));
-	}	
-	
+	}
+
 	function info($message) {
 		if(!$this->verbose) {
 			return null;
 		}
 		$this->out(sprintf(__('Notice: %s', true), $message), true);
 	}
-	
+
 	/**
 	 * @link /usr/lib/portage/bin/isolated-functions.sh
 	 */
@@ -191,18 +175,18 @@ class ManageShell extends Shell {
 		/* Until Dispatcher does not prepend Error: */
 		fwrite($this->Dispatch->stderr, sprintf(__('Warning: %s', true), $message)."\n");
 	}
-	
+
 	function err($message)
 	{
 		/* Until Dispatcher does not prepend Error: */
 		fwrite($this->Dispatch->stderr, sprintf(__('Error: %s', true), $message)."\n");
 		$this->_stop(1);
-	}	
-	
+	}
+
 	function begin($message) {
 		$this->out(sprintf('%s ... ', $message), false);
 	}
-	
+
 	function end($result = null) {
 		if($result == true) {
 			$message =  __('ok', true);
@@ -213,13 +197,13 @@ class ManageShell extends Shell {
 		}
 		$this->out(sprintf('%s', $message));
 		return $result;
-	}	
-	
+	}
+
 	function progress($value, $text = null) {
 		static $target = 0;
 		static $lastValue;
 		static $eraseWidth;
-		
+
 		if($this->quiet) {
 			return null;
 		}
@@ -232,7 +216,7 @@ class ManageShell extends Shell {
 			echo "\x1b[s";
 			$target = $text;
 		} else if ($value === false) {
-			echo "\n"; 
+			echo "\n";
 		} else {
 			echo "\x1b[u";
 			if ($value === null) {
@@ -246,6 +230,6 @@ class ManageShell extends Shell {
 			echo "\x1b[u";
 		}
 	}
-	
+
 }
 ?>

@@ -1,58 +1,29 @@
 <?php
 /**
  * Media Behavior File
- * 
- * Copyright (c) $CopyrightYear$ David Persson
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE
- * 
- * PHP version $PHPVersion$
- * CakePHP version $CakePHPVersion$
- * 
- * @category   media handling
- * @package    attm
- * @subpackage attm.plugins.media.models.behaviors
+ * Copyright (c) 2007-2008 David Persson
+ *
+ * Distributed under the terms of the MIT License.
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * PHP version 5
+ * CakePHP version 1.2
+ *
+ * @package    media
+ * @subpackage media.models.behaviors
  * @author     David Persson <davidpersson@qeweurope.org>
- * @copyright  $CopyrightYear$ David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2008 David Persson <davidpersson@qeweurope.org>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @version    SVN: $Id$
- * @version    Release: $Version$
- * @link       http://cakeforge.org/projects/attm The attm Project
- * @since      media plugin 0.50
- * 
- * @modifiedby   $LastChangedBy$
- * @lastmodified $Date$
+ * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.MimeType');
 App::import('Vendor', 'Media.Medium');
 /**
  * Media Behavior Class
- * 
- * Handles various kinds of media
  *
- * @category   media handling
- * @package    attm
- * @subpackage attm.plugins.media.models.behaviors
- * @author     David Persson <davidpersson@qeweurope.org>
- * @copyright  $CopyrightYear$ David Persson <davidpersson@qeweurope.org>
- * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @link       http://cakeforge.org/projects/attm The attm Project
+ * @package    media
+ * @subpackage media.models.behaviors
  */
 class MediaBehavior extends ModelBehavior {
 /**
@@ -63,20 +34,20 @@ class MediaBehavior extends ModelBehavior {
 	var $settings = array();
 /**
  * Default settings
- * 
+ *
  * createDirectory
  * 	false - Fail on missing directories
- * 	true  - Recursively create missing directories 
+ * 	true  - Recursively create missing directories
  * makeVersions
  * 	false - Disable version generation
- * 	true  - Creates versions (configured in plugin's core.php) of files on create 
+ * 	true  - Creates versions (configured in plugin's core.php) of files on create
  * metadataLevel
  * 	0 - (disabled) No retrieval of additional metadata
  *  1 - (basic) Adds mime_type and size fields
  *  2 - (detailed) Adds Multiple fields dependent on the type of the file e.g. artist, title
  * base
  * 	Needs trailing slash (You shouldn't need to change this, markers are NOT supported)
- *  
+ *
  * @var array
  */
 	var $_defaultSettings = array(
@@ -91,7 +62,7 @@ class MediaBehavior extends ModelBehavior {
  * @param object $model
  * @param array $config See defaultSettings for configuration options
  * @return void
- */	
+ */
 	function setup(&$model, $config = null) {
 		if (!is_array($config)) {
 			$this->settings[$model->alias] = $this->_defaultSettings;
@@ -124,7 +95,7 @@ class MediaBehavior extends ModelBehavior {
 			/* Clear all data if we are going to create a record and the file field is missing */
 			if (!isset($model->data[$model->alias]['file'])) {
 				unset($model->data[$model->alias]);
-				return true;				
+				return true;
 			}
 		} else {
 			/* Handle deletion request */
@@ -138,7 +109,7 @@ class MediaBehavior extends ModelBehavior {
 		/* Ensure that no bad fields sneaked into the to-be-saved data */
 		$blacklist = array('dirname', 'basename', 'checksum', 'delete');
 		$whitelist = array('id', 'file', 'model', 'foreign_key', 'created', 'modified', 'alternative');
-		
+
 		foreach ($model->data[$model->alias] as $key => $value) {
 			if (in_array($key, $whitelist)) {
 				continue(1);
@@ -147,9 +118,9 @@ class MediaBehavior extends ModelBehavior {
 				unset($model->data[$model->alias][$key]);
 			}
 		}
-		
+
 		extract($this->settings[$model->alias]);
-		
+
 		if (isset($model->data[$model->alias]['file'])) {
 			$File = new File($model->data[$model->alias]['file']);
 			unset($model->data[$model->alias]['file']);
@@ -166,10 +137,10 @@ class MediaBehavior extends ModelBehavior {
 						'dirname'  => $dirname,
 						'basename' => $File->name,
 					);
-		
+
 			$model->data[$model->alias] = array_merge($model->data[$model->alias],$result);
-		} 
-		
+		}
+
 		return true;
 	}
 /**
@@ -181,9 +152,9 @@ class MediaBehavior extends ModelBehavior {
  */
 	function afterSave($model, $created) {
 		extract($this->settings[$model->alias]);
-		
+
 		if (!$created || !$makeVersions) {
-			return true; 
+			return true;
 		}
 		if (!isset($model->data[$model->alias]['dirname']) || !isset($model->data[$model->alias]['basename'])) {
 			return true; /* Do not fail */
@@ -193,7 +164,7 @@ class MediaBehavior extends ModelBehavior {
 	}
 /**
  * Adds metadata of each medium to results
- * 
+ *
  * @param object $model
  * @param array $results
  * @param bool $primary
@@ -203,37 +174,37 @@ class MediaBehavior extends ModelBehavior {
 		if (empty($results)) {
 			return $results;
 		}
-		
+
 		extract($this->settings[$model->alias]);
-		
+
 		foreach ($results as $key => &$result) {
 			if (!isset($result[$model->alias]['dirname']) || !isset($result[$model->alias]['basename'])) {
 				/* Needed in certain situations like a pre-delete */
 				continue(1);
 			}
-			
+
 			/* Retrieve metadata */
 			$metadata = $this->metadata(
-										$model, 
-										$result[$model->alias]['dirname'] 
-										.DS . $result[$model->alias]['basename'], 
+										$model,
+										$result[$model->alias]['dirname']
+										.DS . $result[$model->alias]['basename'],
 										$metadataLevel
 									   );
-		
+
 			if ($metadata === false) {
 				/*
 				 * metadata() returns false on nonexistent/nonreadable files
 				 * this means that this record is inconsistent
 				 */
 				unset($results[$key]);
-				continue(1);				
+				continue(1);
 			}
-			
+
 			$result[$model->alias] = array_merge($result[$model->alias],$metadata);
-		}		
-		
+		}
+
 		return $results;
-	}	
+	}
 /**
  * Deletes file corresponding to record
  *
@@ -243,9 +214,9 @@ class MediaBehavior extends ModelBehavior {
  */
 	function beforeDelete(&$model, $cascade = true) {
 		extract($this->settings[$model->alias]);
-		
+
 		$result = $model->find(
-							'first', 
+							'first',
 							array(
 								'conditions' => array('id' => $model->id),
 								'fields' => array('dirname', 'basename'),
@@ -256,38 +227,38 @@ class MediaBehavior extends ModelBehavior {
 		if (empty($result)) {
 			return false; /* Record did not pass verification? */
 		}
-		
+
 		$File = new File($base
-						 . $result[$model->alias]['dirname'] 
+						 . $result[$model->alias]['dirname']
 						 . DS . $result[$model->alias]['basename']);
-							 		
-						 
+
+
 		$Folder = new Folder($base . 'filter' . DS);
-		list($versions, ) = $Folder->ls(); 
-		
+		list($versions, ) = $Folder->ls();
+
 		foreach ($versions as $version) {
 			$Folder->cd(
-						$base 
+						$base
 						. 'filter'
 						. DS . $version
 						. DS . $result[$model->alias]['dirname'] . DS
 					   );
-					   
+
 			$basenames = $Folder->find($File->name() . '\..*');
-			
+
 			if (count($basenames) > 1) {
 				trigger_error('MediaBehavior::beforeDelete - Ambigious filename ' . $File->name() . ' in ' . $Folder->pwd() . '.', E_USER_NOTICE);
 				continue(1);
 			} else if (!isset($basenames[0])) {
 				continue(1);
 			}
-			
+
 			$FilterFile = new File($Folder->pwd() . $basenames[0]);
 			$FilterFile->delete();
 		}
-		
+
 		$File->delete();
-		return true; /* Always delete record */ 
+		return true; /* Always delete record */
 	}
 /**
  * Parses instruction sets and invokes Medium::make for a file
@@ -298,9 +269,9 @@ class MediaBehavior extends ModelBehavior {
  */
 	function make($model, $file) {
 		extract($this->settings[$model->alias]);
-		
+
 		if (is_file($file)) {
-			$File = new File($file);	
+			$File = new File($file);
 		} else {
 			$File = new File($base . $file);
 		}
@@ -314,23 +285,23 @@ class MediaBehavior extends ModelBehavior {
 				trigger_error('MediaBehavior::make - Failed to make version ' . $version . ' of medium.', E_USER_WARNING);
 				continue(1);
 			}
-			
+
 			/* Create directory */
 			$directory = $base
 						 . 'filter'
 						 . DS . $version
 						 . DS . str_replace(array('\\','/'), DS, dirname($file));
-			
+
 			$Folder = new Folder($directory, $createDirectory);
 
 			if (!$Folder->pwd()) {
 				trigger_error('MediaBehavior::make - Directory \'' . $directory . '\' could not be created or is not writable. Please check your permissions.', E_USER_WARNING);
 				continue(1);
 			}
-			
+
 			$Medium->store($Folder->pwd(). DS . basename($file));
 		}
-		
+
 		return true;
 	}
 /**
@@ -340,20 +311,20 @@ class MediaBehavior extends ModelBehavior {
  * @param string $file Path to a file relative to MEDIA or an absolute path to a file
  * @param int $level level of amount of info to add, 0 disable, 1 for basic, 2 for detailed info
  * @return mixed Array with results or false if file is not readable
- */	
+ */
 	function metadata($model, $file, $level = 1) {
 		if ($level < 1) {
 			return array();
 		}
-		
+
 		extract($this->settings[$model->alias]);
-		
+
 		if (is_file($file)) {
-			$File = new File($file);	
+			$File = new File($file);
 		} else {
 			$File = new File($base . $file);
 		}
-				
+
 		if(!$File->exists() || !$File->readable()) {
 			return false;
 		}
@@ -362,13 +333,13 @@ class MediaBehavior extends ModelBehavior {
 						'size'     => $File->size(),
 						'mime_type' =>  MimeType::guessType($File->pwd()),
 					  );
-		
+
 		if ($level < 2) {
 			return Set::filter($basic); /* return basic info */
 		}
-		
+
 		$Medium = Medium::factory($File->pwd());
-		
+
 		if ($Medium->name === 'Audio') {
 			$detailed = array(
 							  'artist'        => $Medium->artist(),
@@ -426,6 +397,6 @@ class MediaBehavior extends ModelBehavior {
 			return true;
 		}
 		return false;
-	}	
+	}
 }
 ?>
