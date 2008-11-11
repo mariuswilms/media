@@ -1,4 +1,29 @@
- Media Plugin For CakePHP
- ========================
 
- A plugin enabling you to transfer and manipulate media files.
+  xx xx   xxxx  xxx  x   xxx
+  x x x  x x    x  x x  x x x
+  x   x   xxxx  xxx  x  x   x
+  Plugin for CakePHP
+
+  Authors
+  -------
+  See the AUTHORS file.
+
+  Copyright & License
+  -------------------
+  Media Plugin for CakePHP is Copyright (c) 2007-2008 David Persson.
+  The code is distributed under the terms of the MIT License.
+  For the full license text see the LICENSE file.
+
+  Download
+  --------
+  Tar: http://github.com/davidpersson/media/tarball/master
+  Zip: http://github.com/davidpersson/media/zipball/master
+
+  Installation
+  ------------
+  Extract the downloaded archive.
+  Move or copy the extracted directory davidpersson-media-[hash]
+  to /path/to/your/app/plugins/media
+
+  For more information please visit the media wiki at
+  http://github.com/davidpersson/media/wikis
