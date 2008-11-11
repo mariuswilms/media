@@ -209,15 +209,9 @@ class MimeType extends Object {
 
 			if (!isset($db)) {
 				$commonFiles = array(
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.freedesktop.db',
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.apache.db',
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.mime',
-					APP . 'plugins' . 'vendors' . DS . 'magic.freedesktop.db',
-					APP . 'plugins' . 'vendors' . DS . 'magic.apache.db',
-					APP . 'plugins' . 'vendors' . DS . 'magic.mime',
-					VENDORS . 'magic.freedesktop.db',
-					VENDORS . 'magic.apache.db',
-					VENDORS . 'magic.mime',
+					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.db',
+					APP . 'plugins' . 'vendors' . DS . 'magic.db',
+					VENDORS . 'magic.db',
 					);
 
 				foreach($commonFiles as $commonFile) {
@@ -257,15 +251,9 @@ class MimeType extends Object {
 
 			if (!isset($db)) {
 				$commonFiles = array(
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.freedesktop.db',
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.apache.db',
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'mime.types',
-					APP . 'vendors' . DS . 'glob.freedesktop.db',
-					APP . 'vendors' . DS . 'glob.apache.db',
-					APP . 'vendors' . DS . 'mime.types',
-					VENDORS . 'glob.freedesktop.db',
-					VENDORS . 'glob.apache.db',
-					VENDORS . 'mime.types',
+					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.db',
+					APP . 'vendors' . DS . 'glob.db',
+					VENDORS . 'glob.db',
 				);
 
 				foreach($commonFiles as $commonFile) {
