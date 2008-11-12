@@ -469,9 +469,9 @@ class MediumAdapterCollection extends Object {
  */
 	function detach($name) {
 		$this->_attached = array_diff($this->_attached, (array)$name);
-		$this->_initialized = array_diff($this->_initalized, (array)$name);
+		$this->_initialized = array_diff($this->_initialized, (array)$name);
 		$this->_overlay($this->_initialized);
-		$this->__messages[] = "MediumCollection::detach() - Removed {$adapter}MediumAdapter.";
+		$this->__messages[] = "MediumCollection::detach() - Removed {$name}MediumAdapter.";
 	}
 /**
  * Calls a method of an adapter providing it

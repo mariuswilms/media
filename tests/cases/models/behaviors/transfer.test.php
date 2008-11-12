@@ -19,6 +19,9 @@
  */
 require_once CORE_TEST_CASES.DS.'libs'.DS.'model'.DS.'models.php';
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+if (!defined('MEDIA')) {
+	define('MEDIA', TMP . 'media' . DS);
+}
 /**
  * Transfer Behavior Test Case Class
  *
