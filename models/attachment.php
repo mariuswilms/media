@@ -107,16 +107,15 @@ class Attachment extends MediaAppModel {
 						  		false,
 								'*'
 							  ),
-						   ),
-	   			   ), /* END of validations for file field */
-
+						),
+		), /* END of validations for file field */
 	 	'alternative' => array(
 				   /* @see MediaBehavior::checkRepresent */
 				   'rule' 	    => 'checkRepresent',
             	   'on' 	    => 'create',
             	   'required'   => false,
 	   			   'allowEmpty' => true,
-					 	 ),
-				     ); /* END of validation var */
+			 	   ),
+     ); /* END of validation var */
 }
 ?>

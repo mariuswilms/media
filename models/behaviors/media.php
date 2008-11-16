@@ -80,8 +80,6 @@ class MediaBehavior extends ModelBehavior {
 			if (!empty($fields)) {
 				trigger_error('MediaBehavior::setup - The model \'' . $model->name . '\' lacks the ' . implode(', ', $fields) . 'field(s).', E_USER_WARNING);
 			}
-		} else {
-			trigger_error('MediaBehavior::setup - Cannot be used with tableless model \'' . $model->name . '\'.', E_USER_WARNING);
 		}
 	}
 /**

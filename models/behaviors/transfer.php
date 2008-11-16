@@ -675,7 +675,7 @@ class TransferBehavior extends ModelBehavior {
 							array(
 								'file' => $resource,
 								'host' => 'localhost',
-								'mimeType' => MimeType::guessType($resource, array('simplify' => true)),
+								'mimeType' => MimeType::guessType($resource),
 								)
 							);
 
@@ -711,7 +711,7 @@ class TransferBehavior extends ModelBehavior {
 								'file'       => $resource['name'],
 								'host'       => env('REMOTE_ADDR'),
 								'size'       => $resource['size'],
-								'mimeType'   => $trustClient ? MimeType::simplify($resource['type']) : null,
+								'mimeType'   => $trustClient ? $resource['type'] : null,
 								'permission' => '0004',
 								'type'       => 'file-upload-remote',
 								)
