@@ -232,6 +232,7 @@ class TransferBehavior extends ModelBehavior {
 		$this->_addMarker($model, 'MEDIA', MEDIA);
 
 		$this->_addMarker($model, 'uuid', String::uuid());
+		$this->_addMarker($model, 'unixTimestamp', time());
 		$this->_addMarker($model, 'year', date('Y'));
 		$this->_addMarker($model, 'month', date('m'));
 		$this->_addMarker($model, 'day', date('d'));
