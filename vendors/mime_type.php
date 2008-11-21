@@ -106,7 +106,6 @@ class MimeType extends Object {
  */
 	function guessType($file, $options = array()) {
 		$_this =& MimeType::getInstance();
-		$File =& new File($file);
 
 		if (is_bool($options)) {
 			$options = array('looseProperties' => $options, 'looseExperimental' => $options);
@@ -128,13 +127,15 @@ class MimeType extends Object {
 			}
 		}
 		if (is_a($_this->magic, 'finfo')) {
-	    	$magicMatch = array($_this->magic->file($File->pwd()));
+	    	$magicMatch = array($_this->magic->file($file));
 		} else if ($_this->magic === 'mime_magic') {
-			$magicMatch = array(mime_content_type($File->pwd()));
+			$magicMatch = array(mime_content_type($file));
 		} else if (is_a($_this->magic, 'MimeMagic')) {
-			$magicMatch = $_this->magic->analyze($File->pwd() /*, array('minPriority' => 80) */);
+			$magicMatch = $_this->magic->analyze($file /*, array('minPriority' => 80) */);
 		}
 		if (empty($magicMatch)) {
+			$File =& new File($file);
+
 			if ($File->readable()) {
 				if (preg_match('/[\t\n\r]+/', $File->read(32))) {
 					return 'text/plain';
