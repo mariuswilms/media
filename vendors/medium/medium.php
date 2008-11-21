@@ -621,6 +621,8 @@ class MediumAdapter extends Object {
 				'functions' => array(),
 				/* Files that are required */
 				'imports' => array(),
+				/* System commands which must be whichable */
+				'commands' => array(),
 				);
 
 		$require = array_merge($default, $this->require);
