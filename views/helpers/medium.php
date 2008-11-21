@@ -339,12 +339,12 @@ class MediumHelper extends AppHelper {
 
 			case 'audio/x-wav':
 			case 'audio/mpeg':
-			case 'audio/ogg': // better: application/ogg?
+			case 'audio/ogg': // better?: application/ogg
 			case 'audio/x-midi':
 				$attributes = array(
 								'type' => $mimeType,
-								'width' => 200, // assuming this is the audio player default size
-								'height' => 25, // increase size if necessary
+								'width' => $width,
+								'height' => $height,
 								'data' => $url,
 								);
 				$parameters = array(
