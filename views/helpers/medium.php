@@ -123,6 +123,9 @@ class MediumHelper extends AppHelper {
 		if (is_array($url) || strpos($url, '://') !== false) {
 			return parent::url($url, $full);
 		}
+		if ($full) {
+			return FULL_BASE_URL . $this->webroot($url);
+		}
 		return $this->webroot($url);
 	}
 /**

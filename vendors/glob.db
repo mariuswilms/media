@@ -234,7 +234,6 @@ chemical/x-mdl-rdfile				rd
 chemical/x-mdl-rxnfile				rxn
 chemical/x-mdl-sdfile				sd sdf
 chemical/x-mdl-tgf				tgf
-#chemical/x-mif					mif
 chemical/x-mmcif				mcif
 chemical/x-mol2					mol2
 chemical/x-molconn-Z				b
@@ -305,6 +304,7 @@ text/vnd.sun.j2me.app-descriptor		jad
 text/vnd.wap.wml				wml
 text/vnd.wap.wmlscript				wmls
 text/x-bibtex					bib
+text/x-cake-template		ctp thtml
 text/x-c++hdr					h++ hpp hxx hh
 text/x-c++src					c++ cpp cxx cc
 text/x-chdr					h
@@ -317,6 +317,7 @@ text/x-moc					moc
 text/x-pascal					p pas
 text/x-pcs-gcd					gcd
 text/x-perl					pl pm
+text/x-php					php php3 php4 php5
 text/x-python					py
 text/x-setext					etx
 text/x-sh					sh

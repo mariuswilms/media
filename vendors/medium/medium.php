@@ -626,12 +626,9 @@ class MediumAdapter extends Object {
 		$require = array_merge($default, $this->require);
 
 		if (!empty($require['mimeTypes'])) {
-			foreach ($require['mimeTypes'] as $check) {
-				if($check === $Medium->mimeType) {
-					return true;
-				}
+			if (!in_array($Medium->mimeType, $require['mimeTypes'])) {
+				return false;
 			}
-			return false;
 		}
 		foreach ($require['extensions'] as $check) {
 			if (!extension_loaded($check)) {
