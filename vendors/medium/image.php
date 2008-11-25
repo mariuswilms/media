@@ -188,6 +188,24 @@ class ImageMedium extends Medium {
 		return $this->Adapters->dispatchMethod($this, 'height');
 	}
 /**
+ * Selects compression type and filters than compresses the medium
+ * according to provided value
+ *
+ * Compressing may result in lossy quality for e.g. jpeg but
+ * not for png images. The decimal place denotes the type of filter
+ * used and the number as a whole the (rounded) compression value.
+ *
+ * @param float $value Zero for no compression at all or a value between 0 and 9.9999999 (highest compression); defaults to 1.5
+ * @return bool
+ */
+	function compress($value = 1.5) {
+		if ($value < 0 || $value >= 10) {
+			return false;
+		}
+		return $this->Adapters->dispatchMethod($this, 'compress', array(floatval($value)));
+	}
+
+/**
  * Determines the quality of the medium by
  * taking amount of megapixels into account
  *

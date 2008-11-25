@@ -60,28 +60,7 @@ class ImagickMediumAdapter extends MediumAdapter {
 								'image/psd' => 'psd',
 						);
 
-	/**
-	 * Blur Factor
-	 *
-	 * @var integer Where < 1 is sharp and > 1 is unsharp
-	 */
-	var $_blurFactor = 1;
-
-	/**
-	 * Filter
-	 *
-	 * The Lanczos filter is timewise in the middle of the field
-	 * and has very good results
-	 *
-	 * @link http://de3.php.net/manual/en/imagick.constants.php#imagick.constants.filters
-	 * @link http://www.dylanbeattie.net/magick/filters/result.html
-	 * @var integer
-	 */
-	var $_filter = null;
-
 	function initialize(&$Medium) {
-		$this->_filter = Imagick::FILTER_LANCZOS; // make sure imagick is available before using
-
 		if (isset($Medium->objects['Imagick'])) {
 			return true;
 		}
@@ -135,6 +114,28 @@ class ImagickMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
+	// TODO
+	function compress(&$Medium, $value) {
+		switch ($Medium->mimeType) {
+			case 'image/png':
+				$type = Imagick::COMPRESSION_ZIP;
+				$value = intval($value);
+				break;
+			case 'image/jpeg':
+				$type = Imagick::COMPRESSION_JPEG;
+				$value = intval(100 - ($value * 10));
+				break;
+			default:
+				return true;
+		}
+		try {
+			return $Medium->objects['Imagick']->setCompression($type)
+			       && $Medium->objects['Imagick']->setCompressionQuality($value);
+		} catch (Exception $E) {
+			return false;
+		}
+	}
+
 	function crop(&$Medium, $left, $top, $width, $height) {
 		$left   = intval($left);
 		$top    = intval($top);
@@ -153,7 +154,7 @@ class ImagickMediumAdapter extends MediumAdapter {
 		$height = intval($height);
 
 		try {
-			return $Medium->objects['Imagick']->resizeImage($width, $height, $this->_filter, $this->_blurFactor);
+			return $Medium->objects['Imagick']->resizeImage($width, $height);
 		} catch (Exception $E) {
 			return false;
 		}

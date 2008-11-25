@@ -38,30 +38,9 @@ class GdMediumAdapter extends MediumAdapter {
 						'image/xbm' => 'xbm',
 						);
 	var $_format;
-/**
- * Enter description here...
- *
- * @var integer A value between 1-100 where 1 is highest compression
- */
-	var $_jpegQuality = null;
-/**
- * The compression level used for PNGs
- *
- * Defaults to 0 because a higher value causes
- * errors in some environments
- *
- * @var integer A value between 0-9 where 9 is highest compression
- */
-	var $_pngCompression = null;
-/**
- * Enter description here...
- *
- * PNG_NO_FILTER or PNG_ALL_FILTERS
- * PNG_FILTER_NONE, PNG_FILTER_SUB, PNG_FILTER_UP, PNG_FILTER_AVG, PNG_FILTER_PAETH
- *
- * @var unknown_type
- */
-	var $_pngFilters = null;
+	var $_pngFilter;
+	var $_pngCompression;
+	var $_jpegQuality;
 
 	function compatible(&$Medium) {
 		$types = imageTypes();
@@ -114,24 +93,24 @@ class GdMediumAdapter extends MediumAdapter {
 	}
 
 	function store(&$Medium, $file) {
-		if ($this->_format == 'jpeg') {
-			$args = array($Medium->resources['gd'], $file);
+		$args = array($Medium->resources['gd'], $file);
 
-			if (isset($this->_jpegQuality)) {
-				$args[] = $this->_jpegQuality;
-			}
-		} else if ($this->_format == 'png') {
-			$args = array($Medium->resources['gd'], $file);
-
-			if (isset($this->_pngCompression)) {
-				$args[] = $this->_pngCompression;
-
-				if (isset($this->_pngFilters)) {
-					$args[] = $this->_pngFilters;
+		switch ($this->_format) {
+			case 'jpeg':
+				if (isset($this->_jpegQuality)) {
+					$args[] = $this->_jpegQuality;
 				}
-			}
-		} else {
-			$args = array($Medium->resources['gd'], $file);
+				break;
+
+			case 'png':
+				if (isset($this->_pngCompression)) {
+					$args[] = $this->_pngCompression;
+
+					if (isset($this->_pngFilter)) {
+						$args[] = $this->_pngFilter;
+					}
+				}
+				break;
 		}
 
 		return call_user_func_array('image' . $this->_format, $args);
@@ -142,6 +121,43 @@ class GdMediumAdapter extends MediumAdapter {
 			return $this->_format = $this->_formatMap[$mimeType];
 		}
 		return false;
+	}
+
+	function compress(&$Medium, $value) {
+		switch ($this->_format) {
+			case 'jpeg':
+				$this->_jpegQuality = intval(100 - ($value * 10));
+				break;
+
+			case 'png':
+				if (version_compare(PHP_VERSION, '5.1.2', '>=')) {
+					$this->_pngCompression = intval($value);
+				}
+				if (version_compare(PHP_VERSION, '5.1.3', '>=')) {
+					$filter = ($value * 10) % 10;
+					$map = array(
+						0 => PNG_FILTER_NONE,
+						1 => PNG_FILTER_SUB,
+						2 => PNG_FILTER_UP,
+						3 => PNG_FILTER_AVG,
+						4 => PNG_FILTER_PAETH,
+						);
+
+					if (array_key_exists($filter, $map)) {
+						$this->_pngFilter = $map[$filter];
+					} elseif ($filter == 5) {
+						if (intval($value) <= 5 && imageIsTrueColor($Medium->resources['gd'])) {
+							$this->_pngFilter = PNG_ALL_FILTERS;
+						} else {
+							$this->_pngFilter = PNG_NO_FILTER;
+						}
+					} else {
+						$this->_pngFilter = PNG_ALL_FILTERS;
+					}
+				}
+				break;
+		}
+		return true;
 	}
 
 	function crop(&$Medium, $left, $top, $width, $height) {
