@@ -46,7 +46,6 @@ class MimeTypeTest extends CakeTestCase {
 		$this->assertEqual(MimeType::simplify('text/plain charset=us-ascii'), 'text/plain');
 	}
 
-
 	function testGuessTypeFileinfoShippedGlob() {
 		$this->skipUnless(extension_loaded('fileinfo'), '%s. Fileinfo extension not loaded.');
 
@@ -123,7 +122,6 @@ class MimeTypeTest extends CakeTestCase {
 		$this->assertEqual(MimeType::guessType('file.xhtml'), 'application/xhtml+xml');
 		$this->assertEqual(MimeType::guessType('file.xml'), 'application/xml');
 	}
-
 
 	function testGuessExtension() {
 		MimeType::config('magic');

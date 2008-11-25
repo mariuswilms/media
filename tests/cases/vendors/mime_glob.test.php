@@ -68,8 +68,6 @@ class MimeGlobTest extends CakeTestCase {
 
 		$file = $this->TestData->getFile('glob.freedesktop.snippet.db');
 		$Mime =& new MimeGlob($file);
-
-		$this->assertEqual($Mime->analyze('i-dont-exist.sla'), array());
 	}
 
 	function testApacheAnalyze() {

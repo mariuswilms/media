@@ -83,5 +83,19 @@ class GdMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->mimeType;
 		$this->assertTrue($result, 'image/png');
 	}
+
+	function testCompress() {
+		$Medium = new TestGdImageMedium($this->TestData->getFile('image-jpg.jpg'));
+		$resultCompress = $Medium->compress(1.5);
+		$resultStore = $Medium->store($this->TestData->getFile('test-compress-1.5.jpg'), true);
+		$this->assertTrue($resultCompress);
+		$this->assertTrue(file_exists($resultStore));
+
+		$Medium = new TestGdImageMedium($this->TestData->getFile('image-png.png'));
+		$resultCompress = $Medium->compress(1.5);
+		$resultStore = $Medium->store($this->TestData->getFile('test-compress-1.5.png'), true);
+		$this->assertTrue($resultCompress);
+		$this->assertTrue($resultStore);
+	}
 }
 ?>

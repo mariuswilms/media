@@ -94,6 +94,20 @@ class ImagickShellMediumAdapterTest extends CakeTestCase {
 		$this->assertTrue($result, 'image/png');
 	}
 
+	function testCompress() {
+		$Medium = new TestImagickShellImageMedium($this->TestData->getFile('image-jpg.jpg'));
+		$resultCompress = $Medium->compress(1.5);
+		$resultStore = $Medium->store($this->TestData->getFile('test-compress-1.5.jpg'), true);
+		$this->assertTrue($resultCompress);
+		$this->assertTrue($resultStore);
+
+		$Medium = new TestImagickShellImageMedium($this->TestData->getFile('image-png.png'));
+		$resultCompress = $Medium->compress(1.5);
+		$resultStore = $Medium->store($this->TestData->getFile('test-compress-1.5.png'), true);
+		$this->assertTrue($resultCompress);
+		$this->assertTrue($resultStore);
+	}
+
 	function testTransitions() {
 		$Medium = new DocumentMedium($this->TestData->getFile('application-pdf.pdf'));
 		$Medium->Adapters->detach(array_diff($Medium->adapters, array('ImagickShell')));

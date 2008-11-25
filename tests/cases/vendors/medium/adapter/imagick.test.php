@@ -99,5 +99,19 @@ class ImagickMediumAdapterTest extends CakeTestCase {
 		$this->assertEqual(MimeType::guessType($tmpFile), 'image/png');
 		unlink($tmpFile);
 	}
+
+	function testCompress() {
+		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-jpg.jpg'));
+		$resultCompress = $Medium->compress(1.5);
+		$resultStore = $Medium->store($this->TestData->getFile('test-compress-1.5.jpg'), true);
+		$this->assertTrue($resultCompress);
+		$this->assertTrue($resultStore);
+
+		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-png.png'));
+		$resultCompress = $Medium->compress(1.5);
+		$resultStore = $Medium->store($this->TestData->getFile('test-compress-1.5.png'), true);
+		$this->assertTrue($resultCompress);
+		$this->assertTrue($resultStore);
+	}
 }
 ?>
