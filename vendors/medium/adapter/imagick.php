@@ -114,12 +114,15 @@ class ImagickMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	// TODO
 	function compress(&$Medium, $value) {
 		switch ($Medium->mimeType) {
+			case 'image/tiff':
+				$type = Imagick::COMPRESSION_LZW;
+				$value = null;
+				break;
 			case 'image/png':
 				$type = Imagick::COMPRESSION_ZIP;
-				$value = intval($value);
+				$value = intval($value); // FIXME correct ?
 				break;
 			case 'image/jpeg':
 				$type = Imagick::COMPRESSION_JPEG;
@@ -154,7 +157,7 @@ class ImagickMediumAdapter extends MediumAdapter {
 		$height = intval($height);
 
 		try {
-			return $Medium->objects['Imagick']->resizeImage($width, $height);
+			return $Medium->objects['Imagick']->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
 		} catch (Exception $E) {
 			return false;
 		}

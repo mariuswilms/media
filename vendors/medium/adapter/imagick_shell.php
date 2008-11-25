@@ -61,6 +61,9 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 						);
 
 	var $_temporaryFormat = 'png';
+	var $_compressionType;
+	var $_compression;
+	var $_pngFilter;
 
 	function initialize(&$Medium) {
 		if (!isset($Medium->files['temporary'])) {
@@ -81,16 +84,29 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 	}
 
 	function store(&$Medium, $file) {
-		return $this->_execute(':command: :sourceFormat:::source: :format:::destination:',
-								array(
-									  'command'     => 'convert',
-									  'source'      => $Medium->files['temporary'],
-									  'sourceFormat' => $this->_temporaryFormat,
-									  'destination' => $file,
-									  'format'      => $this->_formatMap[$Medium->mimeType],
-									 )
-								 );
+		$args =	array(
+				  'command'      => 'convert',
+				  'source'       => $Medium->files['temporary'],
+				  'sourceFormat' => $this->_temporaryFormat,
+				  'destination'  => $file,
+				  'format'       => $this->_formatMap[$Medium->mimeType],
+				 );
 
+		if (isset($this->_compressionType)) {
+			$args['compress'] = $this->_compressionType;
+		}
+		if (isset($this->_compression)) {
+			if ($this->_compressionType === 'ZIP') {
+				$args['quality'] = $this->_compression * 10 + $this->_pngFilter;
+			} else {
+				$args['quality'] = $this->_compression;
+			}
+		}
+
+		return $this->_execute(':command:'
+								. (isset($args['compress']) ? ' -compress :compress:' : '')
+								. (isset($args['quality']) ? ' -quality :quality:' : '')
+								. ' :sourceFormat:::source: :format:::destination:', $args);
 	}
 
 	function convert(&$Medium, $mimeType) {
@@ -110,6 +126,24 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 			return Medium::factory(array('temporary' => $temporary), $mimeType);
 		}
 
+		return true;
+	}
+
+	function compress(&$Medium, $value) {
+		switch ($Medium->mimeType) {
+			case 'image/tiff':
+				$this->_compressionType = 'LZW';
+				break;
+			case 'image/png':
+				$this->_compressionType = 'ZIP';
+				$this->_compression = intval($value);
+				$this->_pngFilter = ($value * 10) % 10;
+				break;
+			case 'image/jpeg':
+				$this->_compressionType = 'JPEG';
+				$this->_compression = intval(100 - ($value * 10));
+				break;
+		}
 		return true;
 	}
 

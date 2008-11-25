@@ -38,9 +38,8 @@ class GdMediumAdapter extends MediumAdapter {
 						'image/xbm' => 'xbm',
 						);
 	var $_format;
+	var $_compression;
 	var $_pngFilter;
-	var $_pngCompression;
-	var $_jpegQuality;
 
 	function compatible(&$Medium) {
 		$types = imageTypes();
@@ -63,7 +62,6 @@ class GdMediumAdapter extends MediumAdapter {
 	}
 
 	function initialize(&$Medium) {
-		$this->_pngFilters = PNG_ALL_FILTERS;
 		$this->_format = $this->_formatMap[$Medium->mimeType]; // could be a problem here...
 
 		if (isset($Medium->resources['gd'])) {
@@ -95,16 +93,16 @@ class GdMediumAdapter extends MediumAdapter {
 	function store(&$Medium, $file) {
 		$args = array($Medium->resources['gd'], $file);
 
-		switch ($this->_format) {
-			case 'jpeg':
-				if (isset($this->_jpegQuality)) {
-					$args[] = $this->_jpegQuality;
+		switch ($Medium->mimeType) {
+			case 'image/jpeg':
+				if (isset($this->_compression)) {
+					$args[] = $this->_compression;
 				}
 				break;
 
-			case 'png':
-				if (isset($this->_pngCompression)) {
-					$args[] = $this->_pngCompression;
+			case 'image/png':
+				if (isset($this->_compression)) {
+					$args[] = $this->_compression;
 
 					if (isset($this->_pngFilter)) {
 						$args[] = $this->_pngFilter;
@@ -124,14 +122,14 @@ class GdMediumAdapter extends MediumAdapter {
 	}
 
 	function compress(&$Medium, $value) {
-		switch ($this->_format) {
-			case 'jpeg':
-				$this->_jpegQuality = intval(100 - ($value * 10));
+		switch ($Medium->mimeType) {
+			case 'image/jpeg':
+				$this->_compression = intval(100 - ($value * 10));
 				break;
 
-			case 'png':
+			case 'image/png':
 				if (version_compare(PHP_VERSION, '5.1.2', '>=')) {
-					$this->_pngCompression = intval($value);
+					$this->_compression = intval($value);
 				}
 				if (version_compare(PHP_VERSION, '5.1.3', '>=')) {
 					$filter = ($value * 10) % 10;

@@ -312,7 +312,7 @@ class Medium extends Object {
 			$File->delete();
 		}
 		if ($File->exists()) {
-			// trigger_error("Medium::store - File '$file' already exists.", E_USER_NOTICE);
+			trigger_error("Medium::store - File '{$file}' already exists.", E_USER_NOTICE);
 			return false;
 		}
 
@@ -328,7 +328,6 @@ class Medium extends Object {
 		if ($this->Adapters->dispatchMethod($this, 'store', array($file))) {
 			return $file;
 		}
-
 		return false;
 	}
 /**
@@ -676,7 +675,6 @@ class MediumAdapter extends Object {
 		if (!$data['command'] = $this->_which($data['command'])) {
 			return false;
 		}
-
 		$line = String::insert($string, $data, array('before' => ':', 'after' => ':', 'clean' => true));
 		exec(escapeshellcmd($line) , $output, $return);
 		return $return !== 0 ? false : (empty($output) ? true : array_pop($output));
