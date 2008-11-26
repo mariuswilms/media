@@ -27,173 +27,91 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 
  */
 class MimeMagicTest extends CakeTestCase {
 	function setup() {
-		$this->TestData = new MediumTestData();
+		$this->TestData = new TestData();
 	}
 
 	function tearDown() {
 		$this->TestData->flushFiles();
 	}
-/**
- * testLoadmethod
- *
- * @access public
- * @return void
- */
-	function testLoad() {
-		$Mime =& new MimeMagic(true);
-		$this->assertNull($Mime->format);
 
-		$Mime =& new MimeMagic(5);
-		$this->assertNull($Mime->format);
-
-		$Mime =& new MimeMagic(array('foo' => 'bar'));
-		$this->assertNull($Mime->format);
-
-		$Mime =& new MimeMagic('does-not-exist.db');
-		$this->assertNull($Mime->format);
+	function testFormat() {
+		$this->assertNull(MimeMagic::format(true));
+		$this->assertNull(MimeMagic::format(5));
+//		$this->assertNull(MimeMagic::format(array('foo' => 'bar')));
+		$this->assertNull(MimeMagic::format('does-not-exist.db'));
 
 		$file = $this->TestData->getFile('text-html.snippet.html');
-		$Mime =& new MimeMagic($file);
-		$this->assertNull($Mime->format);
+		$this->assertNull(MimeMagic::format($file));
 
 		$file = $this->TestData->getFile('magic.apache.snippet.db');
+		$this->assertEqual(MimeMagic::format($file), 'Apache Module mod_mime_magic');
+
+		$file = $this->TestData->getFile('magic.freedesktop.snippet.db');
+		$this->assertEqual(MimeMagic::format($file), 'Freedesktop Shared MIME-info Database');
+	}
+
+	function testRead() {
+		$fileA = $this->TestData->getFile('magic.apache.snippet.db');
+		$fileB = $this->TestData->getFile('magic.freedesktop.snippet.db');
+
+		$Mime =& new MimeMagic($fileA);
+
+		$Mime =& new MimeMagic($fileB);
+
+		$this->expectError();
+		$Mime =& new MimeMagic(5);
+	}
+
+	function testAnalyzeFail() {
+		$file = $this->TestData->getFile('magic.apache.snippet.db');
 		$Mime =& new MimeMagic($file);
-		$this->assertEqual($Mime->format, 'Apache Module mod_mime_magic');
+
+		$this->assertEqual($Mime->analyze('i-dont-exist.sla'), array());
 
 		$file = $this->TestData->getFile('magic.freedesktop.snippet.db');
 		$Mime =& new MimeMagic($file);
-		$this->assertEqual($Mime->format, 'Freedesktop Shared MIME-info Database');
+
+		$this->assertEqual($Mime->analyze('i-dont-exist.sla'), array());
 	}
-/**
- * MimeMagic::analyze should properly detect the mime type
- *
- * @access public
- * @return void
- */
-	function testApacheFormatAnalyze() {
-		$file = $this->TestData->getFile('magic.apache.snippet.db');
+
+	function testShippedAnalyze() {
+		$file = APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.db';
+		$this->skipUnless(file_exists($file), '%s. No shipped magic db.');
 		$Mime =& new MimeMagic($file);
 
-		$result = $Mime->analyze('i-dont-exist.sla');
-		$this->assertFalse($result);
-
-		$result = $Mime->analyze(WWW_ROOT.'img'.DS.'cake.icon.gif');
-		$this->assertEqual($result, 'image/gif');
-
-		$file = $this->TestData->getFile('image-jpeg.snippet.jpg');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'image/jpeg');
-
-		$file = $this->TestData->getFile('text-html.snippet.html');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'text/html');
-
-		/* Aspects offset 1 to be \213 but offset 1 of the test data is \139 */
-		// $file = $this->TestData->getFile('gzip.snippet.gz');
-		// $result = $Mime->analyze($file);
-		// $this->assertEqual($result, 'application/x-gzip');
-
-		/* Same applies here */
-		// $file = $this->TestData->getFile('tar-gzip.snippet.tar.gz');
-		// $result = $Mime->analyze($file);
-		// $this->assertEqual($result, 'application/x-gzip');
-
-		$file = $this->TestData->getFile('pdf.snippet.pdf');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/pdf');
-
-		/* Magic data seems outdated because this fails */
-		// $file = $this->TestData->getFile('ms-word.snippet.doc');
-		// $result = $Mime->analyze($file);
-		// $this->assertEqual($result, 'application/msword');
-
-		$file = $this->TestData->getFile('text-rtf.snippet.rtf');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/rtf');
-
-		$file = $this->TestData->getFile('mo.snippet.mo');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/octet-stream');
-	}
-/**
- * MimeMagic::analyze should properly detect the mime type
- *
- * @access public
- * @return void
- */
-	function testFreedesktopFormatAnalyze() {
-		$file = VENDORS.'magic.freedesktop.db';
-		$this->skipUnless(file_exists($file));
-		$Mime =& new MimeMagic($file);
-
-		$result = $Mime->analyze('i-dont-exist.sla');
-		$this->assertFalse($result);
-
-		$result = $Mime->analyze(WWW_ROOT.'img'.DS.'cake.icon.gif');
-		$this->assertEqual($result, 'image/gif');
-
-		$file = $this->TestData->getFile('image-jpeg.snippet.jpg');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'image/jpeg');
-
-		$file = $this->TestData->getFile('text-html.snippet.html');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'text/html');
-
-		$file = $this->TestData->getFile('mo.snippet.mo');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/octet-stream');
-
-		/* Reenable if text/x-po is in the standard magic file */
-		// $file = $this->TestData->getFile('po.snippet.po');
-		// $result = $Mime->analyze($file);
-		// $this->assertEqual($result, 'text/x-po');
-
-		/* Reenable if text/x-po is in the standard magic file */
-		// $file = $this->TestData->getFile('text-pot.snippet.pot');
-		// $result = $Mime->analyze($file);
-		// $this->assertEqual($result, 'text/x-po');
-
-		$file = $this->TestData->getFile('gzip.snippet.gz');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/x-gzip');
-
-		$file = $this->TestData->getFile('tar.snippet.tar');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/x-tar');
-
-		$file = $this->TestData->getFile('tar-gzip.snippet.tar.gz');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/x-gzip');
-
-		$file = $this->TestData->getFile('zip.snippet.zip');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/zip');
-
-		$file = $this->TestData->getFile('bzip2.snippet.bz2');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/x-bzip');
-
-		$file = $this->TestData->getFile('pdf.snippet.pdf');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/pdf');
-
-		$file = $this->TestData->getFile('ms-word.snippet.doc');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/x-ole-storage');
-
-		/* Reenable if application/vnd.... is in the standard magic file */
-		// $file = $this->TestData->getFile('ms-word.snippet.docx');
-		// $result = $Mime->analyze($file);
-		// $this->assertEqual($result, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-
-		$file = $this->TestData->getFile('opendocument-writer.snippet.odt');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/vnd.oasis.opendocument.text');
-
-		$file = $this->TestData->getFile('text-rtf.snippet.rtf');
-		$result = $Mime->analyze($file);
-		$this->assertEqual($result, 'application/rtf');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('3gp.snippet.3gp')), 'video/3gpp');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('ms.avi')), 'video/x-msvideo');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('bzip2.snippet.bz2')), 'application/x-bzip');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('video.snippet.mp4')), 'video/mp4');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('css.snippet.css')), 'text/css');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('flac.snippet.flac')), 'audio/x-flac');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('flash.snippet.swf')), 'application/x-shockwave-flash');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('image-gif.gif')), 'image/gif');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('gzip.snippet.gz')), 'application/x-gzip');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('text-html.snippet.html')), 'text/html');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('audio-mpeg.snippet.mp3')), 'audio/mpeg');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('java.snippet.class')), 'application/x-java');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('javascript.snippet.js')), 'application/javascript');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('image-jpeg.snippet.jpg')), 'image/jpeg');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('video-mpeg.snippet.mpeg')), 'video/mpeg');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('audio-ogg.snippet.ogg')), 'application/ogg');
+		$this->assertEqual($Mime->analyze(__FILE__), 'application/x-php');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('application-pdf.pdf')), 'application/pdf');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('image-png.png')), 'image/png');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('postscript.ps')), 'application/postscript');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('po.snippet.po')), 'text/x-gettext-translation');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('text-pot.snippet.pot')), 'text/x-gettext-translation-template');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('mo.snippet.mo')), 'application/x-gettext-translation');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('real-video.snippet.rm')), 'application/vnd.rn-realmedia');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('text-rtf.snippet.rtf')), 'application/rtf');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('text-plain.snippet.txt')), 'text/plain');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('ms-word.snippet.doc')), 'application/msword');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('ms-word.snippet.docx')), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('opendocument-writer.snippet.odt')), 'application/vnd.oasis.opendocument.text');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('tar.snippet.tar')), 'application/x-tar');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('wave.snippet.wav')), 'audio/x-wav');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('text-xhtml.snippet.xhtml')), 'application/xhtml+xml');
+		// $this->assertEqual($Mime->analyze($this->TestData->getFile('xml.snippet.xml')), 'application/xml');
 	}
 }
 ?>

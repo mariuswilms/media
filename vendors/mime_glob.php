@@ -42,16 +42,21 @@ class MimeGlob extends Object {
 		$this->__read($db);
 	}
 /**
- * Enter description here...
+ * Determine the format of given database
  *
- * @param unknown_type $db
+ * @param mixed $db
  * @static
  */
 	function format($db) {
+		if (empty($db)) {
+			return null;
+		}
 		if (is_array($db)) {
 			return 'Array';
 		}
-
+		if (!is_string($db)) {
+			return null;
+		}
 		$File = new File($db);
 
 		if ($File->exists()) {

@@ -60,7 +60,7 @@ class MediumHelperTestCase extends CakeTestCase {
 		$this->TmpFolder->create($this->TmpFolder->pwd().'filter/s/static/img');
 		$this->TmpFolder->create($this->TmpFolder->pwd().'transfer');
 
-		$this->TestData = new MediumTestData();
+		$this->TestData = new TestData();
 		$this->file0 = $this->TestData->getFile(array('image-png.png' => $this->TmpFolder->pwd() . 'static/img/image-png.png'));
 		$this->file1 = $this->TestData->getFile(array('image-png.png' => $this->TmpFolder->pwd() . 'filter/s/static/img/image-png.png'));
 		$this->file2 = $this->TestData->getFile(array('image-png.png' => $this->TmpFolder->pwd() . 'filter/s/static/img/dot.ted.name.png'));

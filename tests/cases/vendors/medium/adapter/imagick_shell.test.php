@@ -47,7 +47,7 @@ class TestImagickShellDocumentMedium extends DocumentMedium {
  */
 class ImagickShellMediumAdapterTest extends CakeTestCase {
 	function setup() {
-		$this->TestData = new MediumTestData();
+		$this->TestData = new TestData();
 	}
 
 	function tearDown() {

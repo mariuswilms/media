@@ -28,7 +28,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtu
  */
 class ImageMediumTest extends CakeTestCase {
 	function setup() {
-		$this->TestData = new MediumTestData();
+		$this->TestData = new TestData();
 	}
 
 	function tearDown() {

@@ -31,14 +31,14 @@ class MimeType extends Object {
  * @var mixed An instance of the MimeMagic or finfo class or a string containing 'mime_magic'
  * @access public
  */
-	var $magic;
+	var $__magic;
 /**
  * Glob
  *
  * @var object An instance of the MimeGlob class
  * @access public
  */
-	var $glob;
+	var $__glob;
 /**
  * Return a singleton instance of MimeType.
  *
@@ -56,6 +56,21 @@ class MimeType extends Object {
 		return $instance[0];
 	}
 /**
+ * Change configuration during runtime
+ *
+ * @param string $property Either "magic" or "glob"
+ * @param array $config Config specifying engine and db e.g. array('engine' => 'fileinfo', 'db' => '/etc/magic')
+ */
+	function config($property = 'magic', $config = array()) {
+		$_this =& MimeType::getInstance();
+
+		if ($property === 'magic') {
+			$_this->__loadMagic($config);
+		} elseif ($property === 'glob') {
+			$_this->__loadGlob($config);
+		}
+	}
+/**
  * Guesses the extension (suffix) for an existing file or a mime type
  *
  * @param string $mimetype A mime type or an absolute path to file
@@ -66,7 +81,10 @@ class MimeType extends Object {
 	function guessExtension($file, $options = array()) {
 		$_this =& MimeType::getInstance();
 		$globMatch = array();
-		$preferred = array('jpg', 'tiff', 'txt', 'css');
+		$preferred = array(
+						'jpg', 'tiff', 'txt', 'css', 'swf', 'doc',
+						'html', 'xhtml', 'mp3', 'mpg', 'ps', 'xml'
+						);
 
 		if (is_file($file)) {
 			$mimeType = $_this->guessType($file);
@@ -74,8 +92,8 @@ class MimeType extends Object {
 			$mimeType = $file;
 		}
 
-		if (is_a($_this->glob, 'MimeGlob')) {
-			$globMatch = $_this->glob->analyze($mimeType, true);
+		if (is_a($_this->__glob, 'MimeGlob')) {
+			$globMatch = $_this->__glob->analyze($mimeType, true);
 		}
 
 		if (count($globMatch) === 1) {
@@ -118,20 +136,20 @@ class MimeType extends Object {
 		$magicMatch = $globMatch = array();
 
 		if (!$paranoid) {
-			if (is_a($_this->glob, 'MimeGlob')) {
-				$globMatch = $_this->glob->analyze($file);
+			if (is_a($_this->__glob, 'MimeGlob')) {
+				$globMatch = $_this->__glob->analyze($file);
 			}
 
 			if (count($globMatch) === 1) {
 				return MimeType::simplify(array_shift($globMatch), $looseProperties, $looseExperimental);
 			}
 		}
-		if (is_a($_this->magic, 'finfo')) {
-	    	$magicMatch = array($_this->magic->file($file));
-		} else if ($_this->magic === 'mime_magic') {
+		if (is_a($_this->__magic, 'finfo')) {
+	    	$magicMatch = array($_this->__magic->file($file));
+		} elseif ($_this->__magic === 'mime_magic') {
 			$magicMatch = array(mime_content_type($file));
-		} else if (is_a($_this->magic, 'MimeMagic')) {
-			$magicMatch = $_this->magic->analyze($file /*, array('minPriority' => 80) */);
+		} elseif (is_a($_this->__magic, 'MimeMagic')) {
+			$magicMatch = $_this->__magic->analyze($file /*, array('minPriority' => 80) */);
 		}
 		if (empty($magicMatch)) {
 			$File =& new File($file);
@@ -195,12 +213,12 @@ class MimeType extends Object {
 
 		if (($engine === 'fileinfo' || $engine === null) && extension_loaded('fileinfo')) {
 			if (isset($db)) {
-				$this->magic =& new finfo(FILEINFO_MIME, $db);
+				$this->__magic =& new finfo(FILEINFO_MIME, $db);
 			} else {
-				$this->magic =& new finfo(FILEINFO_MIME);
+				$this->__magic =& new finfo(FILEINFO_MIME);
 			}
 		} elseif (($engine === 'mime_magic' || $engine === null) && extension_loaded('mime_magic')) {
-			$this->magic = 'mime_magic';
+			$this->__magic = 'mime_magic';
 		} elseif ($engine === 'core' || $engine === null) {
 			App::import('Vendor', 'Media.MimeMagic');
 
@@ -222,13 +240,12 @@ class MimeType extends Object {
 					}
 				}
 			}
-
-			if (!isset($db)) {
-				trigger_error('MimeType::__loadMagic - Could not locate magic database in any of the default locations.', E_USER_WARNING);
-			} else {
-				$this->magic =& new MimeMagic($db);
+			if (isset($db)) {
+				$this->__magic =& new MimeMagic($db);
 				Cache::write('mime_magic_db', $this->magic->toArray());
 			}
+		} else {
+			$this->__magic = null;
 		}
 	}
 /**
@@ -264,13 +281,12 @@ class MimeType extends Object {
 					}
 				}
 			}
-
-			if (!isset($db)) {
-				trigger_error('MimeType::__loadGlob - Could not locate glob database in any of the default locations.', E_USER_WARNING);
-			} else {
-				$this->glob =& new MimeGlob($db);
-				Cache::write('mime_glob_db', $this->glob->toArray());
+			if (isset($db)) {
+				$this->__glob =& new MimeGlob($db);
+				Cache::write('mime_glob_db', $this->__glob->toArray());
 			}
+		} else {
+			$this->__glob = null;
 		}
 	}
 }

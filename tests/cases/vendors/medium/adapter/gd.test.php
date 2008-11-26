@@ -37,7 +37,7 @@ class TestGdImageMedium extends ImageMedium {
  */
 class GdMediumAdapterTest extends CakeTestCase {
 	function setup() {
-		$this->TestData = new MediumTestData();
+		$this->TestData = new TestData();
 	}
 
 	function tearDown() {

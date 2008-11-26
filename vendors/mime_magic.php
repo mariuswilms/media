@@ -38,9 +38,8 @@ class MimeMagic extends Object {
  * @param mixed $file
  * @access private
  */
-	function __construct($file) {
-		parent::__construct();
-		$this->format = $this->__read($file);
+	function __construct($db) {
+		$this->__read($db);
 	}
 /**
  * Analyzes a files contents and determines the file's mime type
@@ -65,6 +64,41 @@ class MimeMagic extends Object {
 		}
 
 		return $this->__test($file, $filtered);
+	}
+/**
+ * Determine the format of given database
+ *
+ * @param mixed $db
+ * @static
+ */
+	function format($db) {
+		if (empty($db)) {
+			return null;
+		}
+		if (is_array($db)) {
+			return 'Array';
+		}
+		if (!is_string($db)) {
+			return null;
+		}
+		$File = new File($db);
+
+		if ($File->exists()) {
+			if ($File->ext() === 'php') {
+				return 'PHP';
+			}
+
+			$File->open('rb');
+			$head = $File->read(4096);
+
+			if (substr($head, 0, 12) === "MIME-Magic\0\n") {
+				return 'Freedesktop Shared MIME-info Database';
+			}
+			if (preg_match('/^(\>*)(\d+)\t+(\S+)\t+([\S^\040]+)\t*([-\w.\+]+\/[-\w.\+]+)*\t*(\S*)$/m', $head)) {
+				return 'Apache Module mod_mime_magic';
+			}
+		}
+		return null;
 	}
 /**
  * Register a magic item
@@ -143,39 +177,24 @@ class MimeMagic extends Object {
  * @link http://httpd.apache.org/docs/2.2/en/mod/mod_mime_magic.html
  * @link http://standards.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-0.13.html
  */
-	function __read($file) {
-		if (!is_string($file) || empty($file)) {
-			return null;
-		}
+	function __read($db) {
+		$format = MimeMagic::format($db);
 
-		if (file_exists(CONFIGS . $file . '.php')) {
-			include(CONFIGS . $file . '.php');
-
-			if (!isset($data)) {
-				return null;
+		if ($format === 'Array') {
+			foreach ($db as $item) {
+				$this->register($item);
 			}
-
+		} elseif ($format === 'PHP') {
+			include $db;
 			foreach ($data as $item) {
 				$this->register($item);
 			}
-			return 'CakePHP';
-		}
+		} elseif ($format === 'Freedesktop Shared MIME-info Database') {
+			$sectionRegex = '^\[(\d{1,3}):([-\w.\+]+\/[-\w.\+]+)\]$';
+			$itemRegex = '^(\d*)\>+(\d+)=+([^&~\+]{2})([^&~\+]+)&?([^~\+]*)~?(\d*)\+?(\d*).*$';
 
-		$File =& new File($file);
-
-		if (!$File->readable()) {
-			return null;
-		}
-
-		$File->open('rb');
-		$head = $File->read(4096);
-
-		$mimeTypeRegex           = '[-\w.\+]+\/[-\w.\+]+';
-		$apacheItemRegex         = '^(\>*)(\d+)\t+(\S+)\t+([\S^\040]+)\t*(' . $mimeTypeRegex . ')*\t*(\S*)$';
-		$freedesktopSectionRegex = '^\[(\d{1,3}):(' . $mimeTypeRegex . ')\]$';
-		$freedesktopItemRegex    = '^(\d*)\>+(\d+)=+([^&~\+]{2})([^&~\+]+)&?([^~\+]*)~?(\d*)\+?(\d*).*$';
-
-		if (substr($head, 0, 12) === "MIME-Magic\0\n") {
+			$File =& new File($db);
+			$File->open('rb');
 			$File->offset(12);
 
 			while (!feof($File->handle)) {
@@ -192,12 +211,12 @@ class MimeMagic extends Object {
 					$chars = array(0 => $chars[1], 1 => $File->read(1));
 				}
 
-				if (preg_match('/' . $freedesktopSectionRegex . '/', $line, $matches)) {
+				if (preg_match('/' . $sectionRegex . '/', $line, $matches)) {
 					$section = array(
 									 'priority'  => $matches[1],
 									 'mime_type' => $matches[2]
 									);
-				} else if (preg_match('/' . $freedesktopItemRegex . '/', $line, $matches)) {
+				} else if (preg_match('/' . $itemRegex . '/', $line, $matches)) {
 					$indent = empty($matches[1]) ? 0 : intval($matches[1]);
 					$wordSize = empty($matches[6]) ? 1 : intval($matches[6]);
 					$item = array(
@@ -211,10 +230,11 @@ class MimeMagic extends Object {
 					$this->register($item, $indent, $section['priority']);
 				}
 			}
-			return 'Freedesktop Shared MIME-info Database';
-		}
-		if (preg_match('/' . $apacheItemRegex . '/m', $head)) {
-			$File->offset(0);
+		} elseif ($format === 'Apache Module mod_mime_magic') {
+			$itemRegex = '^(\>*)(\d+)\t+(\S+)\t+([\S^\040]+)\t*([-\w.\+]+\/[-\w.\+]+)*\t*(\S*)$';
+
+			$File =& new File($db);
+			$File->open('rb');
 
 			while (!feof($File->handle)) {
 				$line = trim(fgets($File->handle));
@@ -224,7 +244,7 @@ class MimeMagic extends Object {
 				}
 
 				$line = preg_replace('/(?!\B)\040+/', "\t", $line);
-				preg_match('/' . $apacheItemRegex . '/', $line, $matches);
+				preg_match('/' . $itemRegex . '/', $line, $matches);
 
 				$item = array(
 						 	  'offset'       => intval($matches[2]),
@@ -237,9 +257,9 @@ class MimeMagic extends Object {
 				$item['value_length'] = strlen($item['value']);
 				$this->register($item, strlen($matches[1]), 80);
 			}
-			return 'Apache Module mod_mime_magic';
+		} else {
+			trigger_error('MimeGlob::read - Unknown db format', E_USER_WARNING);
 		}
-		return null;
 	}
 /**
  * Tests a file's contents against magic items
