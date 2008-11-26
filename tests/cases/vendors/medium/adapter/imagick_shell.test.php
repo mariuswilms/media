@@ -46,13 +46,11 @@ class TestImagickShellDocumentMedium extends DocumentMedium {
  * @subpackage media.tests.cases.libs.medium.adapter
  */
 class ImagickShellMediumAdapterTest extends CakeTestCase {
-	function start() {
-		parent::start();
+	function setup() {
 		$this->TestData = new MediumTestData();
 	}
 
-	function end() {
-		parent::end();
+	function tearDown() {
 		$this->TestData->flushFiles();
 	}
 
@@ -117,13 +115,5 @@ class ImagickShellMediumAdapterTest extends CakeTestCase {
 		$this->assertTrue($Medium->width() <= 10);
 		$this->assertTrue($Medium->height() <= 10);
 	}
-
-	function testMake() {
-		$instructions = array('convert' => 'image/png','zoomCrop' => array(10, 10));
-		$Medium = TestImagickShellImageMedium::make($this->TestData->getFile('image-jpg.jpg'), $instructions);
-		$this->assertIsA($Medium, 'Medium');
-//		$this->showImage($Medium->toString(),'image/jpg');
-	}
-
 }
 ?>

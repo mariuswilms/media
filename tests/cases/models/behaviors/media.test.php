@@ -31,9 +31,10 @@ class MediaBehaviorTestCase extends CakeTestCase {
 
 	function start() {
 		parent::start();
-
 		$this->loadFixtures('Song');
+	}
 
+	function setup() {
 		$this->TmpFolder = new Folder(TMP . 'test_suite' . DS, true);
 		$this->TmpFolder->create($this->TmpFolder->pwd().'static/img');
 		$this->TmpFolder->create($this->TmpFolder->pwd().'static/doc');
@@ -47,8 +48,7 @@ class MediaBehaviorTestCase extends CakeTestCase {
 		$this->file2 = $this->TestData->getFile(array('text-plain.txt' => $this->TmpFolder->pwd() . 'static/txt/text-plain.txt'));
 	}
 
-	function end() {
-		parent::end();
+	function tearDown() {
 		$this->TestData->flushFiles();
 		$this->TmpFolder->delete();
 		ClassRegistry::flush();
@@ -60,7 +60,6 @@ class MediaBehaviorTestCase extends CakeTestCase {
 		$Model->Behaviors->attach('Media.Media');
 
 		$Model =& ClassRegistry::init('TheVoid');
-		$this->expectError();
 		$Model->Behaviors->attach('Media.Media');
 
 		$Model =& ClassRegistry::init('Song');

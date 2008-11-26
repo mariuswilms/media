@@ -26,26 +26,12 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 
  * @subpackage media.tests.cases.libs
  */
 class MimeTypeTest extends CakeTestCase {
-	function start() {
-		parent::start();
-		$this->TestData = new MimeTestData();
+	function setup() {
+		$this->TestData = new MediumTestData();
+	}
 
-//		$this->__cacheDisabled = Configure::read('Cache.disable');
-//		Configure::write('Cache.disable', true);
-	}
-	function end() {
-		parent::end();
-//		Configure::write('Cache.disable', $this->__cacheDisabled);
+	function tearDown() {
 		$this->TestData->flushFiles();
-	}
-/**
- * setUp method
- *
- * @return void
- * @access public
- */
-	function setUp() {
-		parent::setUp();
 	}
 /**
  * method

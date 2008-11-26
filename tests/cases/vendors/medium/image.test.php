@@ -27,13 +27,11 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtu
  * @subpackage media.tests.cases.libs.medium
  */
 class ImageMediumTest extends CakeTestCase {
-	function start() {
-		parent::start();
+	function setup() {
 		$this->TestData = new MediumTestData();
 	}
 
-	function end() {
-		parent::end();
+	function tearDown() {
 		$this->TestData->flushFiles();
 	}
 

@@ -46,9 +46,7 @@ class TheMediumTestController extends Controller {
 	var $uses = null;
 }
 class MediumHelperTestCase extends CakeTestCase {
-	function start() {
-		parent::start();
-
+	function setup() {
 		Cache::clear(false, 'default');
 
 		$this->Helper =& new MediumHelper();
@@ -68,8 +66,11 @@ class MediumHelperTestCase extends CakeTestCase {
 		$this->file2 = $this->TestData->getFile(array('image-png.png' => $this->TmpFolder->pwd() . 'filter/s/static/img/dot.ted.name.png'));
 	}
 
-	function end() {
-		parent::end();
+	function skip() {
+		$this->skipIf(defined('MEDIA') && MEDIA !== TMP . 'media' . DS, 'MEDIA constant already defined');
+	}
+
+	function tearDown() {
 		$this->TestData->flushFiles();
 		$this->TmpFolder->delete();
 		ClassRegistry::flush();

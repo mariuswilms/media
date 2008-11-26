@@ -36,13 +36,11 @@ class TestGdImageMedium extends ImageMedium {
  * @subpackage media.tests.cases.libs.medium.adapter
  */
 class GdMediumAdapterTest extends CakeTestCase {
-	function start() {
-		parent::start();
+	function setup() {
 		$this->TestData = new MediumTestData();
 	}
 
-	function end() {
-		parent::end();
+	function tearDown() {
 		$this->TestData->flushFiles();
 	}
 
@@ -51,7 +49,7 @@ class GdMediumAdapterTest extends CakeTestCase {
 		$this->skipUnless(extension_loaded('gd'), 'GD extension not loaded');
 	}
 
-	function showImage($string, $mimeType = null) {
+	function _showImage($string, $mimeType = null) {
 		echo '<img src="data:'.$mimeType.';base64,'.base64_encode($string).'" />';
 	}
 
@@ -85,13 +83,5 @@ class GdMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->mimeType;
 		$this->assertTrue($result, 'image/png');
 	}
-
-	function testMake() {
-		$instructions = array('convert' => 'image/png','zoomCrop' => array(10, 10));
-		$Medium = TestGdImageMedium::make($this->TestData->getFile('image-jpg.jpg'), $instructions);
-		$this->assertIsA($Medium, 'Medium');
-//		$this->showImage($Medium->toString(),'image/jpg');
-	}
-
 }
 ?>

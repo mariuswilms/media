@@ -46,18 +46,15 @@ class TestImagickDocumentMedium extends DocumentMedium {
  * @subpackage media.tests.cases.libs.medium.adapter
  */
 class ImagickMediumAdapterTest extends CakeTestCase {
-	function start() {
-		parent::start();
+	function setup() {
 		$this->TestData = new MediumTestData();
 	}
 
-	function end() {
-		parent::end();
+	function tearDown() {
 		$this->TestData->flushFiles();
 	}
 
-	function skip()
-	{
+	function skip() {
 		$this->skipUnless(extension_loaded('gd'), 'GD extension not loaded');
 	}
 
@@ -102,13 +99,5 @@ class ImagickMediumAdapterTest extends CakeTestCase {
 		$this->assertEqual(MimeType::guessType($tmpFile), 'image/png');
 		unlink($tmpFile);
 	}
-
-	function testMake() {
-		$instructions = array('convert' => 'image/png','zoomCrop' => array(10, 10));
-		$Medium = TestImagickImageMedium::make($this->TestData->getFile('image-jpg.jpg'), $instructions);
-		$this->assertIsA($Medium, 'Medium');
-//		$this->showImage($Medium->toString(),'image/jpg');
-	}
-
 }
 ?>

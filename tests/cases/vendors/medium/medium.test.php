@@ -49,13 +49,11 @@ class SweetMedium extends Medium {
  * @subpackage media.tests.cases.libs.medium
  */
 class MediumTest extends CakeTestCase {
-	function start() {
-		parent::start();
+	function setup() {
 		$this->TestData = new MediumTestData();
 	}
 
-	function end() {
-		parent::end();
+	function tearDown() {
 		$this->TestData->flushFiles();
 	}
 
@@ -113,6 +111,13 @@ class MediumTest extends CakeTestCase {
 //		$Collection = new MediumAdapterCollection();
 //		$Collection
 
+	}
+
+	function testMake() {
+		$instructions = array('convert' => 'image/png', 'zoomCrop' => array(10, 10));
+		$Medium = Medium::make($this->TestData->getFile('image-jpg.jpg'), $instructions);
+		$this->assertIsA($Medium, 'Medium');
+//		$this->showImage($Medium->toString(),'image/jpg');
 	}
 }
 ?>

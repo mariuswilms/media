@@ -26,13 +26,11 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 
  * @subpackage media.tests.cases.libs
  */
 class TransferValidationTest extends CakeTestCase {
-	function start() {
-		parent::start();
+	function setup() {
 		$this->TestData = new MediumTestData();
 	}
 
-	function end() {
-		parent::end();
+	function tearDown() {
 		$this->TestData->flushFiles();
 	}
 }

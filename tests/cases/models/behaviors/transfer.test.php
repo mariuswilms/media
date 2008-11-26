@@ -31,13 +31,11 @@ if (!defined('MEDIA')) {
 class TransferBehaviorTestCase extends CakeTestCase {
 	var $fixtures = array('core.image');
 
-	function start() {
-		parent::start();
+	function setup() {
 		$this->TestData = new MediumTestData();
 	}
 
-	function end() {
-		parent::end();
+	function tearDown() {
 		$this->TestData->flushFiles();
 		ClassRegistry::flush();
 	}
