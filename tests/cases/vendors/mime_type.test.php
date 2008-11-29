@@ -163,7 +163,6 @@ class MimeTypeTest extends CakeTestCase {
 		$this->assertEqual(MimeType::guessExtension('audio/x-wav'), 'wav');
 		$this->assertEqual(MimeType::guessExtension('application/xhtml+xml'), 'xhtml');
 		$this->assertEqual(MimeType::guessExtension('application/xml'), 'xml');
-
 	}
 }
 ?>
