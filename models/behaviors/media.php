@@ -265,7 +265,7 @@ class MediaBehavior extends ModelBehavior {
  * @param string $file Path to a file relative to MEDIA or an absolute path to a file
  * @return bool
  */
-	function make($model, $file) {
+	function make($model, $file, $overwrite = false) {
 		extract($this->settings[$model->alias]);
 
 		if (is_file($file)) {
@@ -280,7 +280,7 @@ class MediaBehavior extends ModelBehavior {
 			$Medium = Medium::make($File->pwd(), $instructions);
 
 			if (!$Medium) {
-				trigger_error('MediaBehavior::make - Failed to make version ' . $version . ' of medium.', E_USER_WARNING);
+				trigger_error("MediaBehavior::make - Failed to make version {$version} of medium.", E_USER_WARNING);
 				continue(1);
 			}
 
@@ -293,11 +293,11 @@ class MediaBehavior extends ModelBehavior {
 			$Folder = new Folder($directory, $createDirectory);
 
 			if (!$Folder->pwd()) {
-				trigger_error('MediaBehavior::make - Directory \'' . $directory . '\' could not be created or is not writable. Please check your permissions.', E_USER_WARNING);
+				trigger_error("MediaBehavior::make - Directory '{$directory}' could not be created or is not writable. Please check your permissions.", E_USER_WARNING);
 				continue(1);
 			}
 
-			$Medium->store($Folder->pwd(). DS . basename($file));
+			$Medium->store($Folder->pwd(). DS . basename($file), $overwrite);
 		}
 
 		return true;
