@@ -222,7 +222,7 @@ class ImageMedium extends Medium {
 
 		if ($megapixel > $megapixelMax) {
 			$quality = $qualityMax;
-		} else if ($megapixel < $megapixelMin) {
+		} elseif ($megapixel < $megapixelMin) {
 			$quality = $qualityMin;
 		} else {
 			$quality =

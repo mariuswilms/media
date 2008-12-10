@@ -190,7 +190,7 @@ class ManageShell extends Shell {
 	function end($result = null) {
 		if($result == true) {
 			$message =  __('ok', true);
-		} else if(empty($result)) {
+		} elseif(empty($result)) {
 			$message = __('unknown', true);
 		} else {
 			$message = __('failed', true);
@@ -215,7 +215,7 @@ class ManageShell extends Shell {
 		if ($value === true) {
 			echo "\x1b[s";
 			$target = $text;
-		} else if ($value === false) {
+		} elseif ($value === false) {
 			echo "\n";
 		} else {
 			echo "\x1b[u";

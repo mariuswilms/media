@@ -69,7 +69,7 @@ class MimeGlob extends Object {
 
 			if (preg_match('/^[-\w.+]*\/[-\w.+]+:[\*\.a-zA-Z0-9]*$/m', $head)) {
 				return 'Freedesktop Shared MIME-info Database';
-			} else if (preg_match('/^[-\w.+]*\/[-\w.+]+\s+[a-zA-Z0-9]*$/m', $head)) {
+			} elseif (preg_match('/^[-\w.+]*\/[-\w.+]+\s+[a-zA-Z0-9]*$/m', $head)) {
 				return 'Apache Module mod_mime';
 			}
 		}

@@ -25,7 +25,7 @@
  * An absolute (slash terminated) path to a directory holding media files
  * E.g.: /var/www/example.org/htdocs/app/webroot/media/
  *
- * Please also review the "directory layout" section in the docs
+ * Please review the documentation on "Configuration/Directory Layout" in the wiki
  */
 	if (!defined('MEDIA')) {
 		define('MEDIA', WWW_ROOT . 'media' . DS);

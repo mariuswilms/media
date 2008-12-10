@@ -247,7 +247,7 @@ class MediaBehavior extends ModelBehavior {
 			if (count($basenames) > 1) {
 				trigger_error('MediaBehavior::beforeDelete - Ambigious filename ' . $File->name() . ' in ' . $Folder->pwd() . '.', E_USER_NOTICE);
 				continue(1);
-			} else if (!isset($basenames[0])) {
+			} elseif (!isset($basenames[0])) {
 				continue(1);
 			}
 
@@ -347,7 +347,7 @@ class MediaBehavior extends ModelBehavior {
 							  'quality'       => $Medium->quality(),
 							  'sampling_rate' => $Medium->samplingRate(),
 				             );
-		} else if ($Medium->name === 'Image') {
+		} elseif ($Medium->name === 'Image') {
 			$detailed = array(
 							  'width'     => $Medium->width(),
 							  'height'    => $Medium->height(),
@@ -355,7 +355,7 @@ class MediaBehavior extends ModelBehavior {
 							  'quality'   => $Medium->quality(),
 							  'megapixel' => $Medium->megapixel(),
 						     );
-		} else if ($Medium->name === 'Text') {
+		} elseif ($Medium->name === 'Text') {
 			$detailed = array(
 							 'characters'      => $Medium->characters(),
 							 'syllables'       => $Medium->syllables(),

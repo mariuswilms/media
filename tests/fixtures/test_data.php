@@ -76,7 +76,7 @@ class TestData extends Object {
 
 		if (isset($this->decoded[$key])) {
 			$result = $this->decoded[$key];
-		} else if (isset($this->encoded[$key])) {
+		} elseif (isset($this->encoded[$key])) {
 			$this->decoded[$key] = base64_decode($this->encoded[$key]);
 
 			if (preg_match('/^[ais]:[0-9]+/', $this->decoded[$key])) {

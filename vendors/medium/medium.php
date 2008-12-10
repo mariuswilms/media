@@ -91,20 +91,19 @@ class Medium extends Object {
  * @var array
  */
 	static $_mimeTypesToNames = array(
-					'image/icon' 			=> 'Icon',
-					'application/pdf'		=> 'Document',
-					'application/msword'	=> 'Document',
-				/*	'application/zip' 		=> 'archive', */
-					'text/css' 				=> 'Css',
-					'text/javascript' 		=> 'Js',
-					'text/code' 			=> 'Generic',
-					'text/rtf'	 			=> 'Document',
-					'text/plain'			=> 'Text',
-					'image/'		 		=> 'Image',
-					'audio/' 				=> 'Audio',
-					'video/' 				=> 'Video',
-					'text/' 				=> 'Generic',
-					'/' 					=> 'Generic',
+					'image/icon'            => 'Icon',
+					'application/pdf'       => 'Document',
+					'application/msword'    => 'Document',
+					'text/css'              => 'Css',
+					'text/javascript'       => 'Js',
+					'text/code'             => 'Generic',
+					'text/rtf'              => 'Document',
+					'text/plain'            => 'Text',
+					'image/'                => 'Image',
+					'audio/'                => 'Audio',
+					'video/'                => 'Video',
+					'text/'                 => 'Generic',
+					'/'                     => 'Generic',
 					);
 /**
  * Mapping medium name to short medium name
@@ -114,13 +113,13 @@ class Medium extends Object {
 	static $_namesToShort = array(
 					'Icon' 		=> 'ico',
 					'Document' 	=> 'doc',
-					'Css' 		=> 'css',
-					'Js' 		=> 'js',
-					'Text' 		=> 'txt',
-					'Image' 	=> 'img',
-					'Audio' 	=> 'aud',
-					'Video' 	=> 'vid',
-					'Generic' 	=> 'gen',
+					'Css'       => 'css',
+					'Js'        => 'js',
+					'Text'      => 'txt',
+					'Image'     => 'img',
+					'Audio'     => 'aud',
+					'Video'     => 'vid',
+					'Generic'   => 'gen',
 					);
 /**
  * Constructor
@@ -139,14 +138,14 @@ class Medium extends Object {
 	function __construct($file, $mimeType = null) {
 		if (is_resource($file)) {
 			$this->resources[get_resource_type($file)] = $file;
-		} else if (is_object($file)) {
+		} elseif (is_object($file)) {
 			$this->objects[get_class($file)] = $file;
-		} else if (is_array($file)) {
+		} elseif (is_array($file)) {
 			if (is_string(current($file))) {
 				$this->files = $file;
-			} else if (is_resource(current($file))) {
+			} elseif (is_resource(current($file))) {
 				$this->resources = $file;
-			} else if (is_object(current($file))) {
+			} elseif (is_object(current($file))) {
 				$this->objects = $file;
 			}
 		} else {
@@ -155,7 +154,7 @@ class Medium extends Object {
 
 		if (isset($this->files['original'])) {
 			$this->file =& $this->files['original'];
-		} else if (isset($this->files['temporary'])) {
+		} elseif (isset($this->files['temporary'])) {
 			$this->file =& $this->files['temporary'];
 		}
 
@@ -292,7 +291,7 @@ class Medium extends Object {
 			if ($result === false) {
 				trigger_error('Medium::make - Instruction ' . get_class($Medium) . '::' . $method . '() failed.', E_USER_WARNING);
 				return false;
-			} else if (is_a($result, 'Medium')) {
+			} elseif (is_a($result, 'Medium')) {
 				$Medium = $result;
 			}
 		}
@@ -321,7 +320,7 @@ class Medium extends Object {
 
 		if ($correctExtension) {
 			$file .= '.' . $correctExtension;
-		} else if (isset($extension)) {
+		} elseif (isset($extension)) {
 			$file .= '.' . $File->ext();
 		}
 
@@ -360,19 +359,19 @@ class Medium extends Object {
  */
 	function _knownRatio($width, $height) {
 		$knownRatios = array(
-						'1:1.294' 	=> 1/1.294,
-						'1:1.545' 	=> 1/1.1545,
-						'4:3' 		=> 4/3,
-						'1.375:1' 	=> 1.375,
-						'3:2' 		=> 3/2,
-						'16:9' 		=> 16/9,
-						'1.85:1' 	=> 1.85,
-						'1.96:1' 	=> 1.96,
-						'2.35:1' 	=> 2.35,
-						'√2:1' 		=> pow(2, 1/2), 				/* dina4 quer */
-						'1:√2' 		=> 1 / (pow(2, 1/2)), 			/* dina4 hoch */
-						'Φ:1'		=> (1 + pow(5,1/2)) / 2, 		/* goldener schnitt */
-						'1:Φ'		=> 1 / ((1 + pow(5,1/2)) / 2), 	/* goldener schnitt */
+						'1:1.294' => 1/1.294,
+						'1:1.545' => 1/1.1545,
+						'4:3'     => 4/3,
+						'1.375:1' => 1.375,
+						'3:2'     => 3/2,
+						'16:9'    => 16/9,
+						'1.85:1'  => 1.85,
+						'1.96:1'  => 1.96,
+						'2.35:1'  => 2.35,
+						'√2:1'    => pow(2, 1/2), /* dina4 quer */
+						'1:√2'    => 1 / (pow(2, 1/2)), /* dina4 hoch */
+						'Φ:1'     => (1 + pow(5,1/2)) / 2, /* goldener schnitt */
+						'1:Φ'     => 1 / ((1 + pow(5,1/2)) / 2), /* goldener schnitt */
 						);
 
 		foreach ($knownRatios as $knownRatioName => &$knownRatio) {
@@ -384,17 +383,10 @@ class Medium extends Object {
 	}
 }
 /**
- * MediumAdapterCollection Class
+ * Medium Adapter Collection Class
  *
- * Manages instanciation of MediumAdapter and dispatches calls
- *
- * @category   media handling
- * @package    attm
- * @subpackage attm.plugins.media.libs.medium
- * @author     David Persson <davidpersson@qeweurope.org>
- * @copyright  $CopyrightYear$ David Persson <davidpersson@qeweurope.org>
- * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @link       http://cakeforge.org/projects/attm The attm Project
+ * @package    media
+ * @subpackage media.libs.medium
  */
 class MediumAdapterCollection extends Object {
 /**
@@ -584,15 +576,10 @@ class MediumAdapterCollection extends Object {
 /**
  * Medium Adapter Class
  *
- * Base class for adapters
+ * Base Class for adapters
  *
- * @category   media handling
- * @package    attm
- * @subpackage attm.plugins.media.libs.medium.adapter
- * @author     David Persson <davidpersson@qeweurope.org>
- * @copyright  $CopyrightYear$ David Persson <davidpersson@qeweurope.org>
- * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @link       http://cakeforge.org/projects/attm The attm Project
+ * @package    media
+ * @subpackage media.libs.medium
  */
 class MediumAdapter extends Object {
 /**
@@ -735,17 +722,6 @@ class MediumAdapter extends Object {
 			}
 		}
 		return false;
-	}
-}
-/**
- * Enter description here...
- *
- * @deprecated
- */
-class CakeMedium extends Medium {
-	function __construct($file, $mimeType = null) {
-		parent::__construct($file, $mimeType);
-		trigger_error('CakeMedium::__construct - The CakeMedium class is deprecated in favor of the Medium class.', E_USER_NOTICE);
 	}
 }
 ?>

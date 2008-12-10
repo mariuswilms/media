@@ -285,9 +285,9 @@ class TransferBehavior extends ModelBehavior {
 	function _source(&$model, $data) {
 		if (TransferValidation::fileUpload($data)) {
 			return array_merge($this->info($model, $data), array('error' => $data['error']));
-		} else if (MediaValidation::file($data)) {
+		} elseif (MediaValidation::file($data)) {
 			return $this->info($model, $data);
-		} else if (TransferValidation::url($data, array('scheme' => 'http'))) {
+		} elseif (TransferValidation::url($data, array('scheme' => 'http'))) {
 			/* We currently do only support http */
 			return $this->info($model, $data);
 		}
@@ -303,7 +303,7 @@ class TransferBehavior extends ModelBehavior {
 	function _temporary(&$model, $data) {
 		if (TransferValidation::fileUpload($data) && TransferValidation::uploadedFile($data['tmp_name'])) {
 			return array_merge($this->info($model, $data['tmp_name']), array('error' => $data['error']));
-		} else if (MediaValidation::file($data)) {
+		} elseif (MediaValidation::file($data)) {
 			return $this->info($model, $data);
 		}
 		return false;
@@ -437,7 +437,7 @@ class TransferBehavior extends ModelBehavior {
 				if (!MediaValidation::access($temporary['file'], 'r')) {
 					return false;
 				}
-			} else if (MediaValidation::folder($temporary['dirname'], true)) {
+			} elseif (MediaValidation::folder($temporary['dirname'], true)) {
 				if (!MediaValidation::access($temporary['dirname'], 'w')) {
 					return false;
 				}
@@ -669,7 +669,7 @@ class TransferBehavior extends ModelBehavior {
 			}
 
 		/* File */
-		} else if (MediaValidation::file($resource, false)) {
+		} elseif (MediaValidation::file($resource, false)) {
 			$resource = array_merge(
 							$defaultResource,
 							pathinfo($resource),
@@ -704,7 +704,7 @@ class TransferBehavior extends ModelBehavior {
 			}
 
 		/* File Upload */
-		} else if (TransferValidation::fileUpload($resource)) {
+		} elseif (TransferValidation::fileUpload($resource)) {
 			$resource = array_merge(
 							$defaultResource,
 							pathinfo($resource['name']),
@@ -724,7 +724,7 @@ class TransferBehavior extends ModelBehavior {
 
 		if (is_null($what)) {
 			return $resource;
-		} else if (array_key_exists($what, $resource)) {
+		} elseif (array_key_exists($what, $resource)) {
 			return $resource[$what];
 		}
 		return null;

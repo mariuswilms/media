@@ -216,7 +216,7 @@ class MimeMagic extends Object {
 									 'priority'  => $matches[1],
 									 'mime_type' => $matches[2]
 									);
-				} else if (preg_match('/' . $itemRegex . '/', $line, $matches)) {
+				} elseif (preg_match('/' . $itemRegex . '/', $line, $matches)) {
 					$indent = empty($matches[1]) ? 0 : intval($matches[1]);
 					$wordSize = empty($matches[6]) ? 1 : intval($matches[6]);
 					$item = array(
@@ -307,7 +307,7 @@ class MimeMagic extends Object {
 						return $return;
 					}
 				}
-			} else if (isset($item['mime_type'])) {
+			} elseif (isset($item['mime_type'])) {
 				return $item['mime_type'];
 			}
 		}
@@ -338,11 +338,11 @@ class MimeMagic extends Object {
 		} else {
 			if (decoct(octdec($value)) == $value) {
 				$value = octdec($value);
-			} else if ($value{1} === 'x') {
+			} elseif ($value{1} === 'x') {
 				$value = hexdec($value);
-			} else if (is_numeric($value) && intval($value) == $value) {
+			} elseif (is_numeric($value) && intval($value) == $value) {
 				$value = intval($value);
-			} else if (is_numeric($value) && floatval($value) == $value) {
+			} elseif (is_numeric($value) && floatval($value) == $value) {
 				$value = floatval($value);
 			}
 

@@ -133,7 +133,7 @@ class MediaValidation extends Validation {
 
 		if ($allow === true) {
 			return true;
-		} else if ($allow === false) {
+		} elseif ($allow === false) {
 			return false;
 		}
 

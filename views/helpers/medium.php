@@ -543,7 +543,7 @@ class MediumHelper extends AppHelper {
 		foreach ($options as $key => $value) {
 			if ($value === true) {
 				$value = 'true';
-			} else if ($value === false) {
+			} elseif ($value === false) {
 				$value = 'false';
 			}
 			$parameters[] = sprintf($this->tags['param'], $this->_parseAttributes(array('name' => $key, 'value' => $value)));
