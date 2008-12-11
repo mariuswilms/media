@@ -1,14 +1,15 @@
 <?php
 /**
- * MIME-TYPES and the extensions that represent them
+ * Mime Glob Database File
  *
- * This data is based on debian's "mime-support"
+ * MIME-TYPES and the extensions that represent them
+ * Based on debian's "mime-support" by Brian White
  *
  * @package    media
  * @subpackage media.libs
  * @link       http://github.com/davidpersson/media
+ * @link       http://packages.debian.org/en/etch/mime-support
  */
-
 $config = array(
 	/* Application */
 	array(
