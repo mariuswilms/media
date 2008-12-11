@@ -50,7 +50,7 @@ class MimeTypeTest extends CakeTestCase {
 		$this->skipUnless(extension_loaded('fileinfo'), '%s. Fileinfo extension not loaded.');
 
 		MimeType::config('magic', array('engine' => 'fileinfo'));
-		MimeType::config('glob', array('engine' => 'core', 'file' => APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.db'));
+		MimeType::config('glob', array('engine' => 'core', 'file' => APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'mime_glob.php'));
 
 		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('3gp.snippet.3gp')), 'video/3gpp');
 		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('ms.avi')), 'video/x-msvideo');

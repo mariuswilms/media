@@ -117,7 +117,7 @@ class MimeGlob extends Object {
 			}
 		} elseif ($format === 'PHP') {
 			include $db;
-			foreach ($data as $item) {
+			foreach ($config as $item) {
 				$this->register($item);
 			}
 		} elseif ($format === 'Freedesktop Shared MIME-info Database') {

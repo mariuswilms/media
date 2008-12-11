@@ -82,8 +82,8 @@ class MimeType extends Object {
 		$_this =& MimeType::getInstance();
 		$globMatch = array();
 		$preferred = array(
-						'jpg', 'tiff', 'txt', 'css', 'swf', 'doc',
-						'html', 'xhtml', 'mp3', 'mpg', 'ps', 'xml'
+						'jpg', 'tiff', 'txt', 'css', 'swf', 'doc', 'php',
+						'html', 'xhtml', 'mp3', 'mpeg', 'ps', 'xml', 'bz2'
 						);
 
 		if (is_file($file)) {
@@ -228,8 +228,8 @@ class MimeType extends Object {
 
 			if (!isset($db)) {
 				$commonFiles = array(
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.db',
 					APP . 'plugins' . 'vendors' . DS . 'magic.db',
+					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.db',
 					VENDORS . 'magic.db',
 					);
 
@@ -263,15 +263,13 @@ class MimeType extends Object {
 		if ($engine === 'core' || $engine === null) {
 			App::import('Vendor', 'Media.MimeGlob');
 
-			if ($cached = Cache::read('mime_glob_db')) {
-				$db = $cached;
-			}
-
 			if (!isset($db)) {
 				$commonFiles = array(
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.db',
-					APP . 'vendors' . DS . 'glob.db',
+					APP . 'config' . DS . 'mime_glob.php',
+					APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'mime_glob.php',
 					VENDORS . 'glob.db',
+					APP . 'vendors' . DS . 'glob.db',
+					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.db',
 				);
 
 				foreach($commonFiles as $commonFile) {
@@ -283,7 +281,6 @@ class MimeType extends Object {
 			}
 			if (isset($db)) {
 				$this->__glob =& new MimeGlob($db);
-				Cache::write('mime_glob_db', $this->__glob->toArray());
 			}
 		} else {
 			$this->__glob = null;
