@@ -68,7 +68,7 @@ class ImageMedium extends Medium {
 	}
 /**
  * Resizes medium proportionally
- * keeping smaller side within corresponding dimension
+ * keeping smaller side within corresponding dimensions
  *
  * @param int $width
  * @param int $height
@@ -204,7 +204,6 @@ class ImageMedium extends Medium {
 		}
 		return $this->Adapters->dispatchMethod($this, 'compress', array(floatval($value)));
 	}
-
 /**
  * Determines the quality of the medium by
  * taking amount of megapixels into account

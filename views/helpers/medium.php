@@ -146,27 +146,30 @@ class MediumHelper extends AppHelper {
 /**
  * Display a file inline
  *
- * @param unknown_type $file
- * @param unknown_type $options restrict: embed to display certain medium types only
- * @return unknown
+ * @param string $file
+ * @param array $options restrict: embed to display certain medium types only
+ * @return string
+ *
  */
 	function embed($path, $options = array()) {
 		$default = array(
-						/* Internal */
-						'restrict' => array(),
-						/* Attributes */
-						'alt' => null,
-						'width' => null,
-						'height' => null,
-						'class' => null,
-						/* Parameters */
-						'background' => '#000000',
-						'autoplay' => false, // also: autostart
-						'controls' => false, // also: controller
-						'branding' => false,
-						);
+					'restrict' => array(),
+					'background' => '#000000',
+					'autoplay' => false, // also: autostart
+					'controls' => false, // also: controller
+					'branding' => false,
+					'alt' => null,
+					'width' => null,
+					'height' => null,
+					);
+		$additionalAttributes = array(
+					'id' => null,
+					'class' => null,
+					'usemap' => null,
+					);
 
 		$options = array_merge($default, $options);
+		$attributes = array_intersect_key($options, $additionalAttributes);
 
 		if (is_array($path)) {
 			$out = null;
@@ -215,13 +218,11 @@ class MediumHelper extends AppHelper {
 			case 'image/gif':
 			case 'image/jpeg':
 			case 'image/png':
-				$attributes = array(
+				$attributes = array_merge($attributes, array(
+								'alt' => $alt,
 								'width' => $width,
 								'height' => $height,
-								'alt' => $alt,
-								'class' => $class,
-								'src' => $url,
-								);
+								));
 				if (strpos($path, 'ico/') !== false) {
 					$attributes = $this->addClass($attributes, 'icon');
 				}
@@ -231,12 +232,12 @@ class MediumHelper extends AppHelper {
 			case 'video/x-ms-asx':
 			case 'video/x-ms-wmv': // official
 			case 'video/x-msvideo':
-				$attributes = array(
+				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
 								'width' => $width,
 								'height' => $height,
 								'data' => $url,
-								);
+								));
 				$parameters = array(
 								'src' => $url,
 								'autostart' => $autoplay,
@@ -249,13 +250,13 @@ class MediumHelper extends AppHelper {
 			case 'application/vnd.pn-realmedia':     // ?
 			case 'video/vnd.rn-realvideo':
 			case 'video/vnd.pn-realvideo':
-				$attributes = array(
+				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
 								'width' => $width,
 								'height' => $height,
 								'data' => $url,
 								'classid' => 'clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA',
-								);
+								));
 				$parameters = array(
 								'src' => $url,
 								'autostart' => $autoplay,
@@ -272,14 +273,14 @@ class MediumHelper extends AppHelper {
 
 			/* QuickTime */
 			case 'video/quicktime':
-				$attributes = array(
+				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
 								'width' => $width,
 								'height' => $height,
 								'data' => $url,
 								'classid' => 'clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B',
 								'codebase' => 'http://www.apple.com/qtactivex/qtplugin.cab',
-								);
+								));
 				$parameters = array(
 								'src' => $url,
 								'autoplay' => $autoplay,
@@ -291,12 +292,12 @@ class MediumHelper extends AppHelper {
 
 			/* Mpeg */
 			case 'video/mpeg':
-				$attributes = array(
+				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
 								'width' => $width,
 								'height' => $height,
 								'data' => $url,
-								);
+								));
 				$parameters = array(
 								'src' => $url,
 								'autostart' => $autoplay,
@@ -305,14 +306,14 @@ class MediumHelper extends AppHelper {
 
 			/* Flashy Flash */
 			case 'application/x-shockwave-flash':
-				$attributes = array(
+				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
 								'width' => $width,
 								'height' => $height,
 								'data' => $url,
 								'classid' => 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
 								'codebase' => 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab',
-								);
+								));
 				$parameters = array(
 								'movie' => $url,
 								'wmode' => 'transparent',
@@ -326,12 +327,12 @@ class MediumHelper extends AppHelper {
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
 
 			case 'application/pdf':
-				$attributes = array(
+				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
 								'width' => $width,
 								'height' => $height,
 								'data' => $url,
-								);
+								));
 				$parameters = array(
 								'src' => $url,
 								'toolbar' => $controls, // 1 or 0 vvditovvv
@@ -344,12 +345,12 @@ class MediumHelper extends AppHelper {
 			case 'audio/mpeg':
 			case 'audio/ogg': // better?: application/ogg
 			case 'audio/x-midi':
-				$attributes = array(
+				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
 								'width' => $width,
 								'height' => $height,
 								'data' => $url,
-								);
+								));
 				$parameters = array(
 								'src' => $url,
 								'autoplay' => $autoplay,
@@ -357,12 +358,12 @@ class MediumHelper extends AppHelper {
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
 
 			default:
-				$attributes = array(
+				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
 								'width' => $width,
 								'height' => $height,
 								'data' => $url,
-								);
+								));
 				$parameters = array(
 								'src' => $url,
 								);
