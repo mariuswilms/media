@@ -51,10 +51,10 @@ class MediaBehavior extends ModelBehavior {
  * @var array
  */
 	var $_defaultSettings = array(
-			'createDirectory' 	=> true,
-			'makeVersions' 		=> true,
-			'metadataLevel' 	=> 1,
-			'base' 				=> MEDIA,
+			'createDirectory' => true,
+			'makeVersions'    => true,
+			'metadataLevel'   => 1,
+			'base'            => MEDIA,
 		);
 /**
  * Setup
@@ -177,17 +177,16 @@ class MediaBehavior extends ModelBehavior {
 
 		foreach ($results as $key => &$result) {
 			if (!isset($result[$model->alias]['dirname']) || !isset($result[$model->alias]['basename'])) {
-				/* Needed in certain situations like a pre-delete */
-				continue(1);
+				continue(1); /* Needed in certain situations like a pre-delete */
 			}
 
 			/* Retrieve metadata */
 			$metadata = $this->metadata(
 										$model,
 										$result[$model->alias]['dirname']
-										.DS . $result[$model->alias]['basename'],
+										. DS . $result[$model->alias]['basename'],
 										$metadataLevel
-									   );
+										);
 
 			if ($metadata === false) {
 				/*
@@ -217,8 +216,8 @@ class MediaBehavior extends ModelBehavior {
 							'first',
 							array(
 								'conditions' => array('id' => $model->id),
-								'fields' => array('dirname', 'basename'),
-								'recursive' => -1,
+								'fields'     => array('dirname', 'basename'),
+								'recursive'  => -1,
 								)
 							);
 
@@ -240,7 +239,7 @@ class MediaBehavior extends ModelBehavior {
 						. 'filter'
 						. DS . $version
 						. DS . $result[$model->alias]['dirname'] . DS
-					   );
+						);
 
 			$basenames = $Folder->find($File->name() . '\..*');
 
@@ -276,7 +275,7 @@ class MediaBehavior extends ModelBehavior {
 		$filter = Configure::read('Media.filter.' . strtolower(Medium::name($file)));
 
 		/* compiles all versions */
-		foreach($filter as $version => $instructions) {
+		foreach ($filter as $version => $instructions) {
 			$Medium = Medium::make($File->pwd(), $instructions);
 
 			if (!$Medium) {
@@ -323,14 +322,14 @@ class MediaBehavior extends ModelBehavior {
 			$File = new File($base . $file);
 		}
 
-		if(!$File->exists() || !$File->readable()) {
+		if (!$File->exists() || !$File->readable()) {
 			return false;
 		}
 
 		$basic = array(
-						'size'     => $File->size(),
-						'mime_type' =>  MimeType::guessType($File->pwd()),
-					  );
+					'size'      => $File->size(),
+					'mime_type' =>  MimeType::guessType($File->pwd()),
+					);
 
 		if ($level < 2) {
 			return Set::filter($basic); /* return basic info */
@@ -340,37 +339,37 @@ class MediaBehavior extends ModelBehavior {
 
 		if ($Medium->name === 'Audio') {
 			$detailed = array(
-							  'artist'        => $Medium->artist(),
-							  'album'         => $Medium->album(),
-							  'title'         => $Medium->title(),
-							  'length'        => $Medium->duration(),
-							  'quality'       => $Medium->quality(),
-							  'sampling_rate' => $Medium->samplingRate(),
-				             );
+							'artist'        => $Medium->artist(),
+							'album'         => $Medium->album(),
+							'title'         => $Medium->title(),
+							'length'        => $Medium->duration(),
+							'quality'       => $Medium->quality(),
+							'sampling_rate' => $Medium->samplingRate(),
+							);
 		} elseif ($Medium->name === 'Image') {
 			$detailed = array(
-							  'width'     => $Medium->width(),
-							  'height'    => $Medium->height(),
-							  'ratio'     => $Medium->ratio(),
-							  'quality'   => $Medium->quality(),
-							  'megapixel' => $Medium->megapixel(),
-						     );
+							'width'     => $Medium->width(),
+							'height'    => $Medium->height(),
+							'ratio'     => $Medium->ratio(),
+							'quality'   => $Medium->quality(),
+							'megapixel' => $Medium->megapixel(),
+							);
 		} elseif ($Medium->name === 'Text') {
 			$detailed = array(
-							 'characters'      => $Medium->characters(),
-							 'syllables'       => $Medium->syllables(),
-							 'sentences'       => $Medium->sentences(),
-							 'words'           => $Medium->words(),
-							 'flesch_score'    => $Medium->fleschScore(),
-							 'lexical_density' => $Medium->lexicalDensity(),
+							'characters'      => $Medium->characters(),
+							'syllables'       => $Medium->syllables(),
+							'sentences'       => $Medium->sentences(),
+							'words'           => $Medium->words(),
+							'flesch_score'    => $Medium->fleschScore(),
+							'lexical_density' => $Medium->lexicalDensity(),
 							);
 		} elseif($Medium->name === 'Video') {
 			$detailed = array(
-							 'width'   => $Medium->width(),
-							 'height'  => $Medium->height(),
-							 'length'  => $Medium->duration(),
-							 'quality' => $Medium->quality(),
-							 'ratio'   => $Medium->ratio(),
+							'width'   => $Medium->width(),
+							'height'  => $Medium->height(),
+							'length'  => $Medium->duration(),
+							'quality' => $Medium->quality(),
+							'ratio'   => $Medium->ratio(),
 							);
 		} else {
 			$detailed = array();

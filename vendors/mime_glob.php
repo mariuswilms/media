@@ -21,6 +21,9 @@ uses('file');
 /**
  * Mime Glob Class
  *
+ * Detection of a file's MIME Type by it's extension
+ * supporting several database formats.
+ *
  * @package    media
  * @subpackage media.libs
  */

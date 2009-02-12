@@ -45,11 +45,11 @@
  */
 	Configure::write('Mime.glob', array(
 		'engine' => null, // null (auto detect) or core
-		'db' => null, // absolute path to a glob db file in freedesktop, apache, or php format
+		'db'     => null, // absolute path to a glob db file in freedesktop, apache, or php format
 	));
 	Configure::write('Mime.magic', array(
 		'engine' => null, // null (auto detect), core, fileinfo or mime_magic
-		'db' => null, // absolute path to a magic db file in freedesktop, apache, or php format
+		'db'     => null, // absolute path to a magic db file in freedesktop, apache, or php format
 	));
 /**
  * Media filters
@@ -59,35 +59,35 @@
  */
 	Configure::write('Media.filter.audio', array());
 	Configure::write('Media.filter.css', array(
-		'c'		=> array('compress'),
+		'c'   => array('compress'),
 		)
 	);
 	Configure::write('Media.filter.document', array(
-		'xxs'	=> array('convert' => 'image/png', 'zoomCrop' => array(16, 16)),
-		's'		=> array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
-		'm'		=> array('convert' => 'image/png', 'fit' => array(300, 300)),
+		'xxs' => array('convert' => 'image/png', 'zoomCrop' => array(16, 16)),
+		's'   => array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
+		'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
 		)
 	);
 	Configure::write('Media.filter.generic', array());
 	Configure::write('Media.filter.image', array(
-		'xxs' 	=> array('convert' => 'image/png', 'zoomCrop' => array(16, 16)),
-		'xs'	=> array('convert' => 'image/png', 'zoomCrop' => array(32, 32)),
-		's'		=> array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
-		'm'		=> array('convert' => 'image/png', 'fit' => array(300, 300)),
-		'l'		=> array('convert' => 'image/png', 'fit' => array(450, 450)),
-		'xl'	=> array('convert' => 'image/png', 'fit' => array(680, 440)),
+		'xxs' => array('convert' => 'image/png', 'zoomCrop' => array(16, 16)),
+		'xs'  => array('convert' => 'image/png', 'zoomCrop' => array(32, 32)),
+		's'   => array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
+		'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
+		'l'   => array('convert' => 'image/png', 'fit' => array(450, 450)),
+		'xl'  => array('convert' => 'image/png', 'fit' => array(680, 440)),
 		)
 	);
 	Configure::write('Media.filter.icon', array());
 	Configure::write('Media.filter.js', array(
-		'c'		=> array('compress'),
+		'c'   => array('compress'),
 		)
 	);
 	Configure::write('Media.filter.text', array());
 	Configure::write('Media.filter.video', array(
-		'xxs'	=> array('convert' => 'image/png', 'zoomCrop' => array(16, 16)),
-		's'		=> array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
-		'm'		=> array('convert' => 'image/png', 'fit' => array(300, 300)),
+		'xxs' => array('convert' => 'image/png', 'zoomCrop' => array(16, 16)),
+		's'   => array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
+		'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
 		)
 	);
 ?>

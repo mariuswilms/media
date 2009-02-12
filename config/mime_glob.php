@@ -1,12 +1,12 @@
 <?php
 /**
- * Mime Glob Database File
+ * Mime Glob PHP Database File
  *
- * MIME-TYPES and the extensions that represent them
- * Based on debian's "mime-support" by Brian White
+ * MIME Types and the extensions that represent them.
+ * Based on debian's "mime-support" by Brian White.
  *
  * @package    media
- * @subpackage media.libs
+ * @subpackage media.config
  * @link       http://github.com/davidpersson/media
  * @link       http://packages.debian.org/en/etch/mime-support
  */

@@ -21,6 +21,10 @@ uses('file');
 /**
  * Mime Type Class
  *
+ * Detection of a file's MIME Type by it's contents and/or extension.
+ * This is the main interface for MIME Type detection wrapping
+ * (native) magic and glob mechanisms.
+ *
  * @package    media
  * @subpackage media.libs
  */
@@ -145,7 +149,7 @@ class MimeType extends Object {
 			}
 		}
 		if (is_a($_this->__magic, 'finfo')) {
-	    	$magicMatch = array($_this->__magic->file($file));
+			$magicMatch = array($_this->__magic->file($file));
 		} elseif ($_this->__magic === 'mime_magic') {
 			$magicMatch = array(mime_content_type($file));
 		} elseif (is_a($_this->__magic, 'MimeMagic')) {

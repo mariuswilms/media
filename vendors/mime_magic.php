@@ -21,6 +21,10 @@ uses('file');
 /**
  * Mime Magic Class
  *
+ * Detection of a file's MIME Type by it's contents.
+ * An implementation of the mime magic functionality in pure PHP
+ * supporting several database formats.
+ *
  * @package    media
  * @subpackage media.libs
  */
@@ -213,19 +217,19 @@ class MimeMagic extends Object {
 
 				if (preg_match('/' . $sectionRegex . '/', $line, $matches)) {
 					$section = array(
-									 'priority'  => $matches[1],
-									 'mime_type' => $matches[2]
+									'priority'  => $matches[1],
+									'mime_type' => $matches[2]
 									);
 				} elseif (preg_match('/' . $itemRegex . '/', $line, $matches)) {
 					$indent = empty($matches[1]) ? 0 : intval($matches[1]);
 					$wordSize = empty($matches[6]) ? 1 : intval($matches[6]);
 					$item = array(
-								  'offset'       => intval($matches[2]),
-								  'value_length' => current(unpack('n', $matches[3])),
-								  'value'        => $this->__formatValue($matches[4], $wordSize),
-								  'mask'         => empty($matches[5]) ? null : $this->__formatValue($matches[5], $wordSize),// default: all "one" bits
-								  'range_length' => empty($matches[7]) ? 1 : intval($matches[7]),
-								  'mime_type'    => $section['mime_type'],
+								'offset'       => intval($matches[2]),
+								'value_length' => current(unpack('n', $matches[3])),
+								'value'        => $this->__formatValue($matches[4], $wordSize),
+								'mask'         => empty($matches[5]) ? null : $this->__formatValue($matches[5], $wordSize),// default: all "one" bits
+								'range_length' => empty($matches[7]) ? 1 : intval($matches[7]),
+								'mime_type'    => $section['mime_type'],
 								);
 					$this->register($item, $indent, $section['priority']);
 				}
@@ -247,12 +251,12 @@ class MimeMagic extends Object {
 				preg_match('/' . $itemRegex . '/', $line, $matches);
 
 				$item = array(
-						 	  'offset'       => intval($matches[2]),
-							  'value'        => $this->__formatValue($matches[4], $matches[3], true),
-							  'mask'         => null,
-							  'range_length' => 0,
-							  'mime_type'    => empty($matches[5]) ? null : $matches[5],
-							  'encoding'     => empty($matches[6]) ? null : $matches[6],
+							'offset'       => intval($matches[2]),
+							'value'        => $this->__formatValue($matches[4], $matches[3], true),
+							'mask'         => null,
+							'range_length' => 0,
+							'mime_type'    => empty($matches[5]) ? null : $matches[5],
+							'encoding'     => empty($matches[6]) ? null : $matches[6],
 							);
 				$item['value_length'] = strlen($item['value']);
 				$this->register($item, strlen($matches[1]), 80);
