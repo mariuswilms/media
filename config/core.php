@@ -5,7 +5,7 @@
  * Include it in your app's core.php or bootstrap.php
  * then customize configuration values if you need to.
  *
- * Copyright (c) 2007-2008 David Persson
+ * Copyright (c) 2007-2009 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
@@ -16,7 +16,7 @@
  * @package    media
  * @subpackage media.config
  * @author     David Persson <davidpersson@qeweurope.org>
- * @copyright  2007-2008 David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2009 David Persson <davidpersson@qeweurope.org>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  * @since      media 0.50

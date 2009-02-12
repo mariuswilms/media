@@ -14,7 +14,7 @@ class AttachmentFixture extends CakeTestFixture {
 			'modified' => array('type'=>'datetime', 'null' => true, 'default' => NULL),
 			'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'foreign_key' => array('column' => array('foreign_key', 'model', 'basename'), 'unique' => 1))
 			);
-			
+
 	var $records = array(
 						array(
 						'id'  => 1,
@@ -59,9 +59,7 @@ class AttachmentFixture extends CakeTestFixture {
 						'group'  => 'no-group',
 						'created'  => '2008-03-25 01:01:46',
 						'modified'  => '2008-03-25 01:01:46'
-						)							
-						
-												
+						)
 					);
 }
 ?>

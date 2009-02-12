@@ -2,7 +2,7 @@
 /**
  * Image Medium File
  *
- * Copyright (c) 2007-2008 David Persson
+ * Copyright (c) 2007-2009 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
@@ -14,7 +14,7 @@
  * @subpackage media.libs.medium
  * @author     David Persson <davidpersson@qeweurope.org>
  * @author     Naonak <noanak@free.fr>
- * @copyright  2007-2008 David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2009 David Persson <davidpersson@qeweurope.org>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
