@@ -388,7 +388,7 @@ class TransferBehavior extends ModelBehavior {
 	function getLastTransferredFile(&$model) {
 		extract($this->runtime[$model->alias], EXTR_SKIP);
 
-		if($hasPerformed) {
+		if ($hasPerformed) {
 			return $destination['file'];
 		}
 		return false;
