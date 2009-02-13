@@ -387,7 +387,11 @@ class TransferBehavior extends ModelBehavior {
  */
 	function getLastTransferredFile(&$model) {
 		extract($this->runtime[$model->alias], EXTR_SKIP);
-		return $hasPerformed && $destination['file'];
+
+		if($hasPerformed) {
+			return $destination['file'];
+		}
+		return false;
 	}
 /**
  * Checks if field contains a transferable resource
