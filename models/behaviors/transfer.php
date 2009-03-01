@@ -350,7 +350,7 @@ class TransferBehavior extends ModelBehavior {
 				App::import('Core','HttpSocket');
 			}
 
-			$Socket = new HttpSocket();
+			$Socket = new HttpSocket(array('timeout' => 5));
 			$Socket->request(array('method' => 'GET', 'uri' => $source['file']));
 
 			if (!empty($Socket->error) || $Socket->response['status']['code'] != 200) {
@@ -642,7 +642,7 @@ class TransferBehavior extends ModelBehavior {
 			if (!class_exists('HttpSocket')) {
 				App::import('Core', 'HttpSocket');
 			}
-			$Socket =& new HttpSocket();
+			$Socket =& new HttpSocket(array('timeout' => 5));
 			$Socket->request(array('method' => 'HEAD', 'uri' => $resource['file']));
 
 			if (empty($Socket->error) && $Socket->response['status']['code'] == 200) {
