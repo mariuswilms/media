@@ -17,8 +17,9 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-require_once CORE_TEST_CASES.DS.'libs'.DS.'model'.DS.'models.php';
-require_once(APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'core.php');
+App::Import('Model', 'App');
+require_once CORE_TEST_CASES . DS . 'libs' . DS . 'model' .DS . 'models.php';
+require_once APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'core.php';
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
  * Media Behavior Test Case Class

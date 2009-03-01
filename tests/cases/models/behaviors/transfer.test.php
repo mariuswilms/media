@@ -17,11 +17,10 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-require_once CORE_TEST_CASES.DS.'libs'.DS.'model'.DS.'models.php';
+App::Import('Model', 'App');
+require_once CORE_TEST_CASES . DS . 'libs' . DS . 'model' .DS . 'models.php';
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
-if (!defined('MEDIA')) {
-	define('MEDIA', TMP . 'media' . DS);
-}
+require_once APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'core.php';
 /**
  * Transfer Behavior Test Case Class
  *
@@ -56,9 +55,9 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$this->assertEqual($file, TMP . 'wei_rd_oe_file_name');
 		$Model->Behaviors->detach('Transfer');
 
-		$Model->Behaviors->attach('Media.Transfer',array('destinationFile' => ':TMP::Idont.exist:'));
+		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Idont.exist:'));
 		$file = $this->TestData->getFile('image-jpg.jpg');
-		$item = array('name' => 'Image xy','file' => $file);
+		$item = array('name' => 'Image xy', 'file' => $file);
 
 		$Model->create();
 		$this->expectError();
@@ -69,10 +68,10 @@ class TransferBehaviorTestCase extends CakeTestCase {
 
 	function testFileLocalToFileLocal() {
 		$Model =& ClassRegistry::init('Image');
-		$Model->Behaviors->attach('Media.Transfer',array('destinationFile' => ':TMP::Source.basename:'));
+		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Source.basename:'));
 
 		$file = $this->TestData->getFile('image-jpg.jpg');
-		$item = array('name' => 'Image xy','file' => $file);
+		$item = array('name' => 'Image xy', 'file' => $file);
 
 		$Model->create();
 		$result = $Model->save($item);
@@ -86,7 +85,7 @@ class TransferBehaviorTestCase extends CakeTestCase {
 
 	function testFileLocalToFileLocalTableless() {
 		$Model =& ClassRegistry::init('TheVoid');
-		$Model->Behaviors->attach('Media.Transfer',array('destinationFile' => ':TMP::Source.basename:'));
+		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Source.basename:'));
 
 		$file = $this->TestData->getFile('image-jpg.jpg');
 		$Model->prepare($file);
@@ -101,10 +100,12 @@ class TransferBehaviorTestCase extends CakeTestCase {
 	}
 
 	function testUrlRemoteToFileLocal() {
-		$Model =& ClassRegistry::init('Image');
-		$Model->Behaviors->attach('Media.Transfer',array('destinationFile' => ':TMP::Source.basename:'));
+		$this->skipUnless(@fsockopen('www.cakephp.org', 80), 'Remote server not available.');
 
-		$item = array('name' => 'Image xy','file' => 'http://www.cakephp.org/img/cake-logo.png');
+		$Model =& ClassRegistry::init('Image');
+		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Source.basename:'));
+
+		$item = array('name' => 'Image xy', 'file' => 'http://www.cakephp.org/img/cake-logo.png');
 
 		$Model->create();
 		$result = $Model->save($item);
@@ -113,7 +114,10 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$file = $Model->getLastTransferredFile();
 		$this->assertTrue($file);
 		$this->assertTrue(file_exists($file));
-		unlink($file);
+
+		if (file_exists($file)) {
+			unlink($file);
+		}
 	}
 }
 ?>
