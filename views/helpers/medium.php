@@ -39,7 +39,7 @@ class MediumHelper extends AppHelper {
  */
 	var $tags = array(
 			'object'			=> '<object%s>%s%s</object>',
-			'param' 			=> '<param%s />',
+			'param' 			=> '<param%s/>',
 			'csslink' 			=> '<link type="text/css" rel="stylesheet" href="%s" %s/>',
 			'javascriptlink' 	=> '<script type="text/javascript" src="%s"></script>',
 			'rsslink'			=> '<link type="application/rss+xml" rel="alternate" href="%s" title="%s"/>', // v2
@@ -50,12 +50,9 @@ class MediumHelper extends AppHelper {
  * @var array
  */
 	var $settings = array(
-					/* Directory names to be scanned for */
-					'directories' => array('static' ,'transfer', 'filter'),
-
-					/* Version names to be scanned for */
+					/* Directories, versions and extensions used by MediumHelper::file to guess filenames */
+					'directories' => array('static', 'transfer', 'filter'),
 					'versions' => array('xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl', 'c'),
-
 					'extensions' => array(
 						'arc'	=> array('zip'),
 						'aud' 	=> array('mp3', 'ogg', 'aif', 'wma', 'wav'),
@@ -66,7 +63,9 @@ class MediumHelper extends AppHelper {
 						'img' 	=> array('png', 'jpg', 'jpeg' , 'gif'),
 						'js' 	=> array('js'),
 						'txt' 	=> array('txt'),
-						'vid' 	=> array('avi', 'mpg', 'qt', 'mov', 'ogg', 'wmv', 'png', 'jpg', 'jpeg', 'gif', 'mp3', 'ogg', 'aif', 'wma', 'wav'),
+						'vid' 	=> array('avi', 'mpg', 'qt', 'mov', 'ogg', 'wmv',
+										'png', 'jpg', 'jpeg', 'gif', 'mp3', 'ogg',
+										'aif', 'wma', 'wav'),
 						)
 					);
 /**
@@ -78,7 +77,7 @@ class MediumHelper extends AppHelper {
 /**
  * Constructor
  *
- * Sets up cache
+ * Sets up cache and merges user supplied settings with default settings
  */
 	function __construct($settings = array()) {
 		$this->settings = Set::merge($this->settings, $settings);
@@ -229,27 +228,29 @@ class MediumHelper extends AppHelper {
 				return sprintf($this->Html->tags['image'], $url, $this->_parseAttributes($attributes));
 
 			/* Windows Media */
-			case 'video/x-ms-asx':
 			case 'video/x-ms-wmv': // official
+			case 'video/x-ms-asx':
 			case 'video/x-msvideo':
 				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
 								'width' => $width,
 								'height' => $height,
 								'data' => $url,
+								'classid' => 'clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6',
 								));
 				$parameters = array(
 								'src' => $url,
 								'autostart' => $autoplay,
 								'controller' => $controls,
+								'pluginspage' => 'http://www.microsoft.com/Windows/MediaPlayer/',
 								);
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
 
 			/* RealVideo */
-			case 'application/vnd.rn-realmedia':	 // ?
-			case 'application/vnd.pn-realmedia':     // ?
 			case 'video/vnd.rn-realvideo':
 			case 'video/vnd.pn-realvideo':
+			case 'application/vnd.rn-realmedia': // necessary?
+			case 'application/vnd.pn-realmedia': // necessary?
 				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
 								'width' => $width,
@@ -268,6 +269,7 @@ class MediumHelper extends AppHelper {
 								'nojava' => true,
 								'center' => true,
 								'backgroundcolor' => $background,
+								'pluginspage' => 'http://www.real.com/player/',
 								);
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
 
@@ -287,6 +289,7 @@ class MediumHelper extends AppHelper {
 								'controller' => $controls,
 								'bgcolor' => substr($background, 1),
 								'showlogo' => $branding,
+								'pluginspage' => 'http://www.apple.com/quicktime/download/',
 								);
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
 
@@ -317,12 +320,12 @@ class MediumHelper extends AppHelper {
 				$parameters = array(
 								'movie' => $url,
 								'wmode' => 'transparent',
-								'pluginspage' => 'http://www.macromedia.com/go/getflashplayer',
 								'bgcolor' => $background,
 								'FlashVars' => 'playerMode=embedded',
 								'quality' => 'best',
 								'scale' => 'noScale',
 								'salign' => 'TL',
+								'pluginspage' => 'http://www.adobe.com/go/getflashplayer',
 								);
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
 
@@ -343,7 +346,7 @@ class MediumHelper extends AppHelper {
 
 			case 'audio/x-wav':
 			case 'audio/mpeg':
-			case 'audio/ogg': // better?: application/ogg
+			case 'audio/ogg': // must use application/ogg instead?
 			case 'audio/x-midi':
 				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
