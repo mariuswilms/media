@@ -228,7 +228,6 @@ $config = array(
 		'mime_type' => 'application/x-gettext-translation',
 		'pattern' => array('mo')
 		),
-
 	array(
 		'mime_type' => 'application/x-gzip',
 		'pattern' => array('gz')

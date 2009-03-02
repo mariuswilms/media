@@ -22,4 +22,3 @@ CREATE TABLE IF NOT EXISTS `media` (
   `modified` datetime default NULL,
   PRIMARY KEY  (`id`)
 );
-
