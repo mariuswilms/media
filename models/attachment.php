@@ -20,6 +20,8 @@
 /**
  * Attachment Model Class
  *
+ * A ready-to-use model combining multiple behaviors.
+ *
  * @package    media
  * @subpackage media.models
  */
@@ -27,95 +29,73 @@ class Attachment extends MediaAppModel {
 /**
  * Name of model
  *
- * @var   string
+ * @var string
  */
 	var $name = 'Attachment';
 /**
  * Name of table to use
  *
- * @var   mixed
+ * @var mixed
  */
 	var $useTable = 'attachments';
 /**
  * actsAs property
  *
- * @var   array
+ * @var array
  */
 	var $actsAs = array(
-	    'Media.Polymorphic' => array(
-									  'classField' => 'model',
-									  'foreignKey' => 'foreign_key',
-									 ),
-	    'Media.Transfer'		  => array(
-									  'destinationFile' => ':MEDIA:transfer:DS::Medium.short::DS::Source.basename:',
-									  'createDirectory' => true,
-									 ),
-	    'Media.Media'			  => array(
-									  'makeVersions'    => true,
-									  'metadataLevel'   => 2,
-									  'createDirectory' => true,
-									 ),
-				  );
+			'Media.Polymorphic' => array(
+				'classField' => 'model',
+				'foreignKey' => 'foreign_key',
+				),
+			'Media.Transfer' => array(
+				'destinationFile' => ':MEDIA:transfer:DS::Medium.short::DS::Source.basename:',
+				'createDirectory' => true,
+				),
+			'Media.Media' => array(
+				'makeVersions'    => true,
+				'metadataLevel'   => 2,
+				'createDirectory' => true,
+				),
+			);
 /**
- * Validation
+ * Validation rules for file and alternative fields
  *
- * @var   array
+ * For more information on the rules used here
+ * see the source of TransferBehavior and MediaBehavior.
+ *
+ * If you experience problems with your model not validating,
+ * try commenting the mimeType rule or providing less strict
+ * settings for single rules.
+ *
+ * @var array
  */
 	var $validate = array(
-		 'file'		=> array(
-		   /* @see TransferBehavior::checkResource */
-		   'resource'   => array(
-					'rule' => 'checkResource',
-						   ),
-		   /* @see TransferBehavior::checkAccess */
-		   'access'     => array(
-					'rule' => 'checkAccess',
-						   ),
-		   /* @see TransferBehavior::checkLocation */
-		   'location'   => array(
-					'rule' => array('checkLocation', array(':MEDIA:', '/tmp/')),
-						   ),
-		   /* @see TransferBehavior::checkPermission */
-		   'permission' => array(
-					'rule' => array('checkPermission', '*'),
-						   ),
-		   /* @see TransferBehavior::checkSize */
-		   'size'       => array(
-					'rule' => array('checkSize', '5M'),
-					 	   ),
-		   /* @see TransferBehavior::checkPixels */
-		   'pixels'     => array(
-					'rule' => array('checkPixels', '1600x1600'),
-					 	   ),
-		   /* @see TransferBehavior::checkExtension */
-		   'extension'  => array(
-					'rule' => array(
-					           'checkExtension',
-			 				   array(
-								 'bin', 'class', 'dll', 'dms', 'exe', 'lha',
-								 'lzh', 'so', 'as', 'asp', 'sh', 'java', 'js',
-								 'lisp', 'lua', 'pl', 'pm', 'php', 'py', 'pyc',
-								 'vb', 'bas', 'jar',
-							    ),
-							   '*'
-							  ),
-						  ),
-		   /* @see TransferBehavior::checkMimeType */
-		   'mimeType'   => array(
-					'rule' => array(
-							   'checkMimeType',
-						  		false,
-								'*'
-							  ),
-						),
-		), /* END of validations for file field */
-	 	'alternative' => array(
-				   /* @see MediaBehavior::checkRepresent */
-				   'rule' 	    => 'checkRepresent',
-            	   'on' 	    => 'create',
-            	   'required'   => false,
-	   			   'allowEmpty' => true,
-			 	   ),
-     ); /* END of validation var */
+			'file' => array(
+				'resource'   => array('rule' => 'checkResource'),
+				'access'     => array('rule' => 'checkAccess'),
+				'location'   => array('rule' => array('checkLocation', array(':MEDIA:', '/tmp/'))),
+				'permission' => array('rule' => array('checkPermission', '*')),
+				'size'       => array('rule' => array('checkSize', '5M')),
+				'pixels'     => array('rule' => array('checkPixels', '1600x1600')),
+				'extension'  => array('rule' => array('checkExtension',
+													array(
+														'bin', 'class', 'dll', 'dms', 'exe', 'lha',
+														'lzh', 'so', 'as', 'asp', 'sh', 'java', 'js',
+														'lisp', 'lua', 'pl', 'pm', 'php', 'py', 'pyc',
+														'vb', 'bas', 'jar',
+														),
+													'*'
+													),
+												),
+				'mimeType'   => array('rule' => array('checkMimeType', false, '*')),
+				),
+			'alternative' => array(
+				'rule'       => 'checkRepresent',
+				'on'         => 'create',
+				'required'   => false,
+				'allowEmpty' => true,
+				),
+			);
 }
 ?>
