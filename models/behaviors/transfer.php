@@ -578,23 +578,22 @@ class TransferBehavior extends ModelBehavior {
 			/*
 			 * Mime types and trustClient setting
 			 *
-			 * trust | source   | temporary
-			 * ------|----------|----------
-			 * true  | xxxx/xxx | xxxx/xxx
-			 * ------|----------|----------
-			 * false | null     | xxxx/xxx
+			 * trust | source   | (temporary) | (destination)
+			 * ------|----------|----------------------------
+			 * true  | x/x      | x/x         | x/x,null
+			 * ------|----------|----------------------------
+			 * false | x/x,null | x/x,null    | null
 			 */
 			if ($type === 'temporary' && empty($$type)) {
 				continue(1); // some transfers dont use a temporary
 			}
-			if ($type === 'source' && ${$type}['type'] === 'file-upload-remote' && !isset(${$type}['mimeType']) && !$trustClient) {
-				continue(1); // see info method
+			if (!isset(${$type}['mimeType']) && !$trustClient) {
+				continue(1); // with trustClient set to false we don't necessarily have a MIME type
 			}
 			if (!MediaValidation::mimeType(${$type}['mimeType'], $deny, $allow)) {
 				return false;
 			}
 		}
-
 		return true;
 	}
 /**
@@ -650,7 +649,7 @@ class TransferBehavior extends ModelBehavior {
 								$resource,
 								array(
 									'size'       => $Socket->response['header']['Content-Length'],
-									'mimeType'   => $Socket->response['header']['Content-Type'],
+									'mimeType'   => $trustClient ? $Socket->response['header']['Content-Type'] : null,
 									'permission' => '0004'
 									)
 								);
@@ -664,7 +663,7 @@ class TransferBehavior extends ModelBehavior {
 							array(
 								'file'     => $resource,
 								'host'     => 'localhost',
-								'mimeType' => MimeType::guessType($resource),
+								'mimeType' => MimeType::guessType($resource, array('paranoid' => !$trustClient)),
 								)
 							);
 
