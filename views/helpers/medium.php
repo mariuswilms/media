@@ -247,10 +247,9 @@ class MediumHelper extends AppHelper {
 				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
 
 			/* RealVideo */
+			case 'application/vnd.rn-realmedia':
 			case 'video/vnd.rn-realvideo':
-			case 'video/vnd.pn-realvideo':
-			case 'application/vnd.rn-realmedia': // necessary?
-			case 'application/vnd.pn-realmedia': // necessary?
+			case 'audio/vnd.rn-realaudio':
 				$attributes = array_merge($attributes, array(
 								'type' => $mimeType,
 								'width' => $width,
