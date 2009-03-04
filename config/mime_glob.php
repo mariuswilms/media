@@ -334,12 +334,12 @@ $config = array(
 		'pattern' => array('wma')
 		),
 	array(
-		'mime_type' => 'audio/x-pn-realaudio',
-		'pattern' => array('ra', 'rm', 'ram')
+		'mime_type' => 'application/vnd.rn-realmedia',
+		'pattern' => array('rm', 'rmvb', 'rmj', 'rmm', 'rms', 'rmx')
 		),
 	array(
-		'mime_type' => 'audio/x-realaudio',
-		'pattern' => array('ra')
+		'mime_type' => 'audio/vnd.rn-realaudio',
+		'pattern' => array('ra', 'rax')
 		),
 	array(
 		'mime_type' => 'audio/x-wav',
@@ -433,7 +433,7 @@ $config = array(
 		),
 	array(
 		'mime_type' => 'text/plain',
-		'pattern' => array('asc', 'txt', 'text', 'diff', 'pot')
+		'pattern' => array('asc', 'txt', 'text', 'diff')
 		),
 	array(
 		'mime_type' => 'text/rtf',
@@ -535,6 +535,10 @@ $config = array(
 	array(
 		'mime_type' => 'video/quicktime',
 		'pattern' => array('qt', 'mov')
+		),
+	array(
+		'mime_type' => 'video/vnd.rn-realvideo',
+		'pattern' => array('rv', 'rvx')
 		),
 	array(
 		'mime_type' => 'video/x-ms-asf',
