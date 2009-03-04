@@ -26,7 +26,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 
  * @subpackage media.tests.cases.libs
  */
 class TransferValidationTest extends CakeTestCase {
-	function setup() {
+	function setUp() {
 		$this->TestData = new TestData();
 	}
 

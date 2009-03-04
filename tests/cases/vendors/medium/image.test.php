@@ -27,7 +27,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtu
  * @subpackage media.tests.cases.libs.medium
  */
 class ImageMediumTest extends CakeTestCase {
-	function setup() {
+	function setUp() {
 		$this->TestData = new TestData();
 	}
 

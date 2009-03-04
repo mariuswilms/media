@@ -30,13 +30,17 @@ require_once APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'core.php';
 class TransferBehaviorTestCase extends CakeTestCase {
 	var $fixtures = array('core.image');
 
-	function setup() {
+	function setUp() {
 		$this->TestData = new TestData();
 	}
 
 	function tearDown() {
 		$this->TestData->flushFiles();
 		ClassRegistry::flush();
+	}
+
+	function skip() {
+		$this->skipUnless(@fsockopen('cakephp.org', 80), 'Remote server not available at cakephp.org.');
 	}
 
 	function testDestinationFile() {
@@ -47,8 +51,7 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$item = array('name' => 'Image xy','file' => $file);
 
 		$Model->create();
-		$result = $Model->save($item);
-		$this->assertTrue($result);
+		$this->assertTrue($Model->save($item));
 
 		$file = $Model->getLastTransferredFile();
 		unlink($file);
@@ -61,9 +64,22 @@ class TransferBehaviorTestCase extends CakeTestCase {
 
 		$Model->create();
 		$this->expectError();
-		$result = $Model->save($item);
-		$this->assertFalse($result);
-		$Model->Behaviors->detach('Transfer');
+		$this->assertFalse($Model->save($item));
+	}
+
+	function testGetLastTransferredFile() {
+		$Model =& ClassRegistry::init('TheVoid');
+		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Source.basename:'));
+
+		$this->assertFalse($Model->getLastTransferredFile());
+
+		$file = $this->TestData->getFile('image-jpg.jpg');
+		$Model->prepare($file);
+		$Model->perform();
+		$file = $Model->getLastTransferredFile();
+		$this->assertTrue($file);
+		$this->assertTrue(file_exists($file));
+		unlink($file);
 	}
 
 	function testFileLocalToFileLocal() {
@@ -74,50 +90,101 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$item = array('name' => 'Image xy', 'file' => $file);
 
 		$Model->create();
-		$result = $Model->save($item);
-		$this->assertTrue($result);
+		$this->assertTrue($Model->save($item));
 		$this->assertTrue(file_exists($file));
 
 		$file = $Model->getLastTransferredFile();
 		$this->assertTrue(file_exists($file));
 		unlink($file);
-	}
 
-	function testFileLocalToFileLocalTableless() {
 		$Model =& ClassRegistry::init('TheVoid');
 		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Source.basename:'));
 
 		$file = $this->TestData->getFile('image-jpg.jpg');
-		$Model->prepare($file);
-		$result = $Model->perform();
-		$this->assertTrue($result);
+		$this->assertTrue($Model->prepare($file));
+		$this->assertTrue($Model->perform());
 		$this->assertTrue(file_exists($file));
 
 		$file = $Model->getLastTransferredFile();
-		$this->assertTrue($file);
 		$this->assertTrue(file_exists($file));
 		unlink($file);
 	}
 
 	function testUrlRemoteToFileLocal() {
-		$this->skipUnless(@fsockopen('www.cakephp.org', 80), 'Remote server not available.');
-
 		$Model =& ClassRegistry::init('Image');
 		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Source.basename:'));
 
-		$item = array('name' => 'Image xy', 'file' => 'http://www.cakephp.org/img/cake-logo.png');
+		$item = array('name' => 'Image xy', 'file' => 'http://cakephp.org/img/cake-logo.png');
 
 		$Model->create();
-		$result = $Model->save($item);
-		$this->assertTrue($result);
+		$this->assertTrue($Model->save($item));
 
 		$file = $Model->getLastTransferredFile();
-		$this->assertTrue($file);
 		$this->assertTrue(file_exists($file));
 
 		if (file_exists($file)) {
 			unlink($file);
 		}
+
+		$Model =& ClassRegistry::init('TheVoid');
+		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Source.basename:'));
+
+		$file = 'http://cakephp.org/img/cake-logo.png';
+		$this->assertTrue($Model->prepare($file));
+		$this->assertTrue($Model->perform());
+
+		$file = $Model->getLastTransferredFile();
+		$this->assertTrue(file_exists($file));
+
+		if (file_exists($file)) {
+			unlink($file);
+		}
+	}
+
+	function testTrustClient() {
+		$Model =& ClassRegistry::init('TheVoid');
+		$config = array('destinationFile' => ':TMP::Source.basename:');
+		$configTrust = array('destinationFile' => ':TMP::Source.basename:', 'trustClient' => true);
+
+		$Model->Behaviors->attach('Media.Transfer', $config);
+
+		$file = $this->TestData->getFile('image-jpg.jpg');
+		$Model->prepare($file);
+		$Model->perform();
+		unlink($Model->getLastTransferredFile());
+		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
+		$this->assertIdentical($result, 'image/jpeg');
+		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
+		$this->assertNull($result);
+
+		$file = 'http://cakephp.org/img/cake-logo.png';
+		$Model->prepare($file);
+		$Model->perform();
+		unlink($Model->getLastTransferredFile());
+		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
+		$this->assertNull($result);
+		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
+		$this->assertNull($result);
+
+		$Model->Behaviors->attach('Media.Transfer', $configTrust);
+
+		$file = $this->TestData->getFile('image-jpg.jpg');
+		$Model->prepare($file);
+		$Model->perform();
+		unlink($Model->getLastTransferredFile());
+		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
+		$this->assertIdentical($result, 'image/jpeg');
+		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
+		$this->assertIdentical($result, 'image/jpeg');
+
+		$file = 'http://cakephp.org/img/cake-logo.png';
+		$Model->prepare($file);
+		$Model->perform();
+		unlink($Model->getLastTransferredFile());
+		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
+		$this->assertIdentical($result, 'image/png');
+		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
+		$this->assertIdentical($result, 'image/png');
 	}
 }
 ?>

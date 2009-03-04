@@ -26,7 +26,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 
  * @subpackage media.tests.cases.libs
  */
 class MimeGlobTest extends CakeTestCase {
-	function setup() {
+	function setUp() {
 		Configure::write('Cache.disable', true);
 		$this->TestData = new TestData();
 	}

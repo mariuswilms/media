@@ -46,7 +46,7 @@ class TestImagickDocumentMedium extends DocumentMedium {
  * @subpackage media.tests.cases.libs.medium.adapter
  */
 class ImagickMediumAdapterTest extends CakeTestCase {
-	function setup() {
+	function setUp() {
 		$this->TestData = new TestData();
 	}
 
@@ -72,7 +72,8 @@ class ImagickMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformation() {
-		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-jpg.jpg'));
+		$file = $this->TestData->getFile('image-jpg.jpg');
+		$Medium = new TestImagickImageMedium($file);
 
 		$result = $Medium->width();
 		$this->assertEqual($result, 70);
@@ -83,7 +84,7 @@ class ImagickMediumAdapterTest extends CakeTestCase {
 
 	function testManipulation() {
 		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-jpg.jpg'));
-		$Medium->fit(10,10);
+		$Medium->fit(10, 10);
 		$this->assertTrue($Medium->width() <= 10);
 		$this->assertTrue($Medium->height() <= 10);
 

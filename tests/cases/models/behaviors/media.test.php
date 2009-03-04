@@ -35,7 +35,7 @@ class MediaBehaviorTestCase extends CakeTestCase {
 		$this->loadFixtures('Song');
 	}
 
-	function setup() {
+	function setUp() {
 		$this->TmpFolder = new Folder(TMP . 'test_suite' . DS, true);
 		$this->TmpFolder->create($this->TmpFolder->pwd().'static/img');
 		$this->TmpFolder->create($this->TmpFolder->pwd().'static/doc');

@@ -49,7 +49,7 @@ class SweetMedium extends Medium {
  * @subpackage media.tests.cases.libs.medium
  */
 class MediumTest extends CakeTestCase {
-	function setup() {
+	function setUp() {
 		$this->TestData = new TestData();
 	}
 

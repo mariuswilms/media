@@ -46,7 +46,7 @@ class TheMediumTestController extends Controller {
 	var $uses = null;
 }
 class MediumHelperTestCase extends CakeTestCase {
-	function setup() {
+	function setUp() {
 		Cache::clear(false, 'default');
 
 		$this->Helper =& new MediumHelper();

@@ -26,7 +26,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 
  * @subpackage media.tests.cases.libs
  */
 class MimeMagicTest extends CakeTestCase {
-	function setup() {
+	function setUp() {
 		$this->TestData = new TestData();
 	}
 
@@ -37,7 +37,8 @@ class MimeMagicTest extends CakeTestCase {
 	function testFormat() {
 		$this->assertNull(MimeMagic::format(true));
 		$this->assertNull(MimeMagic::format(5));
-//		$this->assertNull(MimeMagic::format(array('foo' => 'bar')));
+		/* Currently arrays aren't validated */
+		// $this->assertNull(MimeMagic::format(array('foo' => 'bar')));
 		$this->assertNull(MimeMagic::format('does-not-exist.db'));
 
 		$file = $this->TestData->getFile('text-html.snippet.html');
@@ -76,7 +77,11 @@ class MimeMagicTest extends CakeTestCase {
 
 	function testShippedAnalyze() {
 		$file = APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.db';
-		$this->skipUnless(file_exists($file), '%s. No shipped magic db.');
+		$skip = $this->skipIf(!file_exists($file), '%s. No shipped magic db.');
+
+		if ($skip) { /* Skipping does not silence the error */
+			$this->expectError();
+		}
 		$Mime =& new MimeMagic($file);
 
 		// $this->assertEqual($Mime->analyze($this->TestData->getFile('3gp.snippet.3gp')), 'video/3gpp');

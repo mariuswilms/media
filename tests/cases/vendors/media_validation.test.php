@@ -26,7 +26,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 
  * @subpackage media.tests.cases.libs
  */
 class MediaValidationTest extends CakeTestCase {
-	function setup() {
+	function setUp() {
 		$this->TestData = new TestData();
 	}
 
@@ -65,24 +65,43 @@ class MediaValidationTest extends CakeTestCase {
 		$result = MediaValidation::extension($check);
 		$this->assertTrue($result);
 
+		$check = 'tar.gz';
+		$result = MediaValidation::extension($check, false, array('tar', 'gz'));
+		$this->assertTrue($result);
+
+		$check = 'tar.gz';
+		$result = MediaValidation::extension($check, false, array('tar.gz'));
+		$this->assertFalse($result);
+
 		$check = 'php';
 		$result = MediaValidation::extension($check);
 		$this->assertFalse($result);
 
 		$check = 'png';
-		$result = MediaValidation::extension($check,array('png'));
+		$result = MediaValidation::extension($check, array('png'));
 		$this->assertFalse($result);
 
 		$check = 'png';
-		$result = MediaValidation::extension($check,array('png'),array('png'));
+		$result = MediaValidation::extension($check, array('png'), array('png'));
 		$this->assertFalse($result);
 
-		/* must fail cannot test for invalid extensions */
-//		$check = 'in.valid';
-//		$result = MediaValidation::extension($check);
-//		$this->assertFalse($result);
+		$check = 'in.va.lid';
+		$result = MediaValidation::extension($check);
+		$this->assertFalse($result);
+
+		$check = '.inva.lid';
+		$result = MediaValidation::extension($check);
+		$this->assertFalse($result);
 
 		$check = '';
+		$result = MediaValidation::extension($check);
+		$this->assertFalse($result);
+
+		$check = false;
+		$result = MediaValidation::extension($check);
+		$this->assertFalse($result);
+
+		$check = true;
 		$result = MediaValidation::extension($check);
 		$this->assertFalse($result);
 	}
@@ -165,25 +184,25 @@ class MediaValidationTest extends CakeTestCase {
 	}
 
 	function testAccess() {
-		$result = MediaValidation::access('0444','r');
+		$result = MediaValidation::access('0444', 'r');
 		$this->assertTrue($result);
 
-		$result = MediaValidation::access(0444,'r');
+		$result = MediaValidation::access(0444, 'r');
 		$this->assertTrue($result);
 
-		$result = MediaValidation::access('0004','r');
+		$result = MediaValidation::access('0004', 'r');
 		$this->assertTrue($result);
 
 		$result = MediaValidation::access('0111','r');
 		$this->assertFalse($result);
 
-		$result = MediaValidation::access('0222','w');
+		$result = MediaValidation::access('0222', 'w');
 		$this->assertTrue($result);
 
-		$result = MediaValidation::access('0002','w');
+		$result = MediaValidation::access('0002', 'w');
 		$this->assertTrue($result);
 
-		$result = MediaValidation::access('0111','w');
+		$result = MediaValidation::access('0111', 'w');
 		$this->assertFalse($result);
 	}
 
@@ -207,8 +226,7 @@ class MediaValidationTest extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
-	function testFile()
-	{
+	function testFile() {
 		$file = __FILE__;
 		$result = MediaValidation::file($file);
 		$this->assertTrue($result);
