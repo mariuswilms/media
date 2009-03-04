@@ -34,7 +34,7 @@ class MediaValidation extends Validation {
  * @return bool
  */
 	function mimeType($check, $deny = array('application/octet-stream', 'text/x-php'), $allow = true) {
-		if (!preg_match('/^[-\w.\+]+\/[-\w.\+]+$/', $check)) {
+		if (!is_string($check) || !preg_match('/^[-\w.\+]+\/[-\w.\+]+$/', $check)) {
 			return false;
 		}
 		list($deny, $allow) = self::_normalize($deny, $allow);
@@ -56,7 +56,10 @@ class MediaValidation extends Validation {
  * @return bool
  */
 	function extension($check, $deny = array('bin', 'class', 'dll', 'dms', 'exe', 'lha', 'lzh', 'so', 'as', 'asp', 'sh', 'java', 'js', 'lisp', 'lua', 'pl', 'pm', 'php', 'py', 'pyc', 'vb', 'bas'), $allow = true) {
-		list($deny,$allow) = self::_normalize($deny, $allow);
+		if (!is_string($check) || !preg_match('/^[\w0-9]+(\.[\w0-9]+)?$/', $check)) {
+			return false;
+		}
+		list($deny, $allow) = self::_normalize($deny, $allow);
 
 		if ($deny === true || (is_array($deny) && Validation::extension($check, $deny))) {
 			return false;
@@ -177,20 +180,20 @@ class MediaValidation extends Validation {
  */
 	function access($check, $type = 'r') {
 		if (self::file($check, true) || self::folder($check, true)) {
-			if (strpos($type, 'r') && !is_readable($check)) {
+			if (strpos($type, 'r') !== false && !is_readable($check)) {
 				return false;
 			}
-			if (strpos($type, 'w') && !is_writable($check)) {
+			if (strpos($type, 'w') !== false && !is_writable($check)) {
 				return false;
 			}
 		} else {
 			$ar = $check & '0444'; /* is readable? == are we able to connect? */
 			$aw = $check & '0222'; /* is writable? */
 
-			if (strpos($type, 'r') && $ar === '0000') {
+			if (strpos($type, 'r') !== false && $ar === '0000') {
 				return false;
 			}
-			if(strpos($type, 'w') && $aw === '0000') {
+			if (strpos($type, 'w') !== false && $aw === '0000') {
 				return false;
 			}
 		}
@@ -206,6 +209,7 @@ class MediaValidation extends Validation {
  */
 	function permission($check, $match = true) {
 		$match = self::_normalize($match);
+
 		if ($match === false) {
 			return true;
 		}
