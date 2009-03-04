@@ -87,7 +87,8 @@ class MimeType extends Object {
 		$globMatch = array();
 		$preferred = array(
 						'jpg', 'tiff', 'txt', 'css', 'swf', 'doc', 'php',
-						'html', 'xhtml', 'mp3', 'mpeg', 'ps', 'xml', 'bz2'
+						'html', 'xhtml', 'mp3', 'mpeg', 'ps', 'xml', 'bz2',
+						'rm', 'ra', 'rv'
 						);
 
 		if (is_file($file)) {
@@ -133,7 +134,7 @@ class MimeType extends Object {
 			$options = array('looseProperties' => $options, 'looseExperimental' => $options);
 		}
 		if (isset($options['simplify'])) {
-			$options = array('looseProperties' => $options['simplify'], 'looseExperimental' => $options['simplify']);;
+			$options = array('looseProperties' => $options['simplify'], 'looseExperimental' => $options['simplify']);
 		}
 		$default = array('looseProperties' => true, 'looseExperimental' => false, 'paranoid' => false);
 		extract(array_merge($default, $options), EXTR_SKIP);
@@ -148,13 +149,16 @@ class MimeType extends Object {
 				return MimeType::simplify(array_shift($globMatch), $looseProperties, $looseExperimental);
 			}
 		}
+
 		if (is_a($_this->__magic, 'finfo')) {
-			$magicMatch = array($_this->__magic->file($file));
+			$magicMatch = $_this->__magic->file($file);
 		} elseif ($_this->__magic === 'mime_magic') {
-			$magicMatch = array(mime_content_type($file));
+			$magicMatch = mime_content_type($file);
 		} elseif (is_a($_this->__magic, 'MimeMagic')) {
-			$magicMatch = $_this->__magic->analyze($file /*, array('minPriority' => 80) */);
+			$magicMatch = $_this->__magic->analyze($file);
 		}
+		$magicMatch = !is_array($magicMatch) && empty($magicMatch) ? array() : array($magicMatch);
+
 		if (empty($magicMatch)) {
 			$File =& new File($file);
 
