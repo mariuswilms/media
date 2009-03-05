@@ -34,18 +34,18 @@ class MediaPluginSchema extends CakeSchema {
 	}
 
 	var $attachments = array(
-						'id'          => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary', 'extra' => 'auto_increment', 'length' => 10),
-						'model'       => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 255),
-						'foreign_key' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10),
-						'dirname'     => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 255),
-						'basename'    => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 255),
-						'checksum'    => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 255),
-						'group'       => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 255),
-						'alternative' => array('type' => 'string', 'null' => true, 'default' => NULL,'length' => 50),
-						'created'     => array('type' => 'datetime', 'null' => true, 'default' => NULL),
-						'modified'    => array('type' => 'datetime', 'null' => true, 'default' => NULL),
-						'indexes'     => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
-						);
+			'id'          => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary', 'extra' => 'auto_increment', 'length' => 10),
+			'model'       => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 255),
+			'foreign_key' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10),
+			'dirname'     => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 255),
+			'basename'    => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 255),
+			'checksum'    => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 255),
+			'group'       => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 255),
+			'alternative' => array('type' => 'string', 'null' => true, 'default' => NULL,'length' => 50),
+			'created'     => array('type' => 'datetime', 'null' => true, 'default' => NULL),
+			'modified'    => array('type' => 'datetime', 'null' => true, 'default' => NULL),
+			'indexes'     => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
+			);
 
 	var $media = array(
 			'id'          => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary', 'extra' => 'auto_increment', 'length' => 10),
@@ -57,6 +57,6 @@ class MediaPluginSchema extends CakeSchema {
 			'created'     => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 			'modified'    => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 			'indexes'     => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
-					);
+			);
 }
 ?>
