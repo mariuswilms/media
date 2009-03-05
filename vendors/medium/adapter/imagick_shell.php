@@ -26,37 +26,37 @@
  */
 class ImagickShellMediumAdapter extends MediumAdapter {
 	var $require = array(
-							'mimeTypes' => array( /* readable */
-								'image/jpeg',
-								'image/gif',
-								'image/png',
-								'image/tiff',
-								'image/wpg',
-								'image/xbm',
-								'image/xcf',
-								'image/wbmp',
-								'image/ms-bmp',
-								'image/pcx',
-								'image/quicktime',
-								'image/svg',
-								'image/xpm',
-								'image/ico',
-								'image/psd',
-								),
-							 'commands' => array('convert', 'identify'),
-							);
+						'mimeTypes' => array( /* readable */
+							'image/jpeg',
+							'image/gif',
+							'image/png',
+							'image/tiff',
+							'image/wpg',
+							'image/xbm',
+							'image/xcf',
+							'image/wbmp',
+							'image/ms-bmp',
+							'image/pcx',
+							'image/quicktime',
+							'image/svg',
+							'image/xpm',
+							'image/ico',
+							'image/psd',
+							),
+						 'commands' => array('convert', 'identify'),
+						);
 
 	var $_formatMap = array( /* writable */
-								'image/jpeg' => 'jpeg',
-								'image/gif' => 'gif',
-								'image/png' => 'png',
-								'image/tiff' => 'tiff',
-								'image/wbmp' => 'wbmp',
-								'image/ms-bmp' => 'bmp',
-								'image/pcx' => 'pcx',
-								'image/ico' => 'ico',
-								'image/xbm' => 'xbm',
-								'image/psd' => 'psd',
+						'image/jpeg' => 'jpeg',
+						'image/gif' => 'gif',
+						'image/png' => 'png',
+						'image/tiff' => 'tiff',
+						'image/wbmp' => 'wbmp',
+						'image/ms-bmp' => 'bmp',
+						'image/pcx' => 'pcx',
+						'image/ico' => 'ico',
+						'image/xbm' => 'xbm',
+						'image/psd' => 'psd',
 						);
 
 	var $_temporaryFormat = 'png';
@@ -65,7 +65,7 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 	var $_pngFilter;
 
 	function compatible(&$Medium) {
-		if ($this->_which('gs')) { /* Check for ghostscript */
+		if ($this->_which(array('gs', 'gswin32'))) { /* Check for ghostscript */
 			$this->require['mimeTypes'][] = 'application/pdf';
 		}
 		return parent::compatible($Medium);

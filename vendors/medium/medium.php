@@ -358,6 +358,10 @@ class Medium extends Object {
  * @return string
  */
 	function _knownRatio($width, $height) {
+		if (empty($width) || empty($height)) {
+			return null;
+		}
+
 		$knownRatios = array(
 						'1:1.294' => 1/1.294,
 						'1:1.545' => 1/1.1545,
@@ -674,6 +678,15 @@ class MediumAdapter extends Object {
  */
 	function _which($command) {
 		static $found = array();
+
+		if (is_array($command)) {
+			foreach ($command as $c) {
+				if ($result = $this->_which($c)) {
+					return $result;
+				}
+			}
+			return false;
+		}
 
 		if (isset($found[$command])) {
 			return $found[$command];

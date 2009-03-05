@@ -26,38 +26,38 @@
  */
 class ImagickMediumAdapter extends MediumAdapter {
 	var $require = array(
-							'mimeTypes' => array( /* readable */
-								'image/jpeg',
-								'image/gif',
-								'image/png',
-								'image/tiff',
-								'image/wpg',
-								'image/xbm',
-								'image/xcf',
-								'image/wbmp',
-								'image/ms-bmp',
-								'image/pcx',
-								'application/pdf',
-								'image/quicktime',
-								'image/svg',
-								'image/xpm',
-								'image/ico',
-								'image/psd',
-								),
-							 'extensions' => array('imagick'),
-							);
+						'mimeTypes' => array( /* readable */
+							'image/jpeg',
+							'image/gif',
+							'image/png',
+							'image/tiff',
+							'image/wpg',
+							'image/xbm',
+							'image/xcf',
+							'image/wbmp',
+							'image/ms-bmp',
+							'image/pcx',
+							'image/quicktime',
+							'image/svg',
+							'image/xpm',
+							'image/ico',
+							'image/psd',
+							'application/pdf',
+							),
+						 'extensions' => array('imagick'),
+						);
 
 	var $_formatMap = array( /* writable */
-								'image/jpeg' => 'jpeg',
-								'image/gif' => 'gif',
-								'image/png' => 'png',
-								'image/tiff' => 'tiff',
-								'image/wbmp' => 'wbmp',
-								'image/ms-bmp' => 'bmp',
-								'image/pcx' => 'pcx',
-								'image/ico' => 'ico',
-								'image/xbm' => 'xbm',
-								'image/psd' => 'psd',
+						'image/jpeg' => 'jpeg',
+						'image/gif' => 'gif',
+						'image/png' => 'png',
+						'image/tiff' => 'tiff',
+						'image/wbmp' => 'wbmp',
+						'image/ms-bmp' => 'bmp',
+						'image/pcx' => 'pcx',
+						'image/ico' => 'ico',
+						'image/xbm' => 'xbm',
+						'image/psd' => 'psd',
 						);
 
 	function initialize(&$Medium) {
