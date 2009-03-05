@@ -692,7 +692,7 @@ class MediumAdapter extends Object {
 		$windows = !empty($os) && strpos($os, 'Windows') !== false;
 
 		if (!$windows) {
-			exec('which ' . $command, $output, $return);
+			exec('which ' . $command . ' 2>&1', $output, $return);
 
 			if ($return == 0) {
 				return $found[$command] = current($output);
