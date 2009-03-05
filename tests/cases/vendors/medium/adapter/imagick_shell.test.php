@@ -57,6 +57,10 @@ class ImagickShellMediumAdapterTest extends CakeTestCase {
 	function skip()	{
 		exec('which convert', $output, $return);
 		$this->skipUnless($return === 0, 'convert command not available');
+		exec('which identify', $output, $return);
+		$this->skipUnless($return === 0, 'identify command not available');
+		exec('which gs', $output, $return);
+		$this->skipUnless($return === 0, 'gs command not available');
 	}
 
 	function showImage($string, $mimeType = null) {

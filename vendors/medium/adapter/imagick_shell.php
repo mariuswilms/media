@@ -37,7 +37,6 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 								'image/wbmp',
 								'image/ms-bmp',
 								'image/pcx',
-								'application/pdf',
 								'image/quicktime',
 								'image/svg',
 								'image/xpm',
@@ -64,6 +63,13 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 	var $_compressionType;
 	var $_compression;
 	var $_pngFilter;
+
+	function compatible(&$Medium) {
+		if ($this->_which('gs')) { /* Check for ghostscript */
+			$this->require['mimeTypes'][] = 'application/pdf';
+		}
+		return parent::compatible($Medium);
+	}
 
 	function initialize(&$Medium) {
 		if (!isset($Medium->files['temporary'])) {
