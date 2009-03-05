@@ -63,9 +63,17 @@ class TestData extends Object {
  *
  * @var string
  */
-	var $baseDirectory = TMP;
+	var $settings = array('base' => TMP);
 /**
- * Enter description here...
+ * Constructor
+ *
+ * @param array $settings
+ */
+	function __construct($settings = array()) {
+		$this->settings = array_merge($this->settings, $settings);
+	}
+/**
+ * Destructor
  *
  */
 	function __destruct() {
@@ -99,6 +107,7 @@ class TestData extends Object {
  *
  * TestData::getFile('image-png.png');
  * TestData::getFile(array('image-png.png' => TMP . 'other-name.png'));
+ * TestData::getFile(array('image-png.png' => 'other-name.png'));
  * TestData::getFile('file.txt', 'I am the content');
  *
  * @param mixed $key
@@ -107,11 +116,16 @@ class TestData extends Object {
  */
 	function getFile($key = null, $string = '') {
 		if (is_array($key)) {
-			$file = $alias = current($key);
+			$file = current($key);
 			$key = key($key);
+
+			if ($file[0] !== DS) {
+				$file = $this->settings['base'] . $file;
+			}
+			$alias = $file;
 		} else {
 			$alias = $key;
-			$file = $this->baseDirectory . $key;
+			$file = $this->settings['base'] . $key;
 		}
 
 		if ($string === '') {

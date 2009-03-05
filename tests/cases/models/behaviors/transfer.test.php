@@ -18,9 +18,22 @@
  * @link       http://github.com/davidpersson/media
  */
 App::Import('Model', 'App');
+App::import('Behavior', 'Media.Transfer');
+require_once dirname(__FILE__) . DS . '..' . DS . 'models.php';
 require_once CORE_TEST_CASES . DS . 'libs' . DS . 'model' .DS . 'models.php';
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 require_once APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'core.php';
+/**
+ * Test Transfer Behavior Class
+ *
+ * @package    media
+ * @subpackage media.tests.cases.models.behaviors
+ */
+class TestTransferBehavior extends TransferBehavior {
+	function alternativeFile($file, $tries = 100) {
+		return $this->_alternativeFile($file, $tries);
+	}
+}
 /**
  * Transfer Behavior Test Case Class
  *
@@ -28,14 +41,16 @@ require_once APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'core.php';
  * @subpackage media.tests.cases.models.behaviors
  */
 class TransferBehaviorTestCase extends CakeTestCase {
-	var $fixtures = array('core.image');
+	var $fixtures = array('plugin.media.movie', 'plugin.media.actor');
 
 	function setUp() {
 		$this->TestData = new TestData();
+		$this->TestFolder = new Folder(TMP . 'test_suite' . DS, true);
 	}
 
 	function tearDown() {
 		$this->TestData->flushFiles();
+		$this->TestFolder->delete();
 		ClassRegistry::flush();
 	}
 
@@ -44,24 +59,20 @@ class TransferBehaviorTestCase extends CakeTestCase {
 	}
 
 	function testDestinationFile() {
-		$Model =& ClassRegistry::init('Image');
+		$Model =& ClassRegistry::init('Movie');
+		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP:test_suite:DS::Source.basename:'));
 
-		$Model->Behaviors->attach('Media.Transfer',array('destinationFile' => ':TMP::Source.basename:'));
 		$file = $this->TestData->getFile(array('image-jpg.jpg' => TMP . 'wei?rd$Ö- FILE_name_'));
-		$item = array('name' => 'Image xy','file' => $file);
-
+		$item = array('title' => 'Spiderman I', 'file' => $file);
 		$Model->create();
 		$this->assertTrue($Model->save($item));
+		$this->assertEqual($Model->getLastTransferredFile(), $this->TestFolder->pwd() . 'wei_rd_oe_file_name');
 
-		$file = $Model->getLastTransferredFile();
-		unlink($file);
-		$this->assertEqual($file, TMP . 'wei_rd_oe_file_name');
 		$Model->Behaviors->detach('Transfer');
-
 		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Idont.exist:'));
-		$file = $this->TestData->getFile('image-jpg.jpg');
-		$item = array('name' => 'Image xy', 'file' => $file);
 
+		$file = $this->TestData->getFile('image-jpg.jpg');
+		$item = array('title' => 'Spiderman II', 'file' => $file);
 		$Model->create();
 		$this->expectError();
 		$this->assertFalse($Model->save($item));
@@ -79,66 +90,58 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$file = $Model->getLastTransferredFile();
 		$this->assertTrue($file);
 		$this->assertTrue(file_exists($file));
-		unlink($file);
 	}
 
 	function testFileLocalToFileLocal() {
-		$Model =& ClassRegistry::init('Image');
-		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Source.basename:'));
+		$Model =& ClassRegistry::init('Movie');
+		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP:test_suite:DS::Source.basename:'));
 
-		$file = $this->TestData->getFile('image-jpg.jpg');
-		$item = array('name' => 'Image xy', 'file' => $file);
-
+		$file = $this->TestData->getFile(array('image-jpg.jpg' => 'ta.jpg'));
+		$item = array('title' => 'Spiderman I', 'file' => $file);
 		$Model->create();
 		$this->assertTrue($Model->save($item));
 		$this->assertTrue(file_exists($file));
-
-		$file = $Model->getLastTransferredFile();
-		$this->assertTrue(file_exists($file));
-		unlink($file);
+		$this->assertEqual($Model->getLastTransferredFile(), $this->TestFolder->pwd() . 'ta.jpg');
 
 		$Model =& ClassRegistry::init('TheVoid');
-		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Source.basename:'));
+		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP:test_suite:DS::Source.basename:'));
 
-		$file = $this->TestData->getFile('image-jpg.jpg');
+		$file = $this->TestData->getFile(array('image-jpg.jpg' => 'tb.jpg'));
 		$this->assertTrue($Model->prepare($file));
 		$this->assertTrue($Model->perform());
 		$this->assertTrue(file_exists($file));
+		$this->assertEqual($Model->getLastTransferredFile(), $this->TestFolder->pwd() . 'tb.jpg');
 
-		$file = $Model->getLastTransferredFile();
+		ClassRegistry::flush();
+
+		$Model =& ClassRegistry::init('Movie');
+		$Model->Actor->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP:test_suite:DS::Source.basename:'));
+		$file = $this->TestData->getFile(array('image-jpg.jpg' => 'tc.jpg'));
+		$data = array(
+					'Movie' => array('title' => 'Changeling'),
+					'Actor' => array('name' => 'John Malkovich', 'file' => $file)
+					);
+		$this->assertTrue($Model->saveAll($data));
 		$this->assertTrue(file_exists($file));
-		unlink($file);
+		$this->assertEqual($Model->Actor->getLastTransferredFile(), $this->TestFolder->pwd() . 'tc.jpg');
 	}
 
 	function testUrlRemoteToFileLocal() {
-		$Model =& ClassRegistry::init('Image');
-		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Source.basename:'));
+		$Model =& ClassRegistry::init('Movie');
+		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP:test_suite:DS::Source.basename:'));
 
-		$item = array('name' => 'Image xy', 'file' => 'http://cakephp.org/img/cake-logo.png');
-
+		$item = array('title' => 'Spiderman I', 'file' => 'http://cakephp.org/img/cake-logo.png');
 		$Model->create();
 		$this->assertTrue($Model->save($item));
-
-		$file = $Model->getLastTransferredFile();
-		$this->assertTrue(file_exists($file));
-
-		if (file_exists($file)) {
-			unlink($file);
-		}
+		$this->assertEqual($Model->getLastTransferredFile(), $this->TestFolder->pwd() . 'cake_logo.png');
 
 		$Model =& ClassRegistry::init('TheVoid');
-		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP::Source.basename:'));
+		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP:test_suite:DS::Source.basename:'));
 
 		$file = 'http://cakephp.org/img/cake-logo.png';
 		$this->assertTrue($Model->prepare($file));
 		$this->assertTrue($Model->perform());
-
-		$file = $Model->getLastTransferredFile();
-		$this->assertTrue(file_exists($file));
-
-		if (file_exists($file)) {
-			unlink($file);
-		}
+		$this->assertEqual($Model->getLastTransferredFile(), $this->TestFolder->pwd() . 'cake_logo_2.png');
 	}
 
 	function testTrustClient() {
@@ -151,7 +154,6 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$file = $this->TestData->getFile('image-jpg.jpg');
 		$Model->prepare($file);
 		$Model->perform();
-		unlink($Model->getLastTransferredFile());
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
 		$this->assertIdentical($result, 'image/jpeg');
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
@@ -160,7 +162,6 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$file = 'http://cakephp.org/img/cake-logo.png';
 		$Model->prepare($file);
 		$Model->perform();
-		unlink($Model->getLastTransferredFile());
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
 		$this->assertNull($result);
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
@@ -171,7 +172,6 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$file = $this->TestData->getFile('image-jpg.jpg');
 		$Model->prepare($file);
 		$Model->perform();
-		unlink($Model->getLastTransferredFile());
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
 		$this->assertIdentical($result, 'image/jpeg');
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
@@ -180,11 +180,49 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$file = 'http://cakephp.org/img/cake-logo.png';
 		$Model->prepare($file);
 		$Model->perform();
-		unlink($Model->getLastTransferredFile());
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
 		$this->assertIdentical($result, 'image/png');
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
 		$this->assertIdentical($result, 'image/png');
+	}
+
+	function testAlternativeFile() {
+		$Model =& ClassRegistry::init('TheVoid');
+		$Model->Behaviors->attach('TestTransfer', array('destinationFile' => ':TMP:test_suite:DS::Source.basename:'));
+		$file = $this->TestFolder->pwd() . 'file.jpg';
+
+		$result = $Model->Behaviors->TestTransfer->alternativeFile($file);
+		$expected = $this->TestFolder->pwd() . 'file.jpg';
+		$this->assertEqual($result, $expected);
+
+		touch($this->TestFolder->pwd() . 'file.jpg');
+
+		$result = $Model->Behaviors->TestTransfer->alternativeFile($file);
+		$expected = $this->TestFolder->pwd() . 'file_2.jpg';
+		$this->assertEqual($result, $expected);
+
+		touch($this->TestFolder->pwd() . 'file_2.jpg');
+
+		$result = $Model->Behaviors->TestTransfer->alternativeFile($file);
+		$expected = $this->TestFolder->pwd() . 'file_3.jpg';
+		$this->assertEqual($result, $expected);
+
+		touch($this->TestFolder->pwd() . 'file_3.png');
+
+		$result = $Model->Behaviors->TestTransfer->alternativeFile($file);
+		$expected = $this->TestFolder->pwd() . 'file_4.jpg';
+		$this->assertEqual($result, $expected);
+
+		touch($this->TestFolder->pwd() . 'file_80.jpg');
+
+		$result = $Model->Behaviors->TestTransfer->alternativeFile($file);
+		$expected = $this->TestFolder->pwd() . 'file_4.jpg';
+		$this->assertEqual($result, $expected);
+
+		touch($this->TestFolder->pwd() . 'file_4.jpg');
+
+		$result = $Model->Behaviors->TestTransfer->alternativeFile($file, 4);
+		$this->assertFalse($result);
 	}
 }
 ?>

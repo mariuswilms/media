@@ -198,7 +198,6 @@ class TransferBehavior extends ModelBehavior {
 		if ($this->runtime[$model->alias]['isReady']) {
 			return true;
 		}
-
 		/* Extract runtime after reset to get default values */
 		extract($this->settings[$model->alias], EXTR_SKIP);
 		extract($this->runtime[$model->alias], EXTR_SKIP);
@@ -551,7 +550,7 @@ class TransferBehavior extends ModelBehavior {
 	function checkExtension(&$model, $field, $deny = false, $allow = true) {
 		extract($this->runtime[$model->alias]);
 
-		foreach (array('source','temporary','destination') as $type) {
+		foreach (array('source', 'temporary', 'destination') as $type) {
 			if (($type == 'temporary' && empty($$type)) || !isset(${$type}['extension'])) {
 				continue(1);
 			}
