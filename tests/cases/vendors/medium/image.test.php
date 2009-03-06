@@ -60,20 +60,25 @@ class ImageMediumTest extends CakeTestCase {
 	}
 
 	function testTransitions() {
-		$Medium = new DocumentMedium($this->TestData->getFile('application-pdf.pdf'));
-		$Medium = $Medium->convert('image/png');
-		$this->assertIsA($Medium, 'ImageMedium');
-
-		$tmpFile = $Medium->store(TMP . uniqid('test_suite_'));
-		$this->assertEqual(MimeType::guessType($tmpFile), 'image/png');
-		unlink($tmpFile);
+		exec('which gs 2>&1', $output, $return);
+		$this->skipUnless($return === 0, 'gs command not available');
 
 		$Medium = new DocumentMedium($this->TestData->getFile('application-pdf.pdf'));
 		$Medium = $Medium->convert('image/png');
-		$result = $Medium->fit(10, 10);
-		$this->assertTrue($result);
-		$this->assertTrue($Medium->width() <= 10);
-		$this->assertTrue($Medium->height() <= 10);
+		if ($this->assertIsA($Medium, 'ImageMedium')) {
+			$tmpFile = $Medium->store(TMP . uniqid('test_suite_'));
+			$this->assertEqual(MimeType::guessType($tmpFile), 'image/png');
+			unlink($tmpFile);
+		}
+
+		$Medium = new DocumentMedium($this->TestData->getFile('application-pdf.pdf'));
+		$Medium = $Medium->convert('image/png');
+		if ($this->assertIsA($Medium, 'ImageMedium')) {
+			$result = $Medium->fit(10, 10);
+			$this->assertTrue($result);
+			$this->assertTrue($Medium->width() <= 10);
+			$this->assertTrue($Medium->height() <= 10);
+		}
 	}
 }
 ?>

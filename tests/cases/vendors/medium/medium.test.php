@@ -117,7 +117,6 @@ class MediumTest extends CakeTestCase {
 		$instructions = array('convert' => 'image/png', 'zoomCrop' => array(10, 10));
 		$Medium = Medium::make($this->TestData->getFile('image-jpg.jpg'), $instructions);
 		$this->assertIsA($Medium, 'Medium');
-//		$this->showImage($Medium->toString(),'image/jpg');
 	}
 }
 ?>

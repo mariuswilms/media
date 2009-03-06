@@ -17,7 +17,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor','Media.DocumentMedium', array('file' => 'medium'.DS.'document.php'));
+App::import('Vendor', 'Media.DocumentMedium', array('file' => 'medium'.DS.'document.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
  * Document Medium Test Case Class
@@ -32,6 +32,11 @@ class DocumentMediumTest extends CakeTestCase {
 
 	function tearDown() {
 		$this->TestData->flushFiles();
+	}
+
+	function skip()	{
+		exec('which gs 2>&1', $output, $return);
+		$this->skipUnless($return === 0, 'gs command not available');
 	}
 
 	function testInformation() {

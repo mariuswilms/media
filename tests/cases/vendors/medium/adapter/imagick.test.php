@@ -55,7 +55,7 @@ class ImagickMediumAdapterTest extends CakeTestCase {
 	}
 
 	function skip() {
-		$this->skipUnless(extension_loaded('gd'), 'GD extension not loaded');
+		$this->skipUnless(extension_loaded('imagick'), 'Imagick extension not loaded');
 	}
 
 	function showImage($string, $mimeType = null) {
@@ -90,15 +90,19 @@ class ImagickMediumAdapterTest extends CakeTestCase {
 
 		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-jpg.jpg'));
 		$Medium = $Medium->convert('image/png');
-		$result = $Medium->mimeType;
-		$this->assertEqual($result, 'image/png');
+		if ($this->assertIsA($Medium, 'ImageMedium')) {
+			$result = $Medium->mimeType;
+			$this->assertEqual($result, 'image/png');
+		}
 
 		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-jpg.jpg'));
 		$Medium = $Medium->convert('image/png');
-		$tmpFile = TMP . uniqid('test_suite_');
-		$tmpFile = $Medium->store($tmpFile);
-		$this->assertEqual(MimeType::guessType($tmpFile), 'image/png');
-		unlink($tmpFile);
+		if ($this->assertIsA($Medium, 'ImageMedium')) {
+			$tmpFile = TMP . uniqid('test_suite_');
+			$tmpFile = $Medium->store($tmpFile);
+			$this->assertEqual(MimeType::guessType($tmpFile), 'image/png');
+			unlink($tmpFile);
+		}
 	}
 
 	function testCompress() {
