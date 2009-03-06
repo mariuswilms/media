@@ -65,7 +65,7 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 	var $_pngFilter;
 
 	function compatible(&$Medium) {
-		if ($this->_which(array('gs', 'gswin32'))) { /* Check for ghostscript */
+		if ($this->_which(array('gs', 'gswin32c'))) { /* Check for ghostscript */
 			$this->require['mimeTypes'][] = 'application/pdf';
 		}
 		return parent::compatible($Medium);
