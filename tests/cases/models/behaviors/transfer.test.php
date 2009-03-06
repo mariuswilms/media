@@ -119,7 +119,7 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$file = $this->TestData->getFile(array('image-jpg.jpg' => 'tc.jpg'));
 		$data = array(
 					'Movie' => array('title' => 'Changeling'),
-					'Actor' => array('name' => 'John Malkovich', 'file' => $file)
+					'Actor' => array(array('name' => 'John Malkovich', 'file' => $file)),
 					);
 		$this->assertTrue($Model->saveAll($data));
 		$this->assertTrue(file_exists($file));
