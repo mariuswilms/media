@@ -62,11 +62,16 @@ class Attachment extends MediaAppModel {
  * Validation rules for file and alternative fields
  *
  * For more information on the rules used here
- * see the source of TransferBehavior and MediaBehavior.
+ * see the source of TransferBehavior and MediaBehavior or
+ * the test case for MediaValidation.
  *
  * If you experience problems with your model not validating,
  * try commenting the mimeType rule or providing less strict
  * settings for single rules.
+ *
+ * checkExtension and checkMimeType take both a blacklist and
+ * a whitelist. If you are on windows make sure that you addtionally
+ * specify the 'tmp' extension in case you are using a whitelist.
  *
  * @var array
  */
