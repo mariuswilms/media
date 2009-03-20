@@ -15,7 +15,6 @@
  *
  * @package    media
  * @subpackage media.views.elemetns
- * @author     David Persson <davidpersson@qeweurope.org>
  * @copyright  2007-2009 David Persson <davidpersson@qeweurope.org>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
