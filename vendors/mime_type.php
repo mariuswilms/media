@@ -250,7 +250,7 @@ class MimeType extends Object {
 			}
 			if (isset($db)) {
 				$this->__magic =& new MimeMagic($db);
-				Cache::write('mime_magic_db', $this->magic->toArray());
+				Cache::write('mime_magic_db', $this->__magic->toArray());
 			}
 		} else {
 			$this->__magic = null;

@@ -38,7 +38,7 @@ $config = array(
 		),
 	array(
 		'mime_type' => 'application/ogg',
-		'pattern' => array('ogg')
+		'pattern' => array('ogx')
 		),
 	array(
 		'mime_type' => 'application/pdf',
@@ -298,6 +298,18 @@ $config = array(
 		),
 	/* Audio */
 	array(
+		'mime_type' => 'audio/x-aac',
+		'pattern' => array('aac')
+		),
+	array(
+		'mime_type' => 'audio/x-musepack',
+		'pattern' => array('mpc')
+		),
+	array(
+		'mime_type' => 'audio/ogg',
+		'pattern' => array('oga', 'ogg', 'spx')
+		),
+	array(
 		'mime_type' => 'application/x-xpinstall',
 		'pattern' => array('xpi')
 		),
@@ -520,6 +532,10 @@ $config = array(
 		'pattern' => array('vcf')
 		),
 	/* Video */
+	array(
+		'mime_type' => 'video/ogg',
+		'pattern' => array('ogv')
+		),
 	array(
 		'mime_type' => 'video/3gpp',
 		'pattern' => array('3gp')

@@ -30,7 +30,7 @@ class AudioMedium extends Medium {
 	 *
 	 * @var unknown_type
 	 */
-	public $adapters = array('FfMpegAudio', 'PearMp3', 'PearOggAudio');
+	public $adapters = array('GetId3Audio', 'FfMpegAudio', 'PearMp3', 'PearOggAudio');
 	/**
 	 * Enter description here...
 	 *

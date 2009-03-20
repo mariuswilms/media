@@ -65,7 +65,7 @@ class VideoMedium extends Medium {
 	 * @return int
 	 */
 	public function quality() {
-		return $this->Adapter->quality();
+		return $this->Adapters->dispatchMethod($this, 'quality');
 	}
 
 	/**

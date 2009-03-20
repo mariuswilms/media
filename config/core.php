@@ -66,7 +66,11 @@
  * A filter is a set of instructions.
  * Each instruction represents a call to a method of the Medium class.
  */
-	Configure::write('Media.filter.audio', array());
+	Configure::write('Media.filter.audio', array(
+		's'   => array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
+		'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
+	    )
+    );
 	Configure::write('Media.filter.css', array(
 		'c'   => array('compress'),
 		)

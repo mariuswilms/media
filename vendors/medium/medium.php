@@ -236,7 +236,7 @@ class Medium extends Object {
 				return $name;
 			}
 		}
-		return 'generic';
+		return 'Generic';
 	}
 /**
  * Determines medium short name for a file or mime type
