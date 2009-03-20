@@ -111,15 +111,15 @@ class Medium extends Object {
  * @var array
  */
 	static $_namesToShort = array(
-					'Icon' 		=> 'ico',
-					'Document' 	=> 'doc',
-					'Css'       => 'css',
-					'Js'        => 'js',
-					'Text'      => 'txt',
-					'Image'     => 'img',
-					'Audio'     => 'aud',
-					'Video'     => 'vid',
-					'Generic'   => 'gen',
+					'Icon'     => 'ico',
+					'Document' => 'doc',
+					'Css'      => 'css',
+					'Js'       => 'js',
+					'Text'     => 'txt',
+					'Image'    => 'img',
+					'Audio'    => 'aud',
+					'Video'    => 'vid',
+					'Generic'  => 'gen',
 					);
 /**
  * Constructor
@@ -158,9 +158,8 @@ class Medium extends Object {
 			$this->file =& $this->files['temporary'];
 		}
 
-
 		if ($mimeType === null) {
-			$mimeType = MimeType::guessType($this->file, array('simplify' => true));
+			$mimeType = MimeType::guessType($this->file);
 		}
 
 		$this->mimeType = $mimeType;
@@ -228,8 +227,9 @@ class Medium extends Object {
 			return array_values(self::$_mimeTypesToNames);
 		}
 		if ($mimeType === null) {
-			$mimeType = MimeType::guessType($file, array('simplify' => true));
+			$mimeType = MimeType::guessType($file);
 		}
+		$mimeType = MimeType::simplify($mimeType);
 
 		foreach (self::$_mimeTypesToNames as $mapMimeType => $name) {
 			if (strpos($mimeType, $mapMimeType) !== false) {
@@ -618,7 +618,7 @@ class MediumAdapter extends Object {
 		$require = array_merge($default, $this->require);
 
 		if (!empty($require['mimeTypes'])) {
-			if (!in_array($Medium->mimeType, $require['mimeTypes'])) {
+			if (!in_array(MimeType::simplify($Medium->mimeType), $require['mimeTypes'])) {
 				return false;
 			}
 		}

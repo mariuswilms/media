@@ -31,7 +31,6 @@ class AudioMedium extends Medium {
 	 * @var unknown_type
 	 */
 	public $adapters = array('FfMpegAudio', 'PearMp3', 'PearOggAudio');
-
 	/**
 	 * Enter description here...
 	 *
@@ -40,7 +39,6 @@ class AudioMedium extends Medium {
 	public function artist() {
 		return $this->Adapters->dispatchMethod($this, 'artist');
 	}
-
 	/**
 	 * Enter description here...
 	 *
@@ -49,7 +47,6 @@ class AudioMedium extends Medium {
 	public function title() {
 		return $this->Adapters->dispatchMethod($this, 'name');
 	}
-
 	/**
 	 * Enter description here...
 	 *
@@ -58,7 +55,6 @@ class AudioMedium extends Medium {
 	public function album() {
 		return $this->Adapters->dispatchMethod($this, 'album');
 	}
-
 	/**
 	 * Enter description here...
 	 *
@@ -67,7 +63,6 @@ class AudioMedium extends Medium {
 	public function year() {
 		return $this->Adapters->dispatchMethod($this, 'year');
 	}
-
 	/**
 	 * Enter description here...
 	 *
@@ -76,7 +71,6 @@ class AudioMedium extends Medium {
 	public function duration() {
 		return $this->Adapters->dispatchMethod($this, 'duration');
 	}
-
 	/**
 	 * Enter description here...
 	 *
@@ -85,16 +79,14 @@ class AudioMedium extends Medium {
 	public function track() {
 		return $this->Adapters->dispatchMethod($this, 'track');
 	}
-
 	/**
 	 * Enter description here...
 	 *
 	 * @return unknown
 	 */
 	public function samplingRate() {
-		return (int) $this->Adapters->dispatchMethod($this, 'samplingRate');
+		return (integer)$this->Adapters->dispatchMethod($this, 'samplingRate');
 	}
-
 	/**
 	 * Enter description here...
 	 *
