@@ -108,7 +108,8 @@ class MimeTypeTest extends CakeTestCase {
 		$this->assertEqual(MimeType::guessType('file.js'), 'application/javascript');
 		$this->assertEqual(MimeType::guessType('file.jpg'), 'image/jpeg');
 		$this->assertEqual(MimeType::guessType('file.mpeg'), 'video/mpeg');
-		$this->assertEqual(MimeType::guessType('file.ogg'), 'application/ogg');
+		$this->assertEqual(MimeType::guessType('file.ogg'), 'audio/ogg');
+		$this->assertEqual(MimeType::guessType('file.ogx'), 'application/ogg');
 		/* Fails application<->text */
 		// $this->assertEqual(MimeType::guessType('file.php'), 'application/x-php');
 		$this->assertEqual(MimeType::guessType('file.pdf'), 'application/pdf');
@@ -152,7 +153,8 @@ class MimeTypeTest extends CakeTestCase {
 		$this->assertEqual(MimeType::guessExtension('application/javascript'), 'js');
 		$this->assertEqual(MimeType::guessExtension('image/jpeg'), 'jpg');
 		$this->assertEqual(MimeType::guessExtension('video/mpeg'), 'mpeg');
-		$this->assertEqual(MimeType::guessExtension('application/ogg'), 'ogg');
+		$this->assertEqual(MimeType::guessExtension('application/ogg'), 'ogx');
+		$this->assertEqual(MimeType::guessExtension('audio/ogg'), 'ogg');
 		/* Fails application<->text */
 		// $this->assertEqual(MimeType::guessExtension('application/x-php'), 'php');
 		$this->assertEqual(MimeType::guessExtension('application/pdf'), 'pdf');

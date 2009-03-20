@@ -86,9 +86,10 @@ class MimeType extends Object {
 		$_this =& MimeType::getInstance();
 		$globMatch = array();
 		$preferred = array(
-						'jpg', 'tiff', 'txt', 'css', 'swf', 'doc', 'php',
-						'html', 'xhtml', 'mp3', 'mpeg', 'ps', 'xml', 'bz2',
-						'rm', 'ra', 'rv'
+						'bz2', 'css', 'doc', 'html', 'jpg',
+						'mpeg', 'mp3', 'ogg', 'php', 'ps',
+						'rm', 'ra', 'rv', 'swf',
+						'tiff', 'txt', 'xhtml', 'xml',
 						);
 
 		if (is_file($file)) {
