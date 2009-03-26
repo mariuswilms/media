@@ -362,13 +362,19 @@ class MediaBehavior extends ModelBehavior {
 							'flesch_score'    => $Medium->fleschScore(),
 							'lexical_density' => $Medium->lexicalDensity(),
 							);
-		} elseif($Medium->name === 'Video') {
+		} elseif ($Medium->name === 'Video') {
 			$detailed = array(
 							'width'   => $Medium->width(),
 							'height'  => $Medium->height(),
 							'length'  => $Medium->duration(),
 							'quality' => $Medium->quality(),
+							'bitrate' => $Medium->bitrate(),
 							'ratio'   => $Medium->ratio(),
+							);
+		} elseif ($Medium->name === 'Archive') {
+			$detailed = array(
+							'files'       => $Medium->files(),
+							'compression' => $Medium->compression(),
 							);
 		} else {
 			$detailed = array();
