@@ -29,12 +29,16 @@ class GetId3AudioMediumAdapter extends MediumAdapter {
 									'audio/ogg',
 									'audio/mpeg',
 									'audio/ms-wma',
+									'audio/ms-asf',
 									'audio/realaudio',
+									'audio/pn-realaudio',
+									'audio/pn-multirate-realaudio',
 									'audio/wav',
 									'audio/riff',
 									'audio/wavpack',
 									'audio/musepack', /* MPC */
 									'audio/aac',
+									'audio/mp4', /* AAC */
 									'audio/m4a', /* AAC */
 									'audio/m4b', /* AAC */
 									'audio/ac3',
@@ -64,8 +68,8 @@ class GetId3AudioMediumAdapter extends MediumAdapter {
 									 */
 									'application/octet-stream',
 									),
-							'imports'   => array(array('type' => 'Vendor','name'=> 'getID3','file' => 'getid3/getid3.php')),
-							'extensions'=> array('gd'),
+							'imports' => array(array('type' => 'Vendor','name' => 'getID3', 'file' => 'getid3/getid3.php')),
+							'extensions' => array('gd'),
 							);
 
 	function initialize(&$Medium) {
@@ -93,55 +97,57 @@ class GetId3AudioMediumAdapter extends MediumAdapter {
 	}
 
 	function artist(&$Medium) {
-		if (!empty($Medium->objects['getID3']->info['comments']['artist'])) {
+		if (isset($Medium->objects['getID3']->info['comments']['artist'])) {
 			return implode(', ', $Medium->objects['getID3']->info['comments']['artist']);
 		}
-
-        return null;
+		return null;
 	}
 
 	function title(&$Medium) {
-		if (!empty($Medium->objects['getID3']->info['comments']['title'])) {
+		if (isset($Medium->objects['getID3']->info['comments']['title'])) {
 			return implode(', ', $Medium->objects['getID3']->info['comments']['title']);
 		}
-
-        return null;
+		return null;
 	}
 
 	function album(&$Medium) {
-		if (!empty($Medium->objects['getID3']->info['comments']['album'])) {
+		if (isset($Medium->objects['getID3']->info['comments']['album'])) {
 			return implode(', ', $Medium->objects['getID3']->info['comments']['album']);
 		}
-
-        return null;
+		return null;
 	}
 
 	function year(&$Medium) {
-		if (!empty($Medium->objects['getID3']->info['comments']['year'])) {
+		if (isset($Medium->objects['getID3']->info['comments']['year'])) {
 			return implode(', ', $Medium->objects['getID3']->info['comments']['year']);
 		}
-
-        return null;
+		return null;
 	}
 
 	function duration(&$Medium) {
-		return (int) @$Medium->objects['getID3']->info['playtime_seconds'];
+		if (isset($Medium->objects['getID3']->info['playtime_seconds']) {
+			return $Medium->objects['getID3']->info['playtime_seconds'];
+		}
+		return null;
 	}
 
 	function track(&$Medium) {
-		if (!empty($Medium->objects['getID3']->info['comments']['track_number'])) {
+		if (isset($Medium->objects['getID3']->info['comments']['track_number'])) {
 			return implode(', ', $Medium->objects['getID3']->info['comments']['track_number']);
 		}
 
-		if (!empty($Medium->objects['getID3']->info['comments']['tracknumber'])) {
+		if (isset($Medium->objects['getID3']->info['comments']['tracknumber'])) {
 			return implode(', ', $Medium->objects['getID3']->info['comments']['tracknumber']);
 		}
 
-        return null;
+		return null;
 	}
 
 	function samplingRate(&$Medium) {
-		return @$Medium->objects['getID3']->info['audio']['sample_rate'];
+		if (isset($Medium->objects['getID3']->info['audio']['sample_rate']) {
+			return $Medium->objects['getID3']->info['audio']['sample_rate'];
+		}
+		return null;
 	}
 
 	function convert(&$Medium, $mimeType) {
@@ -152,7 +158,7 @@ class GetId3AudioMediumAdapter extends MediumAdapter {
 				return false;
 			}
 
-			$resource = @imagecreatefromstring( $coverArt );
+			$resource = @imagecreatefromstring($coverArt);
 
 			if (!is_resource($resource)) {
 				return false;
