@@ -206,16 +206,16 @@ class ImageMedium extends Medium {
  * Determines the quality of the medium by
  * taking amount of megapixels into account
  *
- * @return integer A number indicating quality between 0 (worst) and 10 (best)
+ * @return integer A number indicating quality between 1 (worst) and 5 (best)
  */
 	function quality() {
 		$megapixel = $this->megapixel();
 
 		/* Normalized between 1 and 5 where min = 0.5 and max = 10 */
-		$megapixelMax = 10.0;
+		$megapixelMax = 10;
 		$megapixelMin = 0.5;
-		$qualityMax = 5.0;
-		$qualityMin = 0.0;
+		$qualityMax = 5;
+		$qualityMin = 1;
 
 		if ($megapixel > $megapixelMax) {
 			$quality = $qualityMax;
@@ -223,12 +223,12 @@ class ImageMedium extends Medium {
 			$quality = $qualityMin;
 		} else {
 			$quality =
-				(($megapixel - $qualityMin) / ($megapixelMax - $qualityMin))
-				* ($qualityMax * 1.0)
-				+ 1.0;
+				(($megapixel - $megapixelMin) / ($megapixelMax - $megapixelMin))
+				* ($qualityMax - $qualityMin)
+				+ $qualityMin;
 		}
 
-		return intval($quality);
+		return intval(round($quality));
 	}
 /**
  * Determines a (known) ratio of medium
