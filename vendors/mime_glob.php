@@ -69,7 +69,7 @@ class MimeGlob extends Object {
 			$File->open('rb');
 			$head = $File->read(4096);
 
-			if (preg_match('/^[-\w.+]*\/[-\w.+]+:[\*\.a-zA-Z0-9]*$/m', $head)) {
+			if (preg_match('/^(\d{2}:)?[-\w.+]*\/[-\w.+]+:[\*\.a-zA-Z0-9]*$/m', $head)) {
 				return 'Freedesktop Shared MIME-info Database';
 			} elseif (preg_match('/^[-\w.+]*\/[-\w.+]+\s+[a-zA-Z0-9]*$/m', $head)) {
 				return 'Apache Module mod_mime';
@@ -143,7 +143,7 @@ class MimeGlob extends Object {
 				if (!preg_match('/(\*\.)?[a-zA-Z0-9\.]+$|/', $line[1])) {
 					continue(1);
 				}
-				$this->register(array('mime_type' => array_shift($line), 'pattern' => str_replace('*.',null, array_shift($line)), 'priority' => $priority));
+				$this->register(array('mime_type' => array_shift($line), 'pattern' => str_replace('*.', null, array_shift($line)), 'priority' => $priority));
 			}
 		} elseif ($format === 'Apache Module mod_mime') {
 			$File = new File($db);
@@ -187,7 +187,7 @@ class MimeGlob extends Object {
 	function register($item = array()) {
 		foreach ((array)$item['pattern'] as $pattern) {
 			if (isset($this->_items[$pattern])) {
-				$this->_items[$pattern] = array_merge($this->_items[$pattern], array($item['mime_type']));
+				$this->_items[$pattern] = array_unique(array_merge($this->_items[$pattern], array($item['mime_type'])));
 			} else {
 				$this->_items[$pattern] = array($item['mime_type']);
 			}

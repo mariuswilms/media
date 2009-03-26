@@ -247,7 +247,10 @@ class MimeMagic extends Object {
 				}
 
 				$line = preg_replace('/(?!\B)\040+/', "\t", $line);
-				preg_match('/' . $itemRegex . '/', $line, $matches);
+
+				if (!preg_match('/' . $itemRegex . '/', $line, $matches)) {
+					continue(1);
+				}
 
 				$item = array(
 							'offset'       => intval($matches[2]),
@@ -341,7 +344,7 @@ class MimeMagic extends Object {
 		} else {
 			if (decoct(octdec($value)) == $value) {
 				$value = octdec($value);
-			} elseif ($value{1} === 'x') {
+			} elseif ($value[1] === 'x') {
 				$value = hexdec($value);
 			} elseif (is_numeric($value) && intval($value) == $value) {
 				$value = intval($value);
