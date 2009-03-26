@@ -26,7 +26,7 @@
 class PearOggVideoMediumAdapter extends MediumAdapter {
 	var $require = array(
 							'mimeTypes' => array('video/ogg'),
-							'imports' => array(array('type' => 'Vendor','name'=> 'File_Ogg','file' => 'File/Ogg.php')),
+							'imports' => array(array('type' => 'Vendor', 'name' => 'File_Ogg', 'file' => 'File/Ogg.php')),
 							);
 
 	function initialize(&$Medium) {
@@ -40,7 +40,7 @@ class PearOggVideoMediumAdapter extends MediumAdapter {
 
 		$Object = new File_Ogg($Medium->file);
 
-		if (!$Object = $Object->getStream('file_ogg_theora')) {
+		if (! $Object->hasStream(OGG_STREAM_THEORA)) {
 			return false;
 		}
 
@@ -54,36 +54,25 @@ class PearOggVideoMediumAdapter extends MediumAdapter {
 	}
 
 	function width(&$Medium) {
-		$header = $Medium->objects['File_Ogg_Theora']->getHeader();
-		return $header['FMBW'];
+		$streams = $Medium->objects['File_Ogg_Theora']->listStreams(OGG_STREAM_THEORA);
+		$stream  = $Medium->objects['File_Ogg_Theora']->getStream(current($streams));
+		$header  = $stream->getHeader();
+		return $header['PICW'];
 	}
 
 	function height(&$Medium) {
-		$header = $Medium->objects['File_Ogg_Theora']->getHeader();
-		return $header['FMBH'];
+		$streams = $Medium->objects['File_Ogg_Theora']->listStreams(OGG_STREAM_THEORA);
+		$stream  = $Medium->objects['File_Ogg_Theora']->getStream(current($streams));
+		$header  = $stream->getHeader();
+		return $header['PICH'];
 	}
 
-	function frameRate(&$Medium) {
-		$header = $Medium->objects['File_Ogg_Theora']->getHeader();
-		return $header['FRD'] == 0 ? 0 : $header['FRN'] / $header['FRD'];
-	}
-
-	function quality(&$Medium) {
-		//a quality between 1 (low) and 10 (high)
-		$header = $Medium->objects['File_Ogg_Theora']->getHeader();
-		$rate = $this->frameRate($Medium);
-		$quality = $header['QUAL'];
-
-		if($quality > 9) {
-			$quality = 5;
-		} elseif($rate < 2) {
-			$quality = 0;
-		} else {
-			/* Normalized between 1 and 5 where min = 8000 and max = 192.000 */
-			$quality = round((($rate - 1) / (10 - 1)) * (5 * 1) + 1,0);
+	function bitrate(&$Medium) {
+		$duration = $this->duration($Medium);
+		if (empty($duration)) {
+			return null;
 		}
-
-		return $quality;
+		return filesize($Medium->file) / ($duration * 8);
 	}
 }
 ?>

@@ -29,7 +29,7 @@ class VideoMedium extends Medium {
 	 *
 	 * @var unknown_type
 	 */
-	public $adapters = array('FfMpegVideo', 'PearOggVideo');
+	public $adapters = array('FfMpegVideo', 'GetId3Video' , 'PearOggVideo');
 
 	/**
 	 * Duration in seconds
@@ -59,12 +59,58 @@ class VideoMedium extends Medium {
 	}
 
 	/**
-	 * Quality
+	 * Bitrate
 	 *
 	 * @return int
 	 */
+	public function bitrate() {
+		return $this->Adapters->dispatchMethod($this, 'bitrate');
+	}
+	/**
+	 * Quality
+	 *
+	 * @return integer A number indicating quality between 1 (worst) and 5 (best)
+	 */
 	public function quality() {
-		return $this->Adapters->dispatchMethod($this, 'quality');
+		$definition = $this->width() * $this->height();
+		$bitrate = $this->bitrate();
+
+		if (empty($definition) || empty($bitrate)) {
+			return null;
+		}
+
+		/* Normalized between 1 and 5 where min = 0.5 and max = 10 */
+		$definitionMax = 720 * 576;
+		$definitionMin = 160 * 120;
+		$qualityMax = 5;
+		$qualityMin = 1;
+
+		if ($definition >= $definitionMax) {
+			$quality = $qualityMax;
+		} elseif ($definition <= $definitionMin) {
+			$quality = $qualityMin;
+		} else {
+			$quality =
+				(($definition - $definitionMin) / ($definitionMax - $definitionMin))
+				* ($qualityMax - $qualityMin)
+				+ $qualityMin;
+		}
+
+		$bitrateCoef = 3;
+
+		if ($bitrate <= 128000) {
+			$quality = ($quality + $bitrateCoef) / ($bitrateCoef + 1);
+		} elseif ($bitrate <= 564000) {
+			$quality = ($quality + 2 * $bitrateCoef) / ($bitrateCoef + 1);
+		} elseif ($bitrate <= 1152000) {
+			$quality = ($quality + 3 * $bitrateCoef) / ($bitrateCoef + 1);
+		} elseif ($bitrate <= 2240000) {
+			$quality = ($quality + 4 * $bitrateCoef) / ($bitrateCoef + 1);
+		} else {
+			$quality = ($quality + 5 * $bitrateCoef) / ($bitrateCoef + 1);
+		}
+
+		return intval(round($quality));
 	}
 
 	/**
@@ -78,6 +124,5 @@ class VideoMedium extends Medium {
 		}
 		return $this->_knownRatio($this->width(), $this->height());
 	}
-
 }
 ?>

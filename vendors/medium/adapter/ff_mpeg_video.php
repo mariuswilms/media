@@ -1,6 +1,6 @@
 <?php
 /**
- * Ff Mpeg Video Medium Adapter File
+ * FfMpeg Video Medium Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -17,14 +17,13 @@
  * @link       http://github.com/davidpersson/media
  */
 /**
- * Ff Mpeg Video Medium Adapter Class
+ * FfMpeg Video Medium Adapter Class
  *
  * @package    media
  * @subpackage media.libs.medium.adapter
  * @link       http://ffmpeg.mplayerhq.hu/
  */
 class FfMpegVideoMediumAdapter extends MediumAdapter {
-
 	var $require = array(
 							'mimeTypes' => array(
 											'video/mpeg',
@@ -33,6 +32,7 @@ class FfMpegVideoMediumAdapter extends MediumAdapter {
 											'video/msvideo',
 											'video/quicktime',
 											'video/flv',
+											'video/ogg',
 											),
 							'extensions' => array('ffmpeg', 'gd'),
 							);
@@ -53,7 +53,7 @@ class FfMpegVideoMediumAdapter extends MediumAdapter {
 
 	function convert(&$Medium, $mimeType) {
 		if(Medium::name(null, $mimeType) === 'Image') {
-			$randomFrame = rand(1, $Medium->objects['ffmpeg_movie']->getFrameCount());
+			$randomFrame = rand(1, $Medium->objects['ffmpeg_movie']->getFrameCount() - 1);
 			$resource = $Medium->objects['ffmpeg_movie']->getFrame($randomFrame)->toGDImage();
 
 			if (!is_resource($resource)) {
@@ -76,6 +76,10 @@ class FfMpegVideoMediumAdapter extends MediumAdapter {
 
 	function height(&$Medium) {
 		return $Medium->objects['ffmpeg_movie']->getFrameHeight();
+	}
+
+	function bitrate(&$Medium) {
+		return $Medium->objects['ffmpeg_movie']->getBitRate();
 	}
 }
 ?>
