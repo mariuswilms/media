@@ -155,7 +155,6 @@ class MimeGlobTest extends CakeTestCase {
 		$this->assertEqual($Mime->analyze('file.xml'), array('application/xml'));
 	}
 
-/*
 	function testShippedAnalyze() {
 		$file = APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.db';
 		$this->skipUnless(file_exists($file), '%s. No shipped glob db.');
@@ -188,13 +187,12 @@ class MimeGlobTest extends CakeTestCase {
 		$this->assertEqual($Mime->analyze('file.rtf'), array('application/rtf'));
 		$this->assertEqual($Mime->analyze('file.txt'), array('text/plain'));
 		$this->assertEqual($Mime->analyze('file.doc'), array('application/msword'));
-		$this->assertEqual($Mime->analyze('file.docx'), array('application/vnd.openxmlformats-officedocument.wordprocessingml.document'));
+		// $this->assertEqual($Mime->analyze('file.docx'), array('application/vnd.openxmlformats-officedocument.wordprocessingml.document'));
 		$this->assertEqual($Mime->analyze('file.odt'), array('application/vnd.oasis.opendocument.text'));
 		$this->assertEqual($Mime->analyze('file.tar'), array('application/x-tar'));
 		$this->assertEqual($Mime->analyze('file.wav'), array('audio/x-wav'));
 		$this->assertEqual($Mime->analyze('file.xhtml'), array('application/xhtml+xml'));
 		$this->assertEqual($Mime->analyze('file.xml'), array('application/xml'));
 	}
-*/
 }
 ?>

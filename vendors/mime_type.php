@@ -87,7 +87,7 @@ class MimeType extends Object {
 		$preferred = array(
 						'bz2', 'css', 'doc', 'html', 'jpg',
 						'mpeg', 'mp3', 'ogg', 'php', 'ps',
-						'rm', 'ra', 'rv', 'swf',
+						'rm', 'ra', 'rv', 'swf', 'tar',
 						'tiff', 'txt', 'xhtml', 'xml',
 						);
 
