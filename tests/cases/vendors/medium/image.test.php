@@ -46,7 +46,7 @@ class ImageMediumTest extends CakeTestCase {
 		$this->assertEqual($result,$expecting);
 
 		$result = $Medium->quality();
-		$expecting = 0;
+		$expecting = 1;
 		$this->assertEqual($result,$expecting);
 
 		$result = $Medium->ratio();
