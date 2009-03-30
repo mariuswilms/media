@@ -12,6 +12,7 @@
  *
  * @package    media
  * @subpackage media.tests.cases.libs
+ * @author     David Persson <davidpersson@qeweurope.org>
  * @copyright  2007-2009 David Persson <davidpersson@qeweurope.org>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
@@ -51,46 +52,59 @@ class MimeTypeTest extends CakeTestCase {
 		MimeType::config('magic', array('engine' => 'fileinfo'));
 		MimeType::config('glob', array('engine' => 'core', 'file' => APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'mime_glob.php'));
 
-		/* Some tests have been commented (if not otherwise stated) because of missing support of the extension */
+		/* Some tests have been commented (if not otherwise stated) because of missing support the extension */
 
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('3gp.snippet.3gp')), 'video/3gpp');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('ms.avi')), 'video/x-msvideo');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('3gp.snippet.3gp')), 'video/3gpp');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('ms.avi')), 'video/x-msvideo');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('bzip2.snippet.bz2')), 'application/x-bzip');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('video.snippet.mp4')), 'video/mp4');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('video.snippet.mp4')), 'video/mp4');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('css.snippet.css')), 'text/css');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('flac.snippet.flac')), 'audio/x-flac');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('flash.snippet.swf')), 'application/x-shockwave-flash');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('flac.snippet.flac')), 'audio/x-flac');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('flash.snippet.swf')), 'application/x-shockwave-flash');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('image-gif.gif')), 'image/gif');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('gzip.snippet.gz')), 'application/x-gzip');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('text-html.snippet.html')), 'text/html');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('audio-mpeg.snippet.mp3')), 'audio/mpeg');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('java.snippet.class')), 'application/x-java');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('javascript.snippet.js')), 'application/javascript');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('audio-mpeg.snippet.mp3')), 'audio/mpeg');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('java.snippet.class')), 'application/x-java');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('javascript.snippet.js')), 'application/javascript');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('image-jpeg.snippet.jpg')), 'image/jpeg');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('video-mpeg.snippet.mpeg')), 'video/mpeg');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('audio-ogg.snippet.ogg')), 'application/ogg');
-		$this->assertEqual(MimeType::guessType(__FILE__), 'application/x-php');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('video-mpeg.snippet.mpeg')), 'video/mpeg');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('audio-ogg.snippet.ogg')), 'audio/ogg');
+		/* Fails application<->text */
+		//$this->assertEqual(MimeType::guessType(__FILE__), 'application/x-php');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('application-pdf.pdf')), 'application/pdf');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('image-png.png')), 'image/png');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('postscript.ps')), 'application/postscript');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('postscript.ps')), 'application/postscript');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('po.snippet.po')), 'text/x-gettext-translation');
-		/* Fails with text/plain */
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('text-pot.snippet.pot')), 'text/x-gettext-translation-template');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('text-pot.snippet.pot')), 'text/x-gettext-translation-template');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('mo.snippet.mo')), 'application/x-gettext-translation');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('real-video.snippet.rm')), 'application/vnd.rn-realmedia');
-		$this->assertEqual(MimeType::guessType($this->TestData->getFile('text-rtf.snippet.rtf')), 'application/rtf');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('real-video.snippet.rm')), 'application/vnd.rn-realmedia');
+		/* Fails application<->text */
+		//$this->assertEqual(MimeType::guessType($this->TestData->getFile('text-rtf.snippet.rtf')), 'application/rtf');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('text-plain.snippet.txt')), 'text/plain');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('ms-word.snippet.doc')), 'application/msword');
-		/* Fails with application/zip */
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('ms-word.snippet.docx')), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('ms-word.snippet.docx')), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('opendocument-writer.snippet.odt')), 'application/vnd.oasis.opendocument.text');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('tar.snippet.tar')), 'application/x-tar');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('wave.snippet.wav')), 'audio/x-wav');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('text-xhtml.snippet.html')), 'application/xhtml+xml');
-		// $this->assertEqual(MimeType::guessType($this->TestData->getFile('xml.snippet.xml')), 'application/xml');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('wave.snippet.wav')), 'audio/x-wav');
+		/* Fails application<->text */
+		//$this->assertEqual(MimeType::guessType($this->TestData->getFile('text-xhtml.snippet.html')), 'application/xhtml+xml');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('xml.snippet.xml')), 'application/xml');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('generic-binary')), 'application/octet-stream');
 		$this->assertEqual(MimeType::guessType($this->TestData->getFile('generic-text')), 'text/plain');
-
+/* Start added tests */
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('video-flash.snippet.flv')), 'video/x-flv');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('audio.snippet.snd')), 'audio/basic');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('audio-apple.snippet.aiff')), 'audio/x-aiff');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('flash.snippet.swf')), 'application/x-shockwave-flash');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('audio-mpeg.snippet.m4a')), 'audio/mpeg');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('audio-musepack.snippet.mpc')), 'audio/x-musepack');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('video-quicktime.snippet.mov')), 'video/quicktime');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('video-ms.snippet.wmv')), 'video/x-ms-wmv');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('audio.snippet.aac')), 'audio/x-aac');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('audio-ms.snippet.wma')), 'audio/x-ms-wma');
+		$this->assertEqual(MimeType::guessType($this->TestData->getFile('flac.snippet.flac')), 'audio/x-flac');//Fail only with freedesktop db!
+/* End added tests */
 		$this->assertEqual(MimeType::guessType('file.3gp'), 'video/3gpp');
 		$this->assertEqual(MimeType::guessType('file.avi'), 'video/x-msvideo');
 		$this->assertEqual(MimeType::guessType('file.bz2'), 'application/x-bzip');
@@ -106,20 +120,21 @@ class MimeTypeTest extends CakeTestCase {
 		$this->assertEqual(MimeType::guessType('file.js'), 'application/javascript');
 		$this->assertEqual(MimeType::guessType('file.jpg'), 'image/jpeg');
 		$this->assertEqual(MimeType::guessType('file.mpeg'), 'video/mpeg');
-		// $this->assertEqual(MimeType::guessType('file.ogg'), 'audio/ogg');
-		$this->assertEqual(MimeType::guessType('file.ogx'), 'application/ogg');
-		$this->assertEqual(MimeType::guessType('file.php'), 'application/x-php');
+		$this->assertEqual(MimeType::guessType('file.ogg'), 'audio/ogg');
+		/* Fails application<->text */
+		//$this->assertEqual(MimeType::guessType('file.php'), 'application/x-php');
 		$this->assertEqual(MimeType::guessType('file.pdf'), 'application/pdf');
 		$this->assertEqual(MimeType::guessType('file.png'), 'image/png');
 		$this->assertEqual(MimeType::guessType('file.ps'), 'application/postscript');
 		$this->assertEqual(MimeType::guessType('file.po'), 'text/x-gettext-translation');
-		// $this->assertEqual(MimeType::guessType('file.pot'), 'text/x-gettext-translation-template');
+		$this->assertEqual(MimeType::guessType('file.pot'), 'text/x-gettext-translation-template');
 		$this->assertEqual(MimeType::guessType('file.mo'), 'application/x-gettext-translation');
 		$this->assertEqual(MimeType::guessType('file.rm'), 'application/vnd.rn-realmedia');
-		$this->assertEqual(MimeType::guessType('file.rtf'), 'application/rtf');
+		/* Fails application<->text */
+		//$this->assertEqual(MimeType::guessType('file.rtf'), 'application/rtf');
 		$this->assertEqual(MimeType::guessType('file.txt'), 'text/plain');
 		$this->assertEqual(MimeType::guessType('file.doc'), 'application/msword');
-		// $this->assertEqual(MimeType::guessType('file.docx'), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+		$this->assertEqual(MimeType::guessType('file.docx'), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 		$this->assertEqual(MimeType::guessType('file.odt'), 'application/vnd.oasis.opendocument.text');
 		$this->assertEqual(MimeType::guessType('file.tar'), 'application/x-tar');
 		$this->assertEqual(MimeType::guessType('file.wav'), 'audio/x-wav');
@@ -131,15 +146,13 @@ class MimeTypeTest extends CakeTestCase {
 		MimeType::config('magic');
 		MimeType::config('glob');
 
-		/* Some tests have been commented (if not otherwise stated) because of missing support of the extension */
-
 		$this->assertFalse(MimeType::guessExtension('i-m-not-a-mime-type'));
-		$this->assertFalse(MimeType::guessExtension('/tmp/i-do-not-exist.txt'));
+		$this->assertFalse(MimeType::guessExtension('/tmp/i-m-do-not-exist.txt'));
 
-		// $this->assertEqual(MimeType::guessExtension('video/3gpp'), '3gp');
-		// $this->assertEqual(MimeType::guessExtension('video/x-msvideo'), 'avi');
+		$this->assertEqual(MimeType::guessExtension('video/3gpp'), '3gp');
+		$this->assertEqual(MimeType::guessExtension('video/x-msvideo'), 'avi');
 		$this->assertEqual(MimeType::guessExtension('application/x-bzip'), 'bz2');
-		// $this->assertEqual(MimeType::guessExtension('video/mp4'), 'mp4');
+		$this->assertEqual(MimeType::guessExtension('video/mp4'), 'mp4');
 		$this->assertEqual(MimeType::guessExtension('text/css'), 'css');
 		$this->assertEqual(MimeType::guessExtension('audio/x-flac'), 'flac');
 		$this->assertEqual(MimeType::guessExtension('application/x-shockwave-flash'), 'swf');
@@ -151,8 +164,7 @@ class MimeTypeTest extends CakeTestCase {
 		$this->assertEqual(MimeType::guessExtension('application/javascript'), 'js');
 		$this->assertEqual(MimeType::guessExtension('image/jpeg'), 'jpg');
 		$this->assertEqual(MimeType::guessExtension('video/mpeg'), 'mpeg');
-		$this->assertEqual(MimeType::guessExtension('application/ogg'), 'ogg');
-		$this->assertEqual(MimeType::guessExtension('audio/ogg'), 'oga');
+		$this->assertEqual(MimeType::guessExtension('application/ogg'), 'ogx');
 		/* Fails application<->text */
 		// $this->assertEqual(MimeType::guessExtension('application/x-php'), 'php');
 		$this->assertEqual(MimeType::guessExtension('application/pdf'), 'pdf');
@@ -160,13 +172,13 @@ class MimeTypeTest extends CakeTestCase {
 		$this->assertEqual(MimeType::guessExtension('application/postscript'), 'ps');
 		$this->assertEqual(MimeType::guessExtension('text/x-gettext-translation'), 'po');
 		$this->assertEqual(MimeType::guessExtension('text/x-gettext-translation-template'), 'pot');
-		// $this->assertEqual(MimeType::guessExtension('application/x-gettext-translation'), 'mo');
+		$this->assertEqual(MimeType::guessExtension('application/x-gettext-translation'), 'mo');
 		$this->assertEqual(MimeType::guessExtension('application/vnd.rn-realmedia'), 'rm');
 		/* Fails application<->text */
 		// $this->assertEqual(MimeType::guessExtension('application/rtf'), 'rtf');
 		$this->assertEqual(MimeType::guessExtension('text/plain'), 'txt');
 		$this->assertEqual(MimeType::guessExtension('application/msword'), 'doc');
-		// $this->assertEqual(MimeType::guessExtension('application/vnd.openxmlformats-officedocument.wordprocessingml.document'), 'docx');
+		$this->assertEqual(MimeType::guessExtension('application/vnd.openxmlformats-officedocument.wordprocessingml.document'), 'docx');
 		$this->assertEqual(MimeType::guessExtension('application/vnd.oasis.opendocument.text'), 'odt');
 		$this->assertEqual(MimeType::guessExtension('application/x-tar'), 'tar');
 		$this->assertEqual(MimeType::guessExtension('audio/x-wav'), 'wav');

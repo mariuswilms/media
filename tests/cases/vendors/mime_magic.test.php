@@ -83,46 +83,66 @@ class MimeMagicTest extends CakeTestCase {
 		}
 		$Mime =& new MimeMagic($file);
 
-		/* Commented tests fail if not otherwise stated because there is no support in the db */
-
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('3gp.snippet.3gp')), 'video/3gpp');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('ms.avi')), 'video/x-msvideo');
-		$this->assertEqual($Mime->analyze($this->TestData->getFile('bzip2.snippet.bz2')), 'application/x-bzip');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('video.snippet.mp4')), 'video/mp4');
-		/* Fails with text/x-csrc */
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('css.snippet.css')), 'text/css');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('flac.snippet.flac')), 'audio/x-flac');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('flash.snippet.swf')), 'application/x-shockwave-flash');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('ms.snippet.avi')), 'video/x-msvideo');
 		$this->assertEqual($Mime->analyze($this->TestData->getFile('image-gif.gif')), 'image/gif');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('application-pdf.pdf')), 'application/pdf');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('postscript.snippet.ps')), 'application/postscript');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('tar.snippet.tar')), 'application/x-tar');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('wave.snippet.wav')), 'audio/x-wav');
+
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('3gp.snippet.3gp')), 'video/3gpp');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('bzip2.snippet.bz2')), 'application/x-bzip');//application/x-bzip2
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('video.snippet.mp4')), 'video/mp4');
 		$this->assertEqual($Mime->analyze($this->TestData->getFile('gzip.snippet.gz')), 'application/x-gzip');
 		$this->assertEqual($Mime->analyze($this->TestData->getFile('text-html.snippet.html')), 'text/html');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('audio-mpeg.snippet.mp3')), 'audio/mpeg');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('java.snippet.class')), 'application/x-java');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('javascript.snippet.js')), 'application/javascript');
-		$this->assertEqual($Mime->analyze($this->TestData->getFile('image-jpeg.snippet.jpg')), 'image/jpeg');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('video-mpeg.snippet.mpeg')), 'video/mpeg');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('audio-ogg.snippet.ogg')), 'application/ogg');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('image-jpeg.snippet.jpg')), 'image/jpeg');//audio/MP4A-LATM
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('video-mpeg.snippet.mpeg')), 'video/mpeg');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('video-ogg.snippet.ogv')), 'video/x-theora+ogg');//application/ogg
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('audio-ogg.snippet.ogg')), 'audio/x-vorbis+ogg');//application/ogg
 		$this->assertEqual($Mime->analyze(__FILE__), 'application/x-php');
-		$this->assertEqual($Mime->analyze($this->TestData->getFile('application-pdf.pdf')), 'application/pdf');
 		$this->assertEqual($Mime->analyze($this->TestData->getFile('image-png.png')), 'image/png');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('postscript.ps')), 'application/postscript');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('po.snippet.po')), 'text/x-gettext-translation');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('text-pot.snippet.pot')), 'text/x-gettext-translation-template');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('mo.snippet.mo')), 'application/x-gettext-translation');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('real-video.snippet.rm')), 'application/vnd.rn-realmedia');
-		$this->assertEqual($Mime->analyze($this->TestData->getFile('text-rtf.snippet.rtf')), 'application/rtf');
-		/* Fails with video/x-ms-asf */
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('text-plain.snippet.txt')), 'text/plain');
-		/* Fails with application/x-ole-storage */
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('ms-word.snippet.doc')), 'application/msword');
-		/* Fails with application/zip */
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('ms-word.snippet.docx')), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-		/* Fails with application/vnd.oasis.opendocument.graphics */
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('opendocument-writer.snippet.odt')), 'application/vnd.oasis.opendocument.text');
-		$this->assertEqual($Mime->analyze($this->TestData->getFile('tar.snippet.tar')), 'application/x-tar');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('wave.snippet.wav')), 'audio/x-wav');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('text-xhtml.snippet.xhtml')), 'application/xhtml+xml');
-		// $this->assertEqual($Mime->analyze($this->TestData->getFile('xml.snippet.xml')), 'application/xml');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('text-rtf.snippet.rtf')), 'application/rtf');//text/rtf
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('ms-word.snippet.doc')), 'application/msword');//audio/MP4A-LATM
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('xml.snippet.xml')), 'application/xml');//text/xml
+
+		/* Fail! */
+		/*
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('opendocument-writer.snippet.odt')), 'application/vnd.oasis.opendocument.text');//application/zip
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('ms-word.snippet.docx')), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');//application/zip
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('audio-mpeg.snippet.mp3')), 'audio/mpeg');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('text-plain.snippet.txt')), 'text/plain');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('css.snippet.css')), 'text/css');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('javascript.snippet.js')), 'application/javascript');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('text-xhtml.snippet.xhtml')), 'application/xhtml+xml');//text/xml
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('po.snippet.po')), 'text/x-gettext-translation');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('text-pot.snippet.pot')), 'text/x-gettext-translation-template');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('mo.snippet.mo')), 'application/x-gettext-translation');
+		*/
+
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('video-flash.snippet.flv')), 'video/x-flv');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('audio.snippet.snd')), 'audio/basic');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('audio-apple.snippet.aiff')), 'audio/x-aiff');
+
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('flash.snippet.swf')), 'application/x-shockwave-flash');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('audio-mpeg.snippet.m4a')), 'audio/mp4');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('audio-musepack.snippet.mpc')), 'audio/x-musepack');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('video-quicktime.snippet.mov')), 'video/quicktime');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('video-ms.snippet.wmv')), 'video/x-ms-asf');
+
+		/* Fail! */
+		/*
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('audio.snippet.aac')), 'audio/x-aac');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('audio-ms.snippet.wma')), 'audio/x-ms-asf');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('flac.snippet.flac')), 'audio/x-flac');//Fail only with freedesktop db!
+		*/
+		/* Audio formats to find/add/test:
+		riff,wavpack, aac, ac3, ape, shorten, midi, voc, s3m, xm, it, mod, matroska, pac, bonk, dts, cda */
+
+		/* Fail! No data :( */
+		/*
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('java.snippet.class')), 'application/x-java');
+		$this->assertEqual($Mime->analyze($this->TestData->getFile('real-video.snippet.rm')), 'application/vnd.rn-realmedia');
+		*/
 	}
 }
 ?>
