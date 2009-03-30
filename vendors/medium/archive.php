@@ -36,7 +36,7 @@ class ArchiveMedium extends Medium {
  * @return array
  */
 	function files() {
-		return $this->Adapters->dispatchMethod($this, 'files');
+		return (array)$this->Adapters->dispatchMethod($this, 'files');
 	}
 /**
  * Compression percentage
@@ -44,7 +44,7 @@ class ArchiveMedium extends Medium {
  * @return integer
  */
 	function compression() {
-		return $this->Adapters->dispatchMethod($this, 'compression');
+		return (integer)round($this->Adapters->dispatchMethod($this, 'compression'));
 	}
 }
 ?>

@@ -56,11 +56,30 @@ class GetId3ArchiveMediumAdapter extends MediumAdapter {
 	}
 
 	function files(&$Medium) {
-		return @array_keys($Medium->objects['getID3']->info[$Medium->objects['getID3']->info['fileformat']]['files']);
+		if (!isset($Medium->objects['getID3']->info['fileformat'])) {
+			return false;
+		}
+		$format = $Medium->objects['getID3']->info['fileformat'];
+
+		if (!isset($Medium->objects['getID3']->info[$format]['files'])) {
+			return false;
+		}
+		return array_keys($Medium->objects['getID3']->info[$format]['files']);
 	}
 
 	function compression(&$Medium) {
-		$uncompressed = array_sum($Medium->objects['getID3']->info[$Medium->objects['getID3']->info['fileformat']]['files']);
+		if (!isset($Medium->objects['getID3']->info['fileformat'])) {
+			return false;
+		}
+		$format = $Medium->objects['getID3']->info['fileformat'];
+
+		if (!isset($Medium->objects['getID3']->info[$format]['files'])) {
+			return false;
+		}
+		if (!isset($Medium->objects['getID3']->info['filesize'])) {
+			return false;
+		}
+		$uncompressed = array_sum($Medium->objects['getID3']->info[$format]['files']);
 		return $Medium->objects['getID3']->info['filesize'] / $uncompressed * 100;
 	}
 }
