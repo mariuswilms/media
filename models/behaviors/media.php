@@ -332,9 +332,12 @@ class MediaBehavior extends ModelBehavior {
 							'artist'        => $Medium->artist(),
 							'album'         => $Medium->album(),
 							'title'         => $Medium->title(),
+							'track'         => $Medium->track(),
+							'year'          => $Medium->year(),
 							'length'        => $Medium->duration(),
 							'quality'       => $Medium->quality(),
 							'sampling_rate' => $Medium->samplingRate(),
+							'bitrate'       => $Medium->bitrate(),
 							);
 		} elseif ($Medium->name === 'Image') {
 			$detailed = array(
@@ -355,12 +358,14 @@ class MediaBehavior extends ModelBehavior {
 							);
 		} elseif ($Medium->name === 'Video') {
 			$detailed = array(
+							'title'   => $Medium->title(),
+							'year'    => $Medium->year(),
+							'length'  => $Medium->duration(),
 							'width'   => $Medium->width(),
 							'height'  => $Medium->height(),
-							'length'  => $Medium->duration(),
+							'ratio'   => $Medium->ratio(),
 							'quality' => $Medium->quality(),
 							'bitrate' => $Medium->bitrate(),
-							'ratio'   => $Medium->ratio(),
 							);
 		} elseif ($Medium->name === 'Archive') {
 			$detailed = array(

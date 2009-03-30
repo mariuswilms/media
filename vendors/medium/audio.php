@@ -25,86 +25,115 @@ App::import('Vendor', 'Media.Medium');
  */
 class AudioMedium extends Medium {
 	/**
-	 * Enter description here...
+	 * Compatible adapters
 	 *
-	 * @var unknown_type
+	 * @var array
 	 */
-	public $adapters = array('GetId3Audio', 'FfMpegAudio', 'PearMp3', 'PearOggAudio');
+	$adapters = array('GetId3Audio', 'FfMpegAudio', 'PearMp3', 'PearOggAudio');
+
 	/**
-	 * Enter description here...
+	 * Artist stored in medium metadata
 	 *
-	 * @return unknown
+	 * @return mixed String if metadata info exists, else null
 	 */
-	public function artist() {
+	function artist() {
 		return $this->Adapters->dispatchMethod($this, 'artist');
 	}
+
 	/**
-	 * Enter description here...
+	 * Title stored in medium metadata
 	 *
-	 * @return unknown
+	 * @return mixed String if metadata info exists, else null
 	 */
-	public function title() {
-		return $this->Adapters->dispatchMethod($this, 'name');
+	function title() {
+		return $this->Adapters->dispatchMethod($this, 'title');
 	}
+
 	/**
-	 * Enter description here...
+	 * Album name stored in medium metadata
 	 *
-	 * @return unknown
+	 * @return mixed String if metadata info exists, else null
 	 */
-	public function album() {
+	function album() {
 		return $this->Adapters->dispatchMethod($this, 'album');
 	}
+
 	/**
-	 * Enter description here...
+	 * Year stored in medium metadata
 	 *
-	 * @return unknown
+	 * @return mixed Integer if metadata info exists, else null
 	 */
-	public function year() {
+	function year() {
 		return $this->Adapters->dispatchMethod($this, 'year');
 	}
+
 	/**
-	 * Enter description here...
+	 * Track number stored in medium metadata
 	 *
-	 * @return unknown
+	 * @return mixed Integer if metadata info exists, else null
 	 */
-	public function duration() {
-		return $this->Adapters->dispatchMethod($this, 'duration');
-	}
-	/**
-	 * Enter description here...
-	 *
-	 * @return unknown
-	 */
-	public function track() {
+	function track() {
 		return $this->Adapters->dispatchMethod($this, 'track');
 	}
+
 	/**
-	 * Enter description here...
+	 * Duration in seconds
 	 *
-	 * @return unknown
+	 * @return integer
 	 */
-	public function samplingRate() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'samplingRate');
+	function duration() {
+		return $this->Adapters->dispatchMethod($this, 'duration');
 	}
+
 	/**
-	 * Enter description here...
+	 * Current sampling rate of medium
 	 *
 	 * @url http://en.wikipedia.org/wiki/Sampling_rate
-	 * @return unknown
+	 * @return integer
 	 */
-	public function quality() {
-		$rate = $this->samplingRate();
+	function samplingRate() {
+		return $this->Adapters->dispatchMethod($this, 'samplingRate');
+	}
 
-		/* Normalized between 1 and 5 where min = 8000 and max = 192.000 */
-		if($rate > 192000) {
-			$quality = 5;
-		} elseif($rate < 8000) {
-			$quality = 0;
-		} else {
-			$quality = round((($rate - 8000) / (192000 - 8000)) * (5 * 1) + 1,0);
+	/**
+	 * Current bitrate of medium
+	 *
+	 * @url http://en.wikipedia.org/wiki/Bit_rate
+	 * @return integer
+	 */
+	function bitrate() {
+		return $this->Adapters->dispatchMethod($this, 'bitrate');
+	}
+
+	/**
+	* Determines the quality of the medium by
+	* taking bitrate into account
+	 *
+	 * @return integer A number indicating quality between 1 (worst) and 5 (best)
+	 */
+	function quality() {
+		if (!$bitrate = $this->bitrate()) {
+			return null;
 		}
 
-		return $quality;
+		/* Normalized between 1 and 5 where min = 32000 and max = 320000 or 500000 */
+		$bitrateMax = ($this->mimeType == 'audio/mpeg') ? 320000 : 500000;
+		$bitrateMin = 32000;
+		$qualityMax = 5;
+		$qualityMin = 1;
+
+		if ($bitrate >= $bitrateMax) {
+			$quality = $qualityMax;
+		} elseif ($bitrate <= $bitrateMin) {
+			$quality = $qualityMin;
+		} else {
+			$quality =
+				(($bitrate - $bitrateMin) / ($bitrateMax - $bitrateMin))
+				* ($qualityMax - $qualityMin)
+				+ $qualityMin;
+		}
+
+		return (int) round($quality);
 	}
 }
 ?>
