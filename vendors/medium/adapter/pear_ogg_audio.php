@@ -38,9 +38,15 @@ class PearOggAudioMediumAdapter extends MediumAdapter {
 			return false;
 		}
 
-		$Object = File_Ogg($Medium->file);
+		$Ogg = new File_Ogg($Medium->file);
 
-		if (!$Object = $Object->getStream('file_ogg_vorbis')) {
+		if (!$Ogg->hasStream(OGG_STREAM_VORBIS)) {
+			return false;
+		}
+
+		$stream = current($Ogg->listStreams(OGG_STREAM_VORBIS));
+
+		if (!$Object = $Ogg->getStream($stream)) {
 			return false;
 		}
 
@@ -62,7 +68,10 @@ class PearOggAudioMediumAdapter extends MediumAdapter {
 	}
 
 	function year(&$Medium) {
-		return strftime('Y',strtotime($Medium->objects['File_Ogg_Vorbis']->getDate(),time()));
+		if ($year = strtotime($Medium->objects['File_Ogg_Vorbis']->getDate())) {
+			return strftime('%Y', $year);
+		}
+		return false;
 	}
 
 	function duration(&$Medium) {
@@ -75,6 +84,10 @@ class PearOggAudioMediumAdapter extends MediumAdapter {
 
 	function samplingRate(&$Medium) {
 		return $Medium->objects['File_Ogg_Vorbis']->getSampleRate();
+	}
+
+	function bitrate(&$Medium) {
+		return $Medium->objects['File_Ogg_Vorbis']->getBitrate();
 	}
 }
 ?>

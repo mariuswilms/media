@@ -60,6 +60,10 @@ class FfMpegAudioMediumAdapter extends MediumAdapter {
 		return $Medium->objects['ffmpeg_movie']->getTitle();
 	}
 
+	function album(&$Medium) {
+		return $Medium->objects['ffmpeg_movie']->getAlbum();
+	}
+
 	function year(&$Medium) {
 		return $Medium->objects['ffmpeg_movie']->getYear();
 	}
@@ -75,5 +79,10 @@ class FfMpegAudioMediumAdapter extends MediumAdapter {
 	function samplingRate(&$Medium) {
 		return $Medium->objects['ffmpeg_movie']->getAudioSampleRate();
 	}
+
+	function bitrate(&$Medium) {
+		return $Medium->objects['ffmpeg_movie']->getBitRate();
+	}
+
 }
 ?>

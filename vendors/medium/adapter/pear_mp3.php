@@ -39,8 +39,11 @@ class PearMp3MediumAdapter extends MediumAdapter {
 		}
 
 		$Object = new MP3_Id();
+		$Object->read($Medium->file);
+		$Object->study();
 
-		if(!$Object->read($Medium->file) || !$Object->study()) {
+
+		if(!$Object->id3v1) {
 			return false;
 		}
 
@@ -66,7 +69,11 @@ class PearMp3MediumAdapter extends MediumAdapter {
 	}
 
 	function duration(&$Medium) {
-		return $Medium->objects['MP3_Id']->getTag('lengths');
+		$duration = $Medium->objects['MP3_Id']->getTag('lengths');
+		if ($duration != -1) {
+			return $duration;
+		}
+		return false;
 	}
 
 	function track(&$Medium) {
@@ -75,6 +82,13 @@ class PearMp3MediumAdapter extends MediumAdapter {
 
 	function samplingRate(&$Medium) {
 		return $Medium->objects['MP3_Id']->getTag('frequency');
+	}
+
+	function bitrate(&$Medium) {
+		if ($bitrate = $Medium->objects['MP3_Id']->getTag('bitrate')) {
+			return $bitrate * 1000;
+		}
+		return false;
 	}
 }
 ?>

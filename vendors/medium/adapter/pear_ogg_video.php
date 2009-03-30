@@ -38,15 +38,39 @@ class PearOggVideoMediumAdapter extends MediumAdapter {
 			return false;
 		}
 
-		$Object = new File_Ogg($Medium->file);
+		$Ogg = new File_Ogg($Medium->file);
 
-		if (! $Object->hasStream(OGG_STREAM_THEORA)) {
+		if (!$Ogg->hasStream(OGG_STREAM_THEORA)) {
+			return false;
+		}
+
+		$stream = current($Ogg->listStreams(OGG_STREAM_THEORA));
+
+		if (!$Object = $Ogg->getStream($stream)) {
 			return false;
 		}
 
 		$Medium->objects['File_Ogg_Theora'] = $Object;
 
 		return true;
+	}
+
+	function title(&$Medium) {
+		$comments = $Medium->objects['File_Ogg_Theora']->getComments();
+
+		if (isset($comments['TITLE'])) {
+			return $comments['TITLE'];
+		}
+		return false;
+	}
+
+	function year(&$Medium) {
+		$comments = $Medium->objects['File_Ogg_Theora']->getComments();
+
+		if (isset($comments['DATE'])) {
+			return strftime('%Y', $comments['DATE']);
+		}
+		return false;
 	}
 
 	function duration(&$Medium) {
@@ -68,11 +92,14 @@ class PearOggVideoMediumAdapter extends MediumAdapter {
 	}
 
 	function bitrate(&$Medium) {
-		$duration = $this->duration($Medium);
-		if (empty($duration)) {
-			return null;
+		$header = $Medium->objects['File_Ogg_Theora']->getHeader();
+		if (isset($header['NOMBR'])) {
+			return $header['NOMBR'];
 		}
-		return filesize($Medium->file) / ($duration * 8);
+		if ($duration = $this->duration($Medium)) {
+			return filesize($Medium->file) / ($duration * 8);
+		}
+		return false;
 	}
 }
 ?>

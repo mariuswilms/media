@@ -66,6 +66,14 @@ class FfMpegVideoMediumAdapter extends MediumAdapter {
 		return false;
 	}
 
+	function title(&$Medium) {
+		return $Medium->objects['ffmpeg_movie']->getTitle();
+	}
+
+	function year(&$Medium) {
+		return $Medium->objects['ffmpeg_movie']->getYear();
+	}
+
 	function duration(&$Medium) {
 		return $Medium->objects['ffmpeg_movie']->getDuration();
 	}
