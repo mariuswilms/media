@@ -37,7 +37,7 @@ class VideoMedium extends Medium {
 	 * @return mixed String if metadata info exists, else null
 	 */
 	function title() {
-		return $this->Adapters->dispatchMethod($this, 'title');
+		return trim($this->Adapters->dispatchMethod($this, 'title'));
 	}
 
 	/**
@@ -46,7 +46,7 @@ class VideoMedium extends Medium {
 	 * @return mixed Integer if metadata info exists, else null
 	 */
 	function year() {
-		return $this->Adapters->dispatchMethod($this, 'year');
+		return (integer)$this->Adapters->dispatchMethod($this, 'year');
 	}
 
 	/**
@@ -55,7 +55,7 @@ class VideoMedium extends Medium {
 	 * @return integer
 	 */
 	function height() {
-		return $this->Adapters->dispatchMethod($this, 'height');
+		return (integer)$this->Adapters->dispatchMethod($this, 'height');
 	}
 
 	/**
@@ -64,7 +64,7 @@ class VideoMedium extends Medium {
 	 * @return integer
 	 */
 	function width() {
-		return $this->Adapters->dispatchMethod($this, 'width');
+		return (integer)$this->Adapters->dispatchMethod($this, 'width');
 	}
 
 	/**
@@ -74,7 +74,7 @@ class VideoMedium extends Medium {
 	 * @return integer
 	 */
 	function bitrate() {
-		return $this->Adapters->dispatchMethod($this, 'bitrate');
+		return (integer)$this->Adapters->dispatchMethod($this, 'bitrate');
 	}
 
 	/**
@@ -122,7 +122,7 @@ class VideoMedium extends Medium {
 			$quality = ($quality + $qualityMax * $bitrateCoef) / ($bitrateCoef + 1);
 		}
 
-		return (int) round($quality);
+		return (integer)round($quality);
 	}
 
 	/**

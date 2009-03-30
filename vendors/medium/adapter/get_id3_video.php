@@ -27,9 +27,9 @@ class GetId3VideoMediumAdapter extends MediumAdapter {
 	var $require = array(
 					'mimeTypes' => array(
 								'video/matroska',
-								'video/mswmv',
-								'video/msasf',
-								'video/msvideo',
+								'video/ms-wmv',
+								'video/ms-asf',
+								'video/ms-video',
 								'video/mpeg',
 								'video/quicktime',
 								'video/avi',
@@ -40,9 +40,12 @@ class GetId3VideoMediumAdapter extends MediumAdapter {
 								'video/pn-realvideo',
 								'video/pn-multirate-realvideo',
 								'video/nsv',
+								/* Will not be used since video Medium can't have application/... mime type */
 								'application/shockwave-flash',
 								),
-					'imports' => array(array('type' => 'Vendor', 'name'=> 'getID3', 'file' => 'getid3/getid3.php')),
+					'imports' => array(
+							array('type' => 'Vendor', 'name'=> 'getID3', 'file' => 'getid3/getid3.php')
+							),
 					);
 
 	function initialize(&$Medium) {
@@ -66,32 +69,46 @@ class GetId3VideoMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function duration(&$Medium) {
-		if (!isset($Medium->objects['getID3']->info['playtime_seconds']) {
-			return false;
+	function title(&$Medium) {
+		if (isset($Medium->objects['getID3']->info['comments']['title'][0])) {
+			return $Medium->objects['getID3']->info['comments']['title'][0];
 		}
-		return $Medium->objects['getID3']->info['playtime_seconds'];
+		return false;
+	}
+
+	function year(&$Medium) {
+		if (isset($Medium->objects['getID3']->info['comments']['year'][0])) {
+			return $Medium->objects['getID3']->info['comments']['year'][0];
+		}
+		return false;
+	}
+
+	function duration(&$Medium) {
+		if (isset($Medium->objects['getID3']->info['playtime_seconds'])) {
+			return $Medium->objects['getID3']->info['playtime_seconds'];
+		}
+		return false;
 	}
 
 	function width(&$Medium) {
-		if (!isset($Medium->objects['getID3']->info['video']['resolution_x']) {
-			return false;
+		if (isset($Medium->objects['getID3']->info['video']['resolution_x'])) {
+			return $Medium->objects['getID3']->info['video']['resolution_x'];
 		}
-		return $Medium->objects['getID3']->info['video']['resolution_x'];
+		return false;
 	}
 
 	function height(&$Medium) {
-		if (!isset($Medium->objects['getID3']->info['video']['resolution_y']) {
+		if (isset($Medium->objects['getID3']->info['video']['resolution_y'])) {
 			return false;
 		}
 		return $Medium->objects['getID3']->info['video']['resolution_y'];
 	}
 
 	function bitrate(&$Medium) {
-		if (!isset($Medium->objects['getID3']->info['bitrate']) {
-			return false;
+		if (isset($Medium->objects['getID3']->info['bitrate'])) {
+			return $Medium->objects['getID3']->info['bitrate'];
 		}
-		return $Medium->objects['getID3']->info['bitrate'];
+		return false;
 	}
 }
 ?>

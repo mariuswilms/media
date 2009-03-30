@@ -37,7 +37,7 @@ class AudioMedium extends Medium {
 	 * @return mixed String if metadata info exists, else null
 	 */
 	function artist() {
-		return $this->Adapters->dispatchMethod($this, 'artist');
+		return trim($this->Adapters->dispatchMethod($this, 'artist'));
 	}
 
 	/**
@@ -46,7 +46,7 @@ class AudioMedium extends Medium {
 	 * @return mixed String if metadata info exists, else null
 	 */
 	function title() {
-		return $this->Adapters->dispatchMethod($this, 'title');
+		return trim($this->Adapters->dispatchMethod($this, 'title'));
 	}
 
 	/**
@@ -55,7 +55,7 @@ class AudioMedium extends Medium {
 	 * @return mixed String if metadata info exists, else null
 	 */
 	function album() {
-		return $this->Adapters->dispatchMethod($this, 'album');
+		return trim($this->Adapters->dispatchMethod($this, 'album'));
 	}
 
 	/**
@@ -64,7 +64,7 @@ class AudioMedium extends Medium {
 	 * @return mixed Integer if metadata info exists, else null
 	 */
 	function year() {
-		return $this->Adapters->dispatchMethod($this, 'year');
+		return (integer)$this->Adapters->dispatchMethod($this, 'year');
 	}
 
 	/**
@@ -73,7 +73,7 @@ class AudioMedium extends Medium {
 	 * @return mixed Integer if metadata info exists, else null
 	 */
 	function track() {
-		return $this->Adapters->dispatchMethod($this, 'track');
+		return (integer)$this->Adapters->dispatchMethod($this, 'track');
 	}
 
 	/**
@@ -82,7 +82,7 @@ class AudioMedium extends Medium {
 	 * @return integer
 	 */
 	function duration() {
-		return $this->Adapters->dispatchMethod($this, 'duration');
+		return (integer)$this->Adapters->dispatchMethod($this, 'duration');
 	}
 
 	/**
@@ -92,7 +92,7 @@ class AudioMedium extends Medium {
 	 * @return integer
 	 */
 	function samplingRate() {
-		return $this->Adapters->dispatchMethod($this, 'samplingRate');
+		return (integer)$this->Adapters->dispatchMethod($this, 'samplingRate');
 	}
 
 	/**
@@ -102,7 +102,7 @@ class AudioMedium extends Medium {
 	 * @return integer
 	 */
 	function bitrate() {
-		return $this->Adapters->dispatchMethod($this, 'bitrate');
+		return (integer)$this->Adapters->dispatchMethod($this, 'bitrate');
 	}
 
 	/**
@@ -133,7 +133,7 @@ class AudioMedium extends Medium {
 				+ $qualityMin;
 		}
 
-		return (int) round($quality);
+		return (integer)round($quality);
 	}
 }
 ?>
