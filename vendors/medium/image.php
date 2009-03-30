@@ -233,7 +233,7 @@ class ImageMedium extends Medium {
 /**
  * Determines a (known) ratio of medium
  *
- * @return mixed if String if $known is true or float if false
+ * @return mixed String if $known is true or float if false
  */
 	function ratio($known = true) {
 		if (!$known) {
