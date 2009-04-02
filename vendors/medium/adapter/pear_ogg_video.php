@@ -67,8 +67,8 @@ class PearOggVideoMediumAdapter extends MediumAdapter {
 	function year(&$Medium) {
 		$comments = $Medium->objects['File_Ogg_Theora']->getComments();
 
-		if (isset($comments['DATE'])) {
-			return strftime('%Y', $comments['DATE']);
+		if ($date = strtotime($comments['DATE'])) {
+			return strftime('%Y', $date);
 		}
 		return false;
 	}
