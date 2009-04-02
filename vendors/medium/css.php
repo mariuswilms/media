@@ -24,25 +24,25 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class CssMedium extends Medium {
-/**
- * Enter description here...
- *
- * @var unknown_type
- */
+	/**
+	 * Compatible adapters
+	 *
+	 * @var array
+	 */
 	var $adapters = array('CssTidy', 'BasicText');
-/**
- * Number of characters
- *
- * @return integer
- */
+	/**
+	 * Number of characters
+	 *
+	 * @return integer
+	 */
 	function characters() {
 		return $this->Adapters->dispatchMethod($this, 'characters');
 	}
-/**
- * Compresses contents. of the medium
- *
- * @return string
- */
+	/**
+	 * Compresses contents. of the medium
+	 *
+	 * @return string
+	 */
 	function compress() {
 		return $this->Adapters->dispatchMethod($this, 'compress');
 	}

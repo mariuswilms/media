@@ -24,25 +24,25 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class ArchiveMedium extends Medium {
-/**
- * Adapters
- *
- * @var array
- */
+	/**
+	 * Compatible adapters
+	 *
+	 * @var array
+	 */
 	var $adapters = array('GetId3Archive');
-/**
- * List of files in archive
- *
- * @return array
- */
+	/**
+	 * List of files in archive
+	 *
+	 * @return array
+	 */
 	function files() {
 		return (array)$this->Adapters->dispatchMethod($this, 'files');
 	}
-/**
- * Compression percentage
- *
- * @return integer
- */
+	/**
+	 * Compression percentage
+	 *
+	 * @return integer
+	 */
 	function compression() {
 		return (integer)round($this->Adapters->dispatchMethod($this, 'compression'));
 	}

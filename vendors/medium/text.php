@@ -25,18 +25,18 @@ App::import('Vendor', 'Media.Medium');
  */
 class TextMedium extends Medium {
 	/**
-	 * Enter description here...
+	 * Compatible adapters
 	 *
-	 * @var unknown_type
+	 * @var array
 	 */
-	public $adapters = array('PearText', 'BasicText');
+	var $adapters = array('PearText', 'BasicText');
 
 	/**
 	 * Number of characters
 	 *
 	 * @return int
 	 */
-	public function characters() {
+	function characters() {
 		return $this->Adapters->dispatchMethod($this, 'characters');
 	}
 
@@ -45,7 +45,7 @@ class TextMedium extends Medium {
 	 *
 	 * @return float
 	 */
-	public function fleschScore() {
+	function fleschScore() {
 		return round($this->Adapters->dispatchMethod($this, 'fleschScore'), 2);
 	}
 
@@ -58,7 +58,7 @@ class TextMedium extends Medium {
 	 * @link http://www.usingenglish.com/glossary/lexical-density-test.html
 	 * @return int
 	 */
-	public function lexicalDensity() {
+	function lexicalDensity() {
 		return $this->Adapters->dispatchMethod($this, 'lexicalDensity');
 	}
 
@@ -67,7 +67,7 @@ class TextMedium extends Medium {
 	 *
 	 * @return int
 	 */
-	public function sentences() {
+	function sentences() {
 		return $this->Adapters->dispatchMethod($this, 'sentences');
 	}
 
@@ -76,7 +76,7 @@ class TextMedium extends Medium {
 	 *
 	 * @return int
 	 */
-	public function syllables()	{
+	function syllables()	{
 		return $this->Adapters->dispatchMethod($this, 'syllables');
 	}
 
@@ -86,7 +86,7 @@ class TextMedium extends Medium {
 	 * @param int $characters
 	 * @return string
 	 */
-	public function truncate($characters) {
+	function truncate($characters) {
 		return $this->Adapters->dispatchMethod($this, 'truncate', array($characters));
 	}
 
@@ -96,7 +96,7 @@ class TextMedium extends Medium {
 	 * @param bool $unique
 	 * @return int
 	 */
-	public function words($unique = false) {
+	function words($unique = false) {
 		return $this->Adapters->dispatchMethod($this, 'words', array($unique));
 	}
 }
