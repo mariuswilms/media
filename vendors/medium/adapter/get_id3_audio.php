@@ -120,8 +120,11 @@ class GetId3AudioMediumAdapter extends MediumAdapter {
 	}
 
 	function year(&$Medium) {
-		if (isset($Medium->objects['getID3']->info['comments']['year'][0])) {
-			return $Medium->objects['getID3']->info['comments']['year'][0];
+		if (!isset($Medium->objects['getID3']->info['comments']['year'][0])) {
+			return false;
+		}
+		if ($date = $Medium->objects['getID3']->info['comments']['year'][0]) {
+			return strftime('%Y', $date);
 		}
 		return false;
 	}
@@ -150,9 +153,13 @@ class GetId3AudioMediumAdapter extends MediumAdapter {
 	}
 
 	function bitrate(&$Medium) {
+		if (isset($Medium->objects['getID3']->info['ogg']['bitrate_nominal'])) {
+			return $Medium->objects['getID3']->info['ogg']['bitrate_nominal'];
+		}
 		if (isset($Medium->objects['getID3']->info['bitrate'])) {
 			return $Medium->objects['getID3']->info['bitrate'];
 		}
+		return false;
 	}
 
 	function convert(&$Medium, $mimeType) {
