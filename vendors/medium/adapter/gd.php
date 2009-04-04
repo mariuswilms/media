@@ -70,7 +70,7 @@ class GdMediumAdapter extends MediumAdapter {
 			return false;
 		}
 
-		$Medium->resources['gd'] = call_user_func_array('imageCreateFrom' . $this->_format, $Medium->file);
+		$Medium->resources['gd'] = call_user_func_array('imageCreateFrom' . $this->_format, array($Medium->file));
 
 		if (!$this->_isResource($Medium->resources['gd'])) {
 			return false;
@@ -121,7 +121,7 @@ class GdMediumAdapter extends MediumAdapter {
 	}
 
 	function compress(&$Medium, $value) {
-		switch ($Medium->mimeType) {
+			switch ($Medium->mimeType) {
 			case 'image/jpeg':
 				$this->_compression = intval(100 - ($value * 10));
 				break;

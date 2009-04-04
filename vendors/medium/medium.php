@@ -488,7 +488,7 @@ class MediumAdapterCollection extends Object {
  * @return mixed
  */
 	function dispatchMethod(&$Medium, $method, $params = array()) {
-		array_unshift($params, $Medium);
+		array_unshift($params, &$Medium);
 
 		if (isset($this->__methods[$method])) {
 			list($method, $name) = $this->__methods[$method];
