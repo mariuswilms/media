@@ -16,7 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor','Media.Medium');
+App::import('Vendor', 'Media.Medium');
 /**
  * Make Task Class
  *
@@ -25,75 +25,98 @@ App::import('Vendor','Media.Medium');
  */
 class MakeTask extends ManageShell {
 	var $overwrite = false;
-	var $directory;
+	var $createDirectories = false;
+	var $source;
+	var $destination;
+	var $filter;
 
 	function execute() {
-		if (isset($this->params['directory'])) {
-			$this->directory = $this->params['directory'];
-		} else {
-			$this->directory = $this->in('Source Directory', null, MEDIA . 'static' . DS);
+		if (count($this->args) == 2) {
+			$this->interactive = false;
 		}
-		if (isset($this->params['overwrite'])) {
-			$this->overwrite = true;
+
+		$this->source = array_shift($this->args);
+		$this->destination = array_shift($this->args);
+
+		if (!isset($this->source)) {
+			$this->source = $this->in('Source File/Directory', null, MEDIA . 'static' . DS);
+		}
+		if (is_dir($this->source)) {
+			$this->source = Folder::slashTerm($this->source);
+		}
+		if (!isset($this->destination)) {
+			$this->destination = $this->in('Destination Directory', null, MEDIA . 'filter' . DS);
+		}
+		$this->destination = Folder::slashTerm($this->destination);
+
+		if (isset($this->params['force'])) {
+			$this->overwrite = $this->createDirectories = true;
+		}
+
+		if (isset($this->params['filter'])) {
+			$this->filter = $this->params['filter'];
 		}
 
 		$this->out();
-		$this->out($this->pad('Source:', 25) . $this->shortPath($this->directory));
-		$this->out($this->pad('Destination:', 25) . $this->shortPath(MEDIA . 'filter' . DS));
+		$this->out($this->pad('Source:', 25) . $this->shortPath($this->source));
+		$this->out($this->pad('Destination:', 25) . $this->shortPath($this->destination));
 		$this->out($this->pad('Overwrite existing:', 25), false). $this->out($this->overwrite ? 'yes' : 'no');
+		$this->out($this->pad('Create Directories:', 25), false). $this->out($this->createDirectories ? 'yes' : 'no');
 
-		$input = $this->in('Looks OK?',array('y','n'),'n');
-		if($input == 'n') {
+		if ($this->in('Looks OK?', array('y','n'), 'y') == 'n') {
 			return $this->main();
 		}
-
 		$this->heading('Making');
-		$Folder = new Folder($this->directory);
-		$files = $Folder->findRecursive();
 
-		$this->progress(true, count($files));
+		if (is_file($this->source)) {
+			$files = array($this->source);
+		} else {
+			$Folder = new Folder($this->source);
+			$files = $Folder->findRecursive();
+		}
+
+		$this->progress(count($files));
+
 		foreach ($files as $key => $file) {
 			$this->progress($key, $this->shortPath($file));
 			$this->_make($file);
 		}
-		$this->progress(false);
+		$this->out();
 	}
 
 	function _make($file) {
-		$Medium = Medium::factory($file);
-		if($Medium->name === 'Icon' || strpos($file,'ico'.DS) !== false) {
+		$File = new File($file);
+		$name = Medium::name($file);
+		$subdir = array_pop(explode(DS, dirname($this->source)));
+
+		if ($name === 'Icon' || strpos($file, 'ico' . DS) !== false) {
 			return true;
 		}
 
-		$filter = Configure::read('Media.filter.' . strtolower($Medium->name));
+		if (isset($this->filter)) {
+			$filter = array(Configure::read('Media.filter.' . strtolower($name) . '.' . $this->version));
+		} else {
+			$filter = Configure::read('Media.filter.' . strtolower($name));
+		}
 
-		/* compiles all versions */
-		foreach($filter as $version => $instructions) {
-			$File = new File($file);
+		foreach ($filter as $version => $instructions) {
+			$directory = Folder::slashTerm(rtrim($this->destination . $version . DS . $subdir, '.'));
+			$Folder = new Folder($directory, $this->createDirectories);
+
+			if (!$Folder->pwd()) {
+				$this->warn('Directory \'' . $directory . '\' could not be created or is not writable. Please check your permissions.');
+				return false;
+			}
+
 			$Medium = Medium::make($File->pwd(), $instructions);
 
 			if (!$Medium) {
-				//$this->warn('Failed to make version ' . $version . ' of medium.');
-				continue(1);
+				$this->warn('Failed to make version ' . $version . ' of medium.');
+				return false;
 			}
-
-			/* Create directory */
-			$directory = MEDIA
-						 . 'filter'
-						 . DS . $version
-						 . DS . str_replace(array('\\','/'), DS, dirname(str_replace(MEDIA, null, $file)));
-
-			$Folder = new Folder($directory, true);
-
-			if (!$Folder->pwd()) {
-				$this->err('Directory \'' . $directory . '\' could not be created or is not writable. Please check your permissions.');
-				continue(1);
-			}
-
-			$destinationFile = $Folder->pwd(). DS . basename($file);
-
-			$Medium->store($destinationFile, $this->overwrite);
+			$Medium->store($Folder->pwd() . $File->name, $this->overwrite);
 		}
+		return true;
 	}
 }
 ?>
