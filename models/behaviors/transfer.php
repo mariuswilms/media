@@ -77,7 +77,7 @@ class TransferBehavior extends ModelBehavior {
 	var $_defaultSettings = array(
 			'createDirectory' => true,
 			'trustClient'     => false,
-			'destinationFile' => ':MEDIA:transfer:Medium.short::DS::Source.basename:',
+			'destinationFile' => ':MEDIA:transfer:DS::Medium.short::DS::Source.basename:',
 		);
 /**
  * Default runtime
@@ -659,9 +659,8 @@ class TransferBehavior extends ModelBehavior {
 							$defaultResource,
 							pathinfo($resource),
 							array(
-								'file'     => $resource,
-								'host'     => 'localhost',
-								'mimeType' => MimeType::guessType($resource, array('paranoid' => !$trustClient)),
+								'file' => $resource,
+								'host' => 'localhost',
 								)
 							);
 
@@ -681,6 +680,7 @@ class TransferBehavior extends ModelBehavior {
 				$resource = array_merge(
 								$resource,
 								array(
+									'mimeType'   => MimeType::guessType($resource['file'], array('paranoid' => !$trustClient)),
 									'size'       => filesize($resource['file']),
 									'permission' => substr(sprintf('%o', fileperms($resource['file'])), -4),
 									'pixels'     => $width * $height,
