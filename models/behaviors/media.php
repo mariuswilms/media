@@ -77,7 +77,7 @@ class MediaBehavior extends ModelBehavior {
 				}
 			}
 			if (!empty($fields)) {
-				trigger_error('MediaBehavior::setup - The model \'' . $model->name . '\' lacks the ' . implode(', ', $fields) . 'field(s).', E_USER_WARNING);
+				trigger_error('MediaBehavior::setup - The model \'' . $model->name . '\' lacks the ' . implode(', ', $fields) . ' field(s).', E_USER_WARNING);
 			}
 		}
 	}
@@ -147,7 +147,7 @@ class MediaBehavior extends ModelBehavior {
  * @param bool $created
  * @return bool
  */
-	function afterSave($model, $created) {
+	function afterSave(&$model, $created) {
 		extract($this->settings[$model->alias]);
 
 		if (!$created || !$makeVersions) {
@@ -263,41 +263,32 @@ class MediaBehavior extends ModelBehavior {
  * @param string $file Path to a file relative to MEDIA or an absolute path to a file
  * @return bool
  */
-	function make($model, $file, $overwrite = false) {
+	function make(&$model, $file, $overwrite = false) {
 		extract($this->settings[$model->alias]);
 
-		if (is_file($file)) {
-			$File = new File($file);
-		} else {
-			$File = new File($base . $file);
-		}
-		$filter = Configure::read('Media.filter.' . strtolower(Medium::name($file)));
+		$file = str_replace(array('/', '\\'), DS, is_file($file) ? $file : $base . $file);
+		$File = new File($file);
 
-		/* compiles all versions */
-		foreach ($filter as $version => $instructions) {
-			$Medium = Medium::make($File->pwd(), $instructions);
+		$name = strtolower(Medium::name($File->pwd()));
 
-			if (!$Medium) {
-				trigger_error("MediaBehavior::make - Failed to make version {$version} of medium.", E_USER_WARNING);
-				continue(1);
-			}
-
-			/* Create directory */
-			$directory = $base
-						 . 'filter'
-						 . DS . $version
-						 . DS . str_replace(array('\\','/'), DS, dirname($file));
-
+		foreach (Configure::read('Media.filter.' . $name) as $version => $instructions) {
+			$directory = rtrim($base . 'filter' . DS . $version . DS . dirname(str_replace($base, '', $file)), '.');
 			$Folder = new Folder($directory, $createDirectory);
 
 			if (!$Folder->pwd()) {
 				trigger_error("MediaBehavior::make - Directory '{$directory}' could not be created or is not writable. Please check your permissions.", E_USER_WARNING);
 				continue(1);
 			}
-
-			$Medium->store($Folder->pwd(). DS . basename($file), $overwrite);
+			if (method_exists($model, 'beforeMake')
+			&& $model->beforeMake($file, compact('overwrite', 'directory', 'name', 'version', 'instructions'))) {
+				continue(1);
+			}
+			if (!$Medium = Medium::make($File->pwd(), $instructions)) {
+				trigger_error("MediaBehavior::make - Failed to make version {$version} of medium.", E_USER_WARNING);
+				continue(1);
+			}
+			$Medium->store($Folder->pwd() . DS . $File->name, $overwrite);
 		}
-
 		return true;
 	}
 /**
@@ -308,7 +299,7 @@ class MediaBehavior extends ModelBehavior {
  * @param int $level level of amount of info to add, 0 disable, 1 for basic, 2 for detailed info
  * @return mixed Array with results or false if file is not readable
  */
-	function metadata($model, $file, $level = 1) {
+	function metadata(&$model, $file, $level = 1) {
 		if ($level < 1) {
 			return array();
 		}

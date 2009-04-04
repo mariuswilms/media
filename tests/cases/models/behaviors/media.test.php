@@ -18,6 +18,7 @@
  */
 App::Import('Model', 'App');
 require_once CORE_TEST_CASES . DS . 'libs' . DS . 'model' .DS . 'models.php';
+require_once dirname(__FILE__) . DS . '..' . DS . 'models.php';
 require_once APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'core.php';
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
@@ -46,12 +47,15 @@ class MediaBehaviorTestCase extends CakeTestCase {
 		$this->file0 = $this->TestData->getFile(array('image-png.png' => $this->TmpFolder->pwd() . 'static/img/image-png.png'));
 		$this->file1 = $this->TestData->getFile(array('image-jpg.jpg' => $this->TmpFolder->pwd() . 'static/img/image-jpg.jpg'));
 		$this->file2 = $this->TestData->getFile(array('text-plain.txt' => $this->TmpFolder->pwd() . 'static/txt/text-plain.txt'));
+
+		$this->_mediaConfig = Configure::read('Media');
 	}
 
 	function tearDown() {
 		$this->TestData->flushFiles();
 		$this->TmpFolder->delete();
 		ClassRegistry::flush();
+		Configure::write('Media', $this->_mediaConfig);
 	}
 
 	function testSetup() {
@@ -89,9 +93,29 @@ class MediaBehaviorTestCase extends CakeTestCase {
 		$this->assertTrue($result);
 
 		$result = $Model->findById(5);
-		$expected = array ( 'Song' => array ( 'id' => '5', 'dirname' => 'static/doc', 'basename' => 'application-pdf.pdf', 'checksum' => 'f7ee91cffd90881f3d719e1bab1c4697', 'size' => 13903, 'mime_type' => 'application/pdf', ), );
+		$expected = array ('Song' => array ( 'id' => '5', 'dirname' => 'static/doc', 'basename' => 'application-pdf.pdf', 'checksum' => 'f7ee91cffd90881f3d719e1bab1c4697', 'size' => 13903, 'mime_type' => 'application/pdf', ), );
 		$this->assertEqual($expected, $result);
 	}
 
+	function testBeforeMake() {
+		Configure::write('Media.filter.image', array('m' => array('convert' => 'image/png', 'fit' => array(5, 5))));
+		$Model =& ClassRegistry::init('Unicorn');
+		$Model->Behaviors->attach('Media.Media', array('base' => $this->TmpFolder->pwd(), 'makeVersions' => true, 'createDirectory' => true, 'metadataLevel' => 0));
+		$file = $this->TestData->getFile(array('image-jpg.jpg' => $this->TmpFolder->pwd() . 'image-jpg.jpg'));
+
+		$Model->make($file);
+
+		$expected = array(
+						$file,
+						array(
+								'overwrite' => false,
+								'directory' => $this->TmpFolder->pwd() . 'filter' . DS . 'm' . DS,
+								'name' => 'image',
+								'version' => 'm',
+								'instructions' => array('convert' => 'image/png', 'fit' => array(5, 5))
+							 )
+						);
+		$this->assertEqual($Model->beforeMakeArgs[0], $expected);
+	}
 }
 ?>
