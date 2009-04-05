@@ -25,54 +25,54 @@
  */
 class GetId3AudioMediumAdapter extends MediumAdapter {
 	var $require = array(
-					'mimeTypes' => array(
-									'audio/ogg',
-									'audio/mpeg',
-									'audio/ms-wma',
-									'audio/ms-asf',
-									'audio/realaudio',
-									'audio/pn-realaudio',
-									'audio/pn-multirate-realaudio',
-									'audio/wav',
-									'audio/riff',
-									'audio/wavpack',
-									'audio/musepack', /* MPC */
-									'audio/aac',
-									'audio/mp4', /* AAC */
-									'audio/m4a', /* AAC */
-									'audio/m4b', /* AAC */
-									'audio/ac3',
-									'audio/aiff',
-									'audio/ape',
-									'audio/shorten',
-									'audio/basic',
-									'audio/midi',
-									'audio/flac',
-									'audio/voc',
-									'audio/s3m',
-									'audio/xm',
-									'audio/it',
-									'audio/mod',
-									'audio/matroska',
-									/* Not in freedesktop.org database */
-									'audio/pac',
-									'audio/bonk',
-									'audio/dts',
-									'audio/cda',
-									/*
-									 * Will not be used since audio Medium can't have
-									 * application/octet-stream mime type, this is a reminder.
-									 *
-									 * LA (Lossless Audio), OptimFROG, TTA, LiteWave,
-									 * RKAU, AVR (Audio Visual Research)
-									 */
-									'application/octet-stream',
-									),
-							'imports' => array(
-											array('type' => 'Vendor','name' => 'getID3', 'file' => 'getid3/getid3.php')
-											),
-							'extensions' => array('gd'),
-							);
+		'mimeTypes' => array(
+			'audio/ogg',
+			'audio/mpeg',
+			'audio/ms-wma',
+			'audio/ms-asf',
+			'audio/realaudio',
+			'audio/pn-realaudio',
+			'audio/pn-multirate-realaudio',
+			'audio/wav',
+			'audio/riff',
+			'audio/wavpack',
+			'audio/musepack', /* MPC */
+			'audio/aac',
+			'audio/mp4', /* AAC */
+			'audio/m4a', /* AAC */
+			'audio/m4b', /* AAC */
+			'audio/ac3',
+			'audio/aiff',
+			'audio/ape',
+			'audio/shorten',
+			'audio/basic',
+			'audio/midi',
+			'audio/flac',
+			'audio/voc',
+			'audio/s3m',
+			'audio/xm',
+			'audio/it',
+			'audio/mod',
+			'audio/matroska',
+			/* Not in freedesktop.org database */
+			'audio/pac',
+			'audio/bonk',
+			'audio/dts',
+			'audio/cda',
+			/*
+			 * This is a reminder since audio Medium shouldn't have 'application/octet-stream'
+			 * mime type.
+			 *
+			 * LA (Lossless Audio), OptimFROG, TTA, LiteWave,
+			 * RKAU, AVR (Audio Visual Research) and some Ogg files.
+			 */
+			'application/octet-stream',
+		  ),
+		'imports' => array(
+			array('type' => 'Vendor', 'name' => 'getID3', 'file' => 'getid3/getid3.php')
+		),
+		'extensions' => array('gd'),
+	);
 
 	function initialize(&$Medium) {
 		if (isset($Medium->objects['getID3'])) {

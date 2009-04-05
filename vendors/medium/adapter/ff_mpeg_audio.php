@@ -25,15 +25,18 @@
  */
 class FfMpegAudioMediumAdapter extends MediumAdapter {
 	var $require = array(
-							'mimeTypes' => array(
-										'audio/ogg',
-										'audio/mpeg',
-										'audio/ms-wma',
-										'audio/realaudio',
-										'audio/wav',
-										),
-							'extensions' => array('ffmpeg'),
-							);
+		'mimeTypes' => array(
+				'audio/mpeg',
+				/* FfMpeg Extension can't read meta info other than ID3! */
+				'audio/ms-wma',
+				'audio/realaudio',
+				'audio/wav',
+				'audio/ogg',
+				/* Some Ogg files may have 'application/octet-stream' mime type. */
+				'application/octet-stream',
+			),
+		'extensions' => array('ffmpeg'),
+	);
 
 	function initialize(&$Medium) {
 		if (isset($Medium->objects['ffmpeg_movie'])) {
