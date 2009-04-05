@@ -25,8 +25,12 @@
  */
 class PearOggAudioMediumAdapter extends MediumAdapter {
 	var $require = array(
-							'mimeTypes' => array('audio/ogg'),
-							'imports' => array(array('type' => 'Vendor','name'=> 'File_Ogg','file' => 'File/Ogg.php')),
+							'mimeTypes' => array(
+									'audio/ogg'
+									),
+							'imports' => array(
+									array('type' => 'Vendor','name'=> 'File_Ogg','file' => 'File/Ogg.php')
+									),
 							);
 
 	function initialize(&$Medium) {
