@@ -121,7 +121,7 @@ class GdMediumAdapter extends MediumAdapter {
 	}
 
 	function compress(&$Medium, $value) {
-			switch ($Medium->mimeType) {
+		switch ($Medium->mimeType) {
 			case 'image/jpeg':
 				$this->_compression = intval(100 - ($value * 10));
 				break;
