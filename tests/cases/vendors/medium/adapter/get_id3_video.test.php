@@ -64,9 +64,6 @@ class GetId3VideoMediumAdapterTest extends CakeTestCase {
 	function testInformationMp4tag() {
 		$Medium = new TestGetId3VideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
 
-		$result = $Medium->artist();
-		$this->assertEqual($result, 'Artist');
-
 		$result = $Medium->title();
 		$this->assertEqual($result, 'Title');
 
@@ -91,9 +88,6 @@ class GetId3VideoMediumAdapterTest extends CakeTestCase {
 
 	function testInformationMp4notag() {
 		$Medium = new TestGetId3VideoMedium($this->TestData->getFile('video-h264.notag.mp4'));
-
-		$result = $Medium->artist();
-		$this->assertEqual($result, null);
 
 		$result = $Medium->title();
 		$this->assertEqual($result, null);
