@@ -102,7 +102,9 @@ class GetId3AudioMediumAdapter extends MediumAdapter {
 		if (isset($Medium->objects['getID3']->info['comments']['artist'][0])) {
 			return $Medium->objects['getID3']->info['comments']['artist'][0];
 		}
-		return false;
+		if (isset($Medium->objects['getID3']->info['comments']['author'][0])) {
+			return $Medium->objects['getID3']->info['comments']['author'][0];
+		}
 	}
 
 	function title(&$Medium) {
@@ -120,11 +122,18 @@ class GetId3AudioMediumAdapter extends MediumAdapter {
 	}
 
 	function year(&$Medium) {
-		if (!isset($Medium->objects['getID3']->info['comments']['year'][0])) {
-			return false;
-		}
-		if ($date = $Medium->objects['getID3']->info['comments']['year'][0]) {
-			return strftime('%Y', $date);
+		foreach (array('year', 'data', 'creation_date') as $field) {
+			if (!isset($Medium->objects['getID3']->info['comments'][$field][0])) {
+				continue;
+			}
+			$date = $Medium->objects['getID3']->info['comments'][$field][0];
+
+			if ($field !== 'year') {
+				$date = strftime('%Y', strtotime($date));
+			}
+			if ($date) {
+				return $date;
+			}
 		}
 		return false;
 	}
