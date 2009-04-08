@@ -149,5 +149,67 @@ class FfMpegAudioMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->quality();
 		$this->assertEqual($result, 1);
 	}
+
+	function testInformationVorbisComment() {
+		$Medium = new TestFfMpegAudioMedium($this->TestData->getFile('audio-vorbis.comments.ogg'));
+
+		$result = $Medium->artist();
+		$this->assertEqual($result, 'Artist');
+
+		$result = $Medium->title();
+		$this->assertEqual($result, 'Title');
+
+		$result = $Medium->album();
+		$this->assertEqual($result, 'Album');
+
+		$result = $Medium->year();
+		$this->assertEqual($result, 2009);
+
+		$result = $Medium->track();
+		$this->assertEqual($result, 1);
+
+		$result = $Medium->duration();
+		$this->assertEqual($result, 1);
+
+		$result = $Medium->bitrate();
+		$this->assertEqual($result, 36666);
+
+		$result = $Medium->samplingRate();
+		$this->assertEqual($result, 24000);
+
+		$result = $Medium->quality();
+		$this->assertEqual($result, 1);
+	}
+
+	function testInformationVorbisNotag() {
+		$Medium = new TestFfMpegAudioMedium($this->TestData->getFile('audio-vorbis.notag.ogg'));
+
+		$result = $Medium->artist();
+		$this->assertEqual($result, null);
+
+		$result = $Medium->title();
+		$this->assertEqual($result, null);
+
+		$result = $Medium->album();
+		$this->assertEqual($result, null);
+
+		$result = $Medium->year();
+		$this->assertEqual($result, null);
+
+		$result = $Medium->track();
+		$this->assertEqual($result, null);
+
+		$result = $Medium->duration();
+		$this->assertEqual($result, 1);
+
+		$result = $Medium->bitrate();
+		$this->assertEqual($result, 36666);
+
+		$result = $Medium->samplingRate();
+		$this->assertEqual($result, 24000);
+
+		$result = $Medium->quality();
+		$this->assertEqual($result, 1);
+	}
 }
 ?>
