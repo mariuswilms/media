@@ -210,6 +210,7 @@ class MimeType extends Object {
 /**
  * Sets magic property
  *
+ * @param array Configuration settings to take into account
  * @return void
  */
 	function __loadMagic($config = array()) {
@@ -235,18 +236,7 @@ class MimeType extends Object {
 			}
 
 			if (!isset($db)) {
-				$commonFiles = array(
-					APP . 'plugins' . 'vendors' . DS . 'magic.db',
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.db',
-					VENDORS . 'magic.db',
-					);
-
-				foreach($commonFiles as $commonFile) {
-					if (is_readable($commonFile)) {
-						$db = $commonFile;
-						break(1);
-					}
-				}
+				$db = $this->__db('magic');
 			}
 			if (isset($db)) {
 				$this->__magic =& new MimeMagic($db);
@@ -262,6 +252,7 @@ class MimeType extends Object {
 /**
  * Sets glob property
  *
+ * @param array Configuration settings to take into account
  * @return void
  */
 	function __loadGlob($config = array()) {
@@ -279,20 +270,7 @@ class MimeType extends Object {
 			}
 
 			if (!isset($db)) {
-				$commonFiles = array(
-					APP . 'config' . DS . 'mime_glob.php',
-					APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'mime_glob.php',
-					VENDORS . 'glob.db',
-					APP . 'vendors' . DS . 'glob.db',
-					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.db',
-				);
-
-				foreach ($commonFiles as $commonFile) {
-					if (is_readable($commonFile)) {
-						$db = $commonFile;
-						break(1);
-					}
-				}
+				$db = $this->__db('glob');
 			}
 			if (isset($db)) {
 				$this->__glob =& new MimeGlob($db);
@@ -303,6 +281,30 @@ class MimeType extends Object {
 			}
 		} else {
 			$this->__glob = null;
+		}
+	}
+/**
+ * Finds the db file for given type
+ *
+ * @param string $type Either 'magic' or 'glob'
+ * @access private
+ * @return mixed If no file was found null otherwise the absolute path to the file
+ */
+	function __db($type) {
+		$searchPaths = array(
+			'mime_' . $type . '.php' => array(CONFIGS),
+			'mime_' . $type . '.db' => array_merge(
+									Configure::read('vendorPaths'),
+									array(dirname(__FILE__) . DS)
+									),
+			);
+
+		foreach ($searchPaths as $basename => $paths) {
+			foreach ($paths as $path) {
+				if (is_readable($path . $basename)) {
+					return $path . $basename;
+				}
+			}
 		}
 	}
 }
