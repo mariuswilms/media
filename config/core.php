@@ -102,5 +102,4 @@
 		'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
 		)
 	);
-	Configure::write('Media.filter.archive', array());
 ?>
