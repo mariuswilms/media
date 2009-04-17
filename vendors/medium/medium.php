@@ -93,17 +93,6 @@ class Medium extends Object {
 					'image/icon'            => 'Icon',
 					'application/pdf'       => 'Document',
 					'application/msword'    => 'Document',
-					'application/zip'       => 'Archive',
-					'application/gzip'      => 'Archive',
-					'application/bzip'      => 'Archive',
-					'application/tar'       => 'Archive',
-					'application/rar'       => 'Archive',
-					'application/7z'        => 'Archive',
-					'application/archive'   => 'Archive',
-					'application/arj'       => 'Archive',
-					'application/lzh'       => 'Archive',
-					'application/java-arch' => 'Archive',
-					'application/lzma'      => 'Archive',
 					'text/css'              => 'Css',
 					'text/javascript'       => 'Js',
 					'text/code'             => 'Generic',
@@ -121,16 +110,15 @@ class Medium extends Object {
  * @var array
  */
 	static $_namesToShort = array(
-					'Archive'  => 'arc',
-					'Icon'     => 'ico',
-					'Document' => 'doc',
+					'Audio'    => 'aud',
 					'Css'      => 'css',
+					'Document' => 'doc',
+					'Generic'  => 'gen',
+					'Icon'     => 'ico',
+					'Image'    => 'img',
 					'Js'       => 'js',
 					'Text'     => 'txt',
-					'Image'    => 'img',
-					'Audio'    => 'aud',
 					'Video'    => 'vid',
-					'Generic'  => 'gen',
 					);
 /**
  * Constructor
