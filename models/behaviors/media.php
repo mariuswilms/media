@@ -367,11 +367,6 @@ class MediaBehavior extends ModelBehavior {
 							'quality' => $Medium->quality(),
 							'bitrate' => $Medium->bitrate(),
 							);
-		} elseif ($Medium->name === 'Archive') {
-			$detailed = array(
-							'files'       => $Medium->files(),
-							'compression' => $Medium->compression(),
-							);
 		} else {
 			$detailed = array();
 		}
