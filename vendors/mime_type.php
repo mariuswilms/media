@@ -123,9 +123,9 @@ class MimeType extends Object {
  * @param string $file
  * @param options $options Valid options are:
  *	- "paranoid" If set to true only then content for the file is used for detection
- *	- "simplify" If set to true experimental indicators are being removed from the mime type
- *	- "properties" Used for simplification
- *	- "experimental" Used for simplification
+ *	- "simplify" If set to true resulting mime type will be simplified
+ *	- "properties" Used for simplification, defaults to false
+ *	- "experimental" Used for simplification, defaults to false
  * @return mixed string with mime type on success
  * @access public
  */
@@ -135,10 +135,12 @@ class MimeType extends Object {
 		if (is_bool($options)) {
 			$options = array('simplify' => $options);
 		}
-		if (isset($options['simplify'])) {
-			$options['properties'] = $options['experimental'] = !$options['simplify'];
-		}
-		$default = array('properties' => false, 'experimental' => true, 'paranoid' => false	);
+		$default = array(
+					'paranoid' => false
+					'simplify' => false,
+					'properties' => false,
+					'experimental' => false,
+					);
 
 		extract(array_merge($default, $options), EXTR_SKIP);
 		$magicMatch = $globMatch = array();
