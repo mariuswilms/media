@@ -122,8 +122,10 @@ class MimeType extends Object {
  *
  * @param string $file
  * @param options $options Valid options are:
- *  - "simplify" If set to true experimental indicators are being removed from the mime type
- *  - "fast" If set to true Forces an suffix based lookup first
+ *	- "paranoid" If set to true only then content for the file is used for detection
+ *	- "simplify" If set to true experimental indicators are being removed from the mime type
+ *	- "properties" Used for simplification
+ *	- "experimental" Used for simplification
  * @return mixed string with mime type on success
  * @access public
  */
@@ -131,12 +133,13 @@ class MimeType extends Object {
 		$_this =& MimeType::getInstance();
 
 		if (is_bool($options)) {
-			$options = array('looseProperties' => $options, 'looseExperimental' => $options);
+			$options = array('simplify' => $options);
 		}
 		if (isset($options['simplify'])) {
-			$options = array('looseProperties' => $options['simplify'], 'looseExperimental' => $options['simplify']);
+			$options['properties'] = $options['experimental'] = !$options['simplify'];
 		}
-		$default = array('looseProperties' => true, 'looseExperimental' => false, 'paranoid' => false);
+		$default = array('properties' => false, 'experimental' => true, 'paranoid' => false	);
+
 		extract(array_merge($default, $options), EXTR_SKIP);
 		$magicMatch = $globMatch = array();
 
@@ -146,8 +149,12 @@ class MimeType extends Object {
 			}
 
 			if (count($globMatch) === 1) {
-				return MimeType::simplify(array_shift($globMatch), $looseProperties, $looseExperimental);
+				return MimeType::simplify(array_shift($globMatch), $properties, $experimental);
 			}
+		}
+
+		if (!is_readable($file)) {
+			return null;
 		}
 
 		if (is_a($_this->__magic, 'finfo')) {
@@ -162,49 +169,45 @@ class MimeType extends Object {
 		if (empty($magicMatch)) {
 			$File =& new File($file);
 
-			if ($File->readable()) {
-				if (preg_match('/[\t\n\r]+/', $File->read(32))) {
-					return 'text/plain';
-				}
-				return 'application/octet-stream';
+			if (preg_match('/[\t\n\r]+/', $File->read(32))) {
+				return 'text/plain';
 			}
-			return null;
+			return 'application/octet-stream';
 		}
 
 		if (count($magicMatch) === 1) {
-			return MimeType::simplify(array_shift($magicMatch), $looseProperties, $looseExperimental);
+			return MimeType::simplify(array_shift($magicMatch), $properties, $experimental);
 		}
 
 		if ($globMatch && $magicMatch) {
 			$combinedMatch = array_intersect($globMatch, $magicMatch);
 
 			if (count($combinedMatch) === 1) {
-				return MimeType::simplify(array_shift($combinedMatch), $looseProperties, $looseExperimental);
+				return MimeType::simplify(array_shift($combinedMatch), $properties, $experimental);
 			}
 		}
-
 		return null;
 	}
 /**
- * Simplifies a mime type by removing all exprimental indicators
- * and attributes
+ * Simplifies a mime type string
  *
  * @param string $mimeType
+ * @param boolean If true removes properties
+ * @param boolean If true removes experimental indicators
  * @return string
  */
-	function simplify($mimeType, $looseProperties = true, $looseExperimental = true) {
-		if ($looseExperimental) {
+	function simplify($mimeType, $properties = false, $experimental = false) {
+		if (!$experimental) {
 			$mimeType = str_replace('x-', null, $mimeType);
 		}
 
-		if ($looseProperties) {
+		if (!$properties) {
 			if (strpos($mimeType, ';') !== false) {
 				$mimeType = strtok($mimeType, ';');
 			} else {
 				$mimeType = strtok($mimeType, ' ');
 			}
 		}
-
 		return $mimeType;
 	}
 /**
