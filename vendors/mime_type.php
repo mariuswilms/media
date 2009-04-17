@@ -230,7 +230,7 @@ class MimeType extends Object {
 		} elseif ($engine === 'core' || $engine === null) {
 			App::import('Vendor', 'Media.MimeMagic');
 
-			if ($cached = Cache::read('mime_magic_db')) {
+			if ($cached = Cache::read('mime_magic_db', '_cake_core_')) {
 				$db = $cached;
 			}
 
@@ -250,7 +250,10 @@ class MimeType extends Object {
 			}
 			if (isset($db)) {
 				$this->__magic =& new MimeMagic($db);
-				Cache::write('mime_magic_db', $this->__magic->toArray());
+
+				if (!$cached) {
+					Cache::write('mime_magic_db', $this->__magic->toArray(), '_cake_core_');
+				}
 			}
 		} else {
 			$this->__magic = null;
@@ -271,6 +274,10 @@ class MimeType extends Object {
 		if ($engine === 'core' || $engine === null) {
 			App::import('Vendor', 'Media.MimeGlob');
 
+			if ($cached = Cache::read('mime_glob_db', '_cake_core_')) {
+				$db = $cached;
+			}
+
 			if (!isset($db)) {
 				$commonFiles = array(
 					APP . 'config' . DS . 'mime_glob.php',
@@ -280,7 +287,7 @@ class MimeType extends Object {
 					APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.db',
 				);
 
-				foreach($commonFiles as $commonFile) {
+				foreach ($commonFiles as $commonFile) {
 					if (is_readable($commonFile)) {
 						$db = $commonFile;
 						break(1);
@@ -289,6 +296,10 @@ class MimeType extends Object {
 			}
 			if (isset($db)) {
 				$this->__glob =& new MimeGlob($db);
+
+				if (!$cached) {
+					Cache::write('mime_glob_db', $this->__glob->toArray(), '_cake_core_');
+				}
 			}
 		} else {
 			$this->__glob = null;

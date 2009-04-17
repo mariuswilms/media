@@ -82,7 +82,8 @@ class MimeGlob extends Object {
  *
  * @param string $file Path to a file, basename of a file or in reverse mode a mime type
  * @param array $options An array holding options
- * @return mixed A string containing the mime type of the file or false if mime type could not be determined, in reverse mode the pattern corresponding to the given mime type
+ * @return mixed A string containing the mime type of the file or false if mime type
+ * 	could not be determined, in reverse mode the pattern corresponding to the given mime type
  * @access public
  */
 	function analyze($file, $reverse = false) {
@@ -104,7 +105,8 @@ class MimeGlob extends Object {
  * - Apache Module mod_mime
  * - PHP file containing variables formatted like: $data[0] = array(item, item, item, ...)
  *
- * @param mixed $file An absolute path to a glob file in apache, freedesktop or a filename (without .php) of a file in the configs/ dir in CakePHP format
+ * @param mixed $file An absolute path to a glob file in apache, freedesktop
+ * 	or a filename (without .php) of a file in the configs/ dir in CakePHP format
  * @return mixed A format string or null if format could not be determined
  * @access private
  * @link http://httpd.apache.org/docs/2.2/en/mod/mod_mime.html
@@ -143,7 +145,11 @@ class MimeGlob extends Object {
 				if (!preg_match('/(\*\.)?[a-zA-Z0-9\.]+$|/', $line[1])) {
 					continue(1);
 				}
-				$this->register(array('mime_type' => array_shift($line), 'pattern' => str_replace('*.', null, array_shift($line)), 'priority' => $priority));
+				$this->register(array(
+									'mime_type' => array_shift($line),
+									'pattern' => str_replace('*.', null, array_shift($line)),
+									'priority' => $priority
+									));
 			}
 		} elseif ($format === 'Apache Module mod_mime') {
 			$File = new File($db);
@@ -168,26 +174,28 @@ class MimeGlob extends Object {
  *
  * 	A valid item:
  * 		array(
- * 			'priority' => 50, [optional]
  * 			'mime_type' => 'image/jpeg',
  * 			'pattern' => 'jpg',
  * 			)
  * 	or
  * 		array(
- * 			'priority' => 90,
  * 			'mime_type' => 'image/jpeg',
  * 			'pattern' => array('jpg', 'jpeg'),
  * 			)
  *
  * @param array $item A valid glob item
- * @param integer $priority A value between 0 and 100. Low numbers should be used for more generic types and higher values for specific subtypes.
+ * @param integer $priority A value between 0 and 100.
+ * 	Low numbers should be used for more generic types and higher values for specific subtypes.
  * @return boolean True if item has successfully been registered, false if not
  * @access public
  */
 	function register($item = array()) {
 		foreach ((array)$item['pattern'] as $pattern) {
 			if (isset($this->_items[$pattern])) {
-				$this->_items[$pattern] = array_unique(array_merge($this->_items[$pattern], array($item['mime_type'])));
+				$this->_items[$pattern] = array_unique(array_merge(
+														$this->_items[$pattern],
+														array($item['mime_type'])
+														));
 			} else {
 				$this->_items[$pattern] = array($item['mime_type']);
 			}

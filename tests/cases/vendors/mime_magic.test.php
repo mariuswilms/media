@@ -62,6 +62,17 @@ class MimeMagicTest extends CakeTestCase {
 		$Mime =& new MimeMagic(5);
 	}
 
+	function testToArrayAndRead() {
+		$file = $this->TestData->getFile('magic.apache.snippet.db');
+
+		$Mime =& new MimeMagic($file);
+		$expected = $Mime->toArray();
+		$Mime =& new MimeMagic($expected);
+		$result = $Mime->toArray();
+
+		$this->assertEqual($result, $expected);
+	}
+
 	function testAnalyzeFail() {
 		$file = $this->TestData->getFile('magic.apache.snippet.db');
 		$Mime =& new MimeMagic($file);

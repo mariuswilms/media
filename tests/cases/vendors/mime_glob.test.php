@@ -60,6 +60,17 @@ class MimeGlobTest extends CakeTestCase {
 		$Mime =& new MimeGlob(5);
 	}
 
+	function testToArrayAndRead() {
+		$file = $this->TestData->getFile('glob.apache.snippet.db');
+
+		$Mime =& new MimeGlob($file);
+		$expected = $Mime->toArray();
+		$Mime =& new MimeGlob($expected);
+		$result = $Mime->toArray();
+
+		$this->assertEqual($result, $expected);
+	}
+
 	function testAnalyzeFail() {
 		$file = $this->TestData->getFile('glob.apache.snippet.db');
 		$Mime =& new MimeGlob($file);
