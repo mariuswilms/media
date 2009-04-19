@@ -136,7 +136,7 @@ class MimeType extends Object {
 			$options = array('simplify' => $options);
 		}
 		$default = array(
-					'paranoid' => false
+					'paranoid' => false,
 					'simplify' => false,
 					'properties' => false,
 					'experimental' => false,
