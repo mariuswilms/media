@@ -81,7 +81,7 @@ class MediumHelper extends AppHelper {
 	function __construct($settings = array()) {
 		$this->settings = Set::merge($this->settings, $settings);
 
-		if (!$this->__cached = Cache::read('media_found')) {
+		if (!$this->__cached = Cache::read('media_found', '_cake_core_')) {
 			$this->__cached = array();
 		}
 	}
@@ -91,7 +91,7 @@ class MediumHelper extends AppHelper {
  * Updates cache
  */
 	function __destruct() {
-		Cache::write('media_found', $this->__cached, YEAR);
+		Cache::write('media_found', $this->__cached, '_cake_core_');
 	}
 /**
  * Output filtering
