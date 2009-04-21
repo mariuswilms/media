@@ -15,7 +15,7 @@
  *
  * @package    media
  * @subpackage media.config
- * @copyright  2007-2009 David Persson <davidpersson@qeweurope.org>
+ * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  * @since      media 0.50

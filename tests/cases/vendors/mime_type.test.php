@@ -12,8 +12,8 @@
  *
  * @package    media
  * @subpackage media.tests.cases.libs
- * @author     David Persson <davidpersson@qeweurope.org>
- * @copyright  2007-2009 David Persson <davidpersson@qeweurope.org>
+ * @author     David Persson <davidpersson@gmx.de>
+ * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
