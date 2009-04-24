@@ -50,7 +50,7 @@ class MediumHelper extends AppHelper {
  */
 	var $settings = array(
 					/* Directories, versions and extensions used by MediumHelper::file to guess filenames */
-					'directories' => array('static', 'transfer', 'filter'),
+					'directories' => array('static', 'transfer', 'filter', 'theme'),
 					'versions' => array('xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl', 'c'),
 					'extensions' => array(
 						'arc'	=> array('zip'),
@@ -471,20 +471,20 @@ class MediumHelper extends AppHelper {
  * Resolves fragmented path to an absolute path to an existing file
  *
  * Examples:
- * 	css/cake.generic       >>> MEDIA/static/css/cake.generic.css
- *  transfer/img/image.jpg >>> MEDIA/transfer/img/image.jpg
- * 	s/img/image.jpg        >>> MEDIA/filter/s/static/img/image.jpg
+ * 	css/cake.generic         >>> MEDIA/static/css/cake.generic.css
+ *  transfer/img/image.jpg   >>> MEDIA/transfer/img/image.jpg
+ * 	s/img/image.jpg          >>> MEDIA/filter/s/static/img/image.jpg
+ * 	theme/neutral/css/screen >>> MEDIA/theme/neutral/css/screen.css
  *
  * @param string $path
  * @return mixed
- * @TODO Replace for loop+file_exists with Folder::read; theme support
  */
 	function file($path) {
 		if (isset($this->__cached[$path])) {
 			return $this->__cached[$path];
 		}
 
-		$path = str_replace('/', DS, trim($path)); /* Correct slashes if we are on windows */
+		$path = str_replace(array('/', '\\'), DS, trim($path));
 		$path = str_replace(MEDIA, null, $path); /* Make path relative */
 
 		$parts = explode(DS, $path);
