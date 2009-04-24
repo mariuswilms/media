@@ -53,7 +53,6 @@ class MediumHelper extends AppHelper {
 					'directories' => array('static', 'transfer', 'filter', 'theme'),
 					'versions' => array('xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl', 'c'),
 					'extensions' => array(
-						'arc'	=> array('zip'),
 						'aud' 	=> array('mp3', 'ogg', 'aif', 'wma', 'wav'),
 						'css' 	=> array('css'),
 						'doc' 	=> array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
