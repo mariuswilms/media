@@ -552,27 +552,5 @@ class MediumHelper extends AppHelper {
 		}
 		return implode("\n", $parameters);
 	}
-/**
- * Render a link to a file with extra information
- *
- * @deprecated
- * @param string $file A path to a file relative to MEDIA
- * @param array $options Valid options are: -"size" Size in bytes of file, -"name" Name to display
- * @return string
- */
-	function nice($file, $options = array()) {
-		trigger_error('MediumHelper::nice - Deprecated: Is no longer supported and will be removed in a future version.', E_USER_WARNING);
-	}
-/**
- * Formats given option/s
- * Primarly used for parsing parameters for embedding video
- *
- * @param unknown_type $option
- * @return unknown
- * @deprecated
- */
-	function _format($option) {
-		trigger_error('MediumHelper::_format - Deprecated: Is no longer supported and will be removed in a future version.', E_USER_WARNING);
-	}
 }
 ?>
