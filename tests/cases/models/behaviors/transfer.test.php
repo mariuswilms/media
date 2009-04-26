@@ -57,6 +57,77 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$this->skipUnless(@fsockopen('cakephp.org', 80), 'Remote server not available at cakephp.org.');
 	}
 
+	function testSetupValidation() {
+		$Model =& ClassRegistry::init('Movie');
+		$Model->validate['file'] = array(
+			'resource' => array('rule' => 'checkResource')
+		);
+		$Model->Behaviors->attach('Media.Transfer');
+
+		$expected = array(
+			'resource' => array(
+				'rule' => 'checkResource',
+				'allowEmpty' => true,
+				'required' => false,
+				'last' => true
+				)
+			);
+		$this->assertEqual($Model->validate['file'], $expected);
+
+		$Model =& ClassRegistry::init('Movie');
+		$Model->validate['file'] = array(
+			'resource' => array(
+				'rule' => 'checkResource',
+				'required' => true,
+				)
+		);
+		$Model->Behaviors->attach('Media.Transfer');
+
+		$expected = array(
+			'resource' => array(
+				'rule' => 'checkResource',
+				'allowEmpty' => true,
+				'required' => true,
+				'last' => true
+				)
+			);
+		$this->assertEqual($Model->validate['file'], $expected);
+	}
+
+	function testFailOnNoResource() {
+		$Model =& ClassRegistry::init('Movie');
+		$Model->validate['file'] = array(
+			'resource' => array(
+				'rule' => 'checkResource',
+				'required' => true,
+				'allowEmpty' => false,
+			)
+		);
+		$Model->Behaviors->attach('Media.Transfer', array(
+			'destinationFile' => ':TMP:test_suite:DS::Source.basename:'));
+
+		$item = array('title' => 'Spiderman I', 'file' => '');
+		$Model->create($item);
+		$this->assertFalse($Model->save());
+
+		$item = array('title' => 'Spiderman I', 'file' => array());
+		$Model->create($item);
+		$this->assertFalse($Model->save());
+
+		$item = array(
+			'title' => 'Spiderman I',
+			'file' => array(
+				'name' => '',
+				'type' => '',
+				'tmp_name' => '',
+				'error' => UPLOAD_ERR_NO_FILE,
+				'size' => 0,
+			)
+		);
+		$Model->create($item);
+		$this->assertFalse($Model->save());
+	}
+
 	function testDestinationFile() {
 		$Model =& ClassRegistry::init('Movie');
 		$Model->Behaviors->attach('Media.Transfer', array('destinationFile' => ':TMP:test_suite:DS::Source.basename:'));
@@ -146,8 +217,6 @@ class TransferBehaviorTestCase extends CakeTestCase {
 	function testTrustClient() {
 		$Model =& ClassRegistry::init('TheVoid');
 		$config = array('destinationFile' => ':TMP::Source.basename:');
-		$configTrust = array('destinationFile' => ':TMP::Source.basename:', 'trustClient' => true);
-
 		$Model->Behaviors->attach('Media.Transfer', $config);
 
 		$file = $this->TestData->getFile('image-jpg.jpg');
@@ -166,6 +235,8 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
 		$this->assertNull($result);
 
+		$Model =& ClassRegistry::init('TheVoid');
+		$configTrust = array('destinationFile' => ':TMP::Source.basename:', 'trustClient' => true);
 		$Model->Behaviors->attach('Media.Transfer', $configTrust);
 
 		$file = $this->TestData->getFile('image-jpg.jpg');

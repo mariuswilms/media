@@ -109,12 +109,12 @@ class TransferBehavior extends ModelBehavior {
 		}
 		$this->runtime[$model->alias] = $this->_defaultRuntime;
 
-		/* Prepare validation */
+		/* If present validation rules get some sane default values */
 		if (isset($model->validate['file'])) {
+			$default = array('allowEmpty' => true, 'required' => false, 'last' => true);
+
 			foreach ($model->validate['file'] as &$rule) {
-				$rule['allowEmpty'] = true;
-				$rule['required'] = false;
-				$rule['last'] = true;
+				$rule = array_merge($default, $rule);
 			}
 		}
 	}
