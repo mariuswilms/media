@@ -600,7 +600,6 @@ class TransferBehavior extends ModelBehavior {
  * @param mixed $resource Path to file in local FS, URL or file-upload array
  * @param string $what scheme,host,port,file,mime type,size,permission,dirname,basename,filename,extension or type
  * @return mixed
- * @todo This could become a Medium, too
  */
 	function info(&$model, $resource, $what = null) {
 		extract($this->settings[$model->alias], EXTR_SKIP);
@@ -661,6 +660,7 @@ class TransferBehavior extends ModelBehavior {
 							array(
 								'file' => $resource,
 								'host' => 'localhost',
+								'mimeType'   => MimeType::guessType($resource, array('paranoid' => !$trustClient)),
 								)
 							);
 
@@ -680,7 +680,6 @@ class TransferBehavior extends ModelBehavior {
 				$resource = array_merge(
 								$resource,
 								array(
-									'mimeType'   => MimeType::guessType($resource['file'], array('paranoid' => !$trustClient)),
 									'size'       => filesize($resource['file']),
 									'permission' => substr(sprintf('%o', fileperms($resource['file'])), -4),
 									'pixels'     => $width * $height,
