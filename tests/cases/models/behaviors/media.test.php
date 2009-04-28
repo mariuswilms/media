@@ -118,7 +118,7 @@ class MediaBehaviorTestCase extends CakeTestCase {
 					array(
 						'overwrite' => false,
 						'directory' => $this->TmpFolder->pwd() . 'filter' . DS . 's' . DS,
-						'name' => 'image',
+						'name' => 'Image',
 						'version' => 's',
 						'instructions' => array('convert' => 'image/png', 'fit' => array(5, 5))
 						 )
@@ -128,7 +128,7 @@ class MediaBehaviorTestCase extends CakeTestCase {
 					array(
 						'overwrite' => false,
 						'directory' => $this->TmpFolder->pwd() . 'filter' . DS . 'm' . DS,
-						'name' => 'image',
+						'name' => 'Image',
 						'version' => 'm',
 						'instructions' => array('convert' => 'image/png', 'fit' => array(10, 10))
 						 )

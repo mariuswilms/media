@@ -269,22 +269,33 @@ class MediaBehavior extends ModelBehavior {
 		$file = str_replace(array('/', '\\'), DS, is_file($file) ? $file : $base . $file);
 		$File = new File($file);
 
-		$name = strtolower(Medium::name($File->pwd()));
+		$name = Medium::name($File->pwd());
+		$filter = Configure::read('Media.filter.' . strtolower($name));
+		$hasCallback = method_exists($model, 'beforeMake');
 
-		foreach (Configure::read('Media.filter.' . $name) as $version => $instructions) {
-			$directory = rtrim($base . 'filter' . DS . $version . DS . dirname(str_replace($base, '', $file)), '.');
+		foreach ($filter as $version => $instructions) {
+			$directory = rtrim($base . 'filter' . DS . $version . DS
+								. dirname(str_replace($base, '', $file)), '.');
 			$Folder = new Folder($directory, $createDirectory);
 
 			if (!$Folder->pwd()) {
-				trigger_error("MediaBehavior::make - Directory '{$directory}' could not be created or is not writable. Please check your permissions.", E_USER_WARNING);
+				trigger_error("MediaBehavior::make - Directory '{$directory}'"
+								. " could not be created or is not writable."
+								. " Please check your permissions.",
+								E_USER_WARNING);
 				continue(1);
 			}
-			if (method_exists($model, 'beforeMake')
-			&& $model->beforeMake($file, compact('overwrite', 'directory', 'name', 'version', 'instructions'))) {
-				continue(1);
+
+			if ($hasCallback) {
+				$process = compact('overwrite', 'directory', 'name', 'version', 'instructions');
+
+				if ($model->beforeMake($file, $process)) {
+					continue(1);
+				}
 			}
 			if (!$Medium = Medium::make($File->pwd(), $instructions)) {
-				trigger_error("MediaBehavior::make - Failed to make version {$version} of medium.", E_USER_WARNING);
+				trigger_error("MediaBehavior::make - Failed to make version {$version} of medium.",
+								E_USER_WARNING);
 				continue(1);
 			}
 			$Medium->store($Folder->pwd() . DS . $File->name, $overwrite);

@@ -110,17 +110,17 @@ class Attachment extends MediaAppModel {
  * $process an array with the following contents:
  *	overwrite - If the destination file should be overwritten if it exists
  *	directory - The destination directory (guranteed to exist)
- *  name - Medium name of $file (e.g. 'image')
+ *  name - Medium name of $file (e.g. 'Image')
  *	version - The version requested to be processed (e.g. 'xl')
  *	instructions - An array containing which names of methods to be called
  *
  * @param string $file Absolute path to the source file
- * @param array $options directory, version, name, instructions, overwrite
+ * @param array $process directory, version, name, instructions, overwrite
  * @access public
- * @return boolean True signals that the file has been processed, false signals that the behavior should process the file
+ * @return boolean True signals that the file has been processed,
+ * 	false or null signals that the behavior should process the file
  */
-	function beforeMake($file, $process = array()) {
-		return false;
+	function beforeMake($file, $process) {
 	}
 }
 ?>
