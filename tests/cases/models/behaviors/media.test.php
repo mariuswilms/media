@@ -98,24 +98,44 @@ class MediaBehaviorTestCase extends CakeTestCase {
 	}
 
 	function testBeforeMake() {
-		Configure::write('Media.filter.image', array('m' => array('convert' => 'image/png', 'fit' => array(5, 5))));
-		$Model =& ClassRegistry::init('Unicorn');
-		$Model->Behaviors->attach('Media.Media', array('base' => $this->TmpFolder->pwd(), 'makeVersions' => true, 'createDirectory' => true, 'metadataLevel' => 0));
+		Configure::write('Media.filter.image', array(
+			's' => array('convert' => 'image/png', 'fit' => array(5, 5)),
+			'm' => array('convert' => 'image/png', 'fit' => array(10, 10))
+		));
+
+		$Model =& ClassRegistry::init('Unicorn', 'Model');
+
+		$Model->Behaviors->attach('Media.Media', array(
+			'base' => $this->TmpFolder->pwd(),
+			'makeVersions' => true,
+			'createDirectory' => true,
+			'metadataLevel' => 0));
+
 		$file = $this->TestData->getFile(array('image-jpg.jpg' => $this->TmpFolder->pwd() . 'image-jpg.jpg'));
 
-		$Model->make($file);
+		$expected[] = array(
+					$file,
+					array(
+						'overwrite' => false,
+						'directory' => $this->TmpFolder->pwd() . 'filter' . DS . 's' . DS,
+						'name' => 'image',
+						'version' => 's',
+						'instructions' => array('convert' => 'image/png', 'fit' => array(5, 5))
+						 )
+					);
+		$expected[] = array(
+					$file,
+					array(
+						'overwrite' => false,
+						'directory' => $this->TmpFolder->pwd() . 'filter' . DS . 'm' . DS,
+						'name' => 'image',
+						'version' => 'm',
+						'instructions' => array('convert' => 'image/png', 'fit' => array(10, 10))
+						 )
+					);
 
-		$expected = array(
-						$file,
-						array(
-								'overwrite' => false,
-								'directory' => $this->TmpFolder->pwd() . 'filter' . DS . 'm' . DS,
-								'name' => 'image',
-								'version' => 'm',
-								'instructions' => array('convert' => 'image/png', 'fit' => array(5, 5))
-							 )
-						);
-		$this->assertEqual($Model->beforeMakeArgs[0], $expected);
+		$Model->make($file);
+		$this->assertEqual($Model->beforeMakeArgs, $expected);
 	}
 }
 ?>
