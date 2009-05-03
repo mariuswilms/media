@@ -1,6 +1,6 @@
 <?php
 /**
- * Manage Shell File
+ * Media Shell File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -20,12 +20,12 @@ App::import('Core', array('ConnectionManager', 'Folder'));
 require_once(APP . 'plugins' . DS . 'media'. DS . 'config' . DS . 'core.php');
 Configure::write('Cache.disable', true);
 /**
- * Manage Shell Class
+ * Media Shell Class
  *
  * @package    media
  * @subpackage media.shells
  */
-class ManageShell extends Shell {
+class MediaShell extends Shell {
 	var $tasks = array('Sync', 'Make', 'Collect');
 	var $verbose = false;
 	var $quiet = false;
@@ -43,7 +43,9 @@ class ManageShell extends Shell {
  */
 	function _welcome() {
 		$this->clear();
-		$this->heading(__('Media Plugin Manage Shell', true), null, '~');
+		$this->hr();
+		$this->out('Media Shell');
+		$this->hr();
 	}
 /**
  * main
@@ -147,7 +149,7 @@ class ManageShell extends Shell {
 	function help() {
 		// 63 chars ===============================================================
 		$this->out("NAME");
-		$this->out("\tmedia.manage -- the 23rd command");
+		$this->out("\tmedia -- the 23rd shell");
 		$this->out();
 		$this->out("SYNOPSIS");
 		$this->out("\tcake media.manage <params> <command> <args>");

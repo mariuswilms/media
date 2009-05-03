@@ -22,7 +22,7 @@
  * @package    media
  * @subpackage media.shells.tasks
  */
-class SyncTask extends ManageShell {
+class SyncTask extends MediaShell {
 	var $modelName = null;
 	var $uses = array();
 	var $dbConnection = null;
@@ -226,7 +226,7 @@ class SyncTask extends ManageShell {
 		$connections = array_keys(get_class_vars('DATABASE_CONFIG'));
 
 		if (count($connections) > 1) {
-        	$input = $this->in(__('Use Database Connection', true) .':', $connections, 'default');
+			$input = $this->in(__('Use Database Connection', true) .':', $connections, 'default');
 		}
 
 		return $input;

@@ -16,7 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-class CollectTask extends ManageShell {
+class CollectTask extends MediaShell {
 /**
  * Holds mapped files
  *

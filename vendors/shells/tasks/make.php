@@ -23,7 +23,7 @@ App::import('Vendor', 'Media.Medium');
  * @package    media
  * @subpackage media.shells.tasks
  */
-class MakeTask extends ManageShell {
+class MakeTask extends MediaShell {
 	var $overwrite = false;
 	var $createDirectories = false;
 	var $source;
