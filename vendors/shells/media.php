@@ -36,6 +36,17 @@ class MediaShell extends Shell {
  */
 	var $width = 80;
 /**
+ * startup
+ *
+ * @access public
+ * @return void
+ */
+	function startup() {
+		$this->verbose = isset($this->params['verbose']);
+		$this->quiet = isset($this->params['quiet']);
+		parent::startup();
+	}
+/**
  * _welcome
  *
  * @access protected
@@ -54,13 +65,6 @@ class MediaShell extends Shell {
  * @return void
  */
 	function main() {
-		if (isset($this->params['verbose'])) {
-			$this->verbose = true;
-		}
-		if (isset($this->params['quiet'])) {
-			$this->quiet = true;
-		}
-
 		$this->out('[I]nitialize Media Directory');
 		$this->out('[P]rotect Transfer Directory');
 		$this->out('[S]ynchronize');
@@ -72,7 +76,7 @@ class MediaShell extends Shell {
 		$action = strtoupper($this->in(__('What would you like to do?', true),
 										array('I', 'P', 'S', 'M', 'C', 'H', 'Q'),'q'));
 
-		switch($action) {
+		switch ($action) {
 			case 'I':
 				$this->init();
 			case 'P':
