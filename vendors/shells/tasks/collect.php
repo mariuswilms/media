@@ -45,10 +45,6 @@ class CollectTask extends MediaShell {
  * @access protected
  */
 	var $_exclude;
-
-	function help() {
-		$this->out('ASDA');
-	}
 /**
  * Main task method
  *
