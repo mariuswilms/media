@@ -65,7 +65,7 @@ class CollectTask extends MediaShell {
 			$this->_paths = $this->args;
 		}
 		if (isset($this->params['exclude'])) {
-			$this->_exclude += 	array_map('trim', explode(',', $this->params['exclude']));
+			$this->_exclude += array_map('trim', explode(',', $this->params['exclude']));
 		}
 
 		foreach ($this->_paths as $path) {
@@ -81,7 +81,8 @@ class CollectTask extends MediaShell {
 			$this->_link = $answer == 'y';
 		}
 		$this->out();
-		$this->out('Mapping:');
+		$this->out('Mapping');
+		$this->hr();
 
 		foreach ($this->_map as $old => $new) {
 			$message = sprintf(
@@ -95,10 +96,14 @@ class CollectTask extends MediaShell {
 
 		$this->out();
 
-		if ($this->in('Perform?', 'y,n', 'n') == 'n') {
+		if ($this->in('Looks OK?', 'y,n', 'y') == 'n') {
 			return false;
 		}
-		$this->out('Collecting...');
+
+		$this->out();
+		$this->out('Collecting');
+		$this->hr();
+
 		return $this->_perform();
 	}
 /**
@@ -157,14 +162,14 @@ class CollectTask extends MediaShell {
 	function _map($path) {
 		$include  = '.*[\/\\].*\.[a-z0-9]{2,3}$';
 
-		$directories = array('.htaccess', 'DS_Store', 'media', '.git', '.svn', 'simpletest');
+		$directories = array('.htaccess', '.DS_Store', 'media', '.git', '.svn', 'simpletest', 'empty');
 		$extensions = array('db', 'htm', 'html', 'txt', 'php', 'ctp');
 
-		$exclude  = '.*[/\\](' . implode('|', $directories) . ').*$';
-		$exclude .= '|.*[/\\].*\.(' . implode('|', $extensions) . ')$';
+		$exclude  = '.*[/\\\](' . implode('|', $directories) . ').*$';
+		$exclude .= '|.*[/\\\].*\.(' . implode('|', $extensions) . ')$';
 
 		if (!empty($this->_exclude)) {
-			$exclude = '|.*[/\\](' . implode('|', $this->_exclude) . ').*$';
+			$exclude = '|.*[/\\\](' . implode('|', $this->_exclude) . ').*$';
 		}
 
 		$Folder = new Folder($path);

@@ -76,6 +76,8 @@ class MediaShell extends Shell {
 		$action = strtoupper($this->in(__('What would you like to do?', true),
 										array('I', 'P', 'S', 'M', 'C', 'H', 'Q'),'q'));
 
+		$this->out();
+
 		switch ($action) {
 			case 'I':
 				$this->init();
@@ -99,36 +101,48 @@ class MediaShell extends Shell {
 		}
 		$this->main();
 	}
-
+/**
+ * Initializes directory structure
+ *
+ * @access public
+ * @return void
+ */
 	function init() {
-		if (is_dir(MEDIA)) {
-			return true;
-		}
-		$this->out('The media root directory (' . $this->shortPath(MEDIA) . ') does not exist.');
+		$message = 'Do you want to create missing directories below ' . $this->shortPath(MEDIA) .' now?';
 
-		if ($this->in('Do you want to create initiate it now?', 'y,n', 'n') == 'n') {
-			$this->out('Aborting.');
+		if ($this->in($message, 'y,n', 'n') == 'n') {
 			return false;
 		}
-		$this->out('Initiating directory structure...');
 
-		new Folder(MEDIA, true);
+		$Root = new Folder(MEDIA, true);
+		$this->out("+ " . basename($Root->pwd()));
 
 		foreach (array('transfer', 'filter', 'static') as $name) {
 			$Folder = new Folder(MEDIA . $name, true);
 
-			$this->out($this->shortPath($Folder->pwd()));
+			$this->out("\t+ " . basename($Folder->pwd()));
 
 			foreach (Medium::short() as $subName) {
 				$SubFolder = new Folder(MEDIA . $name . DS . $subName, true);
-				$this->out($this->shortPath($SubFolder->pwd()));
+				$this->out("\t\t- " . basename($SubFolder->pwd()));
 			}
 		}
+		$this->out();
+		$this->out('Please remember to set the correct permission on e.g. the transfer directory.');
+		$this->out();
 		return true;
 	}
-
+/**
+ * Protects the transfer directory
+ *
+ * @access public
+ * @return void
+ */
 	function protect() {
-		if (is_file(MEDIA . 'transfer' . DS . '.htaccess')) {
+		$file = MEDIA . 'transfer' . DS . '.htaccess';
+
+		if (is_file($file)) {
+			$this->err($this->shortPath($file) . ' is already present.');
 			return true;
 		}
 		$this->out('Your transfer directory is missing a htaccess file to block requests.');
@@ -137,12 +151,13 @@ class MediaShell extends Shell {
 			return false;
 		}
 
-		$File = new File(MEDIA . 'transfer' . DS . '.htaccess');
+		$File = new File($file);
 		$File->append("Order deny,allow\n");
 		$File->append("Deny from all\n");
 		$File->close();
 
-		$this->out($this->shortPath($File->pwd()));
+		$this->out($this->shortPath($File->pwd()) . 'created.');
+		$this->out();
 		return true;
 	}
 /**
@@ -156,7 +171,7 @@ class MediaShell extends Shell {
 		$this->out("\tmedia -- the 23rd shell");
 		$this->out();
 		$this->out("SYNOPSIS");
-		$this->out("\tcake media.manage <params> <command> <args>");
+		$this->out("\tcake media <params> <command> <args>");
 		$this->out();
 		$this->out("COMMANDS");
 		$this->out("\tinit");
@@ -165,19 +180,21 @@ class MediaShell extends Shell {
 		$this->out("\tprotect");
 		$this->out("\t\tCreates a htaccess file to protect the transfer dir.");
 		$this->out();
-		$this->out("\tcollect [-link] [-exclude name] [source]");
+		$this->out("\tcollect [-link] [-exclude name] [sourcedir]");
 		$this->out("\t\tCollects files and copies them to the media dir.");
 		$this->out();
-		$this->out("\tsync [-yes] [-connection name] [modelname]");
-		$this->out("\t\tChecks if records and files are in sync.");
+		$this->out("\t\t-link Use symlinks instead of copying.");
+		$this->out("\t\t-exclude Comma separated list of names to exclude.");
 		$this->out();
-		$this->out("\t\t-connection name Database connection to use.");
-		$this->out("\t\t-yes Always assumes 'y' as answer.");
+		$this->out("\tsync [-auto] [model] [basedir]");
+		$this->out("\t\tChecks if records are in sync with files and vice versa.");
 		$this->out();
-		$this->out("\tmake [-force] [-filter name] [source] [destination]");
+		$this->out("\t\t-auto Automatically repair without asking for confirmation.");
+		$this->out();
+		$this->out("\tmake [-force] [-version name] [sourcefile/sourcedir] [destinationdir]");
 		$this->out("\t\tProcess a file or directory according to filters.");
 		$this->out();
-		$this->out("\t\t-filter version Restrict command to a specfic filter version (e.g. xxl).");
+		$this->out("\t\t-version name Restrict command to a specfic filter version (e.g. xxl).");
 		$this->out("\t\t-force Overwrite files if they exist.");
 		$this->out();
 		$this->out("\thelp");
@@ -214,18 +231,6 @@ class MediaShell extends Shell {
  */
 	function clear() {
 		$this->out(chr(27).'[H'.chr(27).'[2J');
-	}
-/**
- * Returns a string padded to specified width
- *
- * @param string $string The string to pad
- * @param int $width Final length of string
- * @param string $character Character to be used for padding
- * @param string $align Alignment of $string. Either STR_PAD_LEFT, STR_PAD_BOTH or STR_PAD_RIGHT
- * @return string Padded string
- */
-	function pad($string, $width, $character = ' ', $type = STR_PAD_RIGHT) {
-		return str_pad($string, $width, $character, $type);
 	}
 /**
  * heading

@@ -24,17 +24,57 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.shells.tasks
  */
 class MakeTask extends MediaShell {
-	var $overwrite = false;
-	var $createDirectories = false;
+/**
+ * An absolute path to a file or directory
+ *
+ * @var string
+ * @access public
+ */
 	var $source;
+/**
+ * An absolute path to a directory
+ *
+ * @var string
+ * @access public
+ */
 	var $destination;
-	var $filter;
-
+/**
+ * Optionally holds the version string
+ *
+ * @var string
+ * @access public
+ */
+	var $version;
+/**
+ * Force switch
+ *
+ * @var boolean
+ * @access public
+ */
+	var $force;
+/**
+ * Overwrite existing files
+ *
+ * @var boolean
+ * @access protected
+ */
+	var $_overwrite = false;
+/**
+ * Enable/disable creation of misssing directories
+ *
+ * @var boolean
+ * @access protected
+ */
+	var $_createDirectories = false;
+/**
+ * Main execution methpd
+ *
+ * @access public
+ * @return void
+ */
 	function execute() {
-		if (count($this->args) == 2) {
-			$this->interactive = false;
-		}
-
+		$this->interactive = count($this->args) != 2;
+		$this->force = isset($this->params['force']);
 		$this->source = array_shift($this->args);
 		$this->destination = array_shift($this->args);
 
@@ -49,24 +89,25 @@ class MakeTask extends MediaShell {
 		}
 		$this->destination = Folder::slashTerm($this->destination);
 
-		if (isset($this->params['force'])) {
-			$this->overwrite = $this->createDirectories = true;
+		if ($this->force) {
+			$this->_overwrite = $this->_createDirectories = true;
 		}
-
-		if (isset($this->params['filter'])) {
-			$this->filter = $this->params['filter'];
+		if (isset($this->params['version'])) {
+			$this->version = $this->params['version'];
 		}
 
 		$this->out();
-		$this->out($this->pad('Source:', 25) . $this->shortPath($this->source));
-		$this->out($this->pad('Destination:', 25) . $this->shortPath($this->destination));
-		$this->out($this->pad('Overwrite existing:', 25), false). $this->out($this->overwrite ? 'yes' : 'no');
-		$this->out($this->pad('Create Directories:', 25), false). $this->out($this->createDirectories ? 'yes' : 'no');
+		$this->out(sprintf('%-25s: %s', 'Source', $this->shortPath($this->source)));
+		$this->out(sprintf('%-25s: %s', 'Destination', $this->shortPath($this->destination)));
+		$this->out(sprintf('%-25s: %s', 'Overwrite existing', $this->_overwrite ? 'yes' : 'no'));
+		$this->out(sprintf('%-25s: %s', 'Create directories', $this->_createDirectories ? 'yes' : 'no'));
 
-		if ($this->in('Looks OK?', array('y','n'), 'y') == 'n') {
-			return $this->main();
+		if ($this->in('Looks OK?', 'y,n', 'y') == 'n') {
+			return false;
 		}
-		$this->heading('Making');
+		$this->out();
+		$this->out('Making');
+		$this->hr();
 
 		if (is_file($this->source)) {
 			$files = array($this->source);
@@ -83,7 +124,13 @@ class MakeTask extends MediaShell {
 		}
 		$this->out();
 	}
-
+/**
+ * "makes" a file
+ *
+ * @param string $file Absolute path to a file
+ * @access protected
+ * @return boolean
+ */
 	function _make($file) {
 		$File = new File($file);
 		$name = Medium::name($file);
@@ -93,10 +140,12 @@ class MakeTask extends MediaShell {
 			return true;
 		}
 
-		if (isset($this->filter)) {
-			$filter = array(Configure::read('Media.filter.' . strtolower($name) . '.' . $this->version));
+		if ($this->version) {
+			$configString = 'Media.filter.' . strtolower($name) . '.' . $this->version;
+			$filter = array(Configure::read($configString));
 		} else {
-			$filter = Configure::read('Media.filter.' . strtolower($name));
+			$configString = 'Media.filter.' . strtolower($name);
+			$filter = Configure::read($configString);
 		}
 
 		foreach ($filter as $version => $instructions) {
@@ -104,14 +153,15 @@ class MakeTask extends MediaShell {
 			$Folder = new Folder($directory, $this->createDirectories);
 
 			if (!$Folder->pwd()) {
-				$this->warn('Directory \'' . $directory . '\' could not be created or is not writable. Please check your permissions.');
+				$this->err($directory . ' could not be created or is not writable.');
+				$this->err('Please check your permissions.');
 				return false;
 			}
 
 			$Medium = Medium::make($File->pwd(), $instructions);
 
 			if (!$Medium) {
-				$this->warn('Failed to make version ' . $version . ' of medium.');
+				$this->err('Failed to make version ' . $version . ' of medium.');
 				return false;
 			}
 			$Medium->store($Folder->pwd() . $File->name, $this->overwrite);

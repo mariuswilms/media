@@ -23,294 +23,393 @@
  * @subpackage media.shells.tasks
  */
 class SyncTask extends MediaShell {
-	var $modelName = null;
-	var $uses = array();
-	var $dbConnection = null;
-	var $answer = 'n';
-
+/**
+ * model
+ *
+ * @var string
+ * @access public
+ */
+	var $model;
+/**
+ * base
+ *
+ * @var string
+ * @access public
+ */
+	var $base;
+/**
+ * Default answer to use if prompted for input
+ *
+ * @var string
+ * @access protected
+ */
+	var $_answer = 'n';
+/**
+ * Model
+ *
+ * @var Model
+ * @access protected
+ */
+	var $_Model;
+/**
+ * Base Folder
+ *
+ * @var Folder
+ * @access protected
+ */
+	var $_Base;
+/**
+ * Current item retrieved from the model
+ *
+ * @var array
+ * @access private
+ */
+	var $__dbItem;
+/**
+ * Current item retrieved from the filesystem
+ *
+ * @var array
+ * @access private
+ */
+	var $__fsItem;
+/**
+ * Current set of items retrieved from the model
+ *
+ * @var array
+ * @access private
+ */
+	var $__dbMap;
+/**
+ * Current set of items retrieved from the filesystem
+ *
+ * @var array
+ * @access private
+ */
+	var $__fsMap;
+/**
+ * Current file object
+ *
+ * @var File
+ * @access private
+ */
+	var $__File;
+/**
+ * An alternative for the current file
+ *
+ * @var mixed
+ * @access private
+ */
+	var $__alternativeFile;
+/**
+ * Main execution method
+ *
+ * @access public
+ * @return boolean
+ */
 	function execute() {
-		$this->_reset();
-		$this->_config();
+		$this->_answer = isset($this->params['auto']) ? 'y' : 'n';
+		$this->model = array_shift($this->args);
+		$this->base = array_shift($this->args);
 
-		if(isset($this->params['yes'])) {
-			$this->answer = 'y';
+		if (!isset($this->model)) {
+			$this->model = $this->in('Name of model:', null, 'Attachment');
+		}
+		if (!isset($this->base)) {
+			$this->base = $this->in('Base directory for the model:', null, MEDIA . 'transfer');
 		}
 
-		if(!empty($this->args) && isset($this->params['connection'])) {
-			$modelName = array_shift($this->args);
-			$this->interactive = false;
-		} else {
-			$this->interactive = true;
-		}
+		$this->_Model = ClassRegistry::init($this->model);
+		$this->_Base = new Folder($this->base);
+		$this->interactive = isset($this->model, $this->base);
 
-		if(isset($this->params['connection'])) {
-			$dbConnection = $this->params['connection'];
-		} else {
-			$dbConnection = $this->_inDbConnection();
-		}
+		if ($this->interactive) {
+			$input = $this->in('Interactive?', 'y/n', 'y');
 
-		if(!isset($modelName)) {
-			$modelName = $this->_inModelName($dbConnection);
-		}
-
-		$Model = ClassRegistry::init($modelName);
-
-		// last chance to disable it
-		if($this->interactive) {
-			$input = strtoupper($this->in('Interactive?','y/n','y'));
-			if($input == 'N') {
+			if ($input == 'n') {
 				$this->interactive = false;
-			} else {
-				$this->interactive = true;
 			}
 		}
 
 		$this->out();
-		$this->heading('Checking if files are in sync with records');
+		$this->out(sprintf('%-25s: %s', 'Model', $this->_Model->name));
+		$this->out(sprintf('%-25s: %s', 'Base directory', $this->shortPath($this->_Base->pwd())));
+		$this->out(sprintf('%-25s: %s', 'Automatic repair', $this->_answer == 'y' ? 'yes' : 'no'));
 
-		list($fsMap, $dbMap) = $this->_generateMaps($Model);
+		if ($this->in('Looks OK?', 'y,n', 'y') == 'n') {
+			return false;
+		}
+		$this->_checkFilesWithRecords();
+		$this->_checkRecordsWithFiles();
+		$this->out();
+		return true;
+	}
+/**
+ * Checks if files are in sync with records
+ *
+ * @access protected
+ * @return void
+ */
+	function _checkFilesWithRecords() {
+		$this->out();
+		$this->out('Checking if files are in sync with records');
+		$this->hr();
 
-		foreach($dbMap as $dbItem) {
+		list($this->__fsMap, $this->__dbMap) = $this->_generateMaps();
+
+		foreach ($this->__dbMap as $dbItem) {
+			$message = sprintf('%-60s -> %s/%s',
+								$this->shortPath($dbItem['file']),
+								$this->_Model->name, $dbItem['id']);
 			$this->out();
-			$this->out($this->pad($this->shortPath($dbItem['file']), 60).' <<< '.$Model->name.'/'.$dbItem['id']);
+			$this->out($message);
 
-			$File = new File($dbItem['file']);
-			$alternativeFile = $this->_findByChecksum($dbItem['checksum'],$fsMap);
-			if($this->_findByFile($alternativeFile,$dbMap)) {
-				$alternativeFile = false;
+			$this->__dbItem = $dbItem;
+			$this->__File = new File($dbItem['file']);
+			$this->__alternativeFile = $this->_findByChecksum($dbItem['checksum'], $this__fsMap);
+
+			if ($this->_findByFile($this->__alternativeFile, $this->__dbMap)) {
+				$this->__alternativeFile = false;
 			}
 
-			if(!$File->readable() && $File->exists()) {
-				$this->out("File exists but is not readable");
-
-			} elseif(!$File->exists()) {
-				$this->out("File does not exist");
-
-				if($alternativeFile) {
-					$this->out('This file has an identical checksum: '.$this->shortPath($alternativeFile));
-					$input = $this->in("Select this file and update record?",'Y/N',$this->answer);
-					if($input == 'y') {
-						$data = array(
-									'id' => $dbItem['id'],
-									'dirname' => dirname(str_replace($Root->pwd(),'',$alternativeFile)),
-									'basename' => basename($alternativeFile),
-									);
-						$Model->save($data);
-						$this->out("Corrected dirname and basename");
-						continue(1);
-					}
-				}
-
-				$input = $this->in("Delete record?",'Y/N',$this->answer);
-				if($input == 'y') {
-					$Model->delete($dbItem['id']);
-					$this->out("Record deleted");
-					continue(1);
-				}
-
-			} elseif($dbItem['checksum'] != $File->md5()) {
-				$this->out("Checksums mismatch");
-
-				if($alternativeFile) {
-					$this->out('This file has an identical checksum: '.$this->shortPath($alternativeFile));
-					$input = $this->in("Select this file and update record?",'Y/N',$this->answer);
-					if($input == 'y') {
-						$data = array(
-									'id' => $dbItem['id'],
-									'dirname' => dirname(str_replace($Root->pwd(),'',$alternativeFile)),
-									'basename' => basename($alternativeFile),
-									);
-						$Model->save($data);
-						$this->out("Corrected dirname and basename");
-						continue(1);
-					}
-				}
-
-				$input = $this->in("Correct the checksum of the record?",'Y/N',$this->answer);
-				if($input == 'y') {
-					$data = array(
-								'id' => $dbItem['id'],
-								'checksum' => $File->md5(),
-								);
-					$Model->save($data);
-					$this->out("Corrected checksum");
-					continue(1);
-				}
-
-				$input = $this->in("Delete record?",'Y/N',$this->answer);
-				if($input == 'y') {
-					$Model->delete($dbItem['id']);
-					$this->out("Record deleted");
-					continue(1);
-				}
+			if ($this->_handleNotReadable()) {
+				continue;
+			}
+			if ($this->_handleOrphanedRecord()) {
+				continue;
+			}
+			if ($this->_handleChecksumMismatch()) {
+				continue;
 			}
 		}
+	}
+/**
+ * Checks if records are in sync with files
+ *
+ * @access protected
+ * @return void
+ */
+	function _checkRecordsWithFiles() {
 		$this->out();
-		$this->heading('Checking if records are in sync with files');
-		// Refresh!
-		list($fsMap,$dbMap) = $this->_generateMaps($Model);
+		$this->out('Checking if records are in sync with files');
+		$this->hr();
 
-		foreach($fsMap as $fsItem) {
+		list($this->__fsMap, $this->__dbMap) = $this->_generateMaps();
+
+		foreach ($this->__fsMap as $fsItem) {
+			$message = sprintf('%-60s <- %s/%s',
+								$this->shortPath($fsItem['file']),
+								$this->_Model->name, '?');
 			$this->out();
-			$this->out($this->pad($this->shortPath($fsItem['file']), 60).' >>> '.$Model->name.'/??');
+			$this->out($message);
 
-			$File = new File($fsItem['file']);
+			$this->__File = new File($fsItem['file']);
+			$this->__fsItem = $fsItem;
 
-			if(!$this->_findByFile($fsItem['file'],$dbMap)) {
-				$this->out("Orphaned");
-
-				$input = $this->in("Delete file?",'Y/N',$this->answer);
-				if($input == 'y') {
-					$File->delete();
-					$this->out("File deleted");
-					continue(1);
-				}
-
+			if ($this->_handleOrphanedFile()) {
+				continue;
 			}
 		}
 	}
 
-	function _generateMaps(&$Model)
-	{
-		$Root = new Folder(MEDIA.'transfer');
-		$fsFiles = $Root->findRecursive();
+	/* handle methods */
 
-		foreach($fsFiles as $value) {
+/**
+ * Handles existent but not readable files
+ *
+ * @access protected
+ * @return mixed
+ */
+	function _handleNotReadable() {
+		if (!$this->__File->readable() && $this->__File->exists()) {
+			$this->out('File exists but is not readable');
+			return true;
+		}
+	}
+/**
+ * Handles orphaned records
+ *
+ * @access protected
+ * @return mixed
+ */
+	function _handleOrphanedRecord() {
+		if ($this->__File->exists()) {
+			return;
+		}
+		$this->out('Orphaned');
+
+		if ($this->_fixWithAlternative()) {
+			return true;
+		}
+
+		if ($this->_fixDeleteRecord()) {
+			return true;
+		}
+		return false;
+	}
+/**
+ * Handles mismatching checksums
+ *
+ * @access protected
+ * @return mixed
+ */
+	function _handleChecksumMismatch() {
+		if ($this->__dbItem['checksum'] == $this->__File->md5()) {
+			return;
+		}
+		$this->out('Checksums mismatch');
+
+		if ($this->_fixWithAlternative()) {
+			return true;
+		}
+		$input = $this->in('Correct the checksum of the record?','y,n', $this->_answer);
+
+		if ($input == 'y') {
+			$data = array(
+						'id' => $this->__dbItem['id'],
+						'checksum' => $this->__File->md5(),
+						);
+			$this->_Model->save($data);
+			$this->out('Corrected checksum');
+			return true;
+		}
+
+		if ($this->_fixDeleteRecord()) {
+			return true;
+		}
+	}
+/**
+ * Handles orphaned files
+ *
+ * @access protected
+ * @return mixed
+ */
+	function _handleOrphanedFile() {
+		if ($this->_findByFile($this->__fsItem['file'], $this->__dbMap)) {
+			return;
+		}
+		$this->out('Orphaned');
+
+		$input = $this->in('Delete file?', 'y,n', $this->_answer);
+
+		if ($input == 'y') {
+			$File->delete();
+			$this->out('File deleted');
+			return true;
+		}
+	}
+
+	/* fix methods */
+
+/**
+ * Updates a record with an alternative file
+ *
+ * @access protected
+ * @return boolean
+ */
+	function _fixWithAlternative() {
+		if (!$this->__alternativeFile) {
+			return false;
+		}
+		$message = sprintf('This file has an identical checksum: %s',
+							$this->shortPath($this->__alternativeFile));
+		$this->out($message);
+		$input = $this->in('Select this file and update record?', 'y,n', $this->_answer);
+
+		if ($input == 'n') {
+			return false;
+		}
+
+		$dirFragment = str_replace($this->_Base->pwd(), '', $this->__alternativeFile);
+		$data = array(
+					'id' => $this->__dbItem['id'],
+					'dirname' => dirname($dirFragment),
+					'basename' => basename($this->__alternativeFile),
+					);
+		$this->_Model->save($data);
+		$this->out('Corrected dirname and basename');
+		return true;
+	}
+/**
+ * Deletes current record
+ *
+ * @access protected
+ * @return booelan
+ */
+	function _fixDeleteRecord() {
+		$input = $this->in('Delete record?','y,n', $this->_answer);
+
+		if ($input == 'y') {
+			$this->_Model->delete($this->__dbItem['id']);
+			$this->out('Record deleted');
+			return true;
+		}
+		return false;
+	}
+
+	/* map related methods */
+
+/**
+ * Generates filesystem and model maps
+ *
+ * @access protected
+ * @return void
+ */
+	function _generateMaps() {
+		$fsFiles = $this->_Base->findRecursive();
+
+		foreach ($fsFiles as $value) {
 			$File = new File($value);
 			$fsMap[] = array(
 						'file' => $File->pwd(),
 						'checksum' => $File->md5()
 						);
-
 		}
 
-		$results = $Model->find('all');
-		foreach($results as $result) {
+		$results = $this->_Model->find('all');
+		$dbMap = array();
+
+		foreach ($results as $result) {
 			$dbMap[] = array(
-							'id' => $result[$Model->name]['id'],
-							'file' => MEDIA.$result[$Model->name]['dirname'].DS.$result[$Model->name]['basename'],
-							'checksum' => $result[$Model->name]['checksum'],
-							);
-
-
+				'id' => $result[$this->_Model->name]['id'],
+				'file' => MEDIA
+						. $result[$this->_Model->name]['dirname']
+						. DS . $result[$this->_Model->name]['basename'],
+				'checksum' => $result[$this->_Model->name]['checksum'],
+				);
 		}
-
-		return array($fsMap,$dbMap);
+		return array($fsMap, $dbMap);
 	}
-
-	function _findByChecksum($checksum,$map)
-	{
-		foreach($map as $item) {
-			if($checksum == $item['checksum']) {
+/**
+ * Finds an item's file by it's checksum
+ *
+ * @param string $checksum
+ * @param array $map Map to use as a haystack
+ * @access protected
+ * @return mixed
+ */
+	function _findByChecksum($checksum, $map) {
+		foreach ($map as $item) {
+			if ($checksum == $item['checksum']) {
 				return $item['file'];
 			}
 		}
-
 		return false;
 	}
-
-	function _findByFile($file,$map)
-	{
-		foreach($map as $item) {
-			if($file == $item['file']) {
+/**
+ * Finds an item's file by it's name
+ *
+ * @param string $file
+ * @param array $map Map to use as a haystack
+ * @access protected
+ * @return mixed
+ */
+	function _findByFile($file, $map) {
+		foreach ($map as $item) {
+			if ($file == $item['file']) {
 				return $item['file'];
 			}
 		}
-
 		return false;
-	}
-
-	function _inDbConnection()
-	{
-		$input = 'default';
-		$connections = array_keys(get_class_vars('DATABASE_CONFIG'));
-
-		if (count($connections) > 1) {
-			$input = $this->in(__('Use Database Connection', true) .':', $connections, 'default');
-		}
-
-		return $input;
-	}
-
-	function _config()
-	{
-		if (!is_dir(CONFIGS)) {
-			$this->Project->execute();
-		}
-
-		if (!config('database')) {
-			$this->err(__("Your database configuration was not found.", true));
-			return false;
-		}
-
-		return true;
-
-	}
-
-	function _reset() {
-		$this->dbConnection = null;
-	}
-
-	/**
-	 * outputs the a list of possible models or controllers from database
-	 *
-	 * @param string $useDbConfig Database configuration name
-	 * @access public
-	 */
-	function listAll($useDbConfig = 'default') {
-		$this->_loadModels(); //
-
-		$db =& ConnectionManager::getDataSource($useDbConfig);
-		$usePrefix = empty($db->config['prefix']) ? '' : $db->config['prefix'];
-		if ($usePrefix) {
-			$tables = array();
-			foreach ($db->listSources() as $table) {
-				if (!strncmp($table, $usePrefix, strlen($usePrefix))) {
-					$tables[] = substr($table, strlen($usePrefix));
-				}
-			}
-		} else {
-			$tables = $db->listSources();
-		}
-		if (empty($tables)) {
-			$this->err(__('Your database does not have any tables.', true));
-			$this->stop();
-		}
-
-		$this->__tables = $tables;
-		$count = count($tables);
-		$this->_modelNames = array();
-
-		if ($this->interactive === true) {
-			$this->out(__('Possible Models based on your current database:', true));
-		}
-
-		for ($i = 0; $i < $count; $i++) {
-			$this->_modelNames[] = $this->_modelName($tables[$i]);
-			if ($this->interactive === true) {
-				$this->out($i + 1 . ". " . $this->_modelNames[$i]);
-			}
-		}
-
-	}
-
-	function _inModelName($useDbConfig = 'default')
-	{
-		$this->listAll($useDbConfig);
-
-		$input = $this->in('Select Model',null,'q');
-
-		if(isset($this->_modelNames[(intval($input) - 1)])) {
-			return $this->_modelNames[(intval($input) - 1)];
-
-		} elseif(strtoupper($input) == 'Q') {
-			exit(0);
-
-		} else {
-			$this->out('Could not find Model '.$modelName.'.');
-			$this->_inModelName();
-
-		}
 	}
 }
 ?>
