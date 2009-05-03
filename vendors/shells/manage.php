@@ -26,7 +26,7 @@ Configure::write('Cache.disable', true);
  * @subpackage media.shells
  */
 class ManageShell extends Shell {
-	var $tasks = array('Sync', 'Make');
+	var $tasks = array('Sync', 'Make', 'Collect');
 	var $verbose = false;
 	var $quiet = false;
 /**
@@ -59,18 +59,31 @@ class ManageShell extends Shell {
 			$this->quiet = true;
 		}
 
+		$this->out('[I]nitialize Media Directory');
+		$this->out('[P]rotect Transfer Directory');
 		$this->out('[S]ynchronize');
 		$this->out('[M]ake');
+		$this->out('[C]ollect');
 		$this->out('[H]elp');
 		$this->out('[Q]uit');
 
-		$action = strtoupper($this->in(__('What would you like to do?', true), array('S', 'M', 'H', 'Q'),'q'));
+		$action = strtoupper($this->in(__('What would you like to do?', true),
+										array('I', 'P', 'S', 'M', 'C', 'H', 'Q'),'q'));
+
 		switch($action) {
+			case 'I':
+				$this->init();
+			case 'P':
+				$this->protect();
+				break;
 			case 'S':
 				$this->Sync->execute();
 				break;
 			case 'M':
 				$this->Make->execute();
+				break;
+			case 'C':
+				$this->Collect->execute();
 				break;
 			case 'H':
 				$this->help();
@@ -80,6 +93,52 @@ class ManageShell extends Shell {
 		}
 		$this->main();
 	}
+
+	function init() {
+		if (is_dir(MEDIA)) {
+			return true;
+		}
+		$this->out('The media root directory (' . $this->shortPath(MEDIA) . ') does not exist.');
+
+		if ($this->in('Do you want to create initiate it now?', 'y,n', 'n') == 'n') {
+			$this->out('Aborting.');
+			return false;
+		}
+		$this->out('Initiating directory structure...');
+
+		new Folder(MEDIA, true);
+
+		foreach (array('transfer', 'filter', 'static') as $name) {
+			$Folder = new Folder(MEDIA . $name, true);
+
+			$this->out($this->shortPath($Folder->pwd()));
+
+			foreach (Medium::short() as $subName) {
+				$SubFolder = new Folder(MEDIA . $name . DS . $subName, true);
+				$this->out($this->shortPath($SubFolder->pwd()));
+			}
+		}
+		return true;
+	}
+
+	function protect() {
+		if (is_file(MEDIA . 'transfer' . DS . '.htaccess')) {
+			return true;
+		}
+		$this->out('Your transfer directory is missing a htaccess file to block requests.');
+
+		if ($this->in('Do you want to create it now?', 'y,n', 'n') == 'n') {
+			return false;
+		}
+
+		$File = new File(MEDIA . 'transfer' . DS . '.htaccess');
+		$File->append("Order deny,allow\n");
+		$File->append("Deny from all\n");
+		$File->close();
+
+		$this->out($this->shortPath($File->pwd()));
+		return true;
+	}
 /**
  * Displays help contents
  *
@@ -87,27 +146,40 @@ class ManageShell extends Shell {
  */
 	function help() {
 		// 63 chars ===============================================================
-		$this->out('Checks if files in filesystem are in sync with records.');
-		$this->hr();
-		$this->out('Usage: cake <params> media.manage <command> <args>');
-		$this->hr();
-		$this->out('Params:');
-		$this->out("\t-connection <name> Database connection to use.");
-		$this->out("\t-yes Always assumes 'y' as answer.");
-		$this->out("\t-filter <version> Restrict command to a specfic filter version (e.g. xxl).");
-		$this->out("\t-force Overwrite files if they exist.");
+		$this->out("NAME");
+		$this->out("\tmedia.manage -- the 23rd command");
+		$this->out();
+		$this->out("SYNOPSIS");
+		$this->out("\tcake media.manage <params> <command> <args>");
+		$this->out();
+		$this->out("COMMANDS");
+		$this->out("\tinit");
+		$this->out("\t\tInitializes the media directory structure.");
+		$this->out();
+		$this->out("\tprotect");
+		$this->out("\t\tCreates a htaccess file to protect the transfer dir.");
+		$this->out();
+		$this->out("\tcollect [-link] [-exclude name] [source]");
+		$this->out("\t\tCollects files and copies them to the media dir.");
+		$this->out();
+		$this->out("\tsync [-yes] [-connection name] [modelname]");
+		$this->out("\t\tChecks if records and files are in sync.");
+		$this->out();
+		$this->out("\t\t-connection name Database connection to use.");
+		$this->out("\t\t-yes Always assumes 'y' as answer.");
+		$this->out();
+		$this->out("\tmake [-force] [-filter name] [source] [destination]");
+		$this->out("\t\tProcess a file or directory according to filters.");
+		$this->out();
+		$this->out("\t\t-filter version Restrict command to a specfic filter version (e.g. xxl).");
+		$this->out("\t\t-force Overwrite files if they exist.");
+		$this->out();
+		$this->out("\thelp");
+		$this->out("\t\tShows this help message.");
+		$this->out();
+		$this->out("OPTIONS");
 		$this->out("\t-verbose");
 		$this->out("\t-quiet");
-		$this->out();
-		$this->out('Commands:');
-		$this->out("\n\thelp\n\t\tShows this help message.");
-		$this->out("\n\tsynchron <model>\n\t\tChecks if records and files are in sync.");
-		$this->out("\n\tmake <source> <destination>\n\t\tProcess a file or directory according to filters.");
-		$this->out();
-		$this->out('Args:');
-		$this->out("\t<model> Name of the Model to use.");
-		$this->out("\t<source> Absolute path to a file or directory.");
-		$this->out("\t<destination> Absolute path to a directory.");
 		$this->out();
 	}
 
