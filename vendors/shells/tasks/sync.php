@@ -31,12 +31,12 @@ class SyncTask extends MediaShell {
  */
 	var $model;
 /**
- * base
+ * Directory
  *
  * @var string
  * @access public
  */
-	var $base;
+	var $directory;
 /**
  * Default answer to use if prompted for input
  *
@@ -52,12 +52,19 @@ class SyncTask extends MediaShell {
  */
 	var $_Model;
 /**
- * Base Folder
+ * baseDirectory from the model's media behavior settings
+ *
+ * @var string
+ * @access protected
+ */
+	var $_baseDirectory;
+/**
+ * Folder to search
  *
  * @var Folder
  * @access protected
  */
-	var $_Base;
+	var $_Folder;
 /**
  * Current item retrieved from the model
  *
@@ -109,18 +116,24 @@ class SyncTask extends MediaShell {
 	function execute() {
 		$this->_answer = isset($this->params['auto']) ? 'y' : 'n';
 		$this->model = array_shift($this->args);
-		$this->base = array_shift($this->args);
+		$this->directory = array_shift($this->args);
 
 		if (!isset($this->model)) {
 			$this->model = $this->in('Name of model:', null, 'Attachment');
 		}
-		if (!isset($this->base)) {
-			$this->base = $this->in('Base directory for the model:', null, MEDIA . 'transfer');
+		if (!isset($this->directory)) {
+			$this->base = $this->in('Directory to search:', null, MEDIA_TRANSFER);
 		}
 
-		$this->_Model = ClassRegistry::init($this->model);
-		$this->_Base = new Folder($this->base);
-		$this->interactive = isset($this->model, $this->base);
+		$this->_Model = ClassRegistry::init($ithis->model);
+
+		if (!isset($this->_Model->Behaviors->Media)) {
+			$this->err('MediaBehavior is not attached to Model');
+			return false;
+		}
+		$this->_baseDirectory = $this->_Model->Behaviors->Media->settings[$this->_Model->alias]['baseDirectory'];
+		$this->_Folder = new Folder($this->directory);
+		$this->interactive = isset($this->model, $this->directory);
 
 		if ($this->interactive) {
 			$input = $this->in('Interactive?', 'y/n', 'y');
@@ -132,7 +145,7 @@ class SyncTask extends MediaShell {
 
 		$this->out();
 		$this->out(sprintf('%-25s: %s', 'Model', $this->_Model->name));
-		$this->out(sprintf('%-25s: %s', 'Base directory', $this->shortPath($this->_Base->pwd())));
+		$this->out(sprintf('%-25s: %s', 'Search directory', $this->shortPath($this->_Folder->pwd())));
 		$this->out(sprintf('%-25s: %s', 'Automatic repair', $this->_answer == 'y' ? 'yes' : 'no'));
 
 		if ($this->in('Looks OK?', 'y,n', 'y') == 'n') {
@@ -261,7 +274,7 @@ class SyncTask extends MediaShell {
 		if ($this->_fixWithAlternative()) {
 			return true;
 		}
-		$input = $this->in('Correct the checksum of the record?','y,n', $this->_answer);
+		$input = $this->in('Correct the checksum of the record?', 'y,n', $this->_answer);
 
 		if ($input == 'y') {
 			$data = array(
@@ -319,10 +332,9 @@ class SyncTask extends MediaShell {
 			return false;
 		}
 
-		$dirFragment = str_replace($this->_Base->pwd(), '', $this->__alternativeFile);
 		$data = array(
 					'id' => $this->__dbItem['id'],
-					'dirname' => dirname($dirFragment),
+					'dirname' => dirname(str_replace($this->_baseDirectory, '', $this->__alternativeFile)),
 					'basename' => basename($this->__alternativeFile),
 					);
 		$this->_Model->save($data);
@@ -336,7 +348,7 @@ class SyncTask extends MediaShell {
  * @return booelan
  */
 	function _fixDeleteRecord() {
-		$input = $this->in('Delete record?','y,n', $this->_answer);
+		$input = $this->in('Delete record?', 'y,n', $this->_answer);
 
 		if ($input == 'y') {
 			$this->_Model->delete($this->__dbItem['id']);
@@ -355,7 +367,7 @@ class SyncTask extends MediaShell {
  * @return void
  */
 	function _generateMaps() {
-		$fsFiles = $this->_Base->findRecursive();
+		$fsFiles = $this->_Folder->findRecursive();
 
 		foreach ($fsFiles as $value) {
 			$File = new File($value);
@@ -371,7 +383,7 @@ class SyncTask extends MediaShell {
 		foreach ($results as $result) {
 			$dbMap[] = array(
 				'id' => $result[$this->_Model->name]['id'],
-				'file' => MEDIA
+				'file' => $this->_baseDirectory
 						. $result[$this->_Model->name]['dirname']
 						. DS . $result[$this->_Model->name]['basename'],
 				'checksum' => $result[$this->_Model->name]['checksum'],

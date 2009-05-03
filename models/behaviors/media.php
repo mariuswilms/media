@@ -50,10 +50,11 @@ class MediaBehavior extends ModelBehavior {
  * @var array
  */
 	var $_defaultSettings = array(
-			'createDirectory' => true,
-			'makeVersions'    => true,
 			'metadataLevel'   => 1,
-			'base'            => MEDIA,
+			'baseDirectory'   => MEDIA,
+			'makeVersions'    => true,
+			'filterDirectory' => MEDIA_FILTER,
+			'createDirectory' => true,
 		);
 /**
  * Setup
@@ -66,6 +67,12 @@ class MediaBehavior extends ModelBehavior {
 		if (!is_array($config)) {
 			$this->settings[$model->alias] = $this->_defaultSettings;
 		} else {
+			if (isset($config['base'])) {
+				trigger_error("MediaBehavior::setup - The 'base' setting has been deprecated "
+								. "in favour of 'baseDirectory'.", E_USER_NOTICE);
+				$config['baseDirectory'] = $config['base'];
+				unset($config['base']);
+			}
 			$this->settings[$model->alias] = array_merge($this->_defaultSettings, $config);
 		}
 
@@ -77,7 +84,8 @@ class MediaBehavior extends ModelBehavior {
 				}
 			}
 			if (!empty($fields)) {
-				trigger_error('MediaBehavior::setup - The model \'' . $model->name . '\' lacks the ' . implode(', ', $fields) . ' field(s).', E_USER_WARNING);
+				trigger_error("MediaBehavior::setup - The model '{$model->name}' lacks the "
+								. implode(', ', $fields) . ' field(s).', E_USER_WARNING);
 			}
 		}
 	}
@@ -124,9 +132,9 @@ class MediaBehavior extends ModelBehavior {
 
 			/* Convert directory separators to / and remove trailing slash */
 			$dirname = substr(
-							str_replace(array($base, DS), array(null, '/'),
+							str_replace(array($baseDirectory, DS), array(null, '/'),
 							Folder::slashTerm($File->Folder->pwd())),
-							0,-1
+							0, -1
 							);
 
 			$result = array(
@@ -137,7 +145,6 @@ class MediaBehavior extends ModelBehavior {
 
 			$model->data[$model->alias] = array_merge($model->data[$model->alias],$result);
 		}
-
 		return true;
 	}
 /**
@@ -196,7 +203,7 @@ class MediaBehavior extends ModelBehavior {
 				continue(1);
 			}
 
-			$result[$model->alias] = array_merge($result[$model->alias],$metadata);
+			$result[$model->alias] = array_merge($result[$model->alias], $metadata);
 		}
 
 		return $results;
@@ -224,26 +231,24 @@ class MediaBehavior extends ModelBehavior {
 			return false; /* Record did not pass verification? */
 		}
 
-		$File = new File($base
+		$File = new File($baseDirectory
 						 . $result[$model->alias]['dirname']
 						 . DS . $result[$model->alias]['basename']);
 
-
-		$Folder = new Folder($base . 'filter' . DS);
+		$Folder = new Folder($filterDirectory);
 		list($versions, ) = $Folder->ls();
 
 		foreach ($versions as $version) {
 			$Folder->cd(
-						$base
-						. 'filter'
-						. DS . $version
+						$filterDirectory
+						. $version
 						. DS . $result[$model->alias]['dirname'] . DS
 						);
 
 			$basenames = $Folder->find($File->name() . '\..*');
 
 			if (count($basenames) > 1) {
-				trigger_error('MediaBehavior::beforeDelete - Ambigious filename ' . $File->name() . ' in ' . $Folder->pwd() . '.', E_USER_NOTICE);
+				trigger_error('MediaBehavior::beforeDelete - Ambiguous filename ' . $File->name() . ' in ' . $Folder->pwd() . '.', E_USER_NOTICE);
 				continue(1);
 			} elseif (!isset($basenames[0])) {
 				continue(1);
@@ -266,7 +271,7 @@ class MediaBehavior extends ModelBehavior {
 	function make(&$model, $file, $overwrite = false) {
 		extract($this->settings[$model->alias]);
 
-		$file = str_replace(array('/', '\\'), DS, is_file($file) ? $file : $base . $file);
+		$file = str_replace(array('/', '\\'), DS, is_file($file) ? $file : $baseDirectory . $file);
 		$File = new File($file);
 
 		$name = Medium::name($File->pwd());
@@ -274,8 +279,8 @@ class MediaBehavior extends ModelBehavior {
 		$hasCallback = method_exists($model, 'beforeMake');
 
 		foreach ($filter as $version => $instructions) {
-			$directory = rtrim($base . 'filter' . DS . $version . DS
-								. dirname(str_replace($base, '', $file)), '.');
+			$directory = rtrim($filterDirectory . $version . DS
+								. dirname(str_replace($baseDirectory, '', $file)), '.');
 			$Folder = new Folder($directory, $createDirectory);
 
 			if (!$Folder->pwd()) {
@@ -320,7 +325,7 @@ class MediaBehavior extends ModelBehavior {
 		if (is_file($file)) {
 			$File = new File($file);
 		} else {
-			$File = new File($base . $file);
+			$File = new File($baseDirectory . $file);
 		}
 
 		if (!$File->exists() || !$File->readable()) {
@@ -381,8 +386,7 @@ class MediaBehavior extends ModelBehavior {
 		} else {
 			$detailed = array();
 		}
-
-		return Set::filter(array_merge($basic, $detailed)); /* return enhanced info */
+		return Set::filter(array_merge($basic, $detailed));
 	}
 /**
  * Checks if an alternative text is given only if a file is submitted
@@ -391,7 +395,7 @@ class MediaBehavior extends ModelBehavior {
  * @param unknown_type $field
  * @return unknown
  */
-	function checkRepresent(&$model,$field) {
+	function checkRepresent(&$model, $field) {
 		if (!isset($model->data[$model->alias]['file'])) {
 			return true;
 		}

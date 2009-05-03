@@ -49,8 +49,15 @@ class MediumHelper extends AppHelper {
  * @var array
  */
 	var $settings = array(
-					/* Directories, versions and extensions used by MediumHelper::file to guess filenames */
-					'directories' => array('static', 'transfer', 'filter', 'theme'),
+					'map' => array(
+						'static'   => array(MEDIA_STATIC => MEDIA_STATIC_URL),
+						'transfer' => array(MEDIA_TRANSFER => MEDIA_TRANSFER_URL),
+						'filter'   => array(MEDIA_FILTER => MEDIA_FILTER_URL)
+						),
+					'directories' => array(
+						),
+					'urls' => array(
+						),
 					'versions' => array('xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl', 'c'),
 					'extensions' => array(
 						'aud' 	=> array('mp3', 'ogg', 'aif', 'wma', 'wav'),
@@ -78,8 +85,12 @@ class MediumHelper extends AppHelper {
  * Sets up cache and merges user supplied settings with default settings
  */
 	function __construct($settings = array()) {
-		$this->settings = Set::merge($this->settings, $settings);
+		$this->settings = array_merge($this->settings, $settings);
 
+		foreach ($this->settings['map'] as $value) {
+			$this->settings['directories'][basename(key($value))] = key($value);
+			$this->settings['urls'][] = current($value);
+		}
 		if (!$this->__cached = Cache::read('media_found', '_cake_core_')) {
 			$this->__cached = array();
 		}
@@ -120,10 +131,10 @@ class MediumHelper extends AppHelper {
 		if (is_array($url) || strpos($url, '://') !== false) {
 			return parent::url($url, $full);
 		}
-		if ($full) {
-			return FULL_BASE_URL . $this->webroot($url);
+		if (!$url = $this->webroot($url)) {
+			return null;
 		}
-		return $this->webroot($url);
+		return $full ? FULL_BASE_URL . $url : $url;
 	}
 /**
  * Enter description here...
@@ -136,9 +147,19 @@ class MediumHelper extends AppHelper {
 			return null;
 		}
 
-		$path = str_replace(MEDIA, null, $file);
-		$path = str_replace(DS, '/', $path); /* Normalize url path */
-		return $this->webroot . MEDIA_URL . $path;
+		foreach ($this->settings['map'] as $value) {
+			$directory = key($value);
+			$url = current($value);
+
+			if (strpos($file, $directory) !== false) {
+				if ($url === false) {
+					return null;
+				}
+				$path = str_replace($directory, $url, $file);
+				break;
+			}
+		}
+		return $this->webroot . str_replace(DS, '/', $path);
 	}
 /**
  * Display a file inline
@@ -467,52 +488,57 @@ class MediumHelper extends AppHelper {
 		return false;
 	}
 /**
- * Resolves fragmented path to an absolute path to an existing file
+ * Resolves a fragmented path
  *
  * Examples:
- * 	css/cake.generic         >>> MEDIA/static/css/cake.generic.css
- *  transfer/img/image.jpg   >>> MEDIA/transfer/img/image.jpg
- * 	s/img/image.jpg          >>> MEDIA/filter/s/static/img/image.jpg
- * 	theme/neutral/css/screen >>> MEDIA/theme/neutral/css/screen.css
+ * 	css/cake.generic         >>> MEDIA_STATIC/css/cake.generic.css
+ *  transfer/img/image.jpg   >>> MEDIA_TRANSFER/img/image.jpg
+ * 	s/img/image.jpg          >>> MEDIA_FILTER/s/static/img/image.jpg
  *
  * @param string $path
  * @return mixed
  */
 	function file($path) {
+		$path = str_replace(array('/', '\\'), DS, trim($path));
+
 		if (isset($this->__cached[$path])) {
 			return $this->__cached[$path];
 		}
+		if (Folder::isAbsolute($path)) {
+			return file_exists($path) ? $path : false;
+		}
 
-		$path = str_replace(array('/', '\\'), DS, trim($path));
-		$path = str_replace(MEDIA, null, $path); /* Make path relative */
-
+		extract($this->settings);
 		$parts = explode(DS, $path);
 
-		if (in_array($parts[0], $this->settings['versions'])) {
-			array_unshift($parts, 'filter');
+		if (in_array($parts[0], $versions)) {
+			array_unshift($parts, basename(key($map['filter'])));
 		}
-		if (!in_array($parts[0], $this->settings['directories'])) {
-			array_unshift($parts, 'static');
+		if (!in_array($parts[0], array_keys($directories))) {
+			array_unshift($parts, basename(key($map['static'])));
 		}
-		if (in_array($parts[1], $this->settings['versions'])
-		&& !in_array($parts[2], $this->settings['directories'])) {
-			array_splice($parts, 2, 0, 'static');
+		if (in_array($parts[1], $versions)
+		&& !in_array($parts[2], array_keys($directories))) {
+			array_splice($parts, 2, 0, basename(key($map['static'])));
 		}
 
 		$path = implode(DS, $parts);
-		$file = MEDIA . $path;
 
 		if (isset($this->__cached[$path])) {
 			return $this->__cached[$path];
 		}
+
+		$file = $directories[array_shift($parts)] . implode(DS, $parts);
+
 		if (file_exists($file)) {
 			return $this->__cached[$path] = $file;
 		}
 
-		$short = current(array_intersect(array_keys($this->settings['extensions']), $parts));
+		$short = current(array_intersect(Medium::short(), $parts));
 
 		if (!$short) {
-			trigger_error('MediumHelper::file - No medium directory specified (e.g. img).', E_USER_NOTICE);
+			trigger_error('MediumHelper::file - You must provide a medium directory (e.g. img).',
+							E_USER_NOTICE);
 			return false;
 		}
 
@@ -521,14 +547,13 @@ class MediumHelper extends AppHelper {
 		for ($i = 0; $i < 2; $i++) {
 			$file = $i ? $dirname . DS . $filename : $dirname . DS . $basename;
 
-			foreach ($this->settings['extensions'][$short] as $extension) {
+			foreach ($extensions[$short] as $extension) {
 				$try = $file . '.' . $extension;
 				if (file_exists($try)) {
 					return $this->__cached[$path] = $try;
 				}
 			}
 		}
-
 		return false;
 	}
 /**

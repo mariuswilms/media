@@ -16,10 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-if (!defined('MEDIA')) {
-	define('MEDIA', TMP . 'media' . DS);
-}
-App::import('Core', array('Helper', 'AppHelper', 'ClassRegistry', 'Controller', 'Model'));
+App::import('Core', array('Helper', 'AppHelper', 'ClassRegistry'));
 App::import('Helper', 'Media.Medium');
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
@@ -28,52 +25,78 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtu
  * @package    media
  * @subpackage media.tests.cases.views.helpers
  */
-class TheMediumTestController extends Controller {
-/**
- * name property
- *
- * @var string 'TheTest'
- * @access public
- */
-	var $name = 'TheTest';
-/**
- * uses property
- *
- * @var mixed null
- * @access public
- */
-	var $uses = null;
-}
 class MediumHelperTestCase extends CakeTestCase {
 	function setUp() {
-		Cache::clear(false, 'default');
-
-		$this->Helper =& new MediumHelper();
-		$View =& new View(new TheMediumTestController());
-		ClassRegistry::addObject('view', $View);
-
-		$this->TmpFolder = new Folder(MEDIA, true);
-		$this->TmpFolder->create($this->TmpFolder->pwd().'static');
-		$this->TmpFolder->create($this->TmpFolder->pwd().'static/img');
-		$this->TmpFolder->create($this->TmpFolder->pwd().'filter');
-		$this->TmpFolder->create($this->TmpFolder->pwd().'filter/s/static/img');
-		$this->TmpFolder->create($this->TmpFolder->pwd().'transfer');
+		$this->TmpFolder = new Folder(TMP . 'tests' . DS, true);
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'static');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'static' . DS . 'img');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'filter');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'filter' . DS . 's' . DS . 'static' . DS . 'img');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'transfer');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'transfer' . DS . 'img');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'filter' . DS . 's' . DS . 'transfer' . DS . 'img');
 
 		$this->TestData = new TestData();
-		$this->file0 = $this->TestData->getFile(array('image-png.png' => $this->TmpFolder->pwd() . 'static/img/image-png.png'));
-		$this->file1 = $this->TestData->getFile(array('image-png.png' => $this->TmpFolder->pwd() . 'filter/s/static/img/image-png.png'));
-		$this->file2 = $this->TestData->getFile(array('image-png.png' => $this->TmpFolder->pwd() . 'filter/s/static/img/dot.ted.name.png'));
-	}
 
-	function skip() {
-		$this->skipIf(defined('MEDIA') && MEDIA !== TMP . 'media' . DS, 'MEDIA constant already defined');
+		$this->file0 = $this->TestData->getFile(array(
+			'image-png.png' => $this->TmpFolder->pwd() . 'static/img/image-png.png'));
+		$this->file1 = $this->TestData->getFile(array(
+			'image-png.png' => $this->TmpFolder->pwd() . 'filter/s/static/img/image-png.png'));
+		$this->file2 = $this->TestData->getFile(array(
+			'image-png.png' => $this->TmpFolder->pwd() . 'filter/s/static/img/dot.ted.name.png'));
+		$this->file3 = $this->TestData->getFile(array(
+			'image-png.png' => $this->TmpFolder->pwd() . 'transfer/img/image-png-x.png'));
+		$this->file4 = $this->TestData->getFile(array(
+			'image-png.png' => $this->TmpFolder->pwd() . 'filter/s/transfer/img/image-png-x.png'));
+
+		$settings = array(
+			'map' => array(
+				'static' => array($this->TmpFolder->pwd() . 'static' . DS => 'media/static/'),
+				'filter' => array($this->TmpFolder->pwd() . 'filter' . DS => 'media/filter/'),
+				'transfer' => array($this->TmpFolder->pwd() . 'transfer' . DS => false)
+				)
+			);
+		$this->Helper =& new MediumHelper($settings);
 	}
 
 	function tearDown() {
 		$this->TestData->flushFiles();
 		$this->TmpFolder->delete();
 		ClassRegistry::flush();
-		Cache::clear(false, 'default');
+	}
+
+	function testUrl() {
+		$result = $this->Helper->url('static/img/image-png');
+		$this->assertEqual($result, 'media/static/img/image-png.png');
+
+		$result = $this->Helper->url('filter/s/static/img/image-png');
+		$this->assertEqual($result, 'media/filter/s/static/img/image-png.png');
+
+		$result = $this->Helper->url('transfer/img/image-png-x');
+		$this->assertNull($result);
+
+		$result = $this->Helper->url('filter/s/transfer/img/image-png-x');
+		$this->assertEqual($result, 'media/filter/s/transfer/img/image-png-x.png');
+
+		$result = $this->Helper->url($this->TmpFolder->pwd() . 'filter/s/transfer/img/image-png-x.png');
+		$this->assertEqual($result, 'media/filter/s/transfer/img/image-png-x.png');
+	}
+
+	function testWebroot() {
+		$result = $this->Helper->webroot('static/img/image-png');
+		$this->assertEqual($result, 'media/static/img/image-png.png');
+
+		$result = $this->Helper->webroot('filter/s/static/img/image-png');
+		$this->assertEqual($result, 'media/filter/s/static/img/image-png.png');
+
+		$result = $this->Helper->webroot('transfer/img/image-png-x');
+		$this->assertNull($result);
+
+		$result = $this->Helper->webroot('filter/s/transfer/img/image-png-x');
+		$this->assertEqual($result, 'media/filter/s/transfer/img/image-png-x.png');
+
+		$result = $this->Helper->webroot($this->TmpFolder->pwd() . 'filter/s/transfer/img/image-png-x.png');
+		$this->assertEqual($result, 'media/filter/s/transfer/img/image-png-x.png');
 	}
 
 	function testFile() {
@@ -103,6 +126,15 @@ class MediumHelperTestCase extends CakeTestCase {
 
 		$result = $this->Helper->file('filter/s/img/dot.ted.name');
 		$this->assertEqual($result, $this->file2);
+
+		$result = $this->Helper->file('transfer/img/image-png-x');
+		$this->assertEqual($result, $this->file3);
+
+		$result = $this->Helper->file('filter/s/transfer/img/image-png-x');
+		$this->assertEqual($result, $this->file4);
+
+		$result = $this->Helper->file($this->TmpFolder->pwd() . 'filter/s/transfer/img/image-png-x.png');
+		$this->assertEqual($result, $this->file4);
 	}
 }
 ?>

@@ -108,25 +108,49 @@ class MediaShell extends Shell {
  * @return void
  */
 	function init() {
-		$message = 'Do you want to create missing directories below ' . $this->shortPath(MEDIA) .' now?';
+		$message = 'Do you want to create missing media directories now?';
 
 		if ($this->in($message, 'y,n', 'n') == 'n') {
 			return false;
 		}
 
-		$Root = new Folder(MEDIA, true);
-		$this->out("+ " . basename($Root->pwd()));
+		$dirs = array(
+			MEDIA => array(),
+			MEDIA_STATIC => Medium::short(),
+			MEDIA_TRANSFER => Medium::short(),
+			MEDIA_FILTER => Medium::short(),
+			);
 
-		foreach (array('transfer', 'filter', 'static') as $name) {
-			$Folder = new Folder(MEDIA . $name, true);
+		foreach ($dirs as $dir => $subDirs) {
+			if (is_dir($dir)) {
+				$result = 'SKIP';
+			} else {
+				new Folder($dir, true);
 
-			$this->out("\t+ " . basename($Folder->pwd()));
+				if (is_dir($dir)) {
+					$result = 'OK';
+				} else {
+					$result = 'FAIL';
+				}
+			}
+			$this->out(sprintf('%-50s [%-4s]', $this->shortPath($dir), $result));
 
-			foreach (Medium::short() as $subName) {
-				$SubFolder = new Folder(MEDIA . $name . DS . $subName, true);
-				$this->out("\t\t- " . basename($SubFolder->pwd()));
+			foreach ($subDirs as $subDir) {
+				if (is_dir($dir . $subDir)) {
+					$result = 'SKIP';
+				} else {
+					new Folder($dir . $subDir, true);
+
+					if (is_dir($dir . $subDir)) {
+						$result = 'OK';
+					} else {
+						$result = 'FAIL';
+					}
+				}
+				$this->out(sprintf('%-50s [%-4s]', $this->shortPath($dir . $subDir), $result));
 			}
 		}
+
 		$this->out();
 		$this->out('Please remember to set the correct permission on e.g. the transfer directory.');
 		$this->out();
@@ -139,7 +163,7 @@ class MediaShell extends Shell {
  * @return void
  */
 	function protect() {
-		$file = MEDIA . 'transfer' . DS . '.htaccess';
+		$file = MEDIA_TRANSFERS . '.htaccess';
 
 		if (is_file($file)) {
 			$this->err($this->shortPath($file) . ' is already present.');
@@ -186,7 +210,7 @@ class MediaShell extends Shell {
 		$this->out("\t\t-link Use symlinks instead of copying.");
 		$this->out("\t\t-exclude Comma separated list of names to exclude.");
 		$this->out();
-		$this->out("\tsync [-auto] [model] [basedir]");
+		$this->out("\tsync [-auto] [model] [searchdir]");
 		$this->out("\t\tChecks if records are in sync with files and vice versa.");
 		$this->out();
 		$this->out("\t\t-auto Automatically repair without asking for confirmation.");

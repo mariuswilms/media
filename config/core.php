@@ -28,7 +28,16 @@
 	if (!defined('MEDIA')) {
 		define('MEDIA', WWW_ROOT . 'media' . DS);
 	}
-/**
+	if (!defined('MEDIA_STATIC')) {
+		define('MEDIA_STATIC', MEDIA . 'static' . DS);
+	}
+	if (!defined('MEDIA_FILTER')) {
+		define('MEDIA_FILTER', MEDIA . 'filter' . DS);
+	}
+	if (!defined('MEDIA_TRANSFER')) {
+		define('MEDIA_TRANSFER', MEDIA . 'transfer' . DS);
+	}
+/*
  * Either a (slash terminated) complete URL or an path fragment relative to your webroot
  *
  * E.g.: http://www.example.org/app/media/
@@ -36,6 +45,15 @@
  */
 	if (!defined('MEDIA_URL')) {
 		define('MEDIA_URL', 'media/');
+	}
+	if (!defined('MEDIA_STATIC_URL')) {
+		define('MEDIA_STATIC_URL', MEDIA_URL . 'static/');
+	}
+	if (!defined('MEDIA_FILTER_URL')) {
+		define('MEDIA_FILTER_URL', MEDIA_URL . 'filter/');
+	}
+	if (!defined('MEDIA_TRANSFER_URL')) {
+		define('MEDIA_TRANSFER_URL', MEDIA_URL . 'transfer/');
 	}
 /**
  * MIME type detection by file extension
@@ -69,7 +87,7 @@
 		's'   => array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
 		'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
 	    )
-    );
+	);
 	Configure::write('Media.filter.css', array(
 		'c'   => array('compress'),
 		)

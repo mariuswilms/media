@@ -36,17 +36,27 @@ class MediaBehaviorTestCase extends CakeTestCase {
 	}
 
 	function setUp() {
-		$this->TmpFolder = new Folder(TMP . 'test_suite' . DS, true);
-		$this->TmpFolder->create($this->TmpFolder->pwd().'static/img');
-		$this->TmpFolder->create($this->TmpFolder->pwd().'static/doc');
-		$this->TmpFolder->create($this->TmpFolder->pwd().'static/txt');
-		$this->TmpFolder->create($this->TmpFolder->pwd().'filter');
-		$this->TmpFolder->create($this->TmpFolder->pwd().'transfer');
+		$this->TmpFolder = new Folder(TMP . 'tests' . DS, true);
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'static/img');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'static/doc');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'static/txt');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'filter');
 
 		$this->TestData = new TestData();
-		$this->file0 = $this->TestData->getFile(array('image-png.png' => $this->TmpFolder->pwd() . 'static/img/image-png.png'));
-		$this->file1 = $this->TestData->getFile(array('image-jpg.jpg' => $this->TmpFolder->pwd() . 'static/img/image-jpg.jpg'));
-		$this->file2 = $this->TestData->getFile(array('text-plain.txt' => $this->TmpFolder->pwd() . 'static/txt/text-plain.txt'));
+		$this->file0 = $this->TestData->getFile(array(
+			'image-png.png' => $this->TmpFolder->pwd() . 'static/img/image-png.png'));
+		$this->file1 = $this->TestData->getFile(array(
+			'image-jpg.jpg' => $this->TmpFolder->pwd() . 'static/img/image-jpg.jpg'));
+		$this->file2 = $this->TestData->getFile(array(
+			'text-plain.txt' => $this->TmpFolder->pwd() . 'static/txt/text-plain.txt'));
+
+		$this->_behaviorSettings = array(
+						'baseDirectory' => $this->TmpFolder->pwd(),
+						'makeVersions' => false,
+						'createDirectory' => false,
+						'filterDirectory' => $this->TmpFolder->pwd() . 'filter' . DS,
+						'metadataLevel' => 1
+						);
 
 		$this->_mediaConfig = Configure::read('Media');
 	}
@@ -72,7 +82,7 @@ class MediaBehaviorTestCase extends CakeTestCase {
 
 	function testFind() {
 		$Model =& ClassRegistry::init('Song');
-		$Model->Behaviors->attach('Media.Media', array('base' => $this->TmpFolder->pwd(),'makeVersions' => false, 'createDirectory' => false, 'metadataLevel' => 1));
+		$Model->Behaviors->attach('Media.Media', $this->_behaviorSettings);
 		$result = $Model->find('all');
 		$this->assertEqual(count($result), 3);
 
@@ -84,16 +94,22 @@ class MediaBehaviorTestCase extends CakeTestCase {
 
 	function testSave() {
 		$Model =& ClassRegistry::init('Song');
-		$Model->Behaviors->attach('Media.Media', array('base' => $this->TmpFolder->pwd(),'makeVersions' => false, 'createDirectory' => false, 'metadataLevel' => 1));
+		$Model->Behaviors->attach('Media.Media', $this->_behaviorSettings);
 
-		$file = $this->TestData->getFile(array('application-pdf.pdf' => $this->TmpFolder->pwd() . 'static/doc/application-pdf.pdf'));
+		$file = $this->TestData->getFile(array(
+			'application-pdf.pdf' => $this->TmpFolder->pwd() . 'static/doc/application-pdf.pdf'));
 		$item = array('file' => $file);
 		$Model->create();
 		$result = $Model->save($item);
 		$this->assertTrue($result);
 
 		$result = $Model->findById(5);
-		$expected = array ('Song' => array ( 'id' => '5', 'dirname' => 'static/doc', 'basename' => 'application-pdf.pdf', 'checksum' => 'f7ee91cffd90881f3d719e1bab1c4697', 'size' => 13903, 'mime_type' => 'application/pdf', ), );
+		$expected = array ('Song' => array ('id' => '5',
+											'dirname' => 'static/doc',
+											'basename' => 'application-pdf.pdf',
+											'checksum' => 'f7ee91cffd90881f3d719e1bab1c4697',
+											'size' => 13903,
+											'mime_type' => 'application/pdf'));
 		$this->assertEqual($expected, $result);
 	}
 
@@ -106,12 +122,14 @@ class MediaBehaviorTestCase extends CakeTestCase {
 		$Model =& ClassRegistry::init('Unicorn', 'Model');
 
 		$Model->Behaviors->attach('Media.Media', array(
-			'base' => $this->TmpFolder->pwd(),
+			'baseDirectory' => $this->TmpFolder->pwd(),
+			'filterDirectory' => $this->TmpFolder->pwd() . 'filter' . DS,
 			'makeVersions' => true,
 			'createDirectory' => true,
 			'metadataLevel' => 0));
 
-		$file = $this->TestData->getFile(array('image-jpg.jpg' => $this->TmpFolder->pwd() . 'image-jpg.jpg'));
+		$file = $this->TestData->getFile(array(
+			'image-jpg.jpg' => $this->TmpFolder->pwd() . 'image-jpg.jpg'));
 
 		$expected[] = array(
 					$file,

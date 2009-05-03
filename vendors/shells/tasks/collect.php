@@ -184,7 +184,7 @@ class CollectTask extends MediaShell {
 			$fragment = preg_replace($search, null, $file);
 
 			$mapped = array(
-				$file => MEDIA . 'static' . DS . Medium::short($file) . DS . $fragment
+				$file => MEDIA_STATIC . Medium::short($file) . DS . $fragment
 			);
 
 			while (in_array(current($mapped), $this->_map) && $mapped) {
