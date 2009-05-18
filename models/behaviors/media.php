@@ -57,6 +57,13 @@ class MediaBehavior extends ModelBehavior {
 			'createDirectory' => true,
 		);
 /**
+ * Holds cached metadata keyed by model alias
+ *
+ * @var array
+ * @access private
+ */
+	var $__cached;
+/**
  * Setup
  *
  * @param object $model
@@ -88,6 +95,8 @@ class MediaBehavior extends ModelBehavior {
 								. implode(', ', $fields) . ' field(s).', E_USER_WARNING);
 			}
 		}
+
+		$this->__cached[$model->alias] = Cache::read('media_metadata_' . $model->alias, '_cake_core_');
 	}
 /**
  * Callback
@@ -195,10 +204,7 @@ class MediaBehavior extends ModelBehavior {
 										);
 
 			if ($metadata === false) {
-				/*
-				 * metadata() returns false on nonexistent/nonreadable files
-				 * this means that this record is inconsistent
-				 */
+				/* file is not readable, which means this record is inconsitent */
 				unset($results[$key]);
 				continue(1);
 			}
@@ -308,10 +314,10 @@ class MediaBehavior extends ModelBehavior {
 		return true;
 	}
 /**
- * Retrieve metadata of a file
+ * Retrieve (cached) metadata of a file
  *
  * @param object $model
- * @param string $file Path to a file relative to MEDIA or an absolute path to a file
+ * @param string $file Path to a file relative to baseDirectory or an absolute path to a file
  * @param int $level level of amount of info to add, 0 disable, 1 for basic, 2 for detailed info
  * @return mixed Array with results or false if file is not readable
  */
@@ -319,7 +325,6 @@ class MediaBehavior extends ModelBehavior {
 		if ($level < 1) {
 			return array();
 		}
-
 		extract($this->settings[$model->alias]);
 
 		if (is_file($file)) {
@@ -327,66 +332,75 @@ class MediaBehavior extends ModelBehavior {
 		} else {
 			$File = new File($baseDirectory . $file);
 		}
-
 		if (!$File->exists() || !$File->readable()) {
 			return false;
 		}
+		$checksum = $File->md5();
 
-		$basic = array(
+		if (isset($this->__cached[$model->alias][$checksum])) {
+			$data = $this->__cached[$model->alias][$checksum];
+		}
+
+		if ($level > 0 && !isset($data[1])) {
+			$data[1] = array(
 					'size'      => $File->size(),
-					'mime_type' =>  MimeType::guessType($File->pwd()),
-					);
+					'mime_type' => MimeType::guessType($File->pwd()),
+					'checksum'  => $checksum,
+				);
+		}
+		if ($level > 1 && !isset($data[2])) {
+			$Medium = Medium::factory($File->pwd());
 
-		if ($level < 2) {
-			return Set::filter($basic); /* return basic info */
+			if ($Medium->name === 'Audio') {
+				$data[2] = array(
+								'artist'        => $Medium->artist(),
+								'album'         => $Medium->album(),
+								'title'         => $Medium->title(),
+								'track'         => $Medium->track(),
+								'year'          => $Medium->year(),
+								'length'        => $Medium->duration(),
+								'quality'       => $Medium->quality(),
+								'sampling_rate' => $Medium->samplingRate(),
+								'bitrate'       => $Medium->bitrate(),
+								);
+			} elseif ($Medium->name === 'Image') {
+				$data[2] = array(
+								'width'     => $Medium->width(),
+								'height'    => $Medium->height(),
+								'ratio'     => $Medium->ratio(),
+								'quality'   => $Medium->quality(),
+								'megapixel' => $Medium->megapixel(),
+								);
+			} elseif ($Medium->name === 'Text') {
+				$data[2] = array(
+								'characters'      => $Medium->characters(),
+								'syllables'       => $Medium->syllables(),
+								'sentences'       => $Medium->sentences(),
+								'words'           => $Medium->words(),
+								'flesch_score'    => $Medium->fleschScore(),
+								'lexical_density' => $Medium->lexicalDensity(),
+								);
+			} elseif ($Medium->name === 'Video') {
+				$data[2] = array(
+								'title'   => $Medium->title(),
+								'year'    => $Medium->year(),
+								'length'  => $Medium->duration(),
+								'width'   => $Medium->width(),
+								'height'  => $Medium->height(),
+								'ratio'   => $Medium->ratio(),
+								'quality' => $Medium->quality(),
+								'bitrate' => $Medium->bitrate(),
+								);
+			} else {
+				$data[2] = array();
+			}
 		}
 
-		$Medium = Medium::factory($File->pwd());
-
-		if ($Medium->name === 'Audio') {
-			$detailed = array(
-							'artist'        => $Medium->artist(),
-							'album'         => $Medium->album(),
-							'title'         => $Medium->title(),
-							'track'         => $Medium->track(),
-							'year'          => $Medium->year(),
-							'length'        => $Medium->duration(),
-							'quality'       => $Medium->quality(),
-							'sampling_rate' => $Medium->samplingRate(),
-							'bitrate'       => $Medium->bitrate(),
-							);
-		} elseif ($Medium->name === 'Image') {
-			$detailed = array(
-							'width'     => $Medium->width(),
-							'height'    => $Medium->height(),
-							'ratio'     => $Medium->ratio(),
-							'quality'   => $Medium->quality(),
-							'megapixel' => $Medium->megapixel(),
-							);
-		} elseif ($Medium->name === 'Text') {
-			$detailed = array(
-							'characters'      => $Medium->characters(),
-							'syllables'       => $Medium->syllables(),
-							'sentences'       => $Medium->sentences(),
-							'words'           => $Medium->words(),
-							'flesch_score'    => $Medium->fleschScore(),
-							'lexical_density' => $Medium->lexicalDensity(),
-							);
-		} elseif ($Medium->name === 'Video') {
-			$detailed = array(
-							'title'   => $Medium->title(),
-							'year'    => $Medium->year(),
-							'length'  => $Medium->duration(),
-							'width'   => $Medium->width(),
-							'height'  => $Medium->height(),
-							'ratio'   => $Medium->ratio(),
-							'quality' => $Medium->quality(),
-							'bitrate' => $Medium->bitrate(),
-							);
-		} else {
-			$detailed = array();
+		for ($i = $level, $result = array(); $i > 0; $i--) {
+			$result = array_merge($result, $data[$i]);
 		}
-		return Set::filter(array_merge($basic, $detailed));
+		$this->__cached[$model->alias][$checksum] = $data;
+		return Set::filter($result);
 	}
 /**
  * Checks if an alternative text is given only if a file is submitted
