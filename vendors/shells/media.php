@@ -81,6 +81,7 @@ class MediaShell extends Shell {
 		switch ($action) {
 			case 'I':
 				$this->init();
+				break;
 			case 'P':
 				$this->protect();
 				break;
@@ -152,9 +153,8 @@ class MediaShell extends Shell {
 		}
 
 		$this->out();
-		$this->out('Please remember to set the correct permission on e.g. the transfer directory.');
-		$this->out();
-		return true;
+		$this->protect();
+		$this->out('Remember to set the correct permissions on transfer and filter directory.');
 	}
 /**
  * Protects the transfer directory
@@ -163,7 +163,7 @@ class MediaShell extends Shell {
  * @return void
  */
 	function protect() {
-		$file = MEDIA_TRANSFERS . '.htaccess';
+		$file = MEDIA_TRANSFER . '.htaccess';
 
 		if (is_file($file)) {
 			$this->err($this->shortPath($file) . ' is already present.');
@@ -180,7 +180,7 @@ class MediaShell extends Shell {
 		$File->append("Deny from all\n");
 		$File->close();
 
-		$this->out($this->shortPath($File->pwd()) . 'created.');
+		$this->out($this->shortPath($File->pwd()) . ' created.');
 		$this->out();
 		return true;
 	}
