@@ -69,10 +69,6 @@ class MediaBehaviorTestCase extends CakeTestCase {
 	}
 
 	function testSetup() {
-		$Model =& ClassRegistry::init('Image');
-		$this->expectError();
-		$Model->Behaviors->attach('Media.Media');
-
 		$Model =& ClassRegistry::init('TheVoid');
 		$Model->Behaviors->attach('Media.Media');
 

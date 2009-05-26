@@ -81,22 +81,6 @@ class MediaBehavior extends ModelBehavior {
 			$config = array();
 		}
 
-		/* Check for required fields */
-		if ($model->useTable) {
-			$fields = array('dirname', 'basename', 'checksum');
-			foreach ($fields as $key => $field) {
-				if ($model->hasField($field)) {
-					unset($fields[$key]);
-				}
-			}
-			if (!empty($fields)) {
-				$message  = "MediaBehavior::setup - ";
-				$message .= "The model '{$model->name}' lacks the ";
-				$message .= implode(', ', $fields) . " field(s).";
-				trigger_error($message, E_USER_WARNING);
-			}
-		}
-
 		/* `base` config option deprecation */
 		if (isset($config['base'])) {
 			$message  = "MediaBehavior::setup - ";
