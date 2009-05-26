@@ -136,5 +136,19 @@ class MediumHelperTestCase extends CakeTestCase {
 		$result = $this->Helper->file($this->TmpFolder->pwd() . 'filter/s/transfer/img/image-png-x.png');
 		$this->assertEqual($result, $this->file4);
 	}
+
+	function testFileArraySyntax() {
+		$result = $this->Helper->file(array(
+			'dirname' => 'static/img',
+			'basename' => 'not-existant.jpg'
+		));
+		$this->assertFalse($result);
+
+		$result = $this->Helper->file(array(
+			'dirname' => 'static/img',
+			'basename' => 'image-png'
+		));
+		$this->assertEqual($result, $this->file0);
+	}
 }
 ?>
