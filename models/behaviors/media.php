@@ -34,18 +34,24 @@ class MediaBehavior extends ModelBehavior {
 /**
  * Default settings
  *
+ * metadataLevel
+ * 	0 - (disabled) No retrieval of additional metadata
+ *  1 - (basic) Adds `mime_type` and `size` fields
+ *  2 - (detailed) Adds Multiple fields dependent on the type of the file e.g. `artist`, `title`
+ *
+ * baseDirectory
+ * 	An absolute path (with trailing slash) to a directory which will be stripped off the file path
+ *
+ * makeVersions
+ * 	false - Disable version generation
+ * 	true  - Creates versions (configured in plugin's `core.php`) of files on create
+ *
+ * filterDirectory
+ * 	An absolute path (with trailing slash) to a directory to use for storing generated versions
+ *
  * createDirectory
  * 	false - Fail on missing directories
  * 	true  - Recursively create missing directories
- * makeVersions
- * 	false - Disable version generation
- * 	true  - Creates versions (configured in plugin's core.php) of files on create
- * metadataLevel
- * 	0 - (disabled) No retrieval of additional metadata
- *  1 - (basic) Adds mime_type and size fields
- *  2 - (detailed) Adds Multiple fields dependent on the type of the file e.g. artist, title
- * base
- * 	Needs trailing slash (You shouldn't need to change this, markers are NOT supported)
  *
  * @var array
  */
@@ -72,17 +78,10 @@ class MediaBehavior extends ModelBehavior {
  */
 	function setup(&$model, $config = null) {
 		if (!is_array($config)) {
-			$this->settings[$model->alias] = $this->_defaultSettings;
-		} else {
-			if (isset($config['base'])) {
-				trigger_error("MediaBehavior::setup - The 'base' setting has been deprecated "
-								. "in favour of 'baseDirectory'.", E_USER_NOTICE);
-				$config['baseDirectory'] = $config['base'];
-				unset($config['base']);
-			}
-			$this->settings[$model->alias] = array_merge($this->_defaultSettings, $config);
+			$config = array();
 		}
 
+		/* Check for required fields */
 		if ($model->useTable) {
 			$fields = array('dirname', 'basename', 'checksum');
 			foreach ($fields as $key => $field) {
@@ -91,11 +90,30 @@ class MediaBehavior extends ModelBehavior {
 				}
 			}
 			if (!empty($fields)) {
-				trigger_error("MediaBehavior::setup - The model '{$model->name}' lacks the "
-								. implode(', ', $fields) . ' field(s).', E_USER_WARNING);
+				$message  = "MediaBehavior::setup - ";
+				$message .= "The model '{$model->name}' lacks the ";
+				$message .= implode(', ', $fields) . " field(s).";
+				trigger_error($message, E_USER_WARNING);
 			}
 		}
 
+		/* `base` config option deprecation */
+		if (isset($config['base'])) {
+			$message  = "MediaBehavior::setup - ";
+			$message .= "The `base` option has been deprecated in favour of `baseDirectory`.";
+			trigger_error($message, E_USER_NOTICE);
+
+			$config['baseDirectory'] = $config['base'];
+			unset($config['base']);
+		}
+
+		/* Interact with Transfer Behavior */
+		if (isset($model->Behaviors->Transfer)) {
+			$config['baseDirectory'] = dirname($model->Behaviors->Transfer->settings[$option]) . DS;
+			$config['createDirectory'] = $model->Behaviors->Transfer->settings[$option];
+		}
+
+		$this->settings[$model->alias] = $config + $this->_defaultSettings;
 		$this->__cached[$model->alias] = Cache::read('media_metadata_' . $model->alias, '_cake_core_');
 	}
 /**

@@ -48,15 +48,15 @@ class Attachment extends MediaAppModel {
 				'foreignKey' => 'foreign_key',
 				),
 			'Media.Transfer' => array(
-				'destinationFile' => ':MEDIA_TRANSFER::Medium.short::DS::Source.basename:',
+				'trustClient'     => false,
+				'destinationFile' => ':Medium.short::DS::Source.basename:',
+				'baseDirectory'   => MEDIA_TRANSFER,
 				'createDirectory' => true,
 				),
 			'Media.Media' => array(
 				'metadataLevel'   => 2,
-				'baseDirectory'   => MEDIA,
 				'makeVersions'    => true,
 				'filterDirectory' => MEDIA_FILTER,
-				'createDirectory' => true,
 				),
 			);
 /**
