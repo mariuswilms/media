@@ -93,8 +93,9 @@ class MediaBehavior extends ModelBehavior {
 
 		/* Interact with Transfer Behavior */
 		if (isset($model->Behaviors->Transfer)) {
-			$config['baseDirectory'] = dirname($model->Behaviors->Transfer->settings[$option]) . DS;
-			$config['createDirectory'] = $model->Behaviors->Transfer->settings[$option];
+			$transferSettings = $model->Behaviors->Transfer->settings[$model->alias];
+			$config['baseDirectory'] = dirname($transferSettings['baseDirectory']) . DS;
+			$config['createDirectory'] = $transferSettings['createDirectory'];
 		}
 
 		$this->settings[$model->alias] = $config + $this->_defaultSettings;
