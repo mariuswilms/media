@@ -500,13 +500,22 @@ class MediumHelper extends AppHelper {
  * 							an absolute path to the file
  */
 	function file($path) {
-		if (is_array($path)) {
-			if (!isset($path['dirname'], $path['basename'])) {
-				return false;
+		$path = array();
+
+		foreach (func_get_args() as $arg) {
+			if (is_array($arg)) {
+				if (isset($arg['dirname'])) {
+					$path[] = rtrim($arg['dirname'], '/\\');
+				}
+				if (isset($arg['basename'])) {
+					$path[] = $arg['basename'];
+				}
+			} else {
+				$path[] = rtrim($arg, '/\\');
 			}
-			$path = $path['dirname'] . DS . $path['basename'];
 		}
-		$path = str_replace(array('/', '\\'), DS, trim($path));
+		$path = implode(DS, $path);
+		$path = str_replace(array('/', '\\'), DS, $path);
 
 		if (isset($this->__cached[$path])) {
 			return $this->__cached[$path];

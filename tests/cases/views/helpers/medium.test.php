@@ -149,6 +149,32 @@ class MediumHelperTestCase extends CakeTestCase {
 			'basename' => 'image-png'
 		));
 		$this->assertEqual($result, $this->file0);
+
+		$result = $this->Helper->file(array(
+			'dirname' => 'static/img/',
+			'basename' => 'image-png'
+		));
+		$this->assertEqual($result, $this->file0);
+	}
+
+	function testFileMixedSyntax() {
+		$result = $this->Helper->file('static', array(
+			'dirname' => 'img',
+			'basename' => 'not-existant.jpg'
+		));
+		$this->assertFalse($result);
+
+		$result = $this->Helper->file('static', array(
+			'dirname' => 'img',
+			'basename' => 'image-png'
+		));
+		$this->assertEqual($result, $this->file0);
+
+		$result = $this->Helper->file('static/', array(
+			'dirname' => 'img',
+			'basename' => 'image-png'
+		));
+		$this->assertEqual($result, $this->file0);
 	}
 }
 ?>
