@@ -14,7 +14,7 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.views.elemetns
+ * @subpackage media.views.elements
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
@@ -34,7 +34,7 @@ if (!isset($model)) {
 
 $modelId = $form->value($form->model().'.id');
 
-if(isset($this->data[$assocAlias][0]['basename'])) {
+if (isset($this->data[$assocAlias][0]['basename'])) {
 	array_unshift($this->data[$assocAlias],array());
 }
 ?>
@@ -43,63 +43,64 @@ if(isset($this->data[$assocAlias][0]['basename'])) {
 	<!-- New Attachment -->
 	<div class="new">
 	<?php
-		echo $form->hidden($assocAlias . '.0.model',array('value' => $model));
-		echo $form->hidden($assocAlias . '.0.group',array('value' => strtolower($assocAlias)));
+		echo $form->hidden($assocAlias . '.0.model', array('value' => $model));
+		echo $form->hidden($assocAlias . '.0.group', array('value' => strtolower($assocAlias)));
 		echo $form->input($assocAlias . '.0.file', array(
-							'label' => __('File',true),
-							'type'  => 'file',
-							'error' => array(
-								'error'      => __('An error occured while transferring the file.', true),
-								'resource'   => __('The file is invalid.', true),
-								'access'     => __('The file cannot be processed.', true),
-								'location'   => __('The file cannot be transferred from or to location.', true),
-								'permission' => __('Executable files cannot be uploaded.', true),
-								'size'       => __('The file is too large.', true),
-								'pixels'     => __('The file is too large.', true),
-								'extension'  => __('The file has wrong extension.', true),
-								'mimeType'   => __('The file has wrong mime type.', true),
-								)
-							)
-						);
+			'label' => __('File', true),
+			'type'  => 'file',
+			'error' => array(
+				'error'      => __('An error occured while transferring the file.', true),
+				'resource'   => __('The file is invalid.', true),
+				'access'     => __('The file cannot be processed.', true),
+				'location'   => __('The file cannot be transferred from or to location.', true),
+				'permission' => __('Executable files cannot be uploaded.', true),
+				'size'       => __('The file is too large.', true),
+				'pixels'     => __('The file is too large.', true),
+				'extension'  => __('The file has wrong extension.', true),
+				'mimeType'   => __('The file has wrong mime type.', true),
+		)));
 		echo $form->input($assocAlias . '.0.alternative', array(
-							'label' => __('Textual replacement', true),
-							'value' => '',
-							'error' => __('A textual replacement must be provided.', true)
-							)
-						);
+			'label' => __('Textual replacement', true),
+			'value' => '',
+			'error' => __('A textual replacement must be provided.', true)
+		));
 	?>
 	</div>
 	<!-- Existing Attachments -->
 	<div class="existing">
-	<?php if(isset($this->data[$assocAlias])): ?>
+	<?php if (isset($this->data[$assocAlias])): ?>
 		<?php for($i = 1; $i < count($this->data[$assocAlias]); $i++): ?>
 		<div>
 		<?php
 			$item = $this->data[$assocAlias][$i];
 
-			echo $form->hidden($assocAlias . '.' . $i . '.id',array('value' => $item['id']));
-			echo $form->hidden($assocAlias . '.'.$i . '.model',array('value' => $model));
-			echo $form->hidden($assocAlias . '.'.$i . '.group',array('value' => $item['group']));
-			echo $form->hidden($assocAlias . '.'.$i . '.dirname',array('value' => $item['dirname']));
-			echo $form->hidden($assocAlias . '.'.$i . '.basename',array('value' => $item['basename']));
-			echo $form->hidden($assocAlias . '.'.$i . '.alternative',array('value' => $item['alternative']));
+			echo $form->hidden($assocAlias . '.' . $i . '.id', array('value' => $item['id']));
+			echo $form->hidden($assocAlias . '.' . $i . '.model', array('value' => $model));
+			echo $form->hidden($assocAlias . '.' . $i . '.group', array('value' => $item['group']));
+			echo $form->hidden($assocAlias . '.' . $i . '.dirname', array('value' => $item['dirname']));
+			echo $form->hidden($assocAlias . '.' . $i . '.basename', array('value' => $item['basename']));
+			echo $form->hidden($assocAlias . '.' . $i . '.alternative', array('value' => $item['alternative']));
 
-		 	if ($file = $medium->file($item['dirname'].DS.$item['basename'])) {
-		 		echo $medium->embed('xxs/' . $item['dirname'] . DS . $item['basename'], array('restrict' => array('image')));
+			if ($file = $medium->file($item)) {
+				echo $medium->embed($medium->file('xxs/', $item), array('restrict' => array('image')));
 
 		 		$Medium = Medium::factory($file);
-				$size = filesize($file);
+				$size = $medium->size($file);
 
 				if (isset($number)) {
 					$size = $number->toReadableSize($size);
 				}
 
-				printf(	'<span><a href="%s">%s</a>&nbsp;(%s/%s) <em>%s</em></span>',
+				printf('<span><a href="%s">%s</a>&nbsp;(%s/%s) <em>%s</em></span>',
 						$medium->url($file), $item['basename'],
 						strtolower($Medium->name), $size, $item['alternative']);
 			}
 
-		 	echo $form->input($assocAlias . '.' . $i . '.delete', array('label' => __('Release', true), 'type' => 'checkbox', 'value' => 0));
+			echo $form->input($assocAlias . '.' . $i . '.delete', array(
+				'label' => __('Release', true),
+				'type' => 'checkbox',
+				'value' => 0
+			));
 		?>
 		</div>
 	<?php endfor ?>
