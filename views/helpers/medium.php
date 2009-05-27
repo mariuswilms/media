@@ -460,7 +460,7 @@ class MediumHelper extends AppHelper {
 				return $this->output($out, $inline);
 
 			default:
-				return null;
+				return $this->Html->link(basename($file), $url);
 		}
 	}
 /**
