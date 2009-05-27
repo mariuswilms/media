@@ -163,6 +163,11 @@ class MediaShell extends Shell {
  * @return void
  */
 	function protect() {
+		if (MEDIA_TRANSFER_URL === false) {
+			$this->out('The content of the transfer directory is not served.');
+			return true;
+		}
+
 		$file = MEDIA_TRANSFER . '.htaccess';
 
 		if (is_file($file)) {
