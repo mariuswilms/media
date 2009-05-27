@@ -26,8 +26,26 @@ Configure::write('Cache.disable', true);
  * @subpackage media.shells
  */
 class MediaShell extends Shell {
+/**
+ * Tasks
+ *
+ * @var string
+ * @access public
+ */
 	var $tasks = array('Sync', 'Make', 'Collect');
+/**
+ * Verbose mode
+ *
+ * @var boolean
+ * @access public
+ */
 	var $verbose = false;
+/**
+ * Quiet mode
+ *
+ * @var boolean
+ * @access public
+ */
 	var $quiet = false;
 /**
  * Width of shell in number of characters per line
@@ -36,18 +54,18 @@ class MediaShell extends Shell {
  */
 	var $width = 80;
 /**
- * startup
+ * Startup
  *
  * @access public
  * @return void
  */
-	function startup() {
+	 function startup() {
 		$this->verbose = isset($this->params['verbose']);
 		$this->quiet = isset($this->params['quiet']);
 		parent::startup();
 	}
 /**
- * _welcome
+ * Welcome
  *
  * @access protected
  * @return void
@@ -59,12 +77,12 @@ class MediaShell extends Shell {
 		$this->hr();
 	}
 /**
- * main
+ * Main
  *
  * @access public
  * @return void
  */
-	function main() {
+	 function main() {
 		$this->out('[I]nitialize Media Directory');
 		$this->out('[P]rotect Transfer Directory');
 		$this->out('[S]ynchronize');
@@ -120,7 +138,7 @@ class MediaShell extends Shell {
 			MEDIA_STATIC => Medium::short(),
 			MEDIA_TRANSFER => Medium::short(),
 			MEDIA_FILTER => Medium::short(),
-			);
+		);
 
 		foreach ($dirs as $dir => $subDirs) {
 			if (is_dir($dir)) {
@@ -386,7 +404,7 @@ class MediaShell extends Shell {
 /**
  * Overridden to allow Stop messages
  *
- * @param int $status
+ * @param integer $status
  * @access protected
  * @return void
  */

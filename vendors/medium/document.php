@@ -24,33 +24,33 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class DocumentMedium extends Medium {
-	/**
-	 * Compatible adapters
-	 *
-	 * @var array
-	 */
+/**
+ * Compatible adapters
+ *
+ * @var array
+ */
 	var $adapters = array('Imagick', 'ImagickShell');
-	/**
-	 * Current width of medium
-	 *
-	 * @return int
-	 */
+/**
+ * Current width of medium
+ *
+ * @return integer
+ */
 	function width()	{
-		return $this->Adapters->dispatchMethod($this, 'width');
+		return (integer)$this->Adapters->dispatchMethod($this, 'width');
 	}
-	/**
-	 * Current height of medium
-	 *
-	 * @return int
-	 */
+/**
+ * Current height of medium
+ *
+ * @return integer
+ */
 	function height() {
-		return $this->Adapters->dispatchMethod($this, 'height');
+		return (integer)$this->Adapters->dispatchMethod($this, 'height');
 	}
-	/**
-	 * Determines a (known) ratio of medium
-	 *
-	 * @return mixed if String if $known is true or float if false
-	 */
+/**
+ * Determines a (known) ratio of medium
+ *
+ * @return mixed if String if $known is true or float if false
+ */
 	function ratio($known = true) {
 		if (!$known) {
 			return $this->width() / $this->height();

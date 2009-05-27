@@ -24,65 +24,59 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class VideoMedium extends Medium {
-	/**
-	 * Compatible adapters
-	 *
-	 * @var array
-	 */
+/**
+ * Compatible adapters
+ *
+ * @var array
+ */
 	var $adapters = array('Getid3Video', 'FfmpegVideo', 'PearOggVideo');
-
-	/**
-	 * Title stored in medium metadata
-	 *
-	 * @return mixed String if metadata info exists, else null
-	 */
+/**
+ * Title stored in medium metadata
+ *
+ * @return mixed String if metadata info exists, else null
+ */
 	function title() {
 		return trim($this->Adapters->dispatchMethod($this, 'title'));
 	}
-
-	/**
-	 * Year stored in medium metadata
-	 *
-	 * @return mixed Integer if metadata info exists, else null
-	 */
+/**
+ * Year stored in medium metadata
+ *
+ * @return mixed Integer if metadata info exists, else null
+ */
 	function year() {
 		return (integer)$this->Adapters->dispatchMethod($this, 'year');
 	}
-
-	/**
-	 * Current height of medium
-	 *
-	 * @return integer
-	 */
+/**
+ * Current height of medium
+ *
+ * @return integer
+ */
 	function height() {
 		return (integer)$this->Adapters->dispatchMethod($this, 'height');
 	}
-
-	/**
-	 * Current width of medium
-	 *
-	 * @return integer
-	 */
+/**
+ * Current width of medium
+ *
+ * @return integer
+ */
 	function width() {
 		return (integer)$this->Adapters->dispatchMethod($this, 'width');
 	}
-
-	/**
-	 * Current bitrate of medium
-	 *
-	 * @url http://en.wikipedia.org/wiki/Bit_rate
-	 * @return integer
-	 */
+/**
+ * Current bitrate of medium
+ *
+ * @url http://en.wikipedia.org/wiki/Bit_rate
+ * @return integer
+ */
 	function bitrate() {
 		return (integer)$this->Adapters->dispatchMethod($this, 'bitrate');
 	}
-
-	/**
-	 * Determines the quality of the medium by
-	 * taking definition and bitrate into account
-	 *
-	 * @return integer A number indicating quality between 1 (worst) and 5 (best)
-	 */
+/**
+ * Determines the quality of the medium by
+ * taking definition and bitrate into account
+ *
+ * @return integer A number indicating quality between 1 (worst) and 5 (best)
+ */
 	function quality() {
 		$definition = $this->width() * $this->height();
 		$bitrate = $this->bitrate();
@@ -121,15 +115,13 @@ class VideoMedium extends Medium {
 		} else {
 			$quality = ($quality + $qualityMax * $bitrateCoef) / ($bitrateCoef + 1);
 		}
-
 		return (integer)round($quality);
 	}
-
-	/**
-	 * Determines a (known) ratio of medium
-	 *
-	 * @return mixed String if $known is true or float if false
-	 */
+/**
+ * Determines a (known) ratio of medium
+ *
+ * @return mixed String if $known is true or float if false
+ */
 	function ratio($known = true) {
 		$width = $this->width();
 		$height = $this->height();
@@ -143,6 +135,5 @@ class VideoMedium extends Medium {
 		}
 		return $this->_knownRatio($width, $height);
 	}
-
 }
 ?>

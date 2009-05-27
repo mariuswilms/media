@@ -23,11 +23,6 @@
  * @subpackage media.libs.medium.adapter
  */
 class BasicTextMediumAdapter extends MediumAdapter {
-	/**
- * Enter description here...
-	 *
-	 * @var unknown_type
-	 */
 	var $require = array('mimeTypes' => array('text/plain'));
 
 	function initialize(&$Medium) {
@@ -36,11 +31,7 @@ class BasicTextMediumAdapter extends MediumAdapter {
 		}
 		return true;
 	}
-/**
- * Enter description here...
- *
- * @return unknown
- */
+
 	function characters(&$Medium) {
 		return filesize($Medium->file);
 	}

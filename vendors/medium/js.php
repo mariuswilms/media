@@ -24,26 +24,26 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class JsMedium extends Medium {
-	/**
-	 * Compatible adapters
-	 *
-	 * @var array
-	 */
-	var $adapters = array(/* 'JavascriptPacker', */ 'Jsmin', 'BasicText');
-	/**
-	 * Number of characters
-	 *
-	 * @return integer
-	 */
+/**
+ * Compatible adapters
+ *
+ * @var array
+ */
+	var $adapters = array('Jsmin', 'BasicText');
+/**
+ * Number of characters
+ *
+ * @return integer
+ */
 	function characters() {
-		return $this->Adapters->dispatchMethod($this, 'characters');
+		return (integer)$this->Adapters->dispatchMethod($this, 'characters');
 	}
-	/**
-	 * Compresses contents. of the medium
-	 *
-	 * @return string
-	 */
-	function compress() {
+/**
+ * Compresses contents. of the medium
+ *
+ * @return string
+ */
+	function compress()  {
 		return $this->Adapters->dispatchMethod($this, 'compress');
 	}
 }

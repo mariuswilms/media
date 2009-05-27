@@ -26,15 +26,15 @@
 class FfmpegAudioMediumAdapter extends MediumAdapter {
 	var $require = array(
 		'mimeTypes' => array(
-				'audio/mpeg',
-				/* Ffmpeg Extension can't read meta info other than ID3! */
-				'audio/ms-wma',
-				'audio/realaudio',
-				'audio/wav',
-				'audio/ogg',
-				/* Some Ogg files may have 'application/octet-stream' mime type. */
-				'application/octet-stream',
-			),
+			'audio/mpeg',
+			/* Ffmpeg Extension can't read meta info other than ID3! */
+			'audio/ms-wma',
+			'audio/realaudio',
+			'audio/wav',
+			'audio/ogg',
+			/* Some Ogg files may have 'application/octet-stream' MIME type. */
+			'application/octet-stream',
+		),
 		'extensions' => array('ffmpeg'),
 	);
 
@@ -86,6 +86,5 @@ class FfmpegAudioMediumAdapter extends MediumAdapter {
 	function bitrate(&$Medium) {
 		return $Medium->objects['ffmpeg_movie']->getBitRate();
 	}
-
 }
 ?>

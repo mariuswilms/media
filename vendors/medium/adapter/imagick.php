@@ -25,39 +25,39 @@
  */
 class ImagickMediumAdapter extends MediumAdapter {
 	var $require = array(
-						'mimeTypes' => array( /* readable */
-							'image/jpeg',
-							'image/gif',
-							'image/png',
-							'image/tiff',
-							'image/wpg',
-							'image/xbm',
-							'image/xcf',
-							'image/wbmp',
-							'image/ms-bmp',
-							'image/pcx',
-							'image/quicktime',
-							'image/svg',
-							'image/xpm',
-							'image/ico',
-							'image/psd',
-							'application/pdf',
-							),
-						 'extensions' => array('imagick'),
-						);
+		'mimeTypes' => array( /* readable */
+			'image/jpeg',
+			'image/gif',
+			'image/png',
+			'image/tiff',
+			'image/wpg',
+			'image/xbm',
+			'image/xcf',
+			'image/wbmp',
+			'image/ms-bmp',
+			'image/pcx',
+			'image/quicktime',
+			'image/svg',
+			'image/xpm',
+			'image/ico',
+			'image/psd',
+			'application/pdf',
+			),
+		 'extensions' => array('imagick'),
+	);
 
 	var $_formatMap = array( /* writable */
-						'image/jpeg' => 'jpeg',
-						'image/gif' => 'gif',
-						'image/png' => 'png',
-						'image/tiff' => 'tiff',
-						'image/wbmp' => 'wbmp',
-						'image/ms-bmp' => 'bmp',
-						'image/pcx' => 'pcx',
-						'image/ico' => 'ico',
-						'image/xbm' => 'xbm',
-						'image/psd' => 'psd',
-						);
+		'image/jpeg' => 'jpeg',
+		'image/gif' => 'gif',
+		'image/png' => 'png',
+		'image/tiff' => 'tiff',
+		'image/wbmp' => 'wbmp',
+		'image/ms-bmp' => 'bmp',
+		'image/pcx' => 'pcx',
+		'image/ico' => 'ico',
+		'image/xbm' => 'xbm',
+		'image/psd' => 'psd',
+		);
 
 	function initialize(&$Medium) {
 		if (isset($Medium->objects['Imagick'])) {
@@ -73,7 +73,6 @@ class ImagickMediumAdapter extends MediumAdapter {
 		} catch (Exception $E) {
 			return false;
 		}
-
 		return true;
 	}
 
@@ -109,7 +108,6 @@ class ImagickMediumAdapter extends MediumAdapter {
 		if ($Medium->name === 'Document') { // application/pdf -> image
 			return Medium::factory($Medium->objects['Imagick'], $mimeType);
 		}
-
 		return true;
 	}
 
@@ -121,11 +119,11 @@ class ImagickMediumAdapter extends MediumAdapter {
 				break;
 			case 'image/png':
 				$type = Imagick::COMPRESSION_ZIP;
-				$value = intval($value); // FIXME correct ?
+				$value = (integer)$value; // FIXME correct ?
 				break;
 			case 'image/jpeg':
 				$type = Imagick::COMPRESSION_JPEG;
-				$value = intval(100 - ($value * 10));
+				$value = (integer)(100 - ($value * 10));
 				break;
 			default:
 				return true;
@@ -139,10 +137,10 @@ class ImagickMediumAdapter extends MediumAdapter {
 	}
 
 	function crop(&$Medium, $left, $top, $width, $height) {
-		$left   = intval($left);
-		$top    = intval($top);
-		$width  = intval($width);
-		$height = intval($height);
+		$left   = (integer)$left;
+		$top    = (integer)$top;
+		$width  = (integer)$width;
+		$height = (integer)$height;
 
 		try {
 			return $Medium->objects['Imagick']->cropImage($width, $height, $left, $top);
@@ -152,8 +150,8 @@ class ImagickMediumAdapter extends MediumAdapter {
 	}
 
 	function resize(&$Medium, $width, $height) {
-		$width  = intval($width);
-		$height = intval($height);
+		$width  = (integer)$width;
+		$height = (integer)$height;
 
 		try {
 			return $Medium->objects['Imagick']->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);

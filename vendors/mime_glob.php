@@ -20,7 +20,7 @@ uses('file');
 /**
  * Mime Glob Class
  *
- * Detection of a file's MIME Type by it's extension
+ * Detection of a file's MIME type by it's extension
  * supporting several database formats.
  *
  * @package    media
@@ -37,8 +37,8 @@ class MimeGlob extends Object {
 /**
  * Constructor
  *
- * @param mixed $file
- * @access private
+ * @param mixed $db
+ * @access public
  */
 	function __construct($db) {
 		$this->__read($db);
@@ -47,7 +47,6 @@ class MimeGlob extends Object {
  * Determine the format of given database
  *
  * @param mixed $db
- * @static
  */
 	function format($db) {
 		if (empty($db)) {
@@ -78,12 +77,12 @@ class MimeGlob extends Object {
 		return null;
 	}
 /**
- * Analyzes a filename and determines the mime type
+ * Analyzes a filename and determines the MIME type
  *
- * @param string $file Path to a file, basename of a file or in reverse mode a mime type
- * @param array $options An array holding options
- * @return mixed A string containing the mime type of the file or false if mime type
- * 	could not be determined, in reverse mode the pattern corresponding to the given mime type
+ * @param string $file Path to a file, basename of a file or in reverse mode a MIME type
+ * @param boolean $reverse Enable/disable reverse searching
+ * @return mixed A string containing the MIME type of the file or false if MIME type
+ * 	could not be determined, in reverse mode the pattern corresponding to the given MIME type
  * @access public
  */
 	function analyze($file, $reverse = false) {
@@ -132,24 +131,24 @@ class MimeGlob extends Object {
 				$line = trim(fgets($File->handle));
 
 				if (empty($line) || $line{0} === '#') {
-					continue(1);
+					continue;
 				}
 
 				$line = explode(':', $line);
 
-				if(count($line) > 2) {
+				if (count($line) > 2) {
 					$priority = array_shift($line);
 				} else {
 					$priority = null;
 				}
 				if (!preg_match('/(\*\.)?[a-zA-Z0-9\.]+$|/', $line[1])) {
-					continue(1);
+					continue;
 				}
 				$this->register(array(
-									'mime_type' => array_shift($line),
-									'pattern' => str_replace('*.', null, array_shift($line)),
-									'priority' => $priority
-									));
+					'mime_type' => array_shift($line),
+					'pattern' => str_replace('*.', null, array_shift($line)),
+					'priority' => $priority
+				));
 			}
 		} elseif ($format === 'Apache Module mod_mime') {
 			$File = new File($db);
@@ -159,7 +158,7 @@ class MimeGlob extends Object {
 				$line = trim(fgets($File->handle));
 
 				if (empty($line) || $line{0} === '#') {
-					continue(1);
+					continue;
 				}
 
 				$line = preg_split('/\s+/', $line);
@@ -184,8 +183,6 @@ class MimeGlob extends Object {
  * 			)
  *
  * @param array $item A valid glob item
- * @param integer $priority A value between 0 and 100.
- * 	Low numbers should be used for more generic types and higher values for specific subtypes.
  * @return boolean True if item has successfully been registered, false if not
  * @access public
  */
@@ -193,9 +190,9 @@ class MimeGlob extends Object {
 		foreach ((array)$item['pattern'] as $pattern) {
 			if (isset($this->_items[$pattern])) {
 				$this->_items[$pattern] = array_unique(array_merge(
-														$this->_items[$pattern],
-														array($item['mime_type'])
-														));
+					$this->_items[$pattern],
+					array($item['mime_type'])
+				));
 			} else {
 				$this->_items[$pattern] = array($item['mime_type']);
 			}
@@ -226,7 +223,7 @@ class MimeGlob extends Object {
  * @param string $name The basename of a file
  * @param array $items
  * @param boolean $caseSensitive
- * @return array Matched mime types keyed by patterns
+ * @return array Matched MIME types keyed by patterns
  * @access private
  */
 	function __test($name, $items, $caseSensitive = true) {

@@ -61,7 +61,7 @@ class Getid3AudioMediumAdapter extends MediumAdapter {
 			'audio/cda',
 			/*
 			 * This is a reminder since audio Medium shouldn't have 'application/octet-stream'
-			 * mime type.
+			 * MIME type.
 			 *
 			 * LA (Lossless Audio), OptimFROG, TTA, LiteWave,
 			 * RKAU, AVR (Audio Visual Research) and some Ogg files.
@@ -94,7 +94,6 @@ class Getid3AudioMediumAdapter extends MediumAdapter {
 		getid3_lib::CopyTagsToComments($Object->info);
 
 		$Medium->objects['getID3'] =& $Object;
-
 		return true;
 	}
 

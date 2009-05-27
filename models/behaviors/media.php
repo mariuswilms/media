@@ -56,12 +56,12 @@ class MediaBehavior extends ModelBehavior {
  * @var array
  */
 	var $_defaultSettings = array(
-			'metadataLevel'   => 1,
-			'baseDirectory'   => MEDIA,
-			'makeVersions'    => true,
-			'filterDirectory' => MEDIA_FILTER,
-			'createDirectory' => true,
-		);
+		'metadataLevel'   => 1,
+		'baseDirectory'   => MEDIA,
+		'makeVersions'    => true,
+		'filterDirectory' => MEDIA_FILTER,
+		'createDirectory' => true,
+	);
 /**
  * Holds cached metadata keyed by model alias
  *
@@ -72,11 +72,11 @@ class MediaBehavior extends ModelBehavior {
 /**
  * Setup
  *
- * @param object $model
+ * @param Model $Model
  * @param array $config See defaultSettings for configuration options
  * @return void
  */
-	function setup(&$model, $config = null) {
+	function setup(&$Model, $config = null) {
 		if (!is_array($config)) {
 			$config = array();
 		}
@@ -92,308 +92,327 @@ class MediaBehavior extends ModelBehavior {
 		}
 
 		/* Interact with Transfer Behavior */
-		if (isset($model->Behaviors->Transfer)) {
-			$transferSettings = $model->Behaviors->Transfer->settings[$model->alias];
+		if (isset($Model->Behaviors->Transfer)) {
+			$transferSettings = $Model->Behaviors->Transfer->settings[$Model->alias];
 			$config['baseDirectory'] = dirname($transferSettings['baseDirectory']) . DS;
 			$config['createDirectory'] = $transferSettings['createDirectory'];
 		}
 
-		$this->settings[$model->alias] = $config + $this->_defaultSettings;
-		$this->__cached[$model->alias] = Cache::read('media_metadata_' . $model->alias, '_cake_core_');
+		$this->settings[$Model->alias] = $config + $this->_defaultSettings;
+		$this->__cached[$Model->alias] = Cache::read('media_metadata_' . $Model->alias, '_cake_core_');
 	}
 /**
  * Callback
  *
- * @param object $model
+ * Requires `file` field to be present if a record is created.
+ *
+ * Handles deletion of a record and corresponding file if the `delete` field is
+ * present and has not a value of either `null` or `'0'.`
+ *
+ * Prevents `dirname`, `basename`, `checksum` and `delete` fields to be written to
+ * database.
+ *
+ * Parses contents of the `file` field if present and generates a normalized path
+ * relative to the path set in the `baseDirectory` option.
+ *
+ * @param Model $Model
  * @return boolean
  */
-	function beforeSave(&$model) {
-		if (!$model->exists()) {
-			/* Clear all data if we are going to create a record and the file field is missing */
-			if (!isset($model->data[$model->alias]['file'])) {
-				unset($model->data[$model->alias]);
+	function beforeSave(&$Model) {
+		if (!$Model->exists()) {
+			if (!isset($Model->data[$Model->alias]['file'])) {
+				unset($Model->data[$Model->alias]);
 				return true;
 			}
 		} else {
-			/* Handle deletion request */
-			if (isset($model->data[$model->alias]['delete']) && $model->data[$model->alias]['delete'] !== '0') {
-				$model->delete();
-				unset($model->data[$model->alias]);
+			if (isset($Model->data[$Model->alias]['delete'])
+			&& $Model->data[$Model->alias]['delete'] !== '0') {
+				$Model->delete();
+				unset($Model->data[$Model->alias]);
 				return true;
 			}
 		}
 
-		/* Ensure that no bad fields sneaked into the to-be-saved data */
-		$blacklist = array('dirname', 'basename', 'checksum', 'delete');
-		$whitelist = array('id', 'file', 'model', 'foreign_key', 'created', 'modified', 'alternative');
+		$blacklist = array(
+			'dirname', 'basename', 'checksum', 'delete'
+		);
+		$whitelist = array(
+			'id', 'file', 'model', 'foreign_key',
+			'created', 'modified', 'alternative'
+		);
 
-		foreach ($model->data[$model->alias] as $key => $value) {
+		foreach ($Model->data[$Model->alias] as $key => $value) {
 			if (in_array($key, $whitelist)) {
-				continue(1);
+				continue;
 			}
 			if (in_array($key, $blacklist)) {
-				unset($model->data[$model->alias][$key]);
+				unset($Model->data[$Model->alias][$key]);
 			}
 		}
 
-		extract($this->settings[$model->alias]);
+		extract($this->settings[$Model->alias]);
 
-		if (isset($model->data[$model->alias]['file'])) {
-			$File = new File($model->data[$model->alias]['file']);
-			unset($model->data[$model->alias]['file']);
+		if (isset($Model->data[$Model->alias]['file'])) {
+			$File = new File($Model->data[$Model->alias]['file']);
+			unset($Model->data[$Model->alias]['file']);
 
-			/* Convert directory separators to / and remove trailing slash */
-			$dirname = substr(
-							str_replace(array($baseDirectory, DS), array(null, '/'),
-							Folder::slashTerm($File->Folder->pwd())),
-							0, -1
-							);
+			/* `baseDirectory` may equal the file's directory or use backslashes */
+			$dirname = substr(str_replace(
+				str_replace('\\', '/', $baseDirectory),
+				null,
+				str_replace('\\', '/', Folder::slashTerm($File->Folder->pwd()))
+			), 0, -1);
 
 			$result = array(
-						'checksum' => $File->md5(),
-						'dirname'  => $dirname,
-						'basename' => $File->name,
-					);
+				'checksum' => $File->md5(),
+				'dirname'  => $dirname,
+				'basename' => $File->name,
+			);
 
-			$model->data[$model->alias] = array_merge($model->data[$model->alias],$result);
+			$Model->data[$Model->alias] = array_merge($Model->data[$Model->alias], $result);
 		}
 		return true;
 	}
 /**
  * Callback
  *
- * @param object $model
- * @param bool $created
- * @return bool
+ * Triggers `make()` if both `dirname` and `basename` fields are present.
+ * Otherwise skips and returns `true` to continue the save operation.
+ *
+ * @param Model $Model
+ * @param boolean $created
+ * @return boolean
  */
-	function afterSave(&$model, $created) {
-		extract($this->settings[$model->alias]);
+	function afterSave(&$Model, $created) {
+		extract($this->settings[$Model->alias]);
 
 		if (!$created || !$makeVersions) {
 			return true;
 		}
-		if (!isset($model->data[$model->alias]['dirname']) || !isset($model->data[$model->alias]['basename'])) {
-			return true; /* Do not fail */
-		}
+		$item =& $Model->data[$Model->alias];
 
-		return $this->make($model, $model->data[$model->alias]['dirname'] . DS . $model->data[$model->alias]['basename']);
+		if (!isset($item['dirname'], $item['basename'])) {
+			return true;
+		}
+		return $this->make($Model, $item['dirname'] . DS . $item['basename']);
 	}
 /**
- * Adds metadata of each medium to results
+ * Callback
  *
- * @param object $model
+ * Adds metadata of corresponding file to each result.
+ *
+ * If the corresponding file of a result is not readable it is removed
+ * from the results array, as it is inconsistent. This can be fixed
+ * by calling `cake media sync` from the command line.
+ *
+ * @param Model $Model
  * @param array $results
- * @param bool $primary
+ * @param boolean $primary
  * @return array
  */
-	function afterFind(&$model, $results, $primary = false) {
+	function afterFind(&$Model, $results, $primary = false) {
 		if (empty($results)) {
 			return $results;
 		}
-
-		extract($this->settings[$model->alias]);
+		extract($this->settings[$Model->alias]);
 
 		foreach ($results as $key => &$result) {
-			if (!isset($result[$model->alias]['dirname']) || !isset($result[$model->alias]['basename'])) {
-				continue(1); /* Needed in certain situations like a pre-delete */
+			/* Needed during a pre deletion phase */
+			if (!isset($result[$Model->alias]['dirname'], $result[$Model->alias]['basename'])) {
+				continue;
 			}
+			$file = $result[$Model->alias]['dirname'] . DS . $result[$Model->alias]['basename'];
 
-			/* Retrieve metadata */
-			$metadata = $this->metadata(
-										$model,
-										$result[$model->alias]['dirname']
-										. DS . $result[$model->alias]['basename'],
-										$metadataLevel
-										);
+			$metadata = $this->metadata($Model, $file, $metadataLevel);
 
+			/* `metadata()` checks if the file is readable */
 			if ($metadata === false) {
-				/* file is not readable, which means this record is inconsitent */
 				unset($results[$key]);
-				continue(1);
+				continue;
 			}
-
-			$result[$model->alias] = array_merge($result[$model->alias], $metadata);
+			$result[$Model->alias] = array_merge($result[$Model->alias], $metadata);
 		}
-
 		return $results;
 	}
 /**
- * Deletes file corresponding to record
+ * Callback
  *
- * @param object $model
- * @param bool $cascade
- * @return bool
+ * Deletes file corresponding to record as well as generated versions of that file.
+ *
+ * If the file couldn't be deleted the callback won't stop the
+ * delete operation to continue to delete the record.
+ *
+ * @param Model $Model
+ * @param boolean $cascade
+ * @return boolean
  */
-	function beforeDelete(&$model, $cascade = true) {
-		extract($this->settings[$model->alias]);
+	function beforeDelete(&$Model, $cascade = true) {
+		extract($this->settings[$Model->alias]);
 
-		$result = $model->find(
-							'first',
-							array(
-								'conditions' => array('id' => $model->id),
-								'fields'     => array('dirname', 'basename'),
-								'recursive'  => -1,
-								)
-							);
+		$query = array(
+			'conditions' => array('id' => $Model->id),
+			'fields'     => array('dirname', 'basename'),
+			'recursive'  => -1,
+		);
+		$result = $Model->find('first', $query);
 
 		if (empty($result)) {
 			return false; /* Record did not pass verification? */
 		}
 
-		$File = new File($baseDirectory
-						 . $result[$model->alias]['dirname']
-						 . DS . $result[$model->alias]['basename']);
+		$file  = $baseDirectory;
+		$file .= $result[$Model->alias]['dirname'];
+		$file .= DS . $result[$Model->alias]['basename'];
 
+		$File = new File($file);
 		$Folder = new Folder($filterDirectory);
+
 		list($versions, ) = $Folder->ls();
 
 		foreach ($versions as $version) {
-			$Folder->cd(
-						$filterDirectory
-						. $version
-						. DS . $result[$model->alias]['dirname'] . DS
-						);
-
+			$Folder->cd($filterDirectory . $version	. DS . $result[$Model->alias]['dirname'] . DS);
 			$basenames = $Folder->find($File->name() . '\..*');
 
 			if (count($basenames) > 1) {
-				trigger_error('MediaBehavior::beforeDelete - Ambiguous filename ' . $File->name() . ' in ' . $Folder->pwd() . '.', E_USER_NOTICE);
-				continue(1);
+				$message  = "MediaBehavior::beforeDelete - Ambiguous filename ";
+				$message .= "`" . $File->name() . "` in `" . $Folder->pwd() . "`.";
+				trigger_error($message, E_USER_NOTICE);
+				continue;
 			} elseif (!isset($basenames[0])) {
-				continue(1);
+				continue;
 			}
 
 			$FilterFile = new File($Folder->pwd() . $basenames[0]);
 			$FilterFile->delete();
 		}
-
 		$File->delete();
-		return true; /* Always delete record */
+		return true;
 	}
 /**
- * Parses instruction sets and invokes Medium::make for a file
+ * Parses instruction sets and invokes `Medium::make()` for a file
  *
- * @param object $model
- * @param string $file Path to a file relative to MEDIA or an absolute path to a file
- * @return bool
+ * @param Model $Model
+ * @param string $file Path to a file relative to `baseDirectory`  or an absolute path to a file
+ * @return boolean
  */
-	function make(&$model, $file, $overwrite = false) {
-		extract($this->settings[$model->alias]);
+	function make(&$Model, $file, $overwrite = false) {
+		extract($this->settings[$Model->alias]);
 
-		$file = str_replace(array('/', '\\'), DS, is_file($file) ? $file : $baseDirectory . $file);
-		$File = new File($file);
+		list($file, $relativeFile) = $this->_file($Model, $file);
 
-		$name = Medium::name($File->pwd());
+		$relativeDirectory = DS . rtrim(dirname($relativeFile), '.');
+
+		$name = Medium::name($file);
 		$filter = Configure::read('Media.filter.' . strtolower($name));
-		$hasCallback = method_exists($model, 'beforeMake');
+
+		$hasCallback = method_exists($Model, 'beforeMake');
 
 		foreach ($filter as $version => $instructions) {
-			$directory = rtrim($filterDirectory . $version . DS
-								. dirname(str_replace($baseDirectory, '', $file)), '.');
+			$directory = Folder::slashTerm($filterDirectory . $version . $relativeDirectory);
 			$Folder = new Folder($directory, $createDirectory);
 
 			if (!$Folder->pwd()) {
-				trigger_error("MediaBehavior::make - Directory '{$directory}'"
-								. " could not be created or is not writable."
-								. " Please check your permissions.",
-								E_USER_WARNING);
-				continue(1);
+				$message  = "MediaBehavior::make - Directory `{$directory}` ";
+				$message .= "could not be created or is not writable. ";
+				$message .= "Please check the permissions.";
+				trigger_error($message, E_USER_WARNING);
+				continue;
 			}
 
 			if ($hasCallback) {
 				$process = compact('overwrite', 'directory', 'name', 'version', 'instructions');
 
-				if ($model->beforeMake($file, $process)) {
-					continue(1);
+				if ($Model->beforeMake($file, $process)) {
+					continue;
 				}
 			}
-			if (!$Medium = Medium::make($File->pwd(), $instructions)) {
-				trigger_error("MediaBehavior::make - Failed to make version {$version} of medium.",
-								E_USER_WARNING);
-				continue(1);
+			if (!$Medium = Medium::make($file, $instructions)) {
+				$message  = "MediaBehavior::make - Failed to make version `{$version}` ";
+				$message .= "of file `{$file}`. ";
+				trigger_error($message, E_USER_WARNING);
+				continue;
 			}
-			$Medium->store($Folder->pwd() . DS . $File->name, $overwrite);
+			$Medium->store($directory . basename($file), $overwrite);
 		}
 		return true;
 	}
+
 /**
  * Retrieve (cached) metadata of a file
  *
- * @param object $model
- * @param string $file Path to a file relative to baseDirectory or an absolute path to a file
- * @param int $level level of amount of info to add, 0 disable, 1 for basic, 2 for detailed info
+ * @param Model $Model
+ * @param string $file Path to a file relative to `baseDirectory` or an absolute path to a file
+ * @param integer $level level of amount of info to add, `0` disable, `1` for basic, `2` for detailed info
  * @return mixed Array with results or false if file is not readable
  */
-	function metadata(&$model, $file, $level = 1) {
+	function metadata(&$Model, $file, $level = 1) {
 		if ($level < 1) {
 			return array();
 		}
-		extract($this->settings[$model->alias]);
+		extract($this->settings[$Model->alias]);
 
-		if (is_file($file)) {
-			$File = new File($file);
-		} else {
-			$File = new File($baseDirectory . $file);
-		}
-		if (!$File->exists() || !$File->readable()) {
+		list($file,) = $this->_file($Model, $file);
+		$File = new File($file);
+
+		if (!$File->readable()) {
 			return false;
 		}
 		$checksum = $File->md5();
 
-		if (isset($this->__cached[$model->alias][$checksum])) {
-			$data = $this->__cached[$model->alias][$checksum];
+		if (isset($this->__cached[$Model->alias][$checksum])) {
+			$data = $this->__cached[$Model->alias][$checksum];
 		}
 
 		if ($level > 0 && !isset($data[1])) {
 			$data[1] = array(
-					'size'      => $File->size(),
-					'mime_type' => MimeType::guessType($File->pwd()),
-					'checksum'  => $checksum,
-				);
+				'size'      => $File->size(),
+				'mime_type' => MimeType::guessType($File->pwd()),
+				'checksum'  => $checksum,
+			);
 		}
 		if ($level > 1 && !isset($data[2])) {
 			$Medium = Medium::factory($File->pwd());
 
 			if ($Medium->name === 'Audio') {
 				$data[2] = array(
-								'artist'        => $Medium->artist(),
-								'album'         => $Medium->album(),
-								'title'         => $Medium->title(),
-								'track'         => $Medium->track(),
-								'year'          => $Medium->year(),
-								'length'        => $Medium->duration(),
-								'quality'       => $Medium->quality(),
-								'sampling_rate' => $Medium->samplingRate(),
-								'bitrate'       => $Medium->bitrate(),
-								);
+					'artist'        => $Medium->artist(),
+					'album'         => $Medium->album(),
+					'title'         => $Medium->title(),
+					'track'         => $Medium->track(),
+					'year'          => $Medium->year(),
+					'length'        => $Medium->duration(),
+					'quality'       => $Medium->quality(),
+					'sampling_rate' => $Medium->samplingRate(),
+					'bitrate'       => $Medium->bitrate(),
+				);
 			} elseif ($Medium->name === 'Image') {
 				$data[2] = array(
-								'width'     => $Medium->width(),
-								'height'    => $Medium->height(),
-								'ratio'     => $Medium->ratio(),
-								'quality'   => $Medium->quality(),
-								'megapixel' => $Medium->megapixel(),
-								);
+					'width'     => $Medium->width(),
+					'height'    => $Medium->height(),
+					'ratio'     => $Medium->ratio(),
+					'quality'   => $Medium->quality(),
+					'megapixel' => $Medium->megapixel(),
+				);
 			} elseif ($Medium->name === 'Text') {
 				$data[2] = array(
-								'characters'      => $Medium->characters(),
-								'syllables'       => $Medium->syllables(),
-								'sentences'       => $Medium->sentences(),
-								'words'           => $Medium->words(),
-								'flesch_score'    => $Medium->fleschScore(),
-								'lexical_density' => $Medium->lexicalDensity(),
-								);
+					'characters'      => $Medium->characters(),
+					'syllables'       => $Medium->syllables(),
+					'sentences'       => $Medium->sentences(),
+					'words'           => $Medium->words(),
+					'flesch_score'    => $Medium->fleschScore(),
+					'lexical_density' => $Medium->lexicalDensity(),
+				);
 			} elseif ($Medium->name === 'Video') {
 				$data[2] = array(
-								'title'   => $Medium->title(),
-								'year'    => $Medium->year(),
-								'length'  => $Medium->duration(),
-								'width'   => $Medium->width(),
-								'height'  => $Medium->height(),
-								'ratio'   => $Medium->ratio(),
-								'quality' => $Medium->quality(),
-								'bitrate' => $Medium->bitrate(),
-								);
+					'title'   => $Medium->title(),
+					'year'    => $Medium->year(),
+					'length'  => $Medium->duration(),
+					'width'   => $Medium->width(),
+					'height'  => $Medium->height(),
+					'ratio'   => $Medium->ratio(),
+					'quality' => $Medium->quality(),
+					'bitrate' => $Medium->bitrate(),
+				);
 			} else {
 				$data[2] = array();
 			}
@@ -402,26 +421,41 @@ class MediaBehavior extends ModelBehavior {
 		for ($i = $level, $result = array(); $i > 0; $i--) {
 			$result = array_merge($result, $data[$i]);
 		}
-		$this->__cached[$model->alias][$checksum] = $data;
+		$this->__cached[$Model->alias][$checksum] = $data;
 		return Set::filter($result);
 	}
 /**
  * Checks if an alternative text is given only if a file is submitted
  *
- * @param unknown_type $model
+ * @param unknown_type $Model
  * @param unknown_type $field
  * @return unknown
  */
-	function checkRepresent(&$model, $field) {
-		if (!isset($model->data[$model->alias]['file'])) {
+	function checkRepresent(&$Model, $field) {
+		if (!isset($Model->data[$Model->alias]['file'])) {
 			return true;
 		}
-		$value = current($field);
+		$value = current($field); /* empty() limitation */
 		return !empty($value);
-		if (!empty($value)) {
-			return true;
+	}
+/**
+ * Returns relative and absolute path to a file
+ *
+ * @param Model $Model
+ * @param string$file
+ * @return array
+ */
+	function _file(&$Model, $file) {
+		extract($this->settings[$Model->alias]);
+
+		if (!is_file($file)) {
+			$file = ltrim($file, DS);
+			$relativeFile = $file;
+			$file = $baseDirectory . $file;
+		} else {
+			$relativeFile = str_replace($baseDirectory, null, $file);
 		}
-		return false;
+		return array($file, $relativeFile);
 	}
 }
 ?>

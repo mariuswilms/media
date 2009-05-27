@@ -20,8 +20,8 @@ uses('file');
 /**
  * Mime Type Class
  *
- * Detection of a file's MIME Type by it's contents and/or extension.
- * This is the main interface for MIME Type detection wrapping
+ * Detection of a file's MIME type by it's contents and/or extension.
+ * This is the main interface for MIME type detection wrapping
  * (native) magic and glob mechanisms.
  *
  * @package    media
@@ -32,14 +32,14 @@ class MimeType extends Object {
  * Magic
  *
  * @var mixed An instance of the MimeMagic or finfo class or a string containing 'mime_magic'
- * @access public
+ * @access private
  */
 	var $__magic;
 /**
  * Glob
  *
  * @var object An instance of the MimeGlob class
- * @access public
+ * @access private
  */
 	var $__glob;
 /**
@@ -62,7 +62,8 @@ class MimeType extends Object {
  * Change configuration during runtime
  *
  * @param string $property Either "magic" or "glob"
- * @param array $config Config specifying engine and db e.g. array('engine' => 'fileinfo', 'db' => '/etc/magic')
+ * @param array $config Config specifying engine and db
+ * 	e.g. array('engine' => 'fileinfo', 'db' => '/etc/magic')
  */
 	function config($property = 'magic', $config = array()) {
 		$_this =& MimeType::getInstance();
@@ -74,22 +75,23 @@ class MimeType extends Object {
 		}
 	}
 /**
- * Guesses the extension (suffix) for an existing file or a mime type
+ * Guesses the extension (suffix) for an existing file or a MIME type
  *
- * @param string $mimetype A mime type or an absolute path to file
+ * @param string $file A MIME type or an absolute path to file
  * @param array $options Currently not used
- * @return mixed A string with the first matching extension (w/o leading dot), false if nothing matched
+ * @return mixed A string with the first matching extension (w/o leading dot),
+ * 	false if nothing matched
  * @access public
  */
 	function guessExtension($file, $options = array()) {
 		$_this =& MimeType::getInstance();
 		$globMatch = array();
 		$preferred = array(
-						'bz2', 'css', 'doc', 'html', 'jpg',
-						'mpeg', 'mp3', 'ogg', 'php', 'ps',
-						'rm', 'ra', 'rv', 'swf', 'tar',
-						'tiff', 'txt', 'xhtml', 'xml',
-						);
+			'bz2', 'css', 'doc', 'html', 'jpg',
+			'mpeg', 'mp3', 'ogg', 'php', 'ps',
+			'rm', 'ra', 'rv', 'swf', 'tar',
+			'tiff', 'txt', 'xhtml', 'xml',
+		);
 
 		if (is_file($file)) {
 			$mimeType = $_this->guessType($file);
@@ -110,11 +112,10 @@ class MimeType extends Object {
 		if (count($preferMatch) === 1) {
 			return array_shift($preferMatch);
 		}
-
 		return null;
 	}
 /**
- * Guesses the mime type of the file
+ * Guesses the MIME type of the file
  *
  * Empty results are currently not handled:
  * 	application/x-empty
@@ -122,11 +123,11 @@ class MimeType extends Object {
  *
  * @param string $file
  * @param options $options Valid options are:
- *	- "paranoid" If set to true only then content for the file is used for detection
- *	- "simplify" If set to true resulting mime type will be simplified
- *	- "properties" Used for simplification, defaults to false
- *	- "experimental" Used for simplification, defaults to false
- * @return mixed string with mime type on success
+ *	- `'paranoid'` If set to true only then content for the file is used for detection
+ *	- `'simplify'` If set to true resulting MIME type will be simplified
+ *	- `'properties'` Used for simplification, defaults to false
+ *	- `'experimental'` Used for simplification, defaults to false
+ * @return mixed string with MIME type on success
  * @access public
  */
 	function guessType($file, $options = array()) {
@@ -136,12 +137,11 @@ class MimeType extends Object {
 			$options = array('simplify' => $options);
 		}
 		$default = array(
-					'paranoid' => false,
-					'simplify' => false,
-					'properties' => false,
-					'experimental' => false,
-					);
-
+			'paranoid' => false,
+			'simplify' => false,
+			'properties' => false,
+			'experimental' => false,
+		);
 		extract(array_merge($default, $options), EXTR_SKIP);
 		$magicMatch = $globMatch = array();
 
@@ -149,7 +149,6 @@ class MimeType extends Object {
 			if (is_a($_this->__glob, 'MimeGlob')) {
 				$globMatch = $_this->__glob->analyze($file);
 			}
-
 			if (count($globMatch) === 1) {
 				return MimeType::simplify(array_shift($globMatch), $properties, $experimental);
 			}
@@ -191,7 +190,7 @@ class MimeType extends Object {
 		return null;
 	}
 /**
- * Simplifies a mime type string
+ * Simplifies a MIME type string
  *
  * @param string $mimeType
  * @param boolean If true removes properties
@@ -215,7 +214,7 @@ class MimeType extends Object {
 /**
  * Sets magic property
  *
- * @param array Configuration settings to take into account
+ * @param array $config Configuration settings to take into account
  * @return void
  */
 	function __loadMagic($config = array()) {
@@ -257,7 +256,7 @@ class MimeType extends Object {
 /**
  * Sets glob property
  *
- * @param array Configuration settings to take into account
+ * @param array $config Configuration settings to take into account
  * @return void
  */
 	function __loadGlob($config = array()) {
@@ -299,10 +298,9 @@ class MimeType extends Object {
 		$searchPaths = array(
 			'mime_' . $type . '.php' => array(CONFIGS),
 			'mime_' . $type . '.db' => array_merge(
-									Configure::read('vendorPaths'),
-									array(dirname(__FILE__) . DS)
-									),
-			);
+				Configure::read('vendorPaths'),
+				array(dirname(__FILE__) . DS)
+			));
 
 		foreach ($searchPaths as $basename => $paths) {
 			foreach ($paths as $path) {

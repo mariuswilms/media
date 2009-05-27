@@ -29,36 +29,38 @@ class Attachment extends MediaAppModel {
  * Name of model
  *
  * @var string
+ * @access public
  */
 	var $name = 'Attachment';
 /**
  * Name of table to use
  *
  * @var mixed
+ * @access public
  */
 	var $useTable = 'attachments';
 /**
  * actsAs property
  *
  * @var array
+ * @access public
  */
 	var $actsAs = array(
-			'Media.Polymorphic' => array(
-				'classField' => 'model',
-				'foreignKey' => 'foreign_key',
-				),
-			'Media.Transfer' => array(
-				'trustClient'     => false,
-				'destinationFile' => ':Medium.short::DS::Source.basename:',
-				'baseDirectory'   => MEDIA_TRANSFER,
-				'createDirectory' => true,
-				),
-			'Media.Media' => array(
-				'metadataLevel'   => 2,
-				'makeVersions'    => true,
-				'filterDirectory' => MEDIA_FILTER,
-				),
-			);
+		'Media.Polymorphic' => array(
+			'classField' => 'model',
+			'foreignKey' => 'foreign_key',
+		),
+		'Media.Transfer' => array(
+			'trustClient'     => false,
+			'destinationFile' => ':Medium.short::DS::Source.basename:',
+			'baseDirectory'   => MEDIA_TRANSFER,
+			'createDirectory' => true,
+		),
+		'Media.Media' => array(
+			'metadataLevel'   => 2,
+			'makeVersions'    => true,
+			'filterDirectory' => MEDIA_FILTER,
+	));
 /**
  * Validation rules for file and alternative fields
  *
@@ -70,50 +72,49 @@ class Attachment extends MediaAppModel {
  * try commenting the mimeType rule or providing less strict
  * settings for single rules.
  *
- * checkExtension and checkMimeType take both a blacklist and
+ * `checkExtension()` and `checkMimeType()` take both a blacklist and
  * a whitelist. If you are on windows make sure that you addtionally
- * specify the 'tmp' extension in case you are using a whitelist.
+ * specify the `'tmp'` extension in case you are using a whitelist.
  *
  * @var array
+ * @access public
  */
 	var $validate = array(
-			'file' => array(
-				'resource'   => array('rule' => 'checkResource'),
-				'access'     => array('rule' => 'checkAccess'),
-				'location'   => array('rule' => array('checkLocation', array(':MEDIA:', '/tmp/'))),
-				'permission' => array('rule' => array('checkPermission', '*')),
-				'size'       => array('rule' => array('checkSize', '5M')),
-				'pixels'     => array('rule' => array('checkPixels', '1600x1600')),
-				'extension'  => array('rule' => array('checkExtension',
-													array(
-														'bin', 'class', 'dll', 'dms', 'exe', 'lha',
-														'lzh', 'so', 'as', 'asp', 'sh', 'java', 'js',
-														'lisp', 'lua', 'pl', 'pm', 'php', 'py', 'pyc',
-														'vb', 'bas', 'jar',
-														),
-													'*'
+		'file' => array(
+			'resource'   => array('rule' => 'checkResource'),
+			'access'     => array('rule' => 'checkAccess'),
+			'location'   => array('rule' => array('checkLocation', array(':MEDIA:', '/tmp/'))),
+			'permission' => array('rule' => array('checkPermission', '*')),
+			'size'       => array('rule' => array('checkSize', '5M')),
+			'pixels'     => array('rule' => array('checkPixels', '1600x1600')),
+			'extension'  => array('rule' => array('checkExtension',
+												array(
+													'bin', 'class', 'dll', 'dms', 'exe', 'lha',
+													'lzh', 'so', 'as', 'asp', 'sh', 'java', 'js',
+													'lisp', 'lua', 'pl', 'pm', 'php', 'py', 'pyc',
+													'vb', 'bas', 'jar',
 													),
+												'*'
 												),
-				'mimeType'   => array('rule' => array('checkMimeType', false, '*')),
-				),
-			'alternative' => array(
-				'rule'       => 'checkRepresent',
-				'on'         => 'create',
-				'required'   => false,
-				'allowEmpty' => true,
-				),
-			);
-
+											),
+			'mimeType'   => array('rule' => array('checkMimeType', false, '*')),
+			),
+		'alternative' => array(
+			'rule'       => 'checkRepresent',
+			'on'         => 'create',
+			'required'   => false,
+			'allowEmpty' => true,
+		));
 /**
  * beforeMake Callback
  *
- * Called from within MediaBehavior::make
+ * Called from within `MediaBehavior::make()`
  *
  * $process an array with the following contents:
  *	overwrite - If the destination file should be overwritten if it exists
  *	directory - The destination directory (guranteed to exist)
- *  name - Medium name of $file (e.g. 'Image')
- *	version - The version requested to be processed (e.g. 'xl')
+ *  name - Medium name of $file (e.g. `'Image'`)
+ *	version - The version requested to be processed (e.g. `'xl'`)
  *	instructions - An array containing which names of methods to be called
  *
  * @param string $file Absolute path to the source file

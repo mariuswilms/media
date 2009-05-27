@@ -23,5 +23,6 @@ App::import('Vendor', 'Media.Medium');
  * @package    media
  * @subpackage media.libs.medium
  */
-class GenericMedium extends Medium {}
+class GenericMedium extends Medium {
+}
 ?>

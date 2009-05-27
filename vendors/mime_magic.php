@@ -20,8 +20,8 @@ uses('file');
 /**
  * Mime Magic Class
  *
- * Detection of a file's MIME Type by it's contents.
- * An implementation of the mime magic functionality in pure PHP
+ * Detection of a file's MIME type by it's contents.
+ * An implementation of the MIME magic functionality in pure PHP
  * supporting several database formats.
  *
  * @package    media
@@ -38,18 +38,19 @@ class MimeMagic extends Object {
 /**
  * Constructor
  *
- * @param mixed $file
- * @access private
+ * @param mixed $db
+ * @access public
  */
 	function __construct($db) {
 		$this->__read($db);
 	}
 /**
- * Analyzes a files contents and determines the file's mime type
+ * Analyzes a files contents and determines the file's MIME type
  *
  * @param string $file An absolute path to a file
  * @param array $options An array holding options
- * @return mixed A string containing the mime type of the file or false if mime type could not be determined
+ * @return mixed A string containing the MIME type of the file
+ * 	or false if MIME type could not be determined
  * @access public
  */
 	function analyze($file, $options = array()) {
@@ -61,18 +62,16 @@ class MimeMagic extends Object {
 
 		foreach ($this->_items as $priority => $items) {
 			if ($priority < $minPriority || $priority > $maxPriority) {
-				continue(1);
+				continue;
 			}
 			$filtered = array_merge($filtered, $items);
 		}
-
 		return $this->__test($file, $filtered);
 	}
 /**
  * Determine the format of given database
  *
  * @param mixed $db
- * @static
  */
 	function format($db) {
 		if (empty($db)) {
@@ -110,14 +109,16 @@ class MimeMagic extends Object {
  *
  * @param array $item A valid magic item
  * @param integer $indent The nesting depth of the item
- * @param integer $priority A value between 0 and 100. Low numbers should be used for more generic types and higher values for specific subtypes.
+ * @param integer $priority A value between 0 and 100.
+ * 	Low numbers should be used for more generic types and higher values for specific subtypes.
  * @return boolean True if item has successfully been registered, false if not
  * @access public
  */
 	function register($item, $indent = 0, $priority = 50) {
 		static $keys = array();
 
-		if (!is_array($item) || !isset($item['offset'], $item['value'], $item['range_length'], $item['value_length'])) {
+		if (!is_array($item)
+		|| !isset($item['offset'], $item['value'], $item['range_length'], $item['value_length'])) {
 			return false;
 		}
 
@@ -174,7 +175,8 @@ class MimeMagic extends Object {
  * - Apache Module mod_mime_magic
  * - PHP file containing variables formatted like: $data[0] = array(item, item, item, ...)
  *
- * @param mixed $file An absolute path to a magic file in apache, freedesktop or a filename (without .php) of a file in the configs/ dir in CakePHP format
+ * @param mixed $file An absolute path to a magic file in apache, freedesktop
+ * 	or a filename (without .php) of a file in the configs/ dir in CakePHP format
  * @return mixed A format string or null if format could not be determined
  * @access private
  * @link http://httpd.apache.org/docs/2.2/en/mod/mod_mime_magic.html
@@ -209,27 +211,29 @@ class MimeMagic extends Object {
 					$chars = array(0 => $chars[1], 1 => null);
 				}
 
-				while (!feof($File->handle) && !($chars[0] === "\n" && (ctype_digit($chars[1]) || $chars[1] === '>' || $chars[1] === '['))) {
+				while (!feof($File->handle) && !($chars[0] === "\n"
+				&& (ctype_digit($chars[1]) || $chars[1] === '>' || $chars[1] === '['))) {
 					$line .= $chars[0];
 					$chars = array(0 => $chars[1], 1 => $File->read(1));
 				}
 
 				if (preg_match('/' . $sectionRegex . '/', $line, $matches)) {
 					$section = array(
-									'priority'  => $matches[1],
-									'mime_type' => $matches[2]
-									);
+						'priority'  => $matches[1],
+						'mime_type' => $matches[2]
+					);
 				} elseif (preg_match('/' . $itemRegex . '/', $line, $matches)) {
 					$indent = empty($matches[1]) ? 0 : intval($matches[1]);
 					$wordSize = empty($matches[6]) ? 1 : intval($matches[6]);
 					$item = array(
-								'offset'       => intval($matches[2]),
-								'value_length' => current(unpack('n', $matches[3])),
-								'value'        => $this->__formatValue($matches[4], $wordSize),
-								'mask'         => empty($matches[5]) ? null : $this->__formatValue($matches[5], $wordSize),// default: all "one" bits
-								'range_length' => empty($matches[7]) ? 1 : intval($matches[7]),
-								'mime_type'    => $section['mime_type'],
-								);
+						'offset'       => intval($matches[2]),
+						'value_length' => current(unpack('n', $matches[3])),
+						'value'        => $this->__formatValue($matches[4], $wordSize),
+						/* default: all `one` bits */
+						'mask'         => empty($matches[5]) ? null : $this->__formatValue($matches[5], $wordSize),
+						'range_length' => empty($matches[7]) ? 1 : intval($matches[7]),
+						'mime_type'    => $section['mime_type'],
+					);
 					$this->register($item, $indent, $section['priority']);
 				}
 			}
@@ -243,23 +247,23 @@ class MimeMagic extends Object {
 				$line = trim(fgets($File->handle));
 
 				if (empty($line) || $line{0} === '#') {
-					continue(1);
+					continue;
 				}
 
 				$line = preg_replace('/(?!\B)\040+/', "\t", $line);
 
 				if (!preg_match('/' . $itemRegex . '/', $line, $matches)) {
-					continue(1);
+					continue;
 				}
 
 				$item = array(
-							'offset'       => intval($matches[2]),
-							'value'        => $this->__formatValue($matches[4], $matches[3], true),
-							'mask'         => null,
-							'range_length' => 0,
-							'mime_type'    => empty($matches[5]) ? null : $matches[5],
-							'encoding'     => empty($matches[6]) ? null : $matches[6],
-							);
+					'offset'       => intval($matches[2]),
+					'value'        => $this->__formatValue($matches[4], $matches[3], true),
+					'mask'         => null,
+					'range_length' => 0,
+					'mime_type'    => empty($matches[5]) ? null : $matches[5],
+					'encoding'     => empty($matches[6]) ? null : $matches[6],
+				);
 				$item['value_length'] = strlen($item['value']);
 				$this->register($item, strlen($matches[1]), 80);
 			}
@@ -272,7 +276,7 @@ class MimeMagic extends Object {
  *
  * @param string $file Absolute path to a file
  * @param array $items
- * @return mixed A string containing the mime type of the file or false if no pattern matched
+ * @return mixed A string containing the MIME type of the file or false if no pattern matched
  * @access private
  */
 	function __test($file, $items) {
@@ -296,7 +300,7 @@ class MimeMagic extends Object {
  *
  * @param object $File An instance of the File class
  * @param array $item A magic item
- * @return mixed A string containing the mime type of the file or false if no pattern matched
+ * @return mixed A string containing the MIME type of the file or false if no pattern matched
  * @access private
  */
 	function __testRecursive(&$File, $item) {
@@ -323,7 +327,8 @@ class MimeMagic extends Object {
  * Format a value for testing
  *
  * @param mixed $value Value to format
- * @param mixed $type String containing the datatype of the value or an integer indicating the word size of the value
+ * @param mixed $type String containing the datatype of the value
+ * 	or an integer indicating the word size of the value
  * @param boolean $binary Whether the value is a binary value or not
  * @param boolean $unEscape If set to true and value is not binary strips slashes from string values
  * @return mixed On success the formatted binary value or the input value
@@ -366,7 +371,10 @@ class MimeMagic extends Object {
 					return pack('d', $value);
 				case 'string':
 					if ($unEscape) {
-						$value = strtr($value, array('\ ' => ' ', '\<' => '<', '\>' => '>', '\\\r' => '\r', '\\\n' => '\n'));
+						$value = strtr($value, array(
+							'\ ' => ' ', '\<' => '<', '\>' => '>',
+							'\\\r' => '\r', '\\\n' => '\n'
+						));
 					}
 					return preg_replace('/\\\\([0-9]{1,3})/e', 'chr($1);', $value);
 				case 'beshort':

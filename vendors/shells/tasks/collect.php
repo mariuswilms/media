@@ -86,11 +86,11 @@ class CollectTask extends MediaShell {
 
 		foreach ($this->_map as $old => $new) {
 			$message = sprintf(
-							'%-38s %s %38s',
-							$this->shortPath($old),
-							$this->_link ? '<-' : '->',
-							$this->shortPath($new)
-						);
+				'%-38s %s %38s',
+				$this->shortPath($old),
+				$this->_link ? '<-' : '->',
+				$this->shortPath($new)
+			);
 			$this->out($message);
 		}
 
@@ -124,10 +124,10 @@ class CollectTask extends MediaShell {
 		}
 
 		$paths = array_merge(
-					Configure::read('vendorPaths'),
-					array(WWW_ROOT),
-					$pluginVendorPaths
-				);
+			Configure::read('vendorPaths'),
+			array(WWW_ROOT),
+			$pluginVendorPaths
+		);
 
 		foreach ($paths as $key => $path) {
 			$message = sprintf('Would you like to collect files from %s?', $this->shortPath($path));

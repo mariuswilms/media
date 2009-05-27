@@ -25,9 +25,10 @@
  */
 class PearTextMediumAdapter extends MediumAdapter {
 	var $require = array(
-							'mimeTypes' => array('text/plain'),
-							'imports' => array(array('type' => 'Vendor','name' => 'Text_Statistics','file' => 'Text/Statistics.php')),
-							);
+		'mimeTypes' => array('text/plain'),
+		'imports' => array(
+			array('type' => 'Vendor','name' => 'Text_Statistics','file' => 'Text/Statistics.php')
+	));
 
 	function initialize(&$Medium) {
 		if (isset($Medium->objects['Text_Statistics'])) {
@@ -45,7 +46,6 @@ class PearTextMediumAdapter extends MediumAdapter {
 		}
 
 		$Medium->objects['Text_Statistics'] = @new Text_Statistics($Medium->contents['raw']);
-
 		return true;
 	}
 
@@ -69,7 +69,7 @@ class PearTextMediumAdapter extends MediumAdapter {
 	}
 
 	function lexicalDensity() {
-		return round(($this->_Text->uniqWords / $this->_Text->numWords) * 100,0);
+		return round(($this->_Text->uniqWords / $this->_Text->numWords) * 100, 0);
 	}
 }
 ?>

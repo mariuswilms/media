@@ -25,14 +25,18 @@ App::import('Core', 'Validation');
  */
 class MediaValidation extends Validation {
 /**
- * Checks if mime type is (not) one of given mime types
+ * Checks if MIME type is (not) one of given MIME types
  *
  * @param string $check Mime type to check e.g. image/jpeg
- * @param mixed $deny True or * blocks any mime type, an array containing mime types selectively blocks, false blocks no mime type
- * @param mixed $allow True or * allows any extension, an array containing extensions selectively allows, false allows no mime type
- * @return bool
+ * @param mixed $deny True or * blocks any MIME type,
+ * 	an array containing MIME types selectively blocks,
+ * 	false blocks no MIME type
+ * @param mixed $allow True or * allows any extension,
+ * 	an array containing extensions selectively allows,
+ * 	false allows no MIME type
+ * @return boolean
  */
-	function mimeType($check, $deny = array('application/octet-stream', 'text/x-php'), $allow = true) {
+	function mimeType($check, $deny = false, $allow = true) {
 		if (!is_string($check) || !preg_match('/^[-\w.\+]+\/[-\w.\+]+$/', $check)) {
 			return false;
 		}
@@ -49,12 +53,16 @@ class MediaValidation extends Validation {
 /**
  * Checks if extension is (not) one of given extensions
  *
- * @param string $check Extension to check (w/o leading dot)
- * @param mixed $deny True or * blocks any extension, an array containing extensions (w/o leading dot) selectively blocks, false blocks no extension
- * @param mixed $allow True or * allows any extension, an array containing extensions (w/o leading dot) selectively allows, false allows no extension
- * @return bool
+ * @param string $check Extension to check (without leading dot)
+ * @param mixed $deny True or * blocks any extension,
+ * 	an array containing extensions (without a leading dot) selectively blocks,
+ * 	false blocks no extension
+ * @param mixed $allow True or * allows any extension,
+ * 	an array containing extensions (without leading dot) selectively allows,
+ * 	false allows no extension
+ * @return boolean
  */
-	function extension($check, $deny = array('bin', 'class', 'dll', 'dms', 'exe', 'lha', 'lzh', 'so', 'as', 'asp', 'sh', 'java', 'js', 'lisp', 'lua', 'pl', 'pm', 'php', 'py', 'pyc', 'vb', 'bas'), $allow = true) {
+	function extension($check, $deny = false, $allow = true) {
 		if (!is_string($check) || !preg_match('/^[\w0-9]+(\.[\w0-9]+)?$/', $check)) {
 			return false;
 		}
@@ -72,12 +80,12 @@ class MediaValidation extends Validation {
  * Checks if size is within limits
  *
  * Please note that the size will always be checked against
- * limitations set in php.ini for post_max_size and upload_max_filesize
- * even if $max is set to false
+ * limitations set in `php.ini` for `post_max_size` and `upload_max_filesize`
+ * even if $max is set to false.
  *
- * @param int $check Size to check in bytes
+ * @param integer $check Size to check in bytes
  * @param mixed $max String (e.g. 8M) containing maximum allowed size, false allows any size
- * @return bool
+ * @return boolean
  */
 	function size($check, $max = false) {
 		if (!$check = self::_toComputableSize($check)) {
@@ -110,7 +118,7 @@ class MediaValidation extends Validation {
  *
  * @param mixed $check Pixels to check e.g 200x200 or 40000
  * @param mixed $max String (e.g. 40000 or 200x100) containing maximum allowed amount of pixels
- * @return bool
+ * @return boolean
  */
 	function pixels($check, $max = false) {
 		if (strpos($check, 'x') !== false) {
@@ -127,8 +135,9 @@ class MediaValidation extends Validation {
  * Checks if path is within given locations
  *
  * @param string $check Absolute path
- * @param mixed $allow True or * allows any location, an array containing absolute paths to locations
- * @return bool
+ * @param mixed $allow True or * allows any location,
+ * 	an array containing absolute paths to locations
+ * @return boolean
  */
 	function location($check, $allow = false) {
 		$allow = self::_normalize($allow);
@@ -160,22 +169,22 @@ class MediaValidation extends Validation {
 
 			foreach ($allow as $path) {
 				if (!Folder::isAbsolute($path) || Validation::url($path)) {
-					continue(1);
+					continue;
 				}
 				if ($Check->inPath($path)) {
 					return true;
 				}
 			}
 		}
-
 		return false;
 	}
 /**
  * Checks if read/write permissions are set
  *
- * @param string $check 4-digit octal representation of file permissions, or absolute path to a file/directory
+ * @param string $check 4-digit octal representation of file permissions,
+ * 	or absolute path to a file or directory
  * @param string $type Permission r, w or rw
- * @return bool
+ * @return boolean
  */
 	function access($check, $type = 'r') {
 		if (self::file($check, true) || self::folder($check, true)) {
@@ -196,15 +205,16 @@ class MediaValidation extends Validation {
 				return false;
 			}
 		}
-
 		return true;
 	}
 /**
  * Checks if provided or potentially dangerous permissions are set
  *
  * @param string $check
- * @param mixed $match True to check for potentially dangerous permissions, a string containing the 4-digit octal value of the permissions to check for an exact match, false to allow any permissions
- * @return bool
+ * @param mixed $match True to check for potentially dangerous permissions,
+ * 	a string containing the 4-digit octal value of the permissions to check for an exact match,
+ * 	false to allow any permissions
+ * @return boolean
  */
 	function permission($check, $match = true) {
 		$match = self::_normalize($match);
@@ -221,7 +231,6 @@ class MediaValidation extends Validation {
 		if (is_numeric($match) && $check != $match) {
 			return false;
 		}
-
 		return true;
 	}
 /**
@@ -229,8 +238,8 @@ class MediaValidation extends Validation {
  * Please note, that directoires are not treated as files in strict mode
  *
  * @param string $file Absolute path to file
- * @param bool $strict Enable checking for actual existence of file
- * @return bool
+ * @param boolean $strict Enable checking for actual existence of file
+ * @return boolean
  */
 	function file($check, $strict = true) {
 		if (!is_string($check)) {
@@ -242,7 +251,6 @@ class MediaValidation extends Validation {
 		if (strpos($check, DS) === false) {
 			return false;
 		}
-
 		return true;
 	}
 /**
@@ -250,8 +258,8 @@ class MediaValidation extends Validation {
  * Used mainly for $allow/$deny parameter contents
  *
  * @param string $check Absolute path to directory
- * @param bool $strict Enable checking for actual existence of directory
- * @return bool
+ * @param boolean $strict Enable checking for actual existence of directory
+ * @return boolean
  */
 	function folder($check, $strict = true) {
 		if (!is_string($check)) {
@@ -260,7 +268,6 @@ class MediaValidation extends Validation {
 		if (!is_dir($check) && $strict === true) {
 			return false;
 		}
-
 		return true;
 	}
 /**
@@ -295,13 +302,13 @@ class MediaValidation extends Validation {
 		}
 	}
 /**
- * Parse php.ini style size strings
+ * Parse `php.ini` style size strings
  *
- * Slightly modified version of ini_get_size()
+ * Slightly modified version of `ini_get_size()`
  * @link posted at http://www.php.net/features.file-upload
  * @author djcassis gmail com
  *
- * @param string $sizeString Php.ini style size string e.g. 16M
+ * @param string $sizeString `php.ini` style size string e.g. `'16M'`
  * @return int Size in bytes
  */
 	function _toComputableSize($sizeString) {
@@ -313,19 +320,18 @@ class MediaValidation extends Validation {
 		}
 
 		$sizeUnit = strtoupper(substr($sizeString, -1));
-	    $size = (int) substr($sizeString, 0, -1);
+	    $size = (integer)substr($sizeString, 0, -1);
 
 	    switch ($sizeUnit) {
-	        case 'Y' : $size *= 1024; // Yotta
-	        case 'Z' : $size *= 1024; // Zetta
-	        case 'E' : $size *= 1024; // Exa
-	        case 'P' : $size *= 1024; // Peta
-	        case 'T' : $size *= 1024; // Tera
-	        case 'G' : $size *= 1024; // Giga
-	        case 'M' : $size *= 1024; // Mega
-	        case 'K' : $size *= 1024; // kilo
+			case 'Y': $size *= 1024; /* Yotta */
+			case 'Z': $size *= 1024; /* Zetta */
+			case 'E': $size *= 1024; /* Exa */
+	        case 'P': $size *= 1024; /* Peta */
+			case 'T': $size *= 1024; /* Tera */
+			case 'G': $size *= 1024; /* Giga */
+			case 'M': $size *= 1024; /* Mega */
+			case 'K': $size *= 1024; /* Kilo */
 	    }
-
 	    return $size;
 	}
 }

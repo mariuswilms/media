@@ -85,41 +85,41 @@ class Medium extends Object {
  */
 	var $mimeType;
 /**
- * Mapping mime type (part) to medium name
+ * Mapping MIME type (part) to medium name
  *
  * @var array
  */
 	static $_mimeTypesToNames = array(
-					'image/icon'            => 'Icon',
-					'application/pdf'       => 'Document',
-					'application/msword'    => 'Document',
-					'text/css'              => 'Css',
-					'text/javascript'       => 'Js',
-					'text/code'             => 'Generic',
-					'text/rtf'              => 'Document',
-					'text/plain'            => 'Text',
-					'image/'                => 'Image',
-					'audio/'                => 'Audio',
-					'video/'                => 'Video',
-					'text/'                 => 'Generic',
-					'/'                     => 'Generic',
-					);
+		'image/icon'            => 'Icon',
+		'application/pdf'       => 'Document',
+		'application/msword'    => 'Document',
+		'text/css'              => 'Css',
+		'text/javascript'       => 'Js',
+		'text/code'             => 'Generic',
+		'text/rtf'              => 'Document',
+		'text/plain'            => 'Text',
+		'image/'                => 'Image',
+		'audio/'                => 'Audio',
+		'video/'                => 'Video',
+		'text/'                 => 'Generic',
+		'/'                     => 'Generic',
+	);
 /**
  * Mapping medium name to short medium name
  *
  * @var array
  */
 	static $_namesToShort = array(
-					'Audio'    => 'aud',
-					'Css'      => 'css',
-					'Document' => 'doc',
-					'Generic'  => 'gen',
-					'Icon'     => 'ico',
-					'Image'    => 'img',
-					'Js'       => 'js',
-					'Text'     => 'txt',
-					'Video'    => 'vid',
-					);
+		'Audio'    => 'aud',
+		'Css'      => 'css',
+		'Document' => 'doc',
+		'Generic'  => 'gen',
+		'Icon'     => 'ico',
+		'Image'    => 'img',
+		'Js'       => 'js',
+		'Text'     => 'txt',
+		'Video'    => 'vid',
+	);
 /**
  * Constructor
  *
@@ -132,7 +132,8 @@ class Medium extends Object {
  *  array of absolute paths to files
  *
  * @param mixed $file See description above
- * @param string $mimeType A valid mime type, provide if autodetection fails upon $file or to save the cost for an extra MimeType::detectType call
+ * @param string $mimeType A valid MIME type, provide if autodetection fails upon $file
+ * 	or to save the cost for an extra MimeType::detectType call
  */
 	function __construct($file, $mimeType = null) {
 		if (is_resource($file)) {
@@ -170,8 +171,10 @@ class Medium extends Object {
 	}
 /**
  * Destructor
+ *
  * Deletes temporary files
  *
+ * @return void
  */
 	function __destruct() {
 		if (isset($this->files['temporary']) && file_exists($this->files['temporary'])) {
@@ -183,6 +186,7 @@ class Medium extends Object {
  *
  * @param string $method
  * @param array $args
+ * @return void
  */
 	function __call($method, $args) {
 	}
@@ -205,14 +209,16 @@ class Medium extends Object {
 		$class = $name . 'Medium';
 
 		if (!class_exists($class)) {
-			App::import('Vendor', 'Media.' . $class, array('file' => 'medium' . DS . strtolower($name) . '.php'));
+			App::import('Vendor', 'Media.' . $class, array(
+				'file' => 'medium' . DS . strtolower($name) . '.php'
+			));
 		}
 
 		$Object = new $class($file, $mimeType);
 		return $Object;
 	}
 /**
- * Determines medium name for a file or mime type
+ * Determines medium name for a file or MIME type
  *
  * In the case of there are no arguments passed to this method
  * the values of $_mimeTypesToNames are returned
@@ -238,7 +244,7 @@ class Medium extends Object {
 		return 'Generic';
 	}
 /**
- * Determines medium short name for a file or mime type
+ * Determines medium short name for a file or MIME type
  *
  * In the case of there are no arguments passed to this method
  * the values of $_nameToShort are returned
@@ -281,14 +287,18 @@ class Medium extends Object {
 			}
 
 			if (!method_exists($Medium, $method)) {
-				trigger_error('Medium::make - Invalid instruction ' . get_class($Medium) . '::' . $method . '().', E_USER_WARNING);
+				$message  = "Medium::make - Invalid instruction ";
+				$message .= "`" . get_class($Medium) . "::{$method}()`.";
+				trigger_error($message, E_USER_WARNING);
 				return false;
 			}
 
 			$result = call_user_func_array(array($Medium, $method), $args);
 
 			if ($result === false) {
-				trigger_error('Medium::make - Instruction ' . get_class($Medium) . '::' . $method . '() failed.', E_USER_WARNING);
+				$message  = "Medium::make - Instruction ";
+				$message .=  "`" . get_class($Medium) . "::{$method}()` failed.";
+				trigger_error($message, E_USER_WARNING);
 				return false;
 			} elseif (is_a($result, 'Medium')) {
 				$Medium = $result;
@@ -310,7 +320,8 @@ class Medium extends Object {
 			$File->delete();
 		}
 		if ($File->exists()) {
-			trigger_error("Medium::store - File '{$file}' already exists.", E_USER_NOTICE);
+			$message = "Medium::store - File `{$file}` already exists.";
+			trigger_error($message, E_USER_NOTICE);
 			return false;
 		}
 
@@ -332,7 +343,7 @@ class Medium extends Object {
  * Convert
  *
  * @param string $mimeType
- * @return bool|object false on error or a Medium object on success
+ * @return boolean|object false on error or a Medium object on success
  */
 	function convert($mimeType) {
 		$result = $this->Adapters->dispatchMethod($this, 'convert', array($mimeType));
@@ -346,7 +357,6 @@ class Medium extends Object {
 		if (is_a($result, 'Medium')) {
 			return $result;
 		}
-
 		return $this;
 	}
 /**
@@ -362,20 +372,20 @@ class Medium extends Object {
 		}
 
 		$knownRatios = array(
-						'1:1.294' => 1/1.294,
-						'1:1.545' => 1/1.1545,
-						'4:3'     => 4/3,
-						'1.375:1' => 1.375,
-						'3:2'     => 3/2,
-						'16:9'    => 16/9,
-						'1.85:1'  => 1.85,
-						'1.96:1'  => 1.96,
-						'2.35:1'  => 2.35,
-						'√2:1'    => pow(2, 1/2), /* dina4 quer */
-						'1:√2'    => 1 / (pow(2, 1/2)), /* dina4 hoch */
-						'Φ:1'     => (1 + pow(5,1/2)) / 2, /* goldener schnitt */
-						'1:Φ'     => 1 / ((1 + pow(5,1/2)) / 2), /* goldener schnitt */
-						);
+			'1:1.294' => 1/1.294,
+			'1:1.545' => 1/1.1545,
+			'4:3'     => 4/3,
+			'1.375:1' => 1.375,
+			'3:2'     => 3/2,
+			'16:9'    => 16/9,
+			'1.85:1'  => 1.85,
+			'1.96:1'  => 1.96,
+			'2.35:1'  => 2.35,
+			'√2:1'    => pow(2, 1/2), /* dina4 quer */
+			'1:√2'    => 1 / (pow(2, 1/2)), /* dina4 hoch */
+			'Φ:1'     => (1 + pow(5,1/2)) / 2, /* goldener schnitt */
+			'1:Φ'     => 1 / ((1 + pow(5,1/2)) / 2), /* goldener schnitt */
+		);
 
 		foreach ($knownRatios as $knownRatioName => &$knownRatio) {
 			$knownRatio = abs(($width / $height) - $knownRatio);
@@ -447,8 +457,10 @@ class MediumAdapterCollection extends Object {
 		$class = $adapter . 'MediumAdapter';
 		$file = 'medium' . DS . 'adapter' . DS . Inflector::underscore($adapter) . '.php';
 
-		if (!class_exists($class) && !App::import('Vendor', 'Media.' . $class, array('file' => $file))) {
-			$this->__errors[] = "MediumAdapterCollection::attach() - Adapter $adapter not found!";
+		if (!class_exists($class)
+		&& !App::import('Vendor', 'Media.' . $class, array('file' => $file))) {
+			$message = "MediumAdapterCollection::attach() - Adapter `{$adapter}` not found!";
+			$this->__errors[] = $message;
 			return false;
 		}
 
@@ -465,7 +477,7 @@ class MediumAdapterCollection extends Object {
 		$this->_attached = array_diff($this->_attached, (array)$name);
 		$this->_initialized = array_diff($this->_initialized, (array)$name);
 		$this->_overlay($this->_initialized);
-		$this->__messages[] = "MediumCollection::detach() - Removed {$name}MediumAdapter.";
+		$this->__messages[] = "MediumCollection::detach() - Removed `{$name}MediumAdapter`.";
 	}
 /**
  * Calls a method of an adapter providing it
@@ -480,33 +492,49 @@ class MediumAdapterCollection extends Object {
 
 		if (isset($this->__methods[$method])) {
 			list($method, $name) = $this->__methods[$method];
-			$this->__messages[] = "MediumCollection::dispatchMethod() - Calling {$name}MediumAdapter::{$method}().";
+
+			$message  = "MediumCollection::dispatchMethod() - ";
+			$message .= "Calling `{$name}MediumAdapter::{$method}()`.";
+			$this->__messages[] = $message;
+
 			return $this->{$name}->dispatchMethod($method, $params);
 		}
 
 		foreach ($this->_attached as $adapter) {
-			if (!method_exists($this->{$adapter}, $method)) { // optional
-				continue(1);
+			if (!method_exists($this->{$adapter}, $method)) { /* optional */
+				continue;
 			}
 
 			if (!$this->_initialized($adapter)) {
 				if ($this->_initialize($Medium, $adapter)) {
-					$this->__messages[] = "MediumCollection::dispatchMethod() - Initialized {$adapter}MediumAdapter.";
+					$message  = "MediumCollection::dispatchMethod() - ";
+					$message .= "Initialized `{$adapter}MediumAdapter`.";
+					$this->__messages[] = $message;
+
 					$this->_overlay($adapter);
 				} else {
-					$this->__errors[] = 'MediumCollection::dispatchMethod() - Adapter ' . $adapter . ' failed to initialize.';
+					$message  = "MediumCollection::dispatchMethod() - ";
+					$message .= "Adapter `{$adapter}` failed to initialize.";
+					$this->__errors[] = $message;
+
 					$this->detach($adapter);
-					continue(1);
+					continue;
 				}
 			}
 
 			if (isset($this->__methods[$method])) {
 				list($method, $name) = $this->__methods[$method];
-				$this->__messages[] = "MediumCollection::dispatchMethod() - Calling {$adapter}MediumAdapter::{$method}().";
+
+				$message  = "MediumCollection::dispatchMethod() - ";
+				$message .= "Calling `{$adapter}MediumAdapter::{$method}()`.";
+				$this->__messages[] = $message;
+
 				return $this->{$name}->dispatchMethod($method, $params);
 			}
 		}
-		$this->__errors[] = "MediumCollection::dispatchMethod() - Method {$method} not found in any attached adapter";
+		$message = "MediumCollection::dispatchMethod() - ";
+		$message .= "Method `{$method}` not found in any attached adapter";
+		$this->__errors[] = $message;
 	}
 /**
  * Checks if $adapter is compatible and initializes it with $Medium
@@ -525,9 +553,7 @@ class MediumAdapterCollection extends Object {
 		if (!$this->{$adapter}->compatible($Medium) || !$this->{$adapter}->initialize($Medium)) {
 			return false;
 		}
-
 		$this->_initialized[] = $adapter;
-
 		return true;
 	}
 /**
@@ -602,18 +628,17 @@ class MediumAdapter extends Object {
  */
 	function compatible(&$Medium) {
 		$default = array(
-				/* sourceFile must have one out of given mime types */
-				'mimeTypes' => array(),
-				/* PHP extensions which must be loaded */
-				'extensions' => array(),
-				/* Functions that must exist */
-				'functions' => array(),
-				/* Files that are required */
-				'imports' => array(),
-				/* System commands which must be whichable */
-				'commands' => array(),
-				);
-
+			/* sourceFile must have one out of given MIME types */
+			'mimeTypes' => array(),
+			/* PHP extensions which must be loaded */
+			'extensions' => array(),
+			/* Functions that must exist */
+			'functions' => array(),
+			/* Files that are required */
+			'imports' => array(),
+			/* System commands which must be whichable */
+			'commands' => array(),
+		);
 		$require = array_merge($default, $this->require);
 
 		if (!empty($require['mimeTypes'])) {
@@ -665,7 +690,9 @@ class MediumAdapter extends Object {
 		if (!$data['command'] = $this->_which($data['command'])) {
 			return false;
 		}
-		$line = String::insert($string, $data, array('before' => ':', 'after' => ':', 'clean' => true));
+		$line = String::insert($string, $data, array(
+			'before' => ':', 'after' => ':', 'clean' => true
+		));
 		exec(escapeshellcmd($line) , $output, $return);
 		return $return !== 0 ? false : (empty($output) ? true : array_pop($output));
 	}

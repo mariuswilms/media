@@ -37,42 +37,40 @@ class MediumHelper extends AppHelper {
  * @var array
  */
 	var $tags = array(
-			'object'			=> '<object%s>%s%s</object>',
-			'param' 			=> '<param%s/>',
-			'csslink' 			=> '<link type="text/css" rel="stylesheet" href="%s" %s/>',
-			'javascriptlink' 	=> '<script type="text/javascript" src="%s"></script>',
-			'rsslink'			=> '<link type="application/rss+xml" rel="alternate" href="%s" title="%s"/>', // v2
-			);
+		'object'			=> '<object%s>%s%s</object>',
+		'param' 			=> '<param%s/>',
+		'csslink' 			=> '<link type="text/css" rel="stylesheet" href="%s" %s/>',
+		'javascriptlink' 	=> '<script type="text/javascript" src="%s"></script>',
+		'rsslink'			=> '<link type="application/rss+xml" rel="alternate" href="%s" title="%s"/>', /* v2 */
+	);
 /**
  * Configuration settings for this helper
  *
  * @var array
  */
 	var $settings = array(
-					'map' => array(
-						'static'   => array(MEDIA_STATIC => MEDIA_STATIC_URL),
-						'transfer' => array(MEDIA_TRANSFER => MEDIA_TRANSFER_URL),
-						'filter'   => array(MEDIA_FILTER => MEDIA_FILTER_URL)
-						),
-					'directories' => array(
-						),
-					'urls' => array(
-						),
-					'versions' => array('xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl', 'c'),
-					'extensions' => array(
-						'aud' 	=> array('mp3', 'ogg', 'aif', 'wma', 'wav'),
-						'css' 	=> array('css'),
-						'doc' 	=> array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
-						'gen' 	=> array(),
-						'ico' 	=> array('ico', 'png', 'gif', 'jpg', 'jpeg'),
-						'img' 	=> array('png', 'jpg', 'jpeg' , 'gif'),
-						'js' 	=> array('js'),
-						'txt' 	=> array('txt'),
-						'vid' 	=> array('avi', 'mpg', 'qt', 'mov', 'ogg', 'wmv',
-										'png', 'jpg', 'jpeg', 'gif', 'mp3', 'ogg',
-										'aif', 'wma', 'wav'),
-						)
-					);
+		'map' => array(
+			'static'   => array(MEDIA_STATIC => MEDIA_STATIC_URL),
+			'transfer' => array(MEDIA_TRANSFER => MEDIA_TRANSFER_URL),
+			'filter'   => array(MEDIA_FILTER => MEDIA_FILTER_URL)
+		),
+		'directories' => array(	),
+		'urls' => array(),
+		'versions' => array('xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl', 'c'),
+		'extensions' => array(
+			'aud' 	=> array('mp3', 'ogg', 'aif', 'wma', 'wav'),
+			'css' 	=> array('css'),
+			'doc' 	=> array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
+			'gen' 	=> array(),
+			'ico' 	=> array('ico', 'png', 'gif', 'jpg', 'jpeg'),
+			'img' 	=> array('png', 'jpg', 'jpeg' , 'gif'),
+			'js' 	=> array('js'),
+			'txt' 	=> array('txt'),
+			'vid' 	=> array(
+							'avi', 'mpg', 'qt', 'mov', 'ogg', 'wmv',
+							'png', 'jpg', 'jpeg', 'gif', 'mp3', 'ogg',
+							'aif', 'wma', 'wav'
+	)));
 /**
  * Holds cached paths
  *
@@ -83,6 +81,9 @@ class MediumHelper extends AppHelper {
  * Constructor
  *
  * Sets up cache and merges user supplied settings with default settings
+ *
+ * @param array $settings
+ * @return void
  */
 	function __construct($settings = array()) {
 		$this->settings = array_merge($this->settings, $settings);
@@ -99,6 +100,8 @@ class MediumHelper extends AppHelper {
  * Destructor
  *
  * Updates cache
+ *
+ * @return void
  */
 	function __destruct() {
 		Cache::write('media_found', $this->__cached, '_cake_core_');
@@ -107,7 +110,7 @@ class MediumHelper extends AppHelper {
  * Output filtering
  *
  * @param string $content
- * @param bool $inline True to return content, false to add content to scripts_for_layout
+ * @param boolean $inline True to return content, false to add content to `scripts_for_layout`
  * @return mixed String if inline is true or null
  */
 	function output($content, $inline = true) {
@@ -119,28 +122,30 @@ class MediumHelper extends AppHelper {
 		$View->addScript($content);
 	}
 /**
- * Turns a file into a (routed) url string
+ * Turns a file path into a (routed) URL
  *
  * Reimplemented method from Helper
  *
- * @param string $file Absolut path or relative (to MEDIA) path to file
- * @param array $options For future usage
- * @return arrays
+ * @param string $path Absolute or partial path to a file
+ * @param boolean $full
+ * @return string
  */
-	function url($url = null, $full = false) {
-		if (is_array($url) || strpos($url, '://') !== false) {
-			return parent::url($url, $full);
+	function url($path = null, $full = false) {
+		if (is_array($path) || strpos($path, '://') !== false) {
+			return parent::url($path, $full);
 		}
-		if (!$url = $this->webroot($url)) {
+		if (!$path = $this->webroot($path)) {
 			return null;
 		}
-		return $full ? FULL_BASE_URL . $url : $url;
+		return $full ? FULL_BASE_URL . $path : $path;
 	}
 /**
- * Enter description here...
+ * Webroot
  *
- * @param unknown_type $path
- * @return unknown
+ * Reimplemented method from Helper
+ *
+ * @param string $path Absolute or partial path to a file
+ * @return mixed
  */
 	function webroot($path) {
 		if (!$file = $this->file($path)) {
@@ -162,19 +167,18 @@ class MediumHelper extends AppHelper {
 		return $this->webroot . str_replace(DS, '/', $path);
 	}
 /**
- * Display a file inline
+ * Generates markup to render a file inline
  *
- * @param string $file
+ * @param string $path Absolute or partial path to a file
  * @param array $options restrict: embed to display certain medium types only
  * @return string
- *
  */
 	function embed($path, $options = array()) {
 		$default = array(
 					'restrict' => array(),
 					'background' => '#000000',
-					'autoplay' => false, // also: autostart
-					'controls' => false, // also: controller
+					'autoplay' => false, /* aka `autostart` */
+					'controls' => false, /* aka `controller` */
 					'branding' => false,
 					'alt' => null,
 					'width' => null,
@@ -237,166 +241,168 @@ class MediumHelper extends AppHelper {
 			case 'image/jpeg':
 			case 'image/png':
 				$attributes = array_merge($attributes, array(
-								'alt' => $alt,
-								'width' => $width,
-								'height' => $height,
-								));
+					'alt' => $alt,
+					'width' => $width,
+					'height' => $height,
+				));
 				if (strpos($path, 'ico/') !== false) {
 					$attributes = $this->addClass($attributes, 'icon');
 				}
-				return sprintf($this->Html->tags['image'], $url, $this->_parseAttributes($attributes));
-
+				return sprintf(
+					$this->Html->tags['image'],
+					$url,
+					$this->_parseAttributes($attributes)
+				);
 			/* Windows Media */
-			case 'video/x-ms-wmv': // official
+			case 'video/x-ms-wmv': /* official */
 			case 'video/x-ms-asx':
 			case 'video/x-msvideo':
 				$attributes = array_merge($attributes, array(
-								'type' => $mimeType,
-								'width' => $width,
-								'height' => $height,
-								'data' => $url,
-								'classid' => 'clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6',
-								));
+					'type' => $mimeType,
+					'width' => $width,
+					'height' => $height,
+					'data' => $url,
+					'classid' => 'clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6',
+				));
 				$parameters = array(
-								'src' => $url,
-								'autostart' => $autoplay,
-								'controller' => $controls,
-								'pluginspage' => 'http://www.microsoft.com/Windows/MediaPlayer/',
-								);
-				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-
+					'src' => $url,
+					'autostart' => $autoplay,
+					'controller' => $controls,
+					'pluginspage' => 'http://www.microsoft.com/Windows/MediaPlayer/',
+				);
+				break;
 			/* RealVideo */
 			case 'application/vnd.rn-realmedia':
 			case 'video/vnd.rn-realvideo':
 			case 'audio/vnd.rn-realaudio':
 				$attributes = array_merge($attributes, array(
-								'type' => $mimeType,
-								'width' => $width,
-								'height' => $height,
-								'data' => $url,
-								'classid' => 'clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA',
-								));
+					'type' => $mimeType,
+					'width' => $width,
+					'height' => $height,
+					'data' => $url,
+					'classid' => 'clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA',
+				));
 				$parameters = array(
-								'src' => $url,
-								'autostart' => $autoplay,
-								'controls' => isset($controls) ? 'ControlPanel' : null,
-								'console' => 'video' . uniqid(),
-								'loop' => $loop,
-								'bgcolor' => $background,
-								'nologo' => $branding ? false : true,
-								'nojava' => true,
-								'center' => true,
-								'backgroundcolor' => $background,
-								'pluginspage' => 'http://www.real.com/player/',
-								);
-				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-
+					'src' => $url,
+					'autostart' => $autoplay,
+					'controls' => isset($controls) ? 'ControlPanel' : null,
+					'console' => 'video' . uniqid(),
+					'loop' => $loop,
+					'bgcolor' => $background,
+					'nologo' => $branding ? false : true,
+					'nojava' => true,
+					'center' => true,
+					'backgroundcolor' => $background,
+					'pluginspage' => 'http://www.real.com/player/',
+				);
+				break;
 			/* QuickTime */
 			case 'video/quicktime':
 				$attributes = array_merge($attributes, array(
-								'type' => $mimeType,
-								'width' => $width,
-								'height' => $height,
-								'data' => $url,
-								'classid' => 'clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B',
-								'codebase' => 'http://www.apple.com/qtactivex/qtplugin.cab',
-								));
+					'type' => $mimeType,
+					'width' => $width,
+					'height' => $height,
+					'data' => $url,
+					'classid' => 'clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B',
+					'codebase' => 'http://www.apple.com/qtactivex/qtplugin.cab',
+				));
 				$parameters = array(
-								'src' => $url,
-								'autoplay' => $autoplay,
-								'controller' => $controls,
-								'bgcolor' => substr($background, 1),
-								'showlogo' => $branding,
-								'pluginspage' => 'http://www.apple.com/quicktime/download/',
-								);
-				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-
+					'src' => $url,
+					'autoplay' => $autoplay,
+					'controller' => $controls,
+					'bgcolor' => substr($background, 1),
+					'showlogo' => $branding,
+					'pluginspage' => 'http://www.apple.com/quicktime/download/',
+				);
+				break;
 			/* Mpeg */
 			case 'video/mpeg':
 				$attributes = array_merge($attributes, array(
-								'type' => $mimeType,
-								'width' => $width,
-								'height' => $height,
-								'data' => $url,
-								));
+					'type' => $mimeType,
+					'width' => $width,
+					'height' => $height,
+					'data' => $url,
+				));
 				$parameters = array(
-								'src' => $url,
-								'autostart' => $autoplay,
-								);
-				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-
+					'src' => $url,
+					'autostart' => $autoplay,
+				);
+				break;
 			/* Flashy Flash */
 			case 'application/x-shockwave-flash':
 				$attributes = array_merge($attributes, array(
-								'type' => $mimeType,
-								'width' => $width,
-								'height' => $height,
-								'data' => $url,
-								'classid' => 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
-								'codebase' => 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab',
-								));
+					'type' => $mimeType,
+					'width' => $width,
+					'height' => $height,
+					'data' => $url,
+					'classid' => 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
+					'codebase' => 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab',
+				));
 				$parameters = array(
-								'movie' => $url,
-								'wmode' => 'transparent',
-								'bgcolor' => $background,
-								'FlashVars' => 'playerMode=embedded',
-								'quality' => 'best',
-								'scale' => 'noScale',
-								'salign' => 'TL',
-								'pluginspage' => 'http://www.adobe.com/go/getflashplayer',
-								);
-				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-
+					'movie' => $url,
+					'wmode' => 'transparent',
+					'bgcolor' => $background,
+					'FlashVars' => 'playerMode=embedded',
+					'quality' => 'best',
+					'scale' => 'noScale',
+					'salign' => 'TL',
+					'pluginspage' => 'http://www.adobe.com/go/getflashplayer',
+				);
+				break;
 			case 'application/pdf':
 				$attributes = array_merge($attributes, array(
-								'type' => $mimeType,
-								'width' => $width,
-								'height' => $height,
-								'data' => $url,
-								));
+					'type' => $mimeType,
+					'width' => $width,
+					'height' => $height,
+					'data' => $url,
+				));
 				$parameters = array(
-								'src' => $url,
-								'toolbar' => $controls, // 1 or 0 vvditovvv
-								'scrollbar' => $controls,
-								'navpanes' => $controls,
-								);
-				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-
+					'src' => $url,
+					'toolbar' => $controls, /* 1 or 0 */
+					'scrollbar' => $controls, /* 1 or 0 */
+					'navpanes' => $controls,
+				);
+				break;
 			case 'audio/x-wav':
 			case 'audio/mpeg':
-			case 'audio/ogg': // must use application/ogg instead?
+			case 'audio/ogg': /* must use application/ogg instead? */
 			case 'audio/x-midi':
 				$attributes = array_merge($attributes, array(
-								'type' => $mimeType,
-								'width' => $width,
-								'height' => $height,
-								'data' => $url,
-								));
+					'type' => $mimeType,
+					'width' => $width,
+					'height' => $height,
+					'data' => $url,
+				));
 				$parameters = array(
-								'src' => $url,
-								'autoplay' => $autoplay,
-								);
-				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
-
+					'src' => $url,
+					'autoplay' => $autoplay,
+				);
+				break;
 			default:
 				$attributes = array_merge($attributes, array(
-								'type' => $mimeType,
-								'width' => $width,
-								'height' => $height,
-								'data' => $url,
-								));
+					'type' => $mimeType,
+					'width' => $width,
+					'height' => $height,
+					'data' => $url,
+				));
 				$parameters = array(
-								'src' => $url,
-								);
-				return sprintf($this->tags['object'], $this->_parseAttributes($attributes), $this->_parseParameters($parameters), $alt);
+					'src' => $url,
+				);
+				break;
 		}
+		return sprintf(
+			$this->tags['object'],
+			$this->_parseAttributes($attributes),
+			$this->_parseParameters($parameters),
+			$alt
+		);
 	}
 /**
- * Enter description here...
+ * Generates markup to link to file
  *
- * @param unknown_type $url
- * @param unknown_type $options
- * @return unknown
+ * @param string $path Absolute or partial path to a file
+ * @param array $options
+ * @return mixed
  */
 	function link($path, $options = array()) {
 		$default = array(
@@ -439,26 +445,28 @@ class MediumHelper extends AppHelper {
 
 		$Medium = Medium::factory($file, $mimeType);
 
-		if (!empty($options['restrict']) && !in_array(strtolower($Medium->name), (array) $options['restrict'])) {
+		if (!empty($options['restrict'])
+		&& !in_array(strtolower($Medium->name), (array) $options['restrict'])) {
 			return null;
 		}
 		unset($options['restrict']);
 
 		switch ($mimeType) {
 			case 'text/css':
-				$out = sprintf($this->tags['csslink'], $url, $this->_parseAttributes($options, null, '', ' '));
+				$out = sprintf(
+					$this->tags['csslink'],
+					$url,
+					$this->_parseAttributes($options, null, '', ' ')
+				);
 				return $this->output($out, $inline);
-
 			case 'application/javascript':
 			case 'application/x-javascript':
 				$out = sprintf($this->tags['javascriptlink'], $url);
 				return $this->output($out, $inline);
-
 			case 'application/rss+xml':
 				$options = array_merge($defaultRss,$options);
 				$out = sprintf($this->tags['rsslink'], $url, $options['title']);
 				return $this->output($out, $inline);
-
 			default:
 				return $this->Html->link(basename($file), $url);
 		}
@@ -466,8 +474,8 @@ class MediumHelper extends AppHelper {
 /**
  * Get MIME type for a path
  *
- * @param string $path
- * @return mixed
+ * @param string|array $path Absolute or partial path to a file
+ * @return string|boolean
  */
 	function mimeType($path) {
 		if ($file = $this->file($path)) {
@@ -478,8 +486,8 @@ class MediumHelper extends AppHelper {
 /**
  * Get size of file
  *
- * @param string $path
- * @return mixed False on error or integer
+ * @param string|array $path Absolute or partial path to a file
+ * @return integer|boolean False on error or integer
  */
 	function size($path)	{
 		if ($file = $this->file($path)) {
@@ -488,7 +496,7 @@ class MediumHelper extends AppHelper {
 		return false;
 	}
 /**
- * Resolves a fragmented path
+ * Resolves partial path
  *
  * Examples:
  * 	css/cake.generic         >>> MEDIA_STATIC/css/cake.generic.css
@@ -553,8 +561,10 @@ class MediumHelper extends AppHelper {
 		$short = current(array_intersect(Medium::short(), $parts));
 
 		if (!$short) {
-			trigger_error('MediumHelper::file - You must provide a medium directory (e.g. img).',
-							E_USER_NOTICE);
+			$message  = "MediumHelper::file - ";
+			$message .= "You've provided a partial path without a medium directory (e.g. img) ";
+			$message .= " which is required to resolve the path.";
+			trigger_error($message, E_USER_NOTICE);
 			return false;
 		}
 
@@ -573,10 +583,10 @@ class MediumHelper extends AppHelper {
 		return false;
 	}
 /**
- * Enter description here...
+ * Generates `param` tags
  *
- * @param unknown_type $options
- * @return unknown
+ * @param array $options
+ * @return string
  */
 	function _parseParameters($options) {
 		$parameters = array();
@@ -588,7 +598,10 @@ class MediumHelper extends AppHelper {
 			} elseif ($value === false) {
 				$value = 'false';
 			}
-			$parameters[] = sprintf($this->tags['param'], $this->_parseAttributes(array('name' => $key, 'value' => $value)));
+			$parameters[] = sprintf(
+				$this->tags['param'],
+				$this->_parseAttributes(array('name' => $key, 'value' => $value))
+			);
 		}
 		return implode("\n", $parameters);
 	}

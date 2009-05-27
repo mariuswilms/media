@@ -25,13 +25,10 @@
  */
 class PearOggVideoMediumAdapter extends MediumAdapter {
 	var $require = array(
-							'mimeTypes' => array(
-									'video/ogg'
-									),
-							'imports' => array(
-									array('type' => 'Vendor', 'name' => 'File_Ogg', 'file' => 'File/Ogg.php')
-									),
-							);
+		'mimeTypes' => array('video/ogg'),
+		'imports' => array(
+			array('type' => 'Vendor', 'name' => 'File_Ogg', 'file' => 'File/Ogg.php')
+	));
 
 	function initialize(&$Medium) {
 		if (isset($Medium->objects['File_Ogg_Theora'])) {
@@ -55,7 +52,6 @@ class PearOggVideoMediumAdapter extends MediumAdapter {
 		}
 
 		$Medium->objects['File_Ogg_Theora'] = $Object;
-
 		return true;
 	}
 

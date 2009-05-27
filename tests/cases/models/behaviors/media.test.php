@@ -44,19 +44,22 @@ class MediaBehaviorTestCase extends CakeTestCase {
 
 		$this->TestData = new TestData();
 		$this->file0 = $this->TestData->getFile(array(
-			'image-png.png' => $this->TmpFolder->pwd() . 'static/img/image-png.png'));
+			'image-png.png' => $this->TmpFolder->pwd() . 'static/img/image-png.png'
+		));
 		$this->file1 = $this->TestData->getFile(array(
-			'image-jpg.jpg' => $this->TmpFolder->pwd() . 'static/img/image-jpg.jpg'));
+			'image-jpg.jpg' => $this->TmpFolder->pwd() . 'static/img/image-jpg.jpg'
+		));
 		$this->file2 = $this->TestData->getFile(array(
-			'text-plain.txt' => $this->TmpFolder->pwd() . 'static/txt/text-plain.txt'));
+			'text-plain.txt' => $this->TmpFolder->pwd() . 'static/txt/text-plain.txt'
+		));
 
 		$this->_behaviorSettings = array(
-						'baseDirectory' => $this->TmpFolder->pwd(),
-						'makeVersions' => false,
-						'createDirectory' => false,
-						'filterDirectory' => $this->TmpFolder->pwd() . 'filter' . DS,
-						'metadataLevel' => 1
-						);
+			'baseDirectory' => $this->TmpFolder->pwd(),
+			'makeVersions' => false,
+			'createDirectory' => false,
+			'filterDirectory' => $this->TmpFolder->pwd() . 'filter' . DS,
+			'metadataLevel' => 1
+		);
 
 		$this->_mediaConfig = Configure::read('Media');
 	}
@@ -93,19 +96,23 @@ class MediaBehaviorTestCase extends CakeTestCase {
 		$Model->Behaviors->attach('Media.Media', $this->_behaviorSettings);
 
 		$file = $this->TestData->getFile(array(
-			'application-pdf.pdf' => $this->TmpFolder->pwd() . 'static/doc/application-pdf.pdf'));
+			'application-pdf.pdf' => $this->TmpFolder->pwd() . 'static/doc/application-pdf.pdf'
+		));
 		$item = array('file' => $file);
 		$Model->create();
 		$result = $Model->save($item);
 		$this->assertTrue($result);
 
 		$result = $Model->findById(5);
-		$expected = array ('Song' => array ('id' => '5',
-											'dirname' => 'static/doc',
-											'basename' => 'application-pdf.pdf',
-											'checksum' => 'f7ee91cffd90881f3d719e1bab1c4697',
-											'size' => 13903,
-											'mime_type' => 'application/pdf'));
+		$expected = array(
+			'Song' => array (
+				'id' => '5',
+					'dirname' => 'static/doc',
+					'basename' => 'application-pdf.pdf',
+					'checksum' => 'f7ee91cffd90881f3d719e1bab1c4697',
+					'size' => 13903,
+					'mime_type' => 'application/pdf'
+		));
 		$this->assertEqual($expected, $result);
 	}
 
@@ -138,15 +145,14 @@ class MediaBehaviorTestCase extends CakeTestCase {
 						 )
 					);
 		$expected[] = array(
-					$file,
-					array(
-						'overwrite' => false,
-						'directory' => $this->TmpFolder->pwd() . 'filter' . DS . 'm' . DS,
-						'name' => 'Image',
-						'version' => 'm',
-						'instructions' => array('convert' => 'image/png', 'fit' => array(10, 10))
-						 )
-					);
+			$file,
+			array(
+				'overwrite' => false,
+				'directory' => $this->TmpFolder->pwd() . 'filter' . DS . 'm' . DS,
+				'name' => 'Image',
+				'version' => 'm',
+				'instructions' => array('convert' => 'image/png', 'fit' => array(10, 10))
+		 ));
 
 		$Model->make($file);
 		$this->assertEqual($Model->beforeMakeArgs, $expected);

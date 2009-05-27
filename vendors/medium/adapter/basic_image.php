@@ -24,19 +24,18 @@
  */
 class BasicImageMediumAdapter extends MediumAdapter {
 	var $require = array(
-							'mimeTypes' => array(
-								'image/jpeg',
-								'image/gif',
-								'image/png',
-								'image/tiff',
-								'image/xbm',
-								'image/wbmp',
-								'image/ms-bmp',
-								'image/xpm',
-								'image/ico',
-								'image/psd',
-								),
-							);
+		'mimeTypes' => array(
+			'image/jpeg',
+			'image/gif',
+			'image/png',
+			'image/tiff',
+			'image/xbm',
+			'image/wbmp',
+			'image/ms-bmp',
+			'image/xpm',
+			'image/ico',
+			'image/psd',
+	));
 
 	function initialize(&$Medium) {
 		if (!isset($Medium->file)) {

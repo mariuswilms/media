@@ -25,17 +25,17 @@
  */
 class FfmpegVideoMediumAdapter extends MediumAdapter {
 	var $require = array(
-							'mimeTypes' => array(
-											'video/mpeg',
-											'video/mswmv',
-											'video/msasf',
-											'video/msvideo',
-											'video/quicktime',
-											'video/flv',
-											'video/ogg',
-											),
-							'extensions' => array('ffmpeg', 'gd'),
-							);
+		'mimeTypes' => array(
+			'video/mpeg',
+			'video/mswmv',
+			'video/msasf',
+			'video/msvideo',
+			'video/quicktime',
+			'video/flv',
+			'video/ogg',
+		),
+		'extensions' => array('ffmpeg', 'gd'),
+	);
 
 	function initialize(&$Medium) {
 		if (isset($Medium->objects['ffmpeg_movie'])) {
@@ -47,12 +47,11 @@ class FfmpegVideoMediumAdapter extends MediumAdapter {
 		}
 
 		$Medium->objects['ffmpeg_movie'] = new ffmpeg_movie($Medium->file);
-
 		return true;
 	}
 
 	function convert(&$Medium, $mimeType) {
-		if(Medium::name(null, $mimeType) === 'Image') {
+		if (Medium::name(null, $mimeType) === 'Image') {
 			$randomFrame = rand(1, $Medium->objects['ffmpeg_movie']->getFrameCount() - 1);
 			$resource = $Medium->objects['ffmpeg_movie']->getFrame($randomFrame)->toGDImage();
 

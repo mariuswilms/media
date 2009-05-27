@@ -47,7 +47,7 @@ class TransferBehavior extends ModelBehavior {
  *
  * trustClient
  * 	false -
- * 	true  - Trust the mime type submitted together with an upload
+ * 	true  - Trust the MIME type submitted together with an upload
  *
  * destinationFile
  *  A path (withouth leading slash) relative to `baseDirectory`.
@@ -78,34 +78,34 @@ class TransferBehavior extends ModelBehavior {
  * @var array
  */
 	var $_defaultSettings = array(
-			'trustClient'     => false,
-			'destinationFile' => ':Medium.short::DS::Source.basename:',
-			'baseDirectory'   => MEDIA_TRANSFER,
-			'createDirectory' => true,
-		);
+		'trustClient'     => false,
+		'destinationFile' => ':Medium.short::DS::Source.basename:',
+		'baseDirectory'   => MEDIA_TRANSFER,
+		'createDirectory' => true,
+	);
 /**
  * Default runtime
  *
  * @var array
  */
 	var $_defaultRuntime = array(
-			'source'       => null,
-			'temporary'    => null,
-			'destination'  => null,
-			'isReady'      => false,
-			'hasPerformed' => false,
-			'markers'      => array(),
-			);
+		'source'       => null,
+		'temporary'    => null,
+		'destination'  => null,
+		'isReady'      => false,
+		'hasPerformed' => false,
+		'markers'      => array(),
+	);
 /**
  * Setup
  *
  * Merges default settings with provided config and sets default validation options
  *
- * @param object $model
+ * @param Model $Model
  * @param array $config @see _defaultSettings for configuration options
  * @return void
  */
-	function setup(&$model, $config = null) {
+	function setup(&$Model, $config = null) {
 		if (!is_array($config)) {
 			$config = array();
 		}
@@ -114,7 +114,7 @@ class TransferBehavior extends ModelBehavior {
 		if (isset($config['destinationFile'])
 		&& preg_match('/:(MEDIA|APP|TMP|WEBROOT)+/', $config['destinationFile'])) {
 			$message  = "TransferBehavior::setup - ";
-			$message .= "The syntax of the `destinationFile` options has been changed. ";
+			$message .= "The syntax of the `destinationFile` option has been changed. ";
 			$message .= "It should hold a relative path only. ";
 			$message .=  "See also the `baseDirectory' option.";
 			trigger_error($message, E_USER_NOTICE);
@@ -123,165 +123,150 @@ class TransferBehavior extends ModelBehavior {
 		}
 
 		/* If present validation rules get some sane default values */
-		if (isset($model->validate['file'])) {
+		if (isset($Model->validate['file'])) {
 			$default = array('allowEmpty' => true, 'required' => false, 'last' => true);
 
-			foreach ($model->validate['file'] as &$rule) {
+			foreach ($Model->validate['file'] as &$rule) {
 				$rule = array_merge($default, $rule);
 			}
 		}
 
-		$this->settings[$model->alias] = $config + $this->_defaultSettings;
-		$this->runtime[$model->alias] = $this->_defaultRuntime;
+		$this->settings[$Model->alias] = $config + $this->_defaultSettings;
+		$this->runtime[$Model->alias] = $this->_defaultRuntime;
 	}
 /**
  * Run before any or if validation occurs
  *
- * @param object $model
- * @return bool true
+ * Triggers `prepare()` setting source, temporary and destination to
+ * enable validation rules to check the transfer. If that fails
+ * invalidates the model.
+ *
+ * @param Model $Model
+ * @return boolean
  */
-	function beforeValidate(&$model) {
-		/*
-		 * Try to set source(,temporary) and destination
-		 * enabling validation rules to check transfer
-		 */
-		if ($this->prepare($model) === false) {
-			$model->invalidate('file', 'error'); // preparation error
+	function beforeValidate(&$Model) {
+		if ($this->prepare($Model) === false) {
+			$Model->invalidate('file', 'error');
 			return false;
 		}
-
-		// ...
-
 		return true;
 	}
 /**
- * Triggers beforeEnter, performs transfer
+ * Triggers `prepare()` and performs transfer
  *
- * @param object $model
- * @return bool
+ * If transfer is unsuccessful save operation will abort.
+ *
+ * @param Model $Model
+ * @return boolean
  */
-	function beforeSave(&$model) {
-		$preparation = $this->prepare($model);
+	function beforeSave(&$Model) {
+		$preparation = $this->prepare($Model);
 
 		if ($preparation === false) {
-			/* Malformed-nonblank resource or other error: Implies not ready */
-			/* Failing hard here can be circumvented by using provided validations */
 			return false;
 		}
 		if ($preparation === null) {
-			/* Blank resource or file field not present: Nothing to transfer */
-			if (array_key_exists('file', $model->data[$model->alias])) {
-				unset($model->data[$model->alias]['file']);
+			if (array_key_exists('file', $Model->data[$Model->alias])) {
+				unset($Model->data[$Model->alias]['file']);
 			}
  			return true;
 		}
+		extract($this->runtime[$Model->alias], EXTR_SKIP);
+		extract($this->settings[$Model->alias], EXTR_SKIP);
 
-		extract($this->runtime[$model->alias], EXTR_SKIP);
-		extract($this->settings[$model->alias], EXTR_SKIP);
-
-		/*
-		 * Transfer is finally launched here because this way
-		 * we're sure that we don't create a zombie record on failure
-		 */
-		if (!$this->perform($model)) { /* uses source, etc. from runtime */
+		if (!$this->perform($Model)) { /* uses source, etc. from runtime */
 			return false;
 		}
-
-		$model->data[$model->alias]['file'] = $destination['dirname'] . DS . $destination['basename'];
-
-		return $model->data[$model->alias];
+		$Model->data[$Model->alias]['file'] = $destination['dirname'] . DS . $destination['basename'];
+		return $Model->data[$Model->alias];
 	}
 /**
- * Triggered before beforeValidation and before beforeSave or upon user request
+ * Triggered by `beforeValidate`, `beforeSave` or upon user request
  *
- * Prepares runtime for being used by the execute method
+ * Prepares runtime for being used by `perform()`
  *
- * @param object $model
+ * @param Model $Model
  * @param string $file Optionally provide a valid transfer resource to be used as source
  * @return mixed true if transfer is ready to be performed, false on error, null if no data was found
  */
-	function prepare(&$model, $file = null) {
-		if (isset($model->data[$model->alias]['file'])) {
-			$file = $model->data[$model->alias]['file'];
+	function prepare(&$Model, $file = null) {
+		if (isset($Model->data[$Model->alias]['file'])) {
+			$file = $Model->data[$Model->alias]['file'];
 		}
 		if (empty($file)) {
 			return null;
 		}
-		if ($this->runtime[$model->alias]['hasPerformed']) {
-			$this->reset($model);
+		if ($this->runtime[$Model->alias]['hasPerformed']) {
+			$this->reset($Model);
 		}
-		if ($this->runtime[$model->alias]['isReady']) {
+		if ($this->runtime[$Model->alias]['isReady']) {
 			return true;
 		}
-		/* Extract runtime after reset to get default values */
-		extract($this->settings[$model->alias], EXTR_SKIP);
-		extract($this->runtime[$model->alias], EXTR_SKIP);
+		/* Extraction must happen after reset */
+		extract($this->settings[$Model->alias], EXTR_SKIP);
+		extract($this->runtime[$Model->alias], EXTR_SKIP);
 
 		if (TransferValidation::blank($file)) {
 			/* Set explicitly null enabling allowEmpty in rules act upon emptiness */
-			return $model->data[$model->alias]['file'] = null;
+			return $Model->data[$Model->alias]['file'] = null;
 		}
 
-		if ($source = $this->_source($model, $file)) {
-			$this->runtime[$model->alias]['source'] = $source;
+		if ($source = $this->_source($Model, $file)) {
+			$this->runtime[$Model->alias]['source'] = $source;
 		} else {
 			return false;
 		}
+		/* Temporary is optional and can fail */
 		if ($source['type'] !== 'file-local') {
-			/* Temporary is allowed to fail silently */
-			$temporary = $this->runtime[$model->alias]['temporary'] = $this->_temporary($model, $file);
+			$temporary = $this->runtime[$Model->alias]['temporary'] = $this->_temporary($Model, $file);
 		}
 
-		/*
-		 * Fill Markers to enable substitution in destinationFile
-		 * Add more markers here if you need them in your path
-		 */
-		$this->_addMarker($model, 'DS', DS);
+		$this->_addMarker($Model, 'DS', DS);
 
-		$this->_addMarker($model, 'uuid', String::uuid());
-		$this->_addMarker($model, 'unixTimestamp', time());
-		$this->_addMarker($model, 'year', date('Y'));
-		$this->_addMarker($model, 'month', date('m'));
-		$this->_addMarker($model, 'day', date('d'));
+		$this->_addMarker($Model, 'uuid', String::uuid());
+		$this->_addMarker($Model, 'unixTimestamp', time());
+		$this->_addMarker($Model, 'year', date('Y'));
+		$this->_addMarker($Model, 'month', date('m'));
+		$this->_addMarker($Model, 'day', date('d'));
 
-		$filename = $this->_addMarker($model, 'Source.filename', $source['filename'], true);
-		$extension = $this->_addMarker($model, 'Source.extension', $source['extension'], true);
-		$this->_addMarker($model, 'Source.basename', empty($extension) ? $filename : $filename . '.' . $extension);
-		$this->_addMarker($model, 'Source.mimeType', $source['mimeType'], true);
-		$this->_addMarker($model, 'Source.type', $source['type']);
+		$filename = $this->_addMarker($Model, 'Source.filename', $source['filename'], true);
+		$extension = $this->_addMarker($Model, 'Source.extension', $source['extension'], true);
+		$this->_addMarker($Model, 'Source.basename', empty($extension) ? $filename : $filename . '.' . $extension);
+		$this->_addMarker($Model, 'Source.mimeType', $source['mimeType'], true);
+		$this->_addMarker($Model, 'Source.type', $source['type']);
 
-		/* Figure out medium type and map it */
-		$this->_addMarker($model, 'Medium.name', strtolower(Medium::name($source['file'], $source['mimeType'])));
-		$this->_addMarker($model, 'Medium.short', Medium::short($source['file'], $source['mimeType']));
+		$this->_addMarker($Model, 'Medium.name', strtolower(Medium::name($source['file'], $source['mimeType'])));
+		$this->_addMarker($Model, 'Medium.short', Medium::short($source['file'], $source['mimeType']));
 
-		if (isset($model->data[$model->alias])) { /* Needed for tableless Models */
-			$this->_addMarker($model, $model->alias . '.', $model->data[$model->alias], true);
-			$this->_addMarker($model, 'Model.', $model->data[$model->alias], true);
+		/* Needed for tableless Models */
+		if (isset($Model->data[$Model->alias])) {
+			$this->_addMarker($Model, $Model->alias . '.', $Model->data[$Model->alias], true);
+			$this->_addMarker($Model, 'Model.', $Model->data[$Model->alias], true);
 		}
-		$this->_addMarker($model, 'Model.name', $model->name);
-		$this->_addMarker($model, 'Model.alias', $model->alias);
+		$this->_addMarker($Model, 'Model.name', $Model->name);
+		$this->_addMarker($Model, 'Model.alias', $Model->alias);
 
-		/* Destination */
-		$file = $baseDirectory . $this->_replaceMarker($model, $destinationFile);
+		$file = $baseDirectory . $this->_replaceMarker($Model, $destinationFile);
 
-		if ($destination = $this->_destination($model, $file)) {
-			$this->runtime[$model->alias]['destination'] = $destination;
+		if ($destination = $this->_destination($Model, $file)) {
+			$this->runtime[$Model->alias]['destination'] = $destination;
 		} else {
 			return false;
 		}
 
-		/* Do error checks */
 		if ($source == $destination || $temporary == $destination) {
 			return false;
 		}
 
 		$Folder = new Folder($destination['dirname'], $createDirectory);
+
 		if (!$Folder->pwd()) {
-			trigger_error('TransferBehavior::prepare - Directory \'' . $destination['dirname'] . '\' could not be created or is not writable. Please check your permissions.', E_USER_WARNING);
+			$message  = "TransferBehavior::prepare - Directory `{$destination['dirname']}` could ";
+			$message .= "not be created or is not writable. Please check the permissions.";
+			trigger_error($message, E_USER_WARNING);
 			return false;
 		}
-
-		return $this->runtime[$model->alias]['isReady'] = true; /* Ready ! */
+		return $this->runtime[$Model->alias]['isReady'] = true;
 	}
 /**
  * Parse data to be used as source
@@ -290,13 +275,13 @@ class TransferBehavior extends ModelBehavior {
  * @return mixed Array with parsed results on success, false on error
  * @todo evaluate errors in file uploads
  */
-	function _source(&$model, $data) {
+	function _source(&$Model, $data) {
 		if (TransferValidation::fileUpload($data)) {
-			return array_merge($this->info($model, $data), array('error' => $data['error']));
+			return array_merge($this->info($Model, $data), array('error' => $data['error']));
 		} elseif (MediaValidation::file($data)) {
-			return $this->info($model, $data);
+			return $this->info($Model, $data);
 		} elseif (TransferValidation::url($data, array('scheme' => 'http'))) {
-			return $this->info($model, $data);
+			return $this->info($Model, $data);
 		}
 		return false;
 	}
@@ -306,11 +291,15 @@ class TransferBehavior extends ModelBehavior {
  * @param mixed Path to file in local FS or file-upload array
  * @return mixed Array with parsed results on success, false on error
  */
-	function _temporary(&$model, $data) {
-		if (TransferValidation::fileUpload($data) && TransferValidation::uploadedFile($data['tmp_name'])) {
-			return array_merge($this->info($model, $data['tmp_name']), array('error' => $data['error']));
+	function _temporary(&$Model, $data) {
+		if (TransferValidation::fileUpload($data)
+		&& TransferValidation::uploadedFile($data['tmp_name'])) {
+			return array_merge(
+				$this->info($Model, $data['tmp_name']),
+				array('error' => $data['error'])
+			);
 		} elseif (MediaValidation::file($data)) {
-			return $this->info($model, $data);
+			return $this->info($Model, $data);
 		}
 		return false;
 	}
@@ -320,41 +309,45 @@ class TransferBehavior extends ModelBehavior {
  * @param mixed Path to file in local FS
  * @return mixed Array with parsed results on success, false on error
  */
-	function _destination(&$model, $data) {
-		if (MediaValidation::file($data , false)) { /* Destination file may not exist yet */
+	function _destination(&$Model, $data) {
+		/* Destination file may not exist yet */
+		if (MediaValidation::file($data , false)) {
 			if (!$data = $this->_alternativeFile($data)) {
-				$this->log('TransferBehavior::_destination - Exceeded # of max. tries while finding alt. name for \'' . basename($data) . '\'');
+				$message  = "TransferBehavior::_destination - ";
+				$message .= "Exceeded number of max. tries while finding alt. name ";
+				$message .= "for `" . basename($data) . "`";
+				trigger_error($message, E_USER_NOTICE);
 				return false;
 			}
-			return $this->info($model, $data);
+			return $this->info($Model, $data);
 		}
 		return false;
 	}
 /**
  * Performs a transfer
  *
- * @param object $model
+ * @param Model $Model
  * @param array $source
  * @param array $temporary
  * @param array $destination
- * @return bool true on success, false on failure
+ * @return boolean true on success, false on failure
  */
-	function perform(&$model) {
-		$source      = $this->runtime[$model->alias]['source'];
-		$temporary   = $this->runtime[$model->alias]['temporary'];
-		$destination = $this->runtime[$model->alias]['destination'];
+	function perform(&$Model) {
+		$source      = $this->runtime[$Model->alias]['source'];
+		$temporary   = $this->runtime[$Model->alias]['temporary'];
+		$destination = $this->runtime[$Model->alias]['destination'];
 
 		$typeChain = implode('>>', array($source['type'], $temporary['type'], $destination['type']));
 		$fileChain = implode('>>', array($source['file'], $temporary['file'], $destination['file']));
 
 		if ($typeChain === 'file-upload-remote>>uploaded-file-local>>file-local') {
-			return $this->runtime[$model->alias]['hasPerformed'] = move_uploaded_file($temporary['file'], $destination['file']);
+			return $this->runtime[$Model->alias]['hasPerformed'] = move_uploaded_file($temporary['file'], $destination['file']);
 		}
 		if ($typeChain === 'file-local>>>>file-local') {
-			return $this->runtime[$model->alias]['hasPerformed'] = copy($source['file'], $destination['file']);
+			return $this->runtime[$Model->alias]['hasPerformed'] = copy($source['file'], $destination['file']);
 		}
 		if ($typeChain === 'file-local>>file-local>>file-local') {
-			return $this->runtime[$model->alias]['hasPerformed'] = copy($source['file'], $temporary['file']) && rename($temporary['file'], $destination['file']);
+			return $this->runtime[$Model->alias]['hasPerformed'] = copy($source['file'], $temporary['file']) && rename($temporary['file'], $destination['file']);
 		}
 		if ($source['type'] === 'http-url-remote') {
 			if(!class_exists('HttpSocket')) {
@@ -365,39 +358,39 @@ class TransferBehavior extends ModelBehavior {
 			$Socket->request(array('method' => 'GET', 'uri' => $source['file']));
 
 			if (!empty($Socket->error) || $Socket->response['status']['code'] != 200) {
-				return $this->runtime[$model->alias]['hasPerformed'] = false;
+				return $this->runtime[$Model->alias]['hasPerformed'] = false;
 			}
 		}
 		if ($typeChain === 'http-url-remote>>>>file-local') {
-			return $this->runtime[$model->alias]['hasPerformed'] = file_put_contents($destination['file'], $Socket->response['body']);
+			return $this->runtime[$Model->alias]['hasPerformed'] = file_put_contents($destination['file'], $Socket->response['body']);
 		}
 		if($typeChain === 'http-url-remote>>file-local>>file-local') {
-			return $this->runtime[$model->alias]['hasPerformed'] = file_put_contents($temporary['file'], $Socket->response['body']) && rename($temporary['file'], $destination['file']);
+			return $this->runtime[$Model->alias]['hasPerformed'] = file_put_contents($temporary['file'], $Socket->response['body']) && rename($temporary['file'], $destination['file']);
 		}
-		return $this->runtime[$model->alias]['hasPerformed'] = false;
+		return $this->runtime[$Model->alias]['hasPerformed'] = false;
 	}
 /**
  * Resets runtime property
  *
- * @param object $model
+ * @param Model $Model
  * @return void
  */
-	function reset(&$model) {
-		$this->runtime[$model->alias]['source']       = null;
-		$this->runtime[$model->alias]['temporary']    = null;
-		$this->runtime[$model->alias]['destination']  = null;
-		$this->runtime[$model->alias]['isReady']      = false;
-		$this->runtime[$model->alias]['hasPerformed'] = false;
-		$this->runtime[$model->alias]['markers']      = array();
+	function reset(&$Model) {
+		$this->runtime[$Model->alias]['source']       = null;
+		$this->runtime[$Model->alias]['temporary']    = null;
+		$this->runtime[$Model->alias]['destination']  = null;
+		$this->runtime[$Model->alias]['isReady']      = false;
+		$this->runtime[$Model->alias]['hasPerformed'] = false;
+		$this->runtime[$Model->alias]['markers']      = array();
 	}
 /**
  * Convenience method which (if available) returns absolute path to last transferred file
  *
- * @param object $model
+ * @param Model $Model
  * @return mixed
  */
-	function getLastTransferredFile(&$model) {
-		extract($this->runtime[$model->alias], EXTR_SKIP);
+	function getLastTransferredFile(&$Model) {
+		extract($this->runtime[$Model->alias], EXTR_SKIP);
 
 		if ($hasPerformed) {
 			return $destination['file'];
@@ -409,23 +402,23 @@ class TransferBehavior extends ModelBehavior {
  *
  * @see TransferBehavior::source
  *
- * @param object $model
+ * @param Model $Model
  * @param array $field
- * @return bool
+ * @return boolean
  */
-	function checkResource(&$model, $field) {
+	function checkResource(&$Model, $field) {
 		return TransferValidation::resource(current($field));
 	}
 /**
  * Checks if sufficient permissions are set to access the resource
  * Source must be readable, temporary read or writable, destination writable
  *
- * @param object $model
+ * @param Model $Model
  * @param array $field
- * @return bool
+ * @return boolean
  */
-	function checkAccess(&$model, $field) {
-		extract($this->runtime[$model->alias]);
+	function checkAccess(&$Model, $field) {
+		extract($this->runtime[$Model->alias]);
 
 		if (MediaValidation::file($source['file'], true)) {
 			if (!MediaValidation::access($source['file'], 'r')) {
@@ -436,7 +429,6 @@ class TransferBehavior extends ModelBehavior {
 				return false;
 			}
 		}
-
 		if (!empty($temporary)) {
 			if (MediaValidation::file($temporary['file'], true)) {
 				if (!MediaValidation::access($temporary['file'], 'r')) {
@@ -448,7 +440,6 @@ class TransferBehavior extends ModelBehavior {
 				}
 			}
 		}
-
 		if (!MediaValidation::access($destination['dirname'], 'w')) {
 			return false;
 		}
@@ -457,21 +448,21 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Checks if resource is located within given locations
  *
- * @param object $model
+ * @param Model $Model
  * @param array $field
  * @param mixed $allow True or * allows any location, an array containing absolute paths to locations
- * @return bool
+ * @return boolean
  */
-	function checkLocation(&$model, $field, $allow = true) {
-		extract($this->runtime[$model->alias]);
-		$allow = $this->_replaceMarker($model, $allow);
+	function checkLocation(&$Model, $field, $allow = true) {
+		extract($this->runtime[$Model->alias]);
+		$allow = $this->_replaceMarker($Model, $allow);
 
 		foreach (array('source', 'temporary', 'destination') as $type) {
 			if ($type == 'temporary' && empty($$type)) {
-				continue(1);
+				continue;
 			}
 			if ($type == 'source' && ${$type}['type'] == 'file-upload-remote') {
-				continue(1);
+				continue;
 			}
 			if (!MediaValidation::location(${$type}['file'], $allow)) {
 				return false;
@@ -482,17 +473,19 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Checks if provided or potentially dangerous permissions are set
  *
- * @param object $model
+ * @param Model $Model
  * @param array $field
- * @param mixed $match True to check for potentially dangerous permissions, a string containing the 4-digit octal value of the permissions to check for an exact match, false to allow any permissions
- * @return bool
+ * @param mixed $match True to check for potentially dangerous permissions,
+ * 	a string containing the 4-digit octal value of the permissions to check for an exact match,
+ * 	false to allow any permissions
+ * @return boolean
  */
-	function checkPermission(&$model, $field, $match = true) {
-		extract($this->runtime[$model->alias]);
+	function checkPermission(&$Model, $field, $match = true) {
+		extract($this->runtime[$Model->alias]);
 
 		foreach (array('source', 'temporary') as $type) {
 			if ($type == 'temporary' && empty($$type)) {
-				continue(1);
+				continue;
 			}
 			if (!MediaValidation::permission(${$type}['permission'], $match)) {
 				return false;
@@ -504,20 +497,20 @@ class TransferBehavior extends ModelBehavior {
  * Checks if resource doesn't exceed provided size
  *
  * Please note that the size will always be checked against
- * limitations set in php.ini for post_max_size and upload_max_filesize
- * even if $max is set to false
+ * limitations set in `php.ini` for `post_max_size` and `upload_max_filesize`
+ * even if $max is set to false.
  *
- * @param object $model
+ * @param Model $Model
  * @param array $field
  * @param mixed $max String (e.g. 8M) containing maximum allowed size, false allows any size
- * @return bool
+ * @return boolean
  */
-	function checkSize(&$model, $field, $max = false) {
-		extract($this->runtime[$model->alias]);
+	function checkSize(&$Model, $field, $max = false) {
+		extract($this->runtime[$Model->alias]);
 
 		foreach (array('source', 'temporary') as $type) {
 			if ($type == 'temporary' && empty($$type)) {
-				continue(1);
+				continue;
 			}
 			if (!MediaValidation::size(${$type}['size'], $max)) {
 				return false;
@@ -532,17 +525,17 @@ class TransferBehavior extends ModelBehavior {
  * the image gets resized later. You can calculate the amount of memory used
  * like this: width * height * 4 + overhead
  *
- * @param object $model
+ * @param Model $Model
  * @param array $field
  * @param mixed $max String (e.g. 40000 or 200x100) containing maximum allowed amount of pixels
- * @return bool
+ * @return boolean
  */
-	function checkPixels(&$model, $field, $max = false) {
-		extract($this->runtime[$model->alias]);
+	function checkPixels(&$Model, $field, $max = false) {
+		extract($this->runtime[$Model->alias]);
 
 		foreach (array('source', 'temporary') as $type) { /* pixels value is optional */
 			if(($type == 'temporary' && empty($$type)) || !isset(${$type}['pixels'])) {
-				continue(1);
+				continue;
 			}
 			if(!MediaValidation::pixels(${$type}['pixels'], $max)) {
 				return false;
@@ -553,18 +546,22 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Checks if resource has (not) one of given extensions
  *
- * @param object $model
+ * @param Model $Model
  * @param array $field
- * @param mixed $deny True or * blocks any extension, an array containing extensions (w/o leading dot) selectively blocks, false blocks no extension
- * @param mixed $allow True or * allows any extension, an array containing extensions (w/o leading dot) selectively allows, false allows no extension
- * @return bool
+ * @param mixed $deny True or * blocks any extension,
+ * 	an array containing extensions (w/o leading dot) selectively blocks,
+ * 	false blocks no extension
+ * @param mixed $allow True or * allows any extension,
+ * 	an array containing extensions (w/o leading dot) selectively allows,
+ * 	false allows no extension
+ * @return boolean
  */
-	function checkExtension(&$model, $field, $deny = false, $allow = true) {
-		extract($this->runtime[$model->alias]);
+	function checkExtension(&$Model, $field, $deny = false, $allow = true) {
+		extract($this->runtime[$Model->alias]);
 
 		foreach (array('source', 'temporary', 'destination') as $type) {
 			if (($type == 'temporary' && empty($$type)) || !isset(${$type}['extension'])) {
-				continue(1);
+				continue;
 			}
 			if (!MediaValidation::extension(${$type}['extension'], $deny, $allow)) {
 				return false;
@@ -573,17 +570,21 @@ class TransferBehavior extends ModelBehavior {
 		return true;
 	}
 /**
- * Checks if resource has (not) one of given mime types
+ * Checks if resource has (not) one of given MIME types
  *
- * @param object $model
+ * @param Model $Model
  * @param array $field
- * @param mixed $deny True or * blocks any mime type, an array containing mime types selectively blocks, false blocks no mime type
- * @param mixed $allow True or * allows any extension, an array containing extensions selectively allows, false allows no mime type
- * @return bool
+ * @param mixed $deny True or * blocks any MIME type,
+ * 	an array containing MIME types selectively blocks,
+ * 	false blocks no MIME type
+ * @param mixed $allow True or * allows any extension,
+ * 	an array containing extensions selectively allows,
+ * 	false allows no MIME type
+ * @return boolean
  */
-	function checkMimeType(&$model, $field, $deny = false, $allow = true) {
-		extract($this->runtime[$model->alias]);
-		extract($this->settings[$model->alias], EXTR_SKIP);
+	function checkMimeType(&$Model, $field, $deny = false, $allow = true) {
+		extract($this->runtime[$Model->alias]);
+		extract($this->settings[$Model->alias], EXTR_SKIP);
 
 		foreach (array('source', 'temporary') as $type) {
 			/*
@@ -595,11 +596,13 @@ class TransferBehavior extends ModelBehavior {
 			 * ------|----------|----------------------------
 			 * false | x/x,null | x/x,null    | null
 			 */
+			/* Temporary is optional */
 			if ($type === 'temporary' && empty($$type)) {
-				continue(1); // some transfers dont use a temporary
+				continue;
 			}
+			/* With `trustClient` set to `false` we don't necessarily have a MIME type */
 			if (!isset(${$type}['mimeType']) && !$trustClient) {
-				continue(1); // with trustClient set to false we don't necessarily have a MIME type
+				continue;
 			}
 			if (!MediaValidation::mimeType(${$type}['mimeType'], $deny, $allow)) {
 				return false;
@@ -611,42 +614,41 @@ class TransferBehavior extends ModelBehavior {
  * Gather/Return information about a resource
  *
  * @param mixed $resource Path to file in local FS, URL or file-upload array
- * @param string $what scheme,host,port,file,mime type,size,permission,dirname,basename,filename,extension or type
+ * @param string $what scheme, host, port, file, MIME type, size, permission,
+ * 	dirname, basename, filename, extension or type
  * @return mixed
  */
-	function info(&$model, $resource, $what = null) {
-		extract($this->settings[$model->alias], EXTR_SKIP);
+	function info(&$Model, $resource, $what = null) {
+		extract($this->settings[$Model->alias], EXTR_SKIP);
 
 		$defaultResource = array(
-							'scheme'      => null,
-							'host'        => null,
-							'port'        => null,
-							'file'        => null,
-							'mimeType'    => null,
-							'size'        => null,
-							'pixels'      => null,
-							'permisssion' => null,
-							'dirname'     => null,
-							'basename'    => null,
-							'filename'    => null,
-							'extension'   => null,
-							'type'        => null,
-							);
+			'scheme'      => null,
+			'host'        => null,
+			'port'        => null,
+			'file'        => null,
+			'mimeType'    => null,
+			'size'        => null,
+			'pixels'      => null,
+			'permisssion' => null,
+			'dirname'     => null,
+			'basename'    => null,
+			'filename'    => null,
+			'extension'   => null,
+			'type'        => null,
+		);
 
-		/* HTTP Url */
-		/* Currently http is supported only */
+		/* Currently HTTP is supported only */
 		if (TransferValidation::url($resource, array('scheme' => 'http'))) {
 			$resource = array_merge(
-							$defaultResource,
-							pathinfo(parse_url($resource, PHP_URL_PATH)),
-							array(
-								'scheme' => parse_url($resource, PHP_URL_SCHEME),
-								'host'   => parse_url($resource, PHP_URL_HOST),
-								'port'   => parse_url($resource, PHP_URL_PORT),
-								'file'   => $resource,
-								'type'   => 'http-url-remote',
-								)
-							);
+				$defaultResource,
+				pathinfo(parse_url($resource, PHP_URL_PATH)),
+				array(
+					'scheme' => parse_url($resource, PHP_URL_SCHEME),
+					'host'   => parse_url($resource, PHP_URL_HOST),
+					'port'   => parse_url($resource, PHP_URL_PORT),
+					'file'   => $resource,
+					'type'   => 'http-url-remote',
+			));
 
 			if (!class_exists('HttpSocket')) {
 				App::import('Core', 'HttpSocket');
@@ -656,26 +658,22 @@ class TransferBehavior extends ModelBehavior {
 
 			if (empty($Socket->error) && $Socket->response['status']['code'] == 200) {
 				$resource = array_merge(
-								$resource,
-								array(
-									'size'       => $Socket->response['header']['Content-Length'],
-									'mimeType'   => $trustClient ? $Socket->response['header']['Content-Type'] : null,
-									'permission' => '0004'
-									)
-								);
+					$resource,
+					array(
+						'size'       => $Socket->response['header']['Content-Length'],
+						'mimeType'   => $trustClient ? $Socket->response['header']['Content-Type'] : null,
+						'permission' => '0004'
+				));
 			}
-
-		/* File */
 		} elseif (MediaValidation::file($resource, false)) {
 			$resource = array_merge(
-							$defaultResource,
-							pathinfo($resource),
-							array(
-								'file' => $resource,
-								'host' => 'localhost',
-								'mimeType'   => MimeType::guessType($resource, array('paranoid' => !$trustClient)),
-								)
-							);
+				$defaultResource,
+				pathinfo($resource),
+				array(
+					'file' => $resource,
+					'host' => 'localhost',
+					'mimeType'   => MimeType::guessType($resource, array('paranoid' => !$trustClient)),
+			));
 
 			if (TransferValidation::uploadedFile($resource['file'])) {
 				$resource['type'] = 'uploaded-file-local';
@@ -685,36 +683,31 @@ class TransferBehavior extends ModelBehavior {
 
 			if (is_readable($resource['file'])) {
 				/*
-				 * Because there is not good way to determine if resource is an image
+				 * Because there is not better  way to determine if resource is an image
 				 * first, we suppress a warning that would be thrown here otherwise.
 				 */
 				list($width, $height) = @getimagesize($resource['file']);
 
 				$resource = array_merge(
-								$resource,
-								array(
-									'size'       => filesize($resource['file']),
-									'permission' => substr(sprintf('%o', fileperms($resource['file'])), -4),
-									'pixels'     => $width * $height,
-									)
-								);
+					$resource,
+					array(
+						'size'       => filesize($resource['file']),
+						'permission' => substr(sprintf('%o', fileperms($resource['file'])), -4),
+						'pixels'     => $width * $height,
+				));
 			}
-
-		/* File Upload */
 		} elseif (TransferValidation::fileUpload($resource)) {
 			$resource = array_merge(
-							$defaultResource,
-							pathinfo($resource['name']),
-							array(
-								'file'       => $resource['name'],
-								'host'       => env('REMOTE_ADDR'),
-								'size'       => $resource['size'],
-								'mimeType'   => $trustClient ? $resource['type'] : null,
-								'permission' => '0004',
-								'type'       => 'file-upload-remote',
-								)
-							);
-
+				$defaultResource,
+				pathinfo($resource['name']),
+				array(
+					'file'       => $resource['name'],
+					'host'       => env('REMOTE_ADDR'),
+					'size'       => $resource['size'],
+					'mimeType'   => $trustClient ? $resource['type'] : null,
+					'permission' => '0004',
+					'type'       => 'file-upload-remote',
+			));
 		} else {
 			return null;
 		}
@@ -730,11 +723,12 @@ class TransferBehavior extends ModelBehavior {
  * Finds an alternative filename for an already existing file
  *
  * @param string $file Absolute path to file in local FS
- * @param int $tries Number of tries
+ * @param integer $tries Number of tries
  * @return mixed A string if an alt. name was found, false if number of tries were exceeded
  */
 	function _alternativeFile($file, $tries = 100) {
 		extract(pathinfo($file), EXTR_SKIP);
+
 		$newFilename = $filename;
 
 		$Folder = new Folder($dirname);
@@ -759,17 +753,17 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Adds and/or overwrites marker(s)/replacement(s)
  *
- * @param object $model
+ * @param Model $Model
  * @param string $marker The name of the marker, or the prefix for mapped markers
  * @param string $replacement  String or an array mapping markers to replacements
  */
-	function _addMarker(&$model, $marker, $replacement = null, $slugify = false) {
+	function _addMarker(&$Model, $marker, $replacement = null, $slugify = false) {
 		if (is_array($replacement)) {
 			foreach ($replacement as $subMarker => $subReplacement) {
 				if (is_array($subReplacement)) {
-					continue(1);
+					continue;
 				}
-				$this->_addMarker($model, $marker . $subMarker, $subReplacement, $slugify);
+				$this->_addMarker($Model, $marker . $subMarker, $subReplacement, $slugify);
 			}
 			return true;
 		}
@@ -777,21 +771,20 @@ class TransferBehavior extends ModelBehavior {
 		if ($slugify) {
 			$replacement = strtolower(Inflector::slug($replacement, '_'));
 		}
-
-		return $this->runtime[$model->alias]['markers'][$marker] = $replacement;
+		return $this->runtime[$Model->alias]['markers'][$marker] = $replacement;
 	}
 /**
  * Replace with constants and dynamic replacements
  *
- * @param object $model
+ * @param Model $Model
  * @param mixed $subject Array holding multiple strings or a single string
- * @param bool $safe Make result safe for e.g. filenames
+ * @param boolean $safe Make result safe for e.g. filenames
  * @return string
  */
-	function _replaceMarker(&$model, $subject) {
+	function _replaceMarker(&$Model, $subject) {
 		if(is_array($subject)) {
 			foreach ($subject as $s) {
-				$result[] = $this->_replaceMarker($model, $s);
+				$result[] = $this->_replaceMarker($Model, $s);
 			}
 			return $result;
 		}
@@ -800,11 +793,20 @@ class TransferBehavior extends ModelBehavior {
 			return $subject;
 		}
 
-		$markers = Set::filter($this->runtime[$model->alias]['markers']);
-		$subject = String::insert($subject, $markers, array('before' => ':', 'after' => ':', 'clean' => true, 'replacement' => 'unknown_marker'));
+		$markers = Set::filter($this->runtime[$Model->alias]['markers']);
+		$subject = String::insert($subject, $markers, array(
+			'before' => ':', 'after' => ':',
+			'clean' => true,
+			'replacement' => 'unknown_marker'
+		));
 
 		if (strpos($subject, 'unknown_marker') !== false) {
-			trigger_error('TransferBehavior::_replaceMarker - Failed to replace all markers of subject \'' . $subject . '\'. Did you setup the Behavior correctly? Check the configuration you provided for TransferBehavior in your \'' . $model->name . '\' model.', E_USER_WARNING);
+			$message  = "TransferBehavior::_replaceMarker - ";
+			$message .= "Failed to replace all markers of subject `{$subject}`. ";
+			$message .= "Did you setup the behavior correctly? ";
+			$message .= "Check the configuration you provided for TransferBehavior ";
+			$message .= "in your `{$Model->name}` model.";
+			trigger_error($message, E_USER_WARNING);
 			return false;
 		}
 		return $subject;

@@ -1,4 +1,4 @@
- <?php
+<?php
  /**
  * Jsmin Medium Adapter File
  *
@@ -24,11 +24,10 @@
  * @link       http://code.google.com/p/jsmin-php/
  */
 class JsminMediumAdapter extends MediumAdapter {
-
 	var $require = array(
-							'mimeTypes' => array('application/javascript'),
-							'imports' => array(array('type' => 'Vendor', 'name'=> 'JSMin', 'file' => 'jsmin.php')),
-							);
+		'mimeTypes' => array('application/javascript'),
+		'imports' => array(array('type' => 'Vendor', 'name'=> 'JSMin', 'file' => 'jsmin.php')),
+	);
 
 	function initialize(&$Medium) {
 		if (isset($Medium->contents['raw'])) {
@@ -38,7 +37,6 @@ class JsminMediumAdapter extends MediumAdapter {
 		if (!isset($Medium->file)) {
 			return false;
 		}
-
 		return $Medium->contents['raw'] = file_get_contents($Medium->file);
 	}
 

@@ -25,28 +25,27 @@
  */
 class Getid3VideoMediumAdapter extends MediumAdapter {
 	var $require = array(
-					'mimeTypes' => array(
-								'video/matroska',
-								'video/ms-wmv',
-								'video/ms-asf',
-								'video/ms-video',
-								'video/mpeg',
-								'video/quicktime',
-								'video/avi',
-								'video/mp4',
-								'video/flv',
-								'video/real-video',
-								'video/vnd.rn-realvideo',
-								'video/pn-realvideo',
-								'video/pn-multirate-realvideo',
-								'video/nsv',
-								/* Will not be used since video Medium can't have application/... mime type */
-								'application/shockwave-flash',
-								),
-					'imports' => array(
-							array('type' => 'Vendor', 'name'=> 'getID3', 'file' => 'getid3/getid3.php')
-							),
-					);
+		'mimeTypes' => array(
+			'video/matroska',
+			'video/ms-wmv',
+			'video/ms-asf',
+			'video/ms-video',
+			'video/mpeg',
+			'video/quicktime',
+			'video/avi',
+			'video/mp4',
+			'video/flv',
+			'video/real-video',
+			'video/vnd.rn-realvideo',
+			'video/pn-realvideo',
+			'video/pn-multirate-realvideo',
+			'video/nsv',
+			/* Will not be used since video Medium can't have application/... MIME type */
+			'application/shockwave-flash',
+		),
+		'imports' => array(
+			array('type' => 'Vendor', 'name'=> 'getID3', 'file' => 'getid3/getid3.php')
+	));
 
 	function initialize(&$Medium) {
 		if (isset($Medium->objects['getID3'])) {
@@ -65,7 +64,6 @@ class Getid3VideoMediumAdapter extends MediumAdapter {
 		}
 
 		$Medium->objects['getID3'] =& $Object;
-
 		return true;
 	}
 

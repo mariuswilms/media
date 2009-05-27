@@ -25,13 +25,10 @@
  */
 class PearMp3MediumAdapter extends MediumAdapter {
 	var $require = array(
-							'mimeTypes' => array(
-									'audio/mpeg'
-									),
-							'imports' => array(
-									array('type' => 'Vendor','name'=> 'MP3_Id','file' => 'MP3/Id.php')
-									),
-							);
+		'mimeTypes' => array('audio/mpeg'),
+		'imports' => array(
+			array('type' => 'Vendor','name'=> 'MP3_Id','file' => 'MP3/Id.php')
+	));
 
 	function initialize(&$Medium) {
 		if (isset($Medium->objects['MP3_Id'])) {
@@ -47,7 +44,6 @@ class PearMp3MediumAdapter extends MediumAdapter {
 		$Object->study();
 
 		$Medium->objects['MP3_Id'] =& $Object;
-
 		return true;
 	}
 

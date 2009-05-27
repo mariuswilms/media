@@ -22,5 +22,6 @@
  * @package    media
  * @subpackage media.controllers
  */
-class MediaAppController extends AppController {}
+class MediaAppController extends AppController {
+}
 ?>

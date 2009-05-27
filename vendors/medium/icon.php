@@ -25,5 +25,6 @@ if (!class_exists('ImageMedium')) {
  * @package    media
  * @subpackage media.libs.medium
  */
-class IconMedium extends ImageMedium {}
+class IconMedium extends ImageMedium {
+}
 ?>

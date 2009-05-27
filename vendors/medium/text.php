@@ -24,78 +24,71 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class TextMedium extends Medium {
-	/**
-	 * Compatible adapters
-	 *
-	 * @var array
-	 */
+/**
+ * Compatible adapters
+ *
+ * @var array
+ */
 	var $adapters = array('PearText', 'BasicText');
-
-	/**
-	 * Number of characters
-	 *
-	 * @return int
-	 */
+/**
+ * Number of characters
+ *
+ * @return integer
+ */
 	function characters() {
 		return $this->Adapters->dispatchMethod($this, 'characters');
-	}
-
-	/**
-	 * Flesch Score
-	 *
-	 * @return float
-	 */
+	 }
+/**
+ * Flesch Score
+ *
+ * @return float
+ */
 	function fleschScore() {
 		return round($this->Adapters->dispatchMethod($this, 'fleschScore'), 2);
 	}
-
-	/**
-	 * Lexical Density in percent
-	 *
- 	 * 40- 50 low (easy to read)
-	 * 60- 70 high (hard to read)
-	 *
-	 * @link http://www.usingenglish.com/glossary/lexical-density-test.html
-	 * @return int
-	 */
+/**
+ * Lexical Density in percent
+ *
+ * 40- 50 low (easy to read)
+ * 60- 70 high (hard to read)
+ *
+ * @link http://www.usingenglish.com/glossary/lexical-density-test.html
+ * @return integer
+ */
 	function lexicalDensity() {
 		return $this->Adapters->dispatchMethod($this, 'lexicalDensity');
 	}
-
-	/**
-	 * Number of sentences
-	 *
-	 * @return int
-	 */
+/**
+ * Number of sentences
+ *
+ * @return integer
+ */
 	function sentences() {
 		return $this->Adapters->dispatchMethod($this, 'sentences');
 	}
-
-	/**
-	 * Number of syllables
-	 *
-	 * @return int
-	 */
+/**
+ * Number of syllables
+ *
+ * @return integer
+ */
 	function syllables()	{
 		return $this->Adapters->dispatchMethod($this, 'syllables');
 	}
-
-	/**
-	 * Truncate to given amount of characters
-	 *
-	 * @param int $characters
-	 * @return string
-	 */
+/**
+ * Truncate to given amount of characters
+ *
+ * @param integer $characters
+ * @return string
+ */
 	function truncate($characters) {
 		return $this->Adapters->dispatchMethod($this, 'truncate', array($characters));
 	}
-
-	/**
-	 * Number of words
-	 *
-	 * @param bool $unique
-	 * @return int
-	 */
+/**
+ * Number of words
+ *
+ * @param boolean $unique
+ * @return integer
+ */
 	function words($unique = false) {
 		return $this->Adapters->dispatchMethod($this, 'words', array($unique));
 	}

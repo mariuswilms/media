@@ -29,7 +29,7 @@ class TransferValidation extends MediaValidation {
  * Checks if subject is transferable
  *
  * @param mixed $check Path to file in local FS, URL or file-upload array
- * @return bool
+ * @return boolean
  */
 	function resource($check) {
 		if (TransferValidation::fileUpload($check)
@@ -38,41 +38,36 @@ class TransferValidation extends MediaValidation {
 		 || TransferValidation::url($check)) {
 		  	return !TransferValidation::blank($check);
 		}
-
 		return false;
 	}
 /**
  * Checks if resource is not blank or empty
  *
  * @param mixed $check Array or string
- * @return bool
+ * @return boolean
  */
 	function blank($check) {
 		if (empty($check)) {
 			return true;
 		}
-
 		if (TransferValidation::fileUpload($check) && $check['error'] == UPLOAD_ERR_NO_FILE) {
 			return true;
 		}
-
 		if (is_string($check) && Validation::blank($check)) {
 			return true;
 		}
-
 		return false;
 	}
 /**
  * Identifies a file upload array
  *
  * @param mixed $check
- * @return bool
+ * @return boolean
  */
 	function fileUpload($check) {
 		if (!is_array($check)) {
 			return false;
 		}
-
 		if (!array_key_exists('name',$check)
 		 || !array_key_exists('type',$check)
 		 || !array_key_exists('tmp_name',$check)
@@ -80,7 +75,6 @@ class TransferValidation extends MediaValidation {
 		 || !array_key_exists('size',$check)) {
 			return false;
 		}
-
 		return true;
 	}
 /**

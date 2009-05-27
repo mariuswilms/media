@@ -170,9 +170,11 @@ class SyncTask extends MediaShell {
 		list($this->__fsMap, $this->__dbMap) = $this->_generateMaps();
 
 		foreach ($this->__dbMap as $dbItem) {
-			$message = sprintf('%-60s -> %s/%s',
-								$this->shortPath($dbItem['file']),
-								$this->_Model->name, $dbItem['id']);
+			$message = sprintf(
+				'%-60s -> %s/%s',
+				$this->shortPath($dbItem['file']),
+				$this->_Model->name, $dbItem['id']
+			);
 			$this->out();
 			$this->out($message);
 
@@ -209,9 +211,12 @@ class SyncTask extends MediaShell {
 		list($this->__fsMap, $this->__dbMap) = $this->_generateMaps();
 
 		foreach ($this->__fsMap as $fsItem) {
-			$message = sprintf('%-60s <- %s/%s',
-								$this->shortPath($fsItem['file']),
-								$this->_Model->name, '?');
+			$message = sprintf(
+				'%-60s <- %s/%s',
+				$this->shortPath($fsItem['file']),
+				$this->_Model->name,
+				'?'
+			);
 			$this->out();
 			$this->out($message);
 
@@ -253,7 +258,6 @@ class SyncTask extends MediaShell {
 		if ($this->_fixWithAlternative()) {
 			return true;
 		}
-
 		if ($this->_fixDeleteRecord()) {
 			return true;
 		}
@@ -278,9 +282,9 @@ class SyncTask extends MediaShell {
 
 		if ($input == 'y') {
 			$data = array(
-						'id' => $this->__dbItem['id'],
-						'checksum' => $this->__File->md5(),
-						);
+				'id' => $this->__dbItem['id'],
+				'checksum' => $this->__File->md5(),
+			);
 			$this->_Model->save($data);
 			$this->out('Corrected checksum');
 			return true;
@@ -323,8 +327,10 @@ class SyncTask extends MediaShell {
 		if (!$this->__alternativeFile) {
 			return false;
 		}
-		$message = sprintf('This file has an identical checksum: %s',
-							$this->shortPath($this->__alternativeFile));
+		$message = sprintf(
+			'This file has an identical checksum: %s',
+			$this->shortPath($this->__alternativeFile)
+		);
 		$this->out($message);
 		$input = $this->in('Select this file and update record?', 'y,n', $this->_answer);
 
@@ -333,10 +339,10 @@ class SyncTask extends MediaShell {
 		}
 
 		$data = array(
-					'id' => $this->__dbItem['id'],
-					'dirname' => dirname(str_replace($this->_baseDirectory, '', $this->__alternativeFile)),
-					'basename' => basename($this->__alternativeFile),
-					);
+			'id' => $this->__dbItem['id'],
+			'dirname' => dirname(str_replace($this->_baseDirectory, '', $this->__alternativeFile)),
+			'basename' => basename($this->__alternativeFile),
+		);
 		$this->_Model->save($data);
 		$this->out('Corrected dirname and basename');
 		return true;

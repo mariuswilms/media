@@ -38,10 +38,6 @@ class MediaValidationTest extends CakeTestCase {
 		$result = MediaValidation::mimeType($check);
 		$this->assertTrue($result);
 
-		$check = 'text/x-php';
-		$result = MediaValidation::mimeType($check);
-		$this->assertFalse($result);
-
 		$check = 'image/png';
 		$result = MediaValidation::mimeType($check,array('image/png'));
 		$this->assertFalse($result);
@@ -70,10 +66,6 @@ class MediaValidationTest extends CakeTestCase {
 
 		$check = 'tar.gz';
 		$result = MediaValidation::extension($check, false, array('tar.gz'));
-		$this->assertFalse($result);
-
-		$check = 'php';
-		$result = MediaValidation::extension($check);
 		$this->assertFalse($result);
 
 		$check = 'png';

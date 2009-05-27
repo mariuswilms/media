@@ -2,7 +2,7 @@
 /**
  * Attachments Element File
  *
- * Element listing associated Attachments of the View's Model
+ * Element listing associated attachments of the view's model
  * Add, delete (detach) an Attachment
  *
  * Copyright (c) 2007-2009 David Persson

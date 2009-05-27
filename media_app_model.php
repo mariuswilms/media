@@ -22,5 +22,6 @@
  * @package    media
  * @subpackage media.models
  */
-class MediaAppModel extends AppModel {}
+class MediaAppModel extends AppModel {
+}
 ?>
