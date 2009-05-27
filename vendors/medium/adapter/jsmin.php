@@ -1,6 +1,6 @@
  <?php
  /**
- * Js Min Medium Adapter File
+ * Jsmin Medium Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -17,13 +17,13 @@
  * @link       http://github.com/davidpersson/media
  */
 /**
- * Js Min Medium Adapter Class
+ * Jsmin Medium Adapter Class
  *
  * @package    media
  * @subpackage media.libs.medium.adapter
  * @link       http://code.google.com/p/jsmin-php/
  */
-class JsMinMediumAdapter extends MediumAdapter {
+class JsminMediumAdapter extends MediumAdapter {
 
 	var $require = array(
 							'mimeTypes' => array('application/javascript'),

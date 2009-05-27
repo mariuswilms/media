@@ -1,6 +1,6 @@
 <?php
 /**
- * GetId3 Audio Medium Adapter File
+ * Getid3 Audio Medium Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -17,13 +17,13 @@
  * @link       http://github.com/davidpersson/media
  */
 /**
- * GetId3 Audio Medium Adapter Class
+ * Getid3 Audio Medium Adapter Class
  *
  * @package    media
  * @subpackage media.libs.medium.adapter
  * @link       http://getid3.sourceforge.net/
  */
-class GetId3AudioMediumAdapter extends MediumAdapter {
+class Getid3AudioMediumAdapter extends MediumAdapter {
 	var $require = array(
 		'mimeTypes' => array(
 			'audio/ogg',

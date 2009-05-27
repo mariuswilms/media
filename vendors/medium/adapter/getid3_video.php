@@ -1,6 +1,6 @@
 <?php
 /**
- * GetId3 Video Medium Adapter File
+ * Getid3 Video Medium Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -17,13 +17,13 @@
  * @link       http://github.com/davidpersson/media
  */
 /**
- * GetId3 Video Medium Adapter Class
+ * Getid3 Video Medium Adapter Class
  *
  * @package    media
  * @subpackage media.libs.medium.adapter
  * @link       http://getid3.sourceforge.net/
  */
-class GetId3VideoMediumAdapter extends MediumAdapter {
+class Getid3VideoMediumAdapter extends MediumAdapter {
 	var $require = array(
 					'mimeTypes' => array(
 								'video/matroska',

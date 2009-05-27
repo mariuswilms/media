@@ -1,6 +1,6 @@
 <?php
 /**
- * Ff Mpeg Audio Medium Adapter File
+ * Ffmpeg Audio Medium Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -17,17 +17,17 @@
  * @link       http://github.com/davidpersson/media
  */
 /**
- * Ff Mpeg Audio Medium Adapter Class
+ * Ffmpeg Audio Medium Adapter Class
  *
  * @package    media
  * @subpackage media.libs.medium.adapter
  * @link       http://ffmpeg.mplayerhq.hu/
  */
-class FfMpegAudioMediumAdapter extends MediumAdapter {
+class FfmpegAudioMediumAdapter extends MediumAdapter {
 	var $require = array(
 		'mimeTypes' => array(
 				'audio/mpeg',
-				/* FfMpeg Extension can't read meta info other than ID3! */
+				/* Ffmpeg Extension can't read meta info other than ID3! */
 				'audio/ms-wma',
 				'audio/realaudio',
 				'audio/wav',

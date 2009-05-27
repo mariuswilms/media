@@ -1,6 +1,6 @@
 <?php
 /**
- * GetId3Video Medium Adapter Test Case File
+ * Getid3Video Medium Adapter Test Case File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -20,21 +20,21 @@ App::import('Vendor','Media.VideoMedium', array('file' => 'medium'.DS.'video.php
 App::import('Vendor','GetId3VideoMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'get_id3_video.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
- * Test GetId3 Video Medium Adapter Class
+ * Test Getid3 Video Medium Adapter Class
  *
  * @package    media
  * @subpackage media.tests.cases.libs.medium.adapter
  */
-class TestGetId3VideoMedium extends VideoMedium {
-	var $adapters = array('GetId3Video');
+class TestGetid3VideoMedium extends VideoMedium {
+	var $adapters = array('Getid3Video');
 }
 /**
- * GetId3 Video Medium Adapter Test Case Class
+ * Getid3 Video Medium Adapter Test Case Class
  *
  * @package    media
  * @subpackage media.tests.cases.libs.medium.adapter
  */
-class GetId3VideoMediumAdapterTest extends CakeTestCase {
+class Getid3VideoMediumAdapterTest extends CakeTestCase {
 	function setUp() {
 		$this->TestData = new TestData();
 	}
@@ -43,26 +43,25 @@ class GetId3VideoMediumAdapterTest extends CakeTestCase {
 		$this->TestData->flushFiles();
 	}
 
-	function skip()
-	{
+	function skip() {
 		$this->skipUnless(App::import(array(
 			'type' => 'Vendor',
 			'name'=> 'getID3',
 			'file' => 'getid3/getid3.php'
-			)), 'GetId3 not in vendor');
+			)), 'Getid3 not in vendor');
 	}
 
 	function testBasic() {
-		$result = new TestGetId3VideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
+		$result = new TestGetid3VideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
 		$this->assertIsA($result, 'object');
 
-		$Medium = new TestGetId3VideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
+		$Medium = new TestGetid3VideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
 		$result = $Medium->toString();
 		$this->assertTrue(!empty($result));
 	}
 
 	function testInformationMp4tag() {
-		$Medium = new TestGetId3VideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
+		$Medium = new TestGetid3VideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
 
 		$result = $Medium->title();
 		$this->assertEqual($result, 'Title');
@@ -87,7 +86,7 @@ class GetId3VideoMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationMp4notag() {
-		$Medium = new TestGetId3VideoMedium($this->TestData->getFile('video-h264.notag.mp4'));
+		$Medium = new TestGetid3VideoMedium($this->TestData->getFile('video-h264.notag.mp4'));
 
 		$result = $Medium->title();
 		$this->assertEqual($result, null);

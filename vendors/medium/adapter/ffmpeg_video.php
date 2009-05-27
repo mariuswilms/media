@@ -1,6 +1,6 @@
 <?php
 /**
- * FfMpeg Video Medium Adapter File
+ * Ffmpeg Video Medium Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -17,13 +17,13 @@
  * @link       http://github.com/davidpersson/media
  */
 /**
- * FfMpeg Video Medium Adapter Class
+ * Ffmpeg Video Medium Adapter Class
  *
  * @package    media
  * @subpackage media.libs.medium.adapter
  * @link       http://ffmpeg.mplayerhq.hu/
  */
-class FfMpegVideoMediumAdapter extends MediumAdapter {
+class FfmpegVideoMediumAdapter extends MediumAdapter {
 	var $require = array(
 							'mimeTypes' => array(
 											'video/mpeg',

@@ -29,7 +29,7 @@ class JsMedium extends Medium {
 	 *
 	 * @var array
 	 */
-	var $adapters = array(/* 'JavascriptPacker', */ 'JsMin','BasicText');
+	var $adapters = array(/* 'JavascriptPacker', */ 'Jsmin', 'BasicText');
 	/**
 	 * Number of characters
 	 *

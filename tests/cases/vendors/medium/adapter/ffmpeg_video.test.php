@@ -1,6 +1,6 @@
 <?php
 /**
- * FfMpegVideo Medium Adapter Test Case File
+ * FfmpegVideo Medium Adapter Test Case File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -20,21 +20,21 @@ App::import('Vendor','Media.VideoMedium', array('file' => 'medium'.DS.'video.php
 App::import('Vendor','FfMpegVideoMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'ff_mpeg_video.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
- * Test FfMpeg Video Medium Adapter Class
+ * Test Ffmpeg Video Medium Adapter Class
  *
  * @package    media
  * @subpackage media.tests.cases.libs.medium.adapter
  */
-class TestFfMpegVideoMedium extends VideoMedium {
+class TestFfmpegVideoMedium extends VideoMedium {
 	var $adapters = array('FfMpegVideo');
 }
 /**
- * FfMpeg Video Medium Adapter Test Case Class
+ * Ffmpeg Video Medium Adapter Test Case Class
  *
  * @package    media
  * @subpackage media.tests.cases.libs.medium.adapter
  */
-class FfMpegVideoMediumAdapterTest extends CakeTestCase {
+class FfmpegVideoMediumAdapterTest extends CakeTestCase {
 	function setUp() {
 		$this->TestData = new TestData();
 	}
@@ -43,22 +43,21 @@ class FfMpegVideoMediumAdapterTest extends CakeTestCase {
 		$this->TestData->flushFiles();
 	}
 
-	function skip()
-	{
+	function skip() {
 		$this->skipUnless(extension_loaded('ffmpeg'), 'ffmpeg extention not loaded');
 	}
 
 	function testBasic() {
-		$result = new TestFfMpegVideoMedium($this->TestData->getFile('video-quicktime.notag.mov'));
+		$result = new TestFfmpegVideoMedium($this->TestData->getFile('video-quicktime.notag.mov'));
 		$this->assertIsA($result, 'object');
 
-		$Medium = new TestFfMpegVideoMedium($this->TestData->getFile('video-quicktime.notag.mov'));
+		$Medium = new TestFfmpegVideoMedium($this->TestData->getFile('video-quicktime.notag.mov'));
 		$result = $Medium->toString();
 		$this->assertTrue(!empty($result));
 	}
 
 	function testInformationMp4tag() {
-		$Medium = new TestFfMpegVideoMedium($this->TestData->getFile('video-quicktime.notag.mov'));
+		$Medium = new TestFfmpegVideoMedium($this->TestData->getFile('video-quicktime.notag.mov'));
 
 		$result = $Medium->title();
 		//$this->assertEqual($result, 'Title'); // Unable to get the Title...
@@ -80,7 +79,7 @@ class FfMpegVideoMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationMp4notag() {
-		$Medium = new TestFfMpegVideoMedium($this->TestData->getFile('video-quicktime.notag.mov'));
+		$Medium = new TestFfmpegVideoMedium($this->TestData->getFile('video-quicktime.notag.mov'));
 
 		$result = $Medium->title();
 		$this->assertEqual($result, null);
@@ -102,7 +101,7 @@ class FfMpegVideoMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationTheoraComment() {
-		$Medium = new TestFfMpegVideoMedium($this->TestData->getFile('video-theora.comments.ogv'));
+		$Medium = new TestFfmpegVideoMedium($this->TestData->getFile('video-theora.comments.ogv'));
 
 		$result = $Medium->title();
 		$this->assertEqual($result, 'Title');
@@ -124,7 +123,7 @@ class FfMpegVideoMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationTheoraNotag() {
-		$Medium = new TestFfMpegVideoMedium($this->TestData->getFile('video-theora.notag.ogv'));
+		$Medium = new TestFfmpegVideoMedium($this->TestData->getFile('video-theora.notag.ogv'));
 
 		$result = $Medium->title();
 		$this->assertEqual($result, null);
@@ -146,14 +145,14 @@ class FfMpegVideoMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testConvertMp4() {
-		$Medium = new TestFfMpegVideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
+		$Medium = new TestFfmpegVideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
 		$Medium->convert('image/jpeg');
 		$result = $Medium->mimeType;
 		$this->assertTrue($result, 'image/jpeg');
 	}
 
 	function testConvertTheora() {
-		$Medium = new TestFfMpegVideoMedium($this->TestData->getFile('video-theora.comments.ogv'));
+		$Medium = new TestFfmpegVideoMedium($this->TestData->getFile('video-theora.comments.ogv'));
 		$Medium->convert('image/png');
 		$result = $Medium->mimeType;
 		$this->assertTrue($result, 'image/png');

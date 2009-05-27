@@ -1,6 +1,6 @@
 <?php
 /**
- * GetId3Audio Medium Adapter Test Case File
+ * Getid3Audio Medium Adapter Test Case File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -20,21 +20,21 @@ App::import('Vendor','Media.AudioMedium', array('file' => 'medium'.DS.'audio.php
 App::import('Vendor','GetId3AudioMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'get_id3_audio.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
- * Test GetId3 Audio Medium Adapter Class
+ * Test Getid3 Audio Medium Adapter Class
  *
  * @package    media
  * @subpackage media.tests.cases.libs.medium.adapter
  */
-class TestGetId3AudioMedium extends AudioMedium {
-	var $adapters = array('GetId3Audio');
+class TestGetid3AudioMedium extends AudioMedium {
+	var $adapters = array('Getid3Audio');
 }
 /**
- * GetId3 Audio Medium Adapter Test Case Class
+ * Getid3 Audio Medium Adapter Test Case Class
  *
  * @package    media
  * @subpackage media.tests.cases.libs.medium.adapter
  */
-class GetId3AudioMediumAdapterTest extends CakeTestCase {
+class Getid3AudioMediumAdapterTest extends CakeTestCase {
 	function setUp() {
 		$this->TestData = new TestData();
 	}
@@ -43,26 +43,25 @@ class GetId3AudioMediumAdapterTest extends CakeTestCase {
 		$this->TestData->flushFiles();
 	}
 
-	function skip()
-	{
+	function skip() {
 		$this->skipUnless(App::import(array(
 			'type' => 'Vendor',
 			'name'=> 'getID3',
 			'file' => 'getid3/getid3.php'
-			)), 'GetId3 not in vendor');
+			)), 'Getid3 not in vendor');
 	}
 
 	function testBasic() {
-		$result = new TestGetId3AudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
+		$result = new TestGetid3AudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
 		$this->assertIsA($result, 'object');
 
-		$Medium = new TestGetId3AudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
+		$Medium = new TestGetid3AudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
 		$result = $Medium->toString();
 		$this->assertTrue(!empty($result));
 	}
 
 	function testInformationId3v1() {
-		$Medium = new TestGetId3AudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
+		$Medium = new TestGetid3AudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
 
 		$result = $Medium->artist();
 		$this->assertEqual($result, 'Artist');
@@ -93,7 +92,7 @@ class GetId3AudioMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationId3v2() {
-		$Medium = new TestGetId3AudioMedium($this->TestData->getFile('audio-mpeg.ID3v2.mp3'));
+		$Medium = new TestGetid3AudioMedium($this->TestData->getFile('audio-mpeg.ID3v2.mp3'));
 
 		$result = $Medium->artist();
 		$this->assertEqual($result, 'Artist');
@@ -124,7 +123,7 @@ class GetId3AudioMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationNotag() {
-		$Medium = new TestGetId3AudioMedium($this->TestData->getFile('audio-mpeg.notag.mp3'));
+		$Medium = new TestGetid3AudioMedium($this->TestData->getFile('audio-mpeg.notag.mp3'));
 
 		$result = $Medium->artist();
 		$this->assertEqual($result, null);
@@ -155,7 +154,7 @@ class GetId3AudioMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationVorbisComment() {
-		$Medium = new TestGetId3AudioMedium($this->TestData->getFile('audio-vorbis.comments.ogg'));
+		$Medium = new TestGetid3AudioMedium($this->TestData->getFile('audio-vorbis.comments.ogg'));
 
 		$result = $Medium->artist();
 		$this->assertEqual($result, 'Artist');
@@ -186,7 +185,7 @@ class GetId3AudioMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationVorbisNotag() {
-		$Medium = new TestGetId3AudioMedium($this->TestData->getFile('audio-vorbis.notag.ogg'));
+		$Medium = new TestGetid3AudioMedium($this->TestData->getFile('audio-vorbis.notag.ogg'));
 
 		$result = $Medium->artist();
 		$this->assertEqual($result, null);
@@ -217,14 +216,14 @@ class GetId3AudioMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testConvertMp3() {
-		$Medium = new TestGetId3AudioMedium($this->TestData->getFile('audio-mpeg.ID3v2.mp3'));
+		$Medium = new TestGetid3AudioMedium($this->TestData->getFile('audio-mpeg.ID3v2.mp3'));
 		$Medium->convert('image/jpeg');
 		$result = $Medium->mimeType;
 		$this->assertTrue($result, 'image/jpeg');
 	}
 
 	function testConvertOgg() {
-		$Medium = new TestGetId3AudioMedium($this->TestData->getFile('audio-vorbis.comments.ogg'));
+		$Medium = new TestGetid3AudioMedium($this->TestData->getFile('audio-vorbis.comments.ogg'));
 		$Medium->convert('image/png');
 		$result = $Medium->mimeType;
 		$this->assertTrue($result, 'image/png');

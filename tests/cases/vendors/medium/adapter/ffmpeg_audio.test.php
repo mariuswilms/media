@@ -1,6 +1,6 @@
 <?php
 /**
- * FfMpegAudio Medium Adapter Test Case File
+ * FfmpegAudio Medium Adapter Test Case File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -20,13 +20,13 @@ App::import('Vendor','Media.AudioMedium', array('file' => 'medium'.DS.'audio.php
 App::import('Vendor','FfMpegAudioMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'ff_mpeg_audio.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
- * Test FfMpeg Audio Medium Adapter Class
+ * Test Ffmpeg Audio Medium Adapter Class
  *
  * @package    media
  * @subpackage media.tests.cases.libs.medium.adapter
  */
-class TestFfMpegAudioMedium extends AudioMedium {
-	var $adapters = array('FfMpegAudio');
+class TestFfmpegAudioMedium extends AudioMedium {
+	var $adapters = array('FfmpegAudio');
 }
 /**
  * FfMpeg Audio Medium Adapter Test Case Class
@@ -34,7 +34,7 @@ class TestFfMpegAudioMedium extends AudioMedium {
  * @package    media
  * @subpackage media.tests.cases.libs.medium.adapter
  */
-class FfMpegAudioMediumAdapterTest extends CakeTestCase {
+class FfmpegAudioMediumAdapterTest extends CakeTestCase {
 	function setUp() {
 		$this->TestData = new TestData();
 	}
@@ -43,22 +43,21 @@ class FfMpegAudioMediumAdapterTest extends CakeTestCase {
 		$this->TestData->flushFiles();
 	}
 
-	function skip()
-	{
+	function skip() {
 		$this->skipUnless(extension_loaded('ffmpeg'), 'ffmpeg extention not loaded');
 	}
 
 	function testBasic() {
-		$result = new TestFfMpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
+		$result = new TestFfmpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
 		$this->assertIsA($result, 'object');
 
-		$Medium = new TestFfMpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
+		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
 		$result = $Medium->toString();
 		$this->assertTrue(!empty($result));
 	}
 
 	function testInformationId3v1() {
-		$Medium = new TestFfMpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
+		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
 
 		$result = $Medium->artist();
 		$this->assertEqual($result, 'Artist');
@@ -89,7 +88,7 @@ class FfMpegAudioMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationId3v2() {
-		$Medium = new TestFfMpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v2.mp3'));
+		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v2.mp3'));
 
 		$result = $Medium->artist();
 		$this->assertEqual($result, 'Artist');
@@ -120,7 +119,7 @@ class FfMpegAudioMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationNotag() {
-		$Medium = new TestFfMpegAudioMedium($this->TestData->getFile('audio-mpeg.notag.mp3'));
+		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-mpeg.notag.mp3'));
 
 		$result = $Medium->artist();
 		$this->assertEqual($result, null);
@@ -151,7 +150,7 @@ class FfMpegAudioMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationVorbisComment() {
-		$Medium = new TestFfMpegAudioMedium($this->TestData->getFile('audio-vorbis.comments.ogg'));
+		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-vorbis.comments.ogg'));
 
 		$result = $Medium->artist();
 		$this->assertEqual($result, 'Artist');
@@ -182,7 +181,7 @@ class FfMpegAudioMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testInformationVorbisNotag() {
-		$Medium = new TestFfMpegAudioMedium($this->TestData->getFile('audio-vorbis.notag.ogg'));
+		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-vorbis.notag.ogg'));
 
 		$result = $Medium->artist();
 		$this->assertEqual($result, null);
