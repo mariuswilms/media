@@ -40,8 +40,11 @@
 /*
  * Either a (slash terminated) complete URL or an path fragment relative to your webroot
  *
+ * In case the corresponding  directory isn't served define the constant with a value of `false`
+ *
  * E.g.: http://www.example.org/app/media/
  * E.g.: media/
+ * E.g.: false
  */
 	if (!defined('MEDIA_URL')) {
 		define('MEDIA_URL', 'media/');
