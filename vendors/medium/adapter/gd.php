@@ -77,14 +77,15 @@ class GdMediumAdapter extends MediumAdapter {
 
 		$Medium->resources['gd'] = call_user_func_array(
 			'imageCreateFrom' . $this->_format,
-			array($Medium->file
-		));
+			array($Medium->file)
+		);
 
 		if (!$this->_isResource($Medium->resources['gd'])) {
 			return false;
 		}
 
 		if (imageIsTrueColor($Medium->resources['gd'])) {
+			imageAlphaBlending($Medium->resources['gd'], false);
 			imageSaveAlpha($Medium->resources['gd'], true);
 		}
 		return true;
@@ -170,9 +171,9 @@ class GdMediumAdapter extends MediumAdapter {
 		$height = (integer)$height;
 
 		$Image = imageCreateTrueColor($width, $height);
+		$this->_adjustTransparency($Medium->resources['gd'], $Image);
 
 		if ($this->_isTransparent($Medium->resources['gd'])) {
-			$Image = $this->_copyTransparency($Medium->resources['gd'], $Image);
 			imageCopyResized(
 				$Image,
 				$Medium->resources['gd'],
@@ -182,7 +183,6 @@ class GdMediumAdapter extends MediumAdapter {
 				$width, $height
 			);
 		} else {
-			imageSaveAlpha($Image, true);
 			imageCopyResampled(
 				$Image,
 				$Medium->resources['gd'],
@@ -204,9 +204,9 @@ class GdMediumAdapter extends MediumAdapter {
 		$height = (integer)$height;
 
 		$Image = imageCreateTrueColor($width, $height);
+		$this->_adjustTransparency($Medium->resources['gd'], $Image);
 
 		if ($this->_isTransparent($Medium->resources['gd'])) {
-			$Image = $this->_copyTransparency($Medium->resources['gd'], $Image);
 			imageCopyResized(
 				$Image,
 				$Medium->resources['gd'],
@@ -216,7 +216,6 @@ class GdMediumAdapter extends MediumAdapter {
 				$this->width($Medium), $this->height($Medium)
 			);
 		} else {
-			imageSaveAlpha($Image, true);
 			imageCopyResampled(
 				$Image,
 				$Medium->resources['gd'],
@@ -242,9 +241,9 @@ class GdMediumAdapter extends MediumAdapter {
 		$resizeHeight = (integer)$resizeHeight;
 
 		$Image = imageCreateTrueColor($resizeWidth, $resizeHeight);
+		$this->_adjustTransparency($Medium->resources['gd'], $Image);
 
 		if ($this->_isTransparent($Medium->resources['gd'])) {
-			$Image = $this->_copyTransparency($Medium->resources['gd'], $Image);
 			imageCopyResized(
 				$Image,
 				$Medium->resources['gd'],
@@ -254,7 +253,6 @@ class GdMediumAdapter extends MediumAdapter {
 				$cropWidth, $cropHeight
 			);
 		} else {
-			imageSaveAlpha($Image, true);
 			imageCopyResampled(
 				$Image,
 				$Medium->resources['gd'],
@@ -287,12 +285,21 @@ class GdMediumAdapter extends MediumAdapter {
 		return imageColorTransparent($Image) >= 0;
 	}
 
-	function _copyTransparency($sourceImage, $destinationImage)	{
-		$rgba  = imageColorsForIndex($sourceImage, imageColorTransparent($sourceImage));
-		$color = imageColorAllocate($destinationImage, $rgba['red'], $rgba['green'], $rgba['blue']);
-		imageColorTransparent($destinationImage, $color);
-		imageFill($destinationImage, 0, 0, $color);
-		return $destinationImage;
+	function _adjustTransparency(&$Source, &$Destination) {
+		if ($this->_isTransparent($Source)) {
+			$rgba  = imageColorsForIndex($Source, imageColorTransparent($Source));
+			$color = imageColorAllocate($Destination, $rgba['red'], $rgba['green'], $rgba['blue']);
+			imageColorTransparent($Destination, $color);
+			imageFill($Destination, 0, 0, $color);
+		} else {
+			if ($this->_format == 'png') {
+				imageAlphaBlending($Destination, false);
+				imageSaveAlpha($Destination, true);
+			} elseif ($this->_format != 'gif') {
+				$white = imageColorAllocate($Destination, 255, 255, 255);
+				imageFill($Destination, 0, 0 , $white);
+			}
+		}
 	}
 }
 ?>

@@ -43,13 +43,8 @@ class GdMediumAdapterTest extends CakeTestCase {
 		$this->TestData->flushFiles();
 	}
 
-	function skip()
-	{
-		$this->skipUnless(extension_loaded('gd'), 'GD extension not loaded');
-	}
-
-	function _showImage($string, $mimeType = null) {
-		echo '<img src="data:'.$mimeType.';base64,'.base64_encode($string).'" />';
+	function skip()	{
+		$this->skipUnless(extension_loaded('gd'), '%s GD extension not loaded');
 	}
 
 	function testBasic() {
@@ -73,7 +68,7 @@ class GdMediumAdapterTest extends CakeTestCase {
 
 	function testManipulation() {
 		$Medium = new TestGdImageMedium($this->TestData->getFile('image-jpg.jpg'));
-		$Medium->fit(10,10);
+		$Medium->fit(10, 10);
 		$this->assertTrue($Medium->width() <= 10);
 		$this->assertTrue($Medium->height() <= 10);
 
@@ -81,6 +76,46 @@ class GdMediumAdapterTest extends CakeTestCase {
 		$Medium->convert('image/png');
 		$result = $Medium->mimeType;
 		$this->assertTrue($result, 'image/png');
+	}
+
+	function testManipulationWithAlphaTransparency8bit() {
+		$source = $this->TestData->getFile('image-png.transparent.8bit.png');
+		$target = $this->TestData->getFile('test8bit_man.jpg');
+
+		$Medium = new TestGdImageMedium($source);
+		$Medium->convert('image/jpeg');
+		$Medium->fit(15, 15);
+		$Medium->store($target, true);
+		$this->assertEqual(md5_file($target), 'fc5a49bb265ea1baa6094d289a4823b0');
+
+		$source = $this->TestData->getFile('image-png.transparent.8bit.png');
+		$target = $this->TestData->getFile('test8bit_man.png');
+
+		$Medium = new TestGdImageMedium($source);
+		$Medium->fit(15, 15);
+		$result = $Medium->mimeType;
+		$Medium->store($target, true);
+		$this->assertEqual(md5_file($target), '6230d343b932bfcf0996c7e0a291b677');
+	}
+
+	function testManipulationWithAlphaTransparency16bit() {
+		$source = $this->TestData->getFile('image-png.transparent.16bit.png');
+		$target = $this->TestData->getFile('test16bit_man.jpg');
+
+		$Medium = new TestGdImageMedium($source);
+		$Medium->convert('image/jpeg');
+		$Medium->fit(15, 15);
+		$Medium->store($target, true);
+		$this->assertEqual(md5_file($target), '1719836a4b39bc56bf119975785292f8');
+
+		$source = $this->TestData->getFile('image-png.transparent.16bit.png');
+		$target = $this->TestData->getFile('test16bit_man.png');
+
+		$Medium = new TestGdImageMedium($source);
+		$Medium->fit(15, 15);
+		$result = $Medium->mimeType;
+		$Medium->store($target, true);
+		$this->assertEqual(md5_file($target), 'f8c84870bd6cf656e9dcaba1cbf26636');
 	}
 
 	function testCompress() {
