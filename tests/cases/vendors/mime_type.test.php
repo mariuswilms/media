@@ -49,8 +49,13 @@ class MimeTypeTest extends CakeTestCase {
 	function testGuessTypeFileinfoShippedGlob() {
 		$this->skipUnless(extension_loaded('fileinfo'), '%s. Fileinfo extension not loaded.');
 
-		MimeType::config('magic', array('engine' => 'fileinfo'));
-		MimeType::config('glob', array('engine' => 'core', 'file' => APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'mime_glob.php'));
+		MimeType::config('magic', array(
+			'engine' => 'fileinfo'
+		));
+		MimeType::config('glob', array(
+			'engine' => 'core',
+			'file' => APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'mime_glob.db'
+		));
 
 		/* Some tests have been commented (if not otherwise stated) because of missing support the extension */
 

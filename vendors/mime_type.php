@@ -150,7 +150,8 @@ class MimeType extends Object {
 				$globMatch = $_this->__glob->analyze($file);
 			}
 			if (count($globMatch) === 1) {
-				return MimeType::simplify(array_shift($globMatch), $properties, $experimental);
+				$result = array_shift($globMatch);
+				return $simplify ? MimeType::simplify($result, $properties, $experimental) : $result;
 			}
 		}
 
@@ -184,7 +185,8 @@ class MimeType extends Object {
 			$combinedMatch = array_intersect($globMatch, $magicMatch);
 
 			if (count($combinedMatch) === 1) {
-				return MimeType::simplify(array_shift($combinedMatch), $properties, $experimental);
+				$result = array_shift($combinedMatch);
+				return $simplify ? MimeType::simplify($result, $properties, $experimental) : $result;
 			}
 		}
 		return null;
