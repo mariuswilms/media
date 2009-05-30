@@ -62,11 +62,10 @@ class AttachmentTestCase extends CakeTestCase {
 
 		$Model->Attachment->Behaviors->attach('Media.Transfer', array(
 			'baseDirectory' => TMP,
-			'destinationFile' => 'test_suite:DS::Source.basename:'
+			'destinationFile' => 'test_suite:DS:transfer:DS::Source.basename:'
 		));
 
 		$Model->Attachment->Behaviors->attach('Media.Media', array(
-			'baseDirectory' => TMP,
 			'filterDirectory' => $this->TestFolder->pwd() . 'filter' . DS
 		));
 
@@ -86,7 +85,7 @@ class AttachmentTestCase extends CakeTestCase {
 			'id' => 1,
 			'model' => 'Movie',
 			'foreign_key' => 4,
-			'dirname' => 'tmp/test_suite',
+			'dirname' => 'tmp/test_suite/transfer',
 			'basename' => 'ta.jpg',
 			'checksum' => '1920c29e7fbe4d1ad2f9173ef4591133',
 			'group' => null,
@@ -114,11 +113,10 @@ class AttachmentTestCase extends CakeTestCase {
 
 		$Model->Attachment->Behaviors->attach('Media.Transfer', array(
 			'baseDirectory' => TMP,
-			'destinationFile' => 'test_suite:DS::Source.basename:'
+			'destinationFile' => 'test_suite:DS:transfer:DS::Source.basename:'
 		));
 
 		$Model->Attachment->Behaviors->attach('Media.Media', array(
-			'baseDirectory' => TMP,
 			'filterDirectory' => $this->TestFolder->pwd() . 'filter' . DS
 		));
 
@@ -143,7 +141,7 @@ class AttachmentTestCase extends CakeTestCase {
 				'id' => 1,
 				'model' => 'Movie',
 				'foreign_key' => 4,
-				'dirname' => 'tmp/test_suite',
+				'dirname' => 'tmp/test_suite/transfer',
 				'basename' => 'ta.jpg',
 				'checksum' => '1920c29e7fbe4d1ad2f9173ef4591133',
 				'group' => null,
@@ -153,7 +151,7 @@ class AttachmentTestCase extends CakeTestCase {
 				'id' => 2,
 				'model' => 'Movie',
 				'foreign_key' => 4,
-				'dirname' => 'tmp/test_suite',
+				'dirname' => 'tmp/test_suite/transfer',
 				'basename' => 'tb.png',
 				'checksum' => '7f9af648b511f2c83b1744f42254983f',
 				'group' => null,
@@ -181,11 +179,10 @@ class AttachmentTestCase extends CakeTestCase {
 
 		$Model->Poster->Behaviors->attach('Media.Transfer', array(
 			'baseDirectory' => TMP,
-			'destinationFile' => 'test_suite:DS:poster:DS::Source.basename:'
+			'destinationFile' => 'test_suite:DS:transfer:DS:poster:DS::Source.basename:'
 		));
 
 		$Model->Poster->Behaviors->attach('Media.Media', array(
-			'baseDirectory' => TMP,
 			'filterDirectory' => $this->TestFolder->pwd() . 'filter' . DS
 		));
 
@@ -205,18 +202,16 @@ class AttachmentTestCase extends CakeTestCase {
 
 		$Model->Photo->Behaviors->attach('Media.Transfer', array(
 			'baseDirectory' => TMP,
-			'destinationFile' => 'test_suite:DS:photo:DS::Source.basename:'
+			'destinationFile' => 'test_suite:DS:transfer:DS:photo:DS::Source.basename:'
 		));
 
 		$Model->Photo->Behaviors->attach('Media.Media', array(
-			'baseDirectory' => TMP,
 			'filterDirectory' => $this->TestFolder->pwd() . 'filter' . DS
 		));
 
 		$fileA = $this->TestData->getFile(array('image-jpg.jpg' => 'ta.jpg'));
 		$fileB = $this->TestData->getFile(array('image-png.png' => 'tb.png'));
 		$fileC = $this->TestData->getFile(array('image-png.png' => 'tc.png'));
-
 		$data = array(
 			'Movie' => array('title' => 'Weekend', 'director' => 'Jean-Luc Godard'),
 			'Poster' => array('file' => $fileA, 'model' => 'Movie', 'group' => 'poster'),
@@ -228,9 +223,9 @@ class AttachmentTestCase extends CakeTestCase {
 		$Model->create();
 		$result = $Model->saveAll($data, array('validate' => 'first'));
 		$this->assertTrue($result);
-		$this->assertTrue(file_exists($this->TestFolder->pwd() . 'poster' . DS . 'ta.jpg'));
-		$this->assertTrue(file_exists($this->TestFolder->pwd() . 'photo' . DS . 'tb.png'));
-		$this->assertTrue(file_exists($this->TestFolder->pwd() . 'photo' . DS . 'tc.png'));
+		$this->assertTrue(file_exists($this->TestFolder->pwd() . 'transfer' . DS . 'poster' . DS . 'ta.jpg'));
+		$this->assertTrue(file_exists($this->TestFolder->pwd() . 'transfer' . DS . 'photo' . DS . 'tb.png'));
+		$this->assertTrue(file_exists($this->TestFolder->pwd() . 'transfer' . DS . 'photo' . DS . 'tc.png'));
 
 		$result = $Model->find('first', array('conditions' => array('title' => 'Weekend')));
 		$expected = array(
@@ -244,7 +239,7 @@ class AttachmentTestCase extends CakeTestCase {
 				'id' => 1,
 				'model' => 'Movie',
 				'foreign_key' => 4,
-				'dirname' => 'tmp/test_suite/poster',
+				'dirname' => 'tmp/test_suite/transfer/poster',
 				'basename' => 'ta.jpg',
 				'checksum' => '1920c29e7fbe4d1ad2f9173ef4591133',
 				'group' => 'poster',
@@ -255,7 +250,7 @@ class AttachmentTestCase extends CakeTestCase {
 					'id' => 2,
 					'model' => 'Movie',
 					'foreign_key' => 4,
-					'dirname' => 'tmp/test_suite/photo',
+					'dirname' => 'tmp/test_suite/transfer/photo',
 					'basename' => 'tb.png',
 					'checksum' => '7f9af648b511f2c83b1744f42254983f',
 					'group' => 'photo',
@@ -265,7 +260,7 @@ class AttachmentTestCase extends CakeTestCase {
 					'id' => 3,
 					'model' => 'Movie',
 					'foreign_key' => 4,
-					'dirname' => 'tmp/test_suite/photo',
+					'dirname' => 'tmp/test_suite/transfer/photo',
 					'basename' => 'tc.png',
 					'checksum' => '7f9af648b511f2c83b1744f42254983f',
 					'group' => 'photo',
