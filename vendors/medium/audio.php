@@ -29,7 +29,7 @@ class AudioMedium extends Medium {
  *
  * @var array
  */
-	var $adapters = array('Getid3Audio', 'FfmpegAudio', 'PearMp3', 'PearOggAudio');
+	var $adapters = array('Getid3Audio', 'FfmpegAudio', 'PearMp3');
 /**
  * Artist stored in medium metadata
  *

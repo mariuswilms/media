@@ -29,7 +29,7 @@ class VideoMedium extends Medium {
  *
  * @var array
  */
-	var $adapters = array('Getid3Video', 'FfmpegVideo', 'PearOggVideo');
+	var $adapters = array('Getid3Video', 'FfmpegVideo');
 /**
  * Title stored in medium metadata
  *
