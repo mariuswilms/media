@@ -455,7 +455,13 @@ class TransferBehavior extends ModelBehavior {
  */
 	function checkLocation(&$Model, $field, $allow = true) {
 		extract($this->runtime[$Model->alias]);
-		$allow = $this->_replaceMarker($Model, $allow);
+
+		if (strpos(':', $allow) !== false) {
+			$message  = "TransferBehavior::checkLocation - ";
+			$message .= "Makers cannot be used in parameters for this method anymore. ";
+			$message .= "Please use predefined constants instead.";
+			trigger_error($message, E_USER_NOTICE);
+		}
 
 		foreach (array('source', 'temporary', 'destination') as $type) {
 			if ($type == 'temporary' && empty($$type)) {
@@ -534,10 +540,10 @@ class TransferBehavior extends ModelBehavior {
 		extract($this->runtime[$Model->alias]);
 
 		foreach (array('source', 'temporary') as $type) { /* pixels value is optional */
-			if(($type == 'temporary' && empty($$type)) || !isset(${$type}['pixels'])) {
+			if (($type == 'temporary' && empty($$type)) || !isset(${$type}['pixels'])) {
 				continue;
 			}
-			if(!MediaValidation::pixels(${$type}['pixels'], $max)) {
+			if (!MediaValidation::pixels(${$type}['pixels'], $max)) {
 				return false;
 			}
 		}
@@ -588,7 +594,7 @@ class TransferBehavior extends ModelBehavior {
 
 		foreach (array('source', 'temporary') as $type) {
 			/*
-			 * Mime types and trustClient setting
+			 * MIME types and trustClient setting
 			 *
 			 * trust | source   | (temporary) | (destination)
 			 * ------|----------|----------------------------
