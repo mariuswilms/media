@@ -124,7 +124,6 @@ class MimeType extends Object {
  * @param string $file
  * @param options $options Valid options are:
  *	- `'paranoid'` If set to true only then content for the file is used for detection
- *	- `'simplify'` If set to true resulting MIME type will be simplified
  *	- `'properties'` Used for simplification, defaults to false
  *	- `'experimental'` Used for simplification, defaults to false
  * @return mixed string with MIME type on success
@@ -133,16 +132,13 @@ class MimeType extends Object {
 	function guessType($file, $options = array()) {
 		$_this =& MimeType::getInstance();
 
-		if (is_bool($options)) {
-			$options = array('simplify' => $options);
-		}
-		$default = array(
+		$defaults = array(
 			'paranoid' => false,
-			'simplify' => false,
 			'properties' => false,
-			'experimental' => false,
+			'experimental' => true,
 		);
-		extract(array_merge($default, $options), EXTR_SKIP);
+		extract($options + $defaults);
+
 		$magicMatch = $globMatch = array();
 
 		if (!$paranoid) {
@@ -150,8 +146,7 @@ class MimeType extends Object {
 				$globMatch = $_this->__glob->analyze($file);
 			}
 			if (count($globMatch) === 1) {
-				$result = array_shift($globMatch);
-				return $simplify ? MimeType::simplify($result, $properties, $experimental) : $result;
+				 return MimeType::simplify(array_shift($globMatch), $properties, $experimental);
 			}
 		}
 
@@ -185,8 +180,7 @@ class MimeType extends Object {
 			$combinedMatch = array_intersect($globMatch, $magicMatch);
 
 			if (count($combinedMatch) === 1) {
-				$result = array_shift($combinedMatch);
-				return $simplify ? MimeType::simplify($result, $properties, $experimental) : $result;
+				return MimeType::simplify(array_shift($combinedMatch), $properties, $experimental);
 			}
 		}
 		return null;

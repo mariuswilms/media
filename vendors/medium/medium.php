@@ -203,7 +203,7 @@ class Medium extends Object {
  */
 	static function &factory($file, $mimeType = null) {
 		if ($mimeType === null) {
-			$mimeType = MimeType::guessType($file, array('simplify' => true));
+			$mimeType = MimeType::guessType($file, array('experimental' => false));
 		}
 
 		$name = Medium::name(null, $mimeType);
