@@ -36,7 +36,9 @@ class DocumentMedium extends Medium {
  * @return integer
  */
 	function width()	{
-		return (integer)$this->Adapters->dispatchMethod($this, 'width');
+		return $this->Adapters->dispatchMethod($this, 'width', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Current height of medium
@@ -44,7 +46,9 @@ class DocumentMedium extends Medium {
  * @return integer
  */
 	function height() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'height');
+		return $this->Adapters->dispatchMethod($this, 'height', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Determines a (known) ratio of medium

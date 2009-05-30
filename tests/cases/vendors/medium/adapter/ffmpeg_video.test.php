@@ -65,7 +65,7 @@ class FfmpegVideoMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 489203);
 
 		$result = $Medium->width();
@@ -87,7 +87,7 @@ class FfmpegVideoMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 489203);
 
 		$result = $Medium->width();
@@ -109,7 +109,7 @@ class FfmpegVideoMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		//$this->assertEqual($result, 1); // Video seems too short (1 sec), return 0 length
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		//$this->assertEqual($result, 200000); // Return 0 bitrate...
 
 		$result = $Medium->width();
@@ -131,7 +131,7 @@ class FfmpegVideoMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		//$this->assertEqual($result, 1); // Video seems too short (1 sec), return 0 length
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		//$this->assertEqual($result, 200000); // Return 0 bitrate...
 
 		$result = $Medium->width();

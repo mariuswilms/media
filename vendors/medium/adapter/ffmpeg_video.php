@@ -85,7 +85,7 @@ class FfmpegVideoMediumAdapter extends MediumAdapter {
 		return $Medium->objects['ffmpeg_movie']->getFrameHeight();
 	}
 
-	function bitrate(&$Medium) {
+	function bitRate(&$Medium) {
 		return $Medium->objects['ffmpeg_movie']->getBitRate();
 	}
 }

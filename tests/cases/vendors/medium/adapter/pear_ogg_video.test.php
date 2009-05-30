@@ -43,13 +43,9 @@ class PearOggVideoMediumAdapterTest extends CakeTestCase {
 		$this->TestData->flushFiles();
 	}
 
-	function skip()
-	{
-		$this->skipUnless(App::import(array(
-			'type' => 'Vendor',
-			'name'=> 'File_Ogg',
-			'file' => 'File/Ogg.php'
-			)), 'PearOgg not in vendor');
+	function skip() {
+		$loaded = App::import(array('type' => 'Vendor', 'name'=> 'File_Ogg', 'file' => 'File/Ogg.php'));
+		$this->skipUnless($loaded, 'PearOgg not in vendor');
 	}
 
 	function testBasic() {
@@ -79,7 +75,7 @@ class PearOggVideoMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		//$this->assertEqual($result, 1); // Video seems too short (1 sec), return 0 length
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 200000);
 
 		$result = $Medium->width();
@@ -104,7 +100,7 @@ class PearOggVideoMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		//$this->assertEqual($result, 1); // Video seems too short (1 sec), return 0 length
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 200000);
 
 		$result = $Medium->width();

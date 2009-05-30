@@ -82,7 +82,7 @@ class PearMp3MediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 64000);
 
 		$result = $Medium->samplingRate();
@@ -113,7 +113,7 @@ class PearMp3MediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 64000);
 
 		$result = $Medium->samplingRate();

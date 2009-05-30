@@ -83,7 +83,7 @@ class FfmpegAudioMediumAdapter extends MediumAdapter {
 		return $Medium->objects['ffmpeg_movie']->getAudioSampleRate();
 	}
 
-	function bitrate(&$Medium) {
+	function bitRate(&$Medium) {
 		return $Medium->objects['ffmpeg_movie']->getBitRate();
 	}
 }

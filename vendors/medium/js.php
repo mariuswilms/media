@@ -36,7 +36,9 @@ class JsMedium extends Medium {
  * @return integer
  */
 	function characters() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'characters');
+		return $this->Adapters->dispatchMethod($this, 'characters', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Compresses contents. of the medium

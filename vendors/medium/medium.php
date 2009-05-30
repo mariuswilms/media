@@ -90,9 +90,10 @@ class Medium extends Object {
  * @var array
  */
 	static $_mimeTypesToNames = array(
-		'image/icon'            => 'Icon',
+		'application/ogg'		=> 'Audio',
 		'application/pdf'       => 'Document',
 		'application/msword'    => 'Document',
+		'image/icon'            => 'Icon',
 		'text/css'              => 'Css',
 		'text/javascript'       => 'Js',
 		'text/code'             => 'Generic',
@@ -487,7 +488,12 @@ class MediumAdapterCollection extends Object {
  * @param array $args
  * @return mixed
  */
-	function dispatchMethod(&$Medium, $method, $params = array()) {
+	function dispatchMethod(&$Medium, $method, $params = array(), $options = array()) {
+		$options += array('normalize' => false);
+
+		if (!is_array($params)) {
+			$params = (array)$params;
+		}
 		array_unshift($params, &$Medium);
 
 		if (isset($this->__methods[$method])) {
@@ -497,7 +503,8 @@ class MediumAdapterCollection extends Object {
 			$message .= "Calling `{$name}MediumAdapter::{$method}()`.";
 			$this->__messages[] = $message;
 
-			return $this->{$name}->dispatchMethod($method, $params);
+			$result = $this->{$name}->dispatchMethod($method, $params);
+			return $options['normalize'] ? $this->_normalize($result) : $result;
 		}
 
 		foreach ($this->_attached as $adapter) {
@@ -529,7 +536,8 @@ class MediumAdapterCollection extends Object {
 				$message .= "Calling `{$adapter}MediumAdapter::{$method}()`.";
 				$this->__messages[] = $message;
 
-				return $this->{$name}->dispatchMethod($method, $params);
+				$result = $this->{$name}->dispatchMethod($method, $params);
+				return $options['normalize'] ? $this->_normalize($result) : $result;
 			}
 		}
 		$message = "MediumCollection::dispatchMethod() - ";
@@ -584,6 +592,24 @@ class MediumAdapterCollection extends Object {
 			}
 		}
 		$this->__messages[] = "MediumCollection::_overlay() - Regenerated method overlays.";
+	}
+/**
+ * Normalizes a value
+ *
+ * @param mixed $value
+ * @param string $type
+ * @access protected
+ * @return mixed
+ */
+	function _normalize($value) {
+		if (is_numeric($value)) {
+			$value = (integer)$value;
+		} elseif (is_string($value)) {
+			$value = trim($value);
+		}
+		if (!empty($value)) {
+			return $value;
+		}
 	}
 /**
  * Returns messages for this Object

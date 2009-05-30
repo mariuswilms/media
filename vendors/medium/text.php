@@ -36,7 +36,9 @@ class TextMedium extends Medium {
  * @return integer
  */
 	function characters() {
-		return $this->Adapters->dispatchMethod($this, 'characters');
+		return $this->Adapters->dispatchMethod($this, 'characters', null,  array(
+			'normalize' => true
+		));
 	 }
 /**
  * Flesch Score
@@ -44,7 +46,9 @@ class TextMedium extends Medium {
  * @return float
  */
 	function fleschScore() {
-		return round($this->Adapters->dispatchMethod($this, 'fleschScore'), 2);
+		return round($this->Adapters->dispatchMethod($this, 'fleschScore', null, array(
+			'normalize' => false
+		)), 2);
 	}
 /**
  * Lexical Density in percent
@@ -56,7 +60,9 @@ class TextMedium extends Medium {
  * @return integer
  */
 	function lexicalDensity() {
-		return $this->Adapters->dispatchMethod($this, 'lexicalDensity');
+		return $this->Adapters->dispatchMethod($this, 'lexicalDensity', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Number of sentences
@@ -64,7 +70,9 @@ class TextMedium extends Medium {
  * @return integer
  */
 	function sentences() {
-		return $this->Adapters->dispatchMethod($this, 'sentences');
+		return $this->Adapters->dispatchMethod($this, 'sentences', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Number of syllables
@@ -72,7 +80,9 @@ class TextMedium extends Medium {
  * @return integer
  */
 	function syllables()	{
-		return $this->Adapters->dispatchMethod($this, 'syllables');
+		return $this->Adapters->dispatchMethod($this, 'syllables', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Truncate to given amount of characters
@@ -90,7 +100,9 @@ class TextMedium extends Medium {
  * @return integer
  */
 	function words($unique = false) {
-		return $this->Adapters->dispatchMethod($this, 'words', array($unique));
+		return $this->Adapters->dispatchMethod($this, 'words', null, array(
+			'normalize' => true
+		));
 	}
 }
 ?>

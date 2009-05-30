@@ -27,7 +27,7 @@ class PearMp3MediumAdapter extends MediumAdapter {
 	var $require = array(
 		'mimeTypes' => array('audio/mpeg'),
 		'imports' => array(
-			array('type' => 'Vendor','name'=> 'MP3_Id','file' => 'MP3/Id.php')
+			array('type' => 'Vendor', 'name'=> 'MP3_Id', 'file' => 'MP3/Id.php')
 	));
 
 	function initialize(&$Medium) {
@@ -65,10 +65,10 @@ class PearMp3MediumAdapter extends MediumAdapter {
 
 	function duration(&$Medium) {
 		$duration = $Medium->objects['MP3_Id']->getTag('lengths');
+
 		if ($duration != -1) {
 			return $duration;
 		}
-		return false;
 	}
 
 	function track(&$Medium) {
@@ -79,11 +79,10 @@ class PearMp3MediumAdapter extends MediumAdapter {
 		return $Medium->objects['MP3_Id']->getTag('frequency');
 	}
 
-	function bitrate(&$Medium) {
+	function bitRate(&$Medium) {
 		if ($bitrate = $Medium->objects['MP3_Id']->getTag('bitrate')) {
 			return $bitrate * 1000;
 		}
-		return false;
 	}
 }
 ?>

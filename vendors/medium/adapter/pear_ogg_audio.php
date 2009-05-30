@@ -25,7 +25,10 @@
  */
 class PearOggAudioMediumAdapter extends MediumAdapter {
 	var $require = array(
-		'mimeTypes' => array('audio/ogg'),
+		'mimeTypes' => array(
+			'application/ogg',
+			'audio/ogg'
+		),
 		'imports' => array(
 			array('type' => 'Vendor','name'=> 'File_Ogg','file' => 'File/Ogg.php')
 	));
@@ -71,7 +74,6 @@ class PearOggAudioMediumAdapter extends MediumAdapter {
 		if ($year = strtotime($Medium->objects['File_Ogg_Vorbis']->getDate())) {
 			return strftime('%Y', $year);
 		}
-		return false;
 	}
 
 	function duration(&$Medium) {
@@ -86,7 +88,7 @@ class PearOggAudioMediumAdapter extends MediumAdapter {
 		return $Medium->objects['File_Ogg_Vorbis']->getSampleRate();
 	}
 
-	function bitrate(&$Medium) {
+	function bitRate(&$Medium) {
 		return $Medium->objects['File_Ogg_Vorbis']->getBitrate();
 	}
 }

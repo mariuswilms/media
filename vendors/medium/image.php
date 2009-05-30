@@ -29,7 +29,7 @@ class ImageMedium extends Medium {
  *
  * @var array
  */
-	var $adapters = array('BasicImage', 'Imagick',  'Gd', 'ImagickShell');
+	var $adapters = array('BasicImage', 'Imagick', 'Gd', 'ImagickShell');
 /**
  * Alias for fitInside
  *
@@ -179,7 +179,9 @@ class ImageMedium extends Medium {
  * @return integer
  */
 	function width()	{
-		return (integer)$this->Adapters->dispatchMethod($this, 'width');
+		return $this->Adapters->dispatchMethod($this, 'width', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Current height of medium
@@ -187,7 +189,9 @@ class ImageMedium extends Medium {
  * @return integer
  */
 	function height() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'height');
+		return $this->Adapters->dispatchMethod($this, 'height', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Selects compression type and filters than compresses the medium

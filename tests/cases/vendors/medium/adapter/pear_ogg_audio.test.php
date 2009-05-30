@@ -43,13 +43,10 @@ class PearOggAudioMediumAdapterTest extends CakeTestCase {
 		$this->TestData->flushFiles();
 	}
 
-	function skip()
-	{
-		$this->skipUnless(App::import(array(
-			'type' => 'Vendor',
-			'name'=> 'File_Ogg',
-			'file' => 'File/Ogg.php'
-			)), 'PearOgg not in vendor');
+	function skip() {
+		$loaded = App::import(array('type' => 'Vendor', 'name'=> 'File_Ogg', 'file' => 'File/Ogg.php'));
+		$this->skipUnless($loaded, 'PearOgg not in vendor');
+		$this->skipIf(true, 'Temporarily disabled see http://pear.php.net/bugs/bug.php?id=16271');
 	}
 
 	function testBasic() {
@@ -82,7 +79,7 @@ class PearOggAudioMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 66736); // Nominal Bitrate = 36666
 
 		$result = $Medium->samplingRate();
@@ -113,7 +110,7 @@ class PearOggAudioMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 56813); // Nominal Bitrate = 36666
 
 		$result = $Medium->samplingRate();

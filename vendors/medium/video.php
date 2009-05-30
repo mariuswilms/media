@@ -36,7 +36,9 @@ class VideoMedium extends Medium {
  * @return mixed String if metadata info exists, else null
  */
 	function title() {
-		return trim($this->Adapters->dispatchMethod($this, 'title'));
+		return $this->Adapters->dispatchMethod($this, 'title', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Year stored in medium metadata
@@ -44,7 +46,19 @@ class VideoMedium extends Medium {
  * @return mixed Integer if metadata info exists, else null
  */
 	function year() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'year');
+		return $this->Adapters->dispatchMethod($this, 'year', null, array(
+			'normalize' => true
+		));
+	}
+/**
+ * Duration in seconds
+ *
+ * @return integer
+ */
+	function duration() {
+		return $this->Adapters->dispatchMethod($this, 'duration', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Current height of medium
@@ -52,7 +66,9 @@ class VideoMedium extends Medium {
  * @return integer
  */
 	function height() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'height');
+		return $this->Adapters->dispatchMethod($this, 'height', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Current width of medium
@@ -60,29 +76,33 @@ class VideoMedium extends Medium {
  * @return integer
  */
 	function width() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'width');
+		return $this->Adapters->dispatchMethod($this, 'width', null, array(
+			'normalize' => true
+		));
 	}
 /**
- * Current bitrate of medium
+ * Current bit rate of medium
  *
  * @url http://en.wikipedia.org/wiki/Bit_rate
  * @return integer
  */
-	function bitrate() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'bitrate');
+	function bitRate() {
+		return $this->Adapters->dispatchMethod($this, 'bitRate', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Determines the quality of the medium by
- * taking definition and bitrate into account
+ * taking definition and bit rate into account
  *
  * @return integer A number indicating quality between 1 (worst) and 5 (best)
  */
 	function quality() {
 		$definition = $this->width() * $this->height();
-		$bitrate = $this->bitrate();
+		$bitRate = $this->bitRate();
 
-		if (empty($definition) || empty($bitrate)) {
-			return null;
+		if (empty($definition) || empty($bitRate)) {
+			return;
 		}
 
 		/* Normalized between 1 and 5 where min = 19200 and max = 414720 */
@@ -102,18 +122,18 @@ class VideoMedium extends Medium {
 				+ $qualityMin;
 		}
 
-		$bitrateCoef = 3;
+		$bitRateCoef = 3;
 
-		if ($bitrate <= 128000) {
-			$quality = ($quality + $qualityMin * $bitrateCoef) / ($bitrateCoef + 1);
-		} elseif ($bitrate <= 564000) {
-			$quality = ($quality + $qualityMax * 2 / 5 * $bitrateCoef) / ($bitrateCoef + 1);
-		} elseif ($bitrate <= 1152000) {
-			$quality = ($quality + $qualityMax * 3 / 5 * $bitrateCoef) / ($bitrateCoef + 1);
-		} elseif ($bitrate <= 2240000) {
-			$quality = ($quality + $qualityMax * 4 / 5 * $bitrateCoef) / ($bitrateCoef + 1);
+		if ($bitRate <= 128000) {
+			$quality = ($quality + $qualityMin * $bitRateCoef) / ($bitRateCoef + 1);
+		} elseif ($bitRate <= 564000) {
+			$quality = ($quality + $qualityMax * 2 / 5 * $bitRateCoef) / ($bitRateCoef + 1);
+		} elseif ($bitRate <= 1152000) {
+			$quality = ($quality + $qualityMax * 3 / 5 * $bitRateCoef) / ($bitRateCoef + 1);
+		} elseif ($bitRate <= 2240000) {
+			$quality = ($quality + $qualityMax * 4 / 5 * $bitRateCoef) / ($bitRateCoef + 1);
 		} else {
-			$quality = ($quality + $qualityMax * $bitrateCoef) / ($bitrateCoef + 1);
+			$quality = ($quality + $qualityMax * $bitRateCoef) / ($bitRateCoef + 1);
 		}
 		return (integer)round($quality);
 	}
@@ -127,7 +147,7 @@ class VideoMedium extends Medium {
 		$height = $this->height();
 
 		if (empty($width) || empty($height)) {
-			return null;
+			return;
 		}
 
 		if (!$known) {

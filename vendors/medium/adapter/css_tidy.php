@@ -26,10 +26,11 @@
 class CssTidyMediumAdapter extends MediumAdapter {
 
 	var $require = array(
-						'mimeTypes' => array('text/css'),
-						'extensions' => array('ctype'),
-						'imports' => array(array('type' => 'Vendor','name'=> 'csstidy','file' => 'csstidy/class.csstidy.php')),
-						);
+		'mimeTypes' => array('text/css'),
+		'extensions' => array('ctype'),
+		'imports' => array(
+			array('type' => 'Vendor','name'=> 'csstidy','file' => 'csstidy/class.csstidy.php')),
+	);
 
 	var $_template = 'high_compression'; // or: highest_compression
 

@@ -383,7 +383,7 @@ class MediaBehavior extends ModelBehavior {
 					'length'        => $Medium->duration(),
 					'quality'       => $Medium->quality(),
 					'sampling_rate' => $Medium->samplingRate(),
-					'bitrate'       => $Medium->bitrate(),
+					'bit_rate'       => $Medium->bitRate(),
 				);
 			} elseif ($Medium->name === 'Image') {
 				$data[2] = array(
@@ -411,7 +411,7 @@ class MediaBehavior extends ModelBehavior {
 					'height'  => $Medium->height(),
 					'ratio'   => $Medium->ratio(),
 					'quality' => $Medium->quality(),
-					'bitrate' => $Medium->bitrate(),
+					'bit_rate' => $Medium->bitRate(),
 				);
 			} else {
 				$data[2] = array();

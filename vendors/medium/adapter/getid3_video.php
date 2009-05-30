@@ -71,11 +71,10 @@ class Getid3VideoMediumAdapter extends MediumAdapter {
 		if (isset($Medium->objects['getID3']->info['comments']['title'][0])) {
 			return $Medium->objects['getID3']->info['comments']['title'][0];
 		}
-		return false;
 	}
 
 	function year(&$Medium) {
-		foreach (array('year', 'data', 'creation_date') as $field) {
+		foreach (array('year', 'date', 'creation_date') as $field) {
 			if (!isset($Medium->objects['getID3']->info['comments'][$field][0])) {
 				continue;
 			}
@@ -88,38 +87,33 @@ class Getid3VideoMediumAdapter extends MediumAdapter {
 				return $date;
 			}
 		}
-		return false;
 	}
 
 	function duration(&$Medium) {
 		if (isset($Medium->objects['getID3']->info['playtime_seconds'])) {
 			return $Medium->objects['getID3']->info['playtime_seconds'];
 		}
-		return false;
 	}
 
 	function width(&$Medium) {
 		if (isset($Medium->objects['getID3']->info['video']['resolution_x'])) {
 			return $Medium->objects['getID3']->info['video']['resolution_x'];
 		}
-		return false;
 	}
 
 	function height(&$Medium) {
 		if (isset($Medium->objects['getID3']->info['video']['resolution_y'])) {
-			return false;
+			return $Medium->objects['getID3']->info['video']['resolution_y'];
 		}
-		return $Medium->objects['getID3']->info['video']['resolution_y'];
 	}
 
-	function bitrate(&$Medium) {
+	function bitRate(&$Medium) {
 		if (isset($Medium->objects['getID3']->info['ogg']['bitrate_nominal'])) {
 			return $Medium->objects['getID3']->info['ogg']['bitrate_nominal'];
 		}
 		if (isset($Medium->objects['getID3']->info['bitrate'])) {
 			return $Medium->objects['getID3']->info['bitrate'];
 		}
-		return false;
 	}
 }
 ?>

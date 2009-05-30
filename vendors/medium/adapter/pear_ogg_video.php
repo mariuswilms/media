@@ -39,7 +39,11 @@ class PearOggVideoMediumAdapter extends MediumAdapter {
 			return false;
 		}
 
-		$Ogg = new File_Ogg($Medium->file);
+		try {
+			$Ogg = new File_Ogg($Medium->file);
+		} catch (Exception $E) {
+			return false;
+		}
 
 		if (!$Ogg->hasStream(OGG_STREAM_THEORA)) {
 			return false;
@@ -61,7 +65,6 @@ class PearOggVideoMediumAdapter extends MediumAdapter {
 		if (isset($comments['TITLE'])) {
 			return $comments['TITLE'];
 		}
-		return false;
 	}
 
 	function year(&$Medium) {
@@ -73,7 +76,6 @@ class PearOggVideoMediumAdapter extends MediumAdapter {
 		if ($date = strtotime($comments['DATE'])) {
 			return strftime('%Y', $date);
 		}
-		return false;
 	}
 
 	function duration(&$Medium) {
@@ -94,7 +96,7 @@ class PearOggVideoMediumAdapter extends MediumAdapter {
 		return $header['PICH'];
 	}
 
-	function bitrate(&$Medium) {
+	function bitRate(&$Medium) {
 		$header = $Medium->objects['File_Ogg_Theora']->getHeader();
 		if (isset($header['NOMBR'])) {
 			return $header['NOMBR'];
@@ -102,7 +104,6 @@ class PearOggVideoMediumAdapter extends MediumAdapter {
 		if ($duration = $this->duration($Medium)) {
 			return filesize($Medium->file) / ($duration * 8);
 		}
-		return false;
 	}
 }
 ?>

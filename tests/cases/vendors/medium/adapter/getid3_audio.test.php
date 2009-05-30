@@ -81,7 +81,7 @@ class Getid3AudioMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 64000);
 
 		$result = $Medium->samplingRate();
@@ -112,7 +112,7 @@ class Getid3AudioMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 64000);
 
 		$result = $Medium->samplingRate();
@@ -143,7 +143,7 @@ class Getid3AudioMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 64000);
 
 		$result = $Medium->samplingRate();
@@ -174,7 +174,7 @@ class Getid3AudioMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 36666);
 
 		$result = $Medium->samplingRate();
@@ -205,7 +205,7 @@ class Getid3AudioMediumAdapterTest extends CakeTestCase {
 		$result = $Medium->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitrate();
+		$result = $Medium->bitRate();
 		$this->assertEqual($result, 36666);
 
 		$result = $Medium->samplingRate();

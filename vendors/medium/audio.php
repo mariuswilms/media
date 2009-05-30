@@ -36,7 +36,9 @@ class AudioMedium extends Medium {
  * @return mixed String if metadata info exists, else null
  */
 	function artist() {
-		return trim($this->Adapters->dispatchMethod($this, 'artist'));
+		return $this->Adapters->dispatchMethod($this, 'artist', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Title stored in medium metadata
@@ -44,7 +46,9 @@ class AudioMedium extends Medium {
  * @return mixed String if metadata info exists, else null
  */
 	function title() {
-		return trim($this->Adapters->dispatchMethod($this, 'title'));
+		return $this->Adapters->dispatchMethod($this, 'title', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Album name stored in medium metadata
@@ -52,7 +56,9 @@ class AudioMedium extends Medium {
  * @return mixed String if metadata info exists, else null
  */
 	function album() {
-		return trim($this->Adapters->dispatchMethod($this, 'album'));
+		return $this->Adapters->dispatchMethod($this, 'album', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Year stored in medium metadata
@@ -60,7 +66,9 @@ class AudioMedium extends Medium {
  * @return mixed Integer if metadata info exists, else null
  */
 	function year() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'year');
+		return $this->Adapters->dispatchMethod($this, 'year', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Track number stored in medium metadata
@@ -68,7 +76,9 @@ class AudioMedium extends Medium {
  * @return mixed Integer if metadata info exists, else null
  */
 	function track() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'track');
+		return $this->Adapters->dispatchMethod($this, 'track', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Duration in seconds
@@ -76,7 +86,9 @@ class AudioMedium extends Medium {
  * @return integer
  */
 	function duration() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'duration');
+		return $this->Adapters->dispatchMethod($this, 'duration', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Current sampling rate of medium
@@ -85,41 +97,45 @@ class AudioMedium extends Medium {
  * @return integer
  */
 	function samplingRate() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'samplingRate');
+		return $this->Adapters->dispatchMethod($this, 'samplingRate', null, array(
+			'normalize' => true
+		));
 	}
 /**
- * Current bitrate of medium
+ * Current bit rate of medium
  *
  * @url http://en.wikipedia.org/wiki/Bit_rate
  * @return integer
  */
-	function bitrate() {
-		return (integer)$this->Adapters->dispatchMethod($this, 'bitrate');
+	function bitRate() {
+		return $this->Adapters->dispatchMethod($this, 'bitRate', null, array(
+			'normalize' => true
+		));
 	}
 /**
  * Determines the quality of the medium by
- * taking bitrate into account
+ * taking bit rate into account
  *
  * @return integer A number indicating quality between 1 (worst) and 5 (best)
  */
 	function quality() {
-		if (!$bitrate = $this->bitrate()) {
-			return null;
+		if (!$bitRate = $this->bitRate()) {
+			return;
 		}
 
 		/* Normalized between 1 and 5 where min = 32000 and max = 320000 or 500000 */
-		$bitrateMax = ($this->mimeType == 'audio/mpeg') ? 320000 : 500000;
-		$bitrateMin = 32000;
+		$bitRateMax = ($this->mimeType == 'audio/mpeg') ? 320000 : 500000;
+		$bitRateMin = 32000;
 		$qualityMax = 5;
 		$qualityMin = 1;
 
-		if ($bitrate >= $bitrateMax) {
+		if ($bitRate >= $bitRateMax) {
 			$quality = $qualityMax;
-		} elseif ($bitrate <= $bitrateMin) {
+		} elseif ($bitRate <= $bitRateMin) {
 			$quality = $qualityMin;
 		} else {
 			$quality =
-				(($bitrate - $bitrateMin) / ($bitrateMax - $bitrateMin))
+				(($bitRate - $bitRateMin) / ($bitRateMax - $bitRateMin))
 				* ($qualityMax - $qualityMin)
 				+ $qualityMin;
 		}
