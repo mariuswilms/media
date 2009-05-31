@@ -82,6 +82,8 @@ if (isset($this->data[$assocAlias][0]['basename'])) {
 			echo $form->hidden($assocAlias . '.' . $i . '.alternative', array('value' => $item['alternative']));
 
 			if ($file = $medium->file($item)) {
+				$url = $medium->url($file);
+
 				echo $medium->embed($medium->file('xxs/', $item), array('restrict' => array('image')));
 
 		 		$Medium = Medium::factory($file);
@@ -91,8 +93,8 @@ if (isset($this->data[$assocAlias][0]['basename'])) {
 					$size = $number->toReadableSize($size);
 				}
 
-				printf('<span><a href="%s">%s</a>&nbsp;(%s/%s) <em>%s</em></span>',
-						$medium->url($file), $item['basename'],
+				printf('<span>%s&nbsp;(%s/%s Bytes) <em>%s</em></span>',
+						$url ? $html->link($item['basename'], $url) : $item['basename'],
 						strtolower($Medium->name), $size, $item['alternative']);
 			}
 
