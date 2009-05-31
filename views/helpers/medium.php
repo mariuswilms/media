@@ -213,13 +213,13 @@ class MediumHelper extends AppHelper {
 			return null;
 		}
 
-		if (is_string($path)) {
-			$file = $this->file($path);
-		} else {
+		if (strpos('://', $path) !== false) {
 			$file = parse_url($url, PHP_URL_PATH);
+		} else {
+			$file = $this->file($path);
 		}
-		$mimeType = MimeType::guessType($file);
 
+		$mimeType = MimeType::guessType($file);
 		$Medium = Medium::factory($file, $mimeType);
 
 		if (!isset($options['width'])) {
@@ -436,13 +436,13 @@ class MediumHelper extends AppHelper {
 			return null;
 		}
 
-		if (is_string($path)) {
-			$file = $this->file($path);
-		} else {
+		if (strpos('://', $path) !== false) {
 			$file = parse_url($url, PHP_URL_PATH);
+		} else {
+			$file = $this->file($path);
 		}
-		$mimeType = MimeType::guessType($file);
 
+		$mimeType = MimeType::guessType($file);
 		$Medium = Medium::factory($file, $mimeType);
 
 		if (!empty($options['restrict'])
