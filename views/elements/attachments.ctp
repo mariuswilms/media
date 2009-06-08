@@ -105,7 +105,7 @@ if (isset($this->data[$assocAlias][0]['basename'])) {
 			));
 		?>
 		</div>
-	<?php endfor ?>
+		<?php endfor ?>
+	<?php endif ?>
 	</div>
-<?php endif ?>
 </div>
