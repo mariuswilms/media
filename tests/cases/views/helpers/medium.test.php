@@ -55,13 +55,11 @@ class MediumHelperTestCase extends CakeTestCase {
 			'image-png.png' => $this->TmpFolder->pwd() . 'theme/blanko/img/image-blanko.png'));
 
 		$settings = array(
-			'map' => array(
-				'static' => array($this->TmpFolder->pwd() . 'static' . DS => 'media/static/'),
-				'filter' => array($this->TmpFolder->pwd() . 'filter' . DS => 'media/filter/'),
-				'transfer' => array($this->TmpFolder->pwd() . 'transfer' . DS => false),
-				'theme' => array($this->TmpFolder->pwd() . 'theme' . DS  => 'media/theme/')
-				)
-			);
+			'static' => array($this->TmpFolder->pwd() . 'static' . DS => 'media/static/'),
+			'filter' => array($this->TmpFolder->pwd() . 'filter' . DS => 'media/filter/'),
+			'transfer' => array($this->TmpFolder->pwd() . 'transfer' . DS => false),
+			'theme' => array($this->TmpFolder->pwd() . 'theme' . DS  => 'media/theme/')
+		);
 		$this->Helper =& new MediumHelper($settings);
 	}
 

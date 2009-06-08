@@ -86,9 +86,9 @@ class MediumHelper extends AppHelper {
  * @return void
  */
 	function __construct($settings = array()) {
-		$this->settings = array_merge($this->settings, $settings);
+		$this->settings['map'] = array_merge($this->settings['map'], $settings);
 
-		foreach ($this->settings['map'] as $value) {
+		foreach ($this->settings['map'] as $key => $value) {
 			$this->settings['directories'][basename(key($value))] = key($value);
 			$this->settings['urls'][] = current($value);
 		}
