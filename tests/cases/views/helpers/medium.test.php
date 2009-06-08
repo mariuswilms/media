@@ -35,6 +35,9 @@ class MediumHelperTestCase extends CakeTestCase {
 		$this->TmpFolder->create($this->TmpFolder->pwd() . 'transfer');
 		$this->TmpFolder->create($this->TmpFolder->pwd() . 'transfer' . DS . 'img');
 		$this->TmpFolder->create($this->TmpFolder->pwd() . 'filter' . DS . 's' . DS . 'transfer' . DS . 'img');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'theme');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'theme' . DS . 'blanko');
+		$this->TmpFolder->create($this->TmpFolder->pwd() . 'theme' . DS . 'blanko' . DS . 'img' . DS);
 
 		$this->TestData = new TestData();
 
@@ -48,12 +51,15 @@ class MediumHelperTestCase extends CakeTestCase {
 			'image-png.png' => $this->TmpFolder->pwd() . 'transfer/img/image-png-x.png'));
 		$this->file4 = $this->TestData->getFile(array(
 			'image-png.png' => $this->TmpFolder->pwd() . 'filter/s/transfer/img/image-png-x.png'));
+		$this->file5 = $this->TestData->getFile(array(
+			'image-png.png' => $this->TmpFolder->pwd() . 'theme/blanko/img/image-blanko.png'));
 
 		$settings = array(
 			'map' => array(
 				'static' => array($this->TmpFolder->pwd() . 'static' . DS => 'media/static/'),
 				'filter' => array($this->TmpFolder->pwd() . 'filter' . DS => 'media/filter/'),
-				'transfer' => array($this->TmpFolder->pwd() . 'transfer' . DS => false)
+				'transfer' => array($this->TmpFolder->pwd() . 'transfer' . DS => false),
+				'theme' => array($this->TmpFolder->pwd() . 'theme' . DS  => 'media/theme/')
 				)
 			);
 		$this->Helper =& new MediumHelper($settings);
@@ -135,6 +141,9 @@ class MediumHelperTestCase extends CakeTestCase {
 
 		$result = $this->Helper->file($this->TmpFolder->pwd() . 'filter/s/transfer/img/image-png-x.png');
 		$this->assertEqual($result, $this->file4);
+
+		$result = $this->Helper->file('theme/blanko/img/image-blanko');
+		$this->assertEqual($result, $this->file5);
 	}
 
 	function testFileArraySyntax() {
