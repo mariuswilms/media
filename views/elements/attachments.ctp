@@ -20,6 +20,10 @@
  * @link       http://github.com/davidpersson/media
  */
 
+if (!isset($previewVersion)) {
+	$previewVersion = 'xxs';
+}
+
 /* Set $assocAlias and $model if you're using this element multiple times in one form */
 
 if (!isset($assocAlias)) {
@@ -84,7 +88,9 @@ if (isset($this->data[$assocAlias][0]['basename'])) {
 			if ($file = $medium->file($item)) {
 				$url = $medium->url($file);
 
-				echo $medium->embed($medium->file('xxs/', $item), array('restrict' => array('image')));
+				echo $medium->embed($medium->file($previewVersion . '/', $item), array(
+					'restrict' => array('image')
+				));
 
 		 		$Medium = Medium::factory($file);
 				$size = $medium->size($file);
