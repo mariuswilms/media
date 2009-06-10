@@ -44,35 +44,48 @@ class MediumHelper extends AppHelper {
 		'rsslink'			=> '<link type="application/rss+xml" rel="alternate" href="%s" title="%s"/>', /* v2 */
 	);
 /**
- * Configuration settings for this helper
+ * Maps absolute paths to url paths
  *
  * @var array
  */
-	var $settings = array(
-		'map' => array(
-			'static'   => array(MEDIA_STATIC => MEDIA_STATIC_URL),
-			'transfer' => array(MEDIA_TRANSFER => MEDIA_TRANSFER_URL),
-			'filter'   => array(MEDIA_FILTER => MEDIA_FILTER_URL)
-		),
-		'directories' => array(	),
-		'urls' => array(),
-		'versions' => array('xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl', 'c'),
-		'extensions' => array(
-			'aud' 	=> array('mp3', 'ogg', 'aif', 'wma', 'wav'),
-			'css' 	=> array('css'),
-			'doc' 	=> array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
-			'gen' 	=> array(),
-			'ico' 	=> array('ico', 'png', 'gif', 'jpg', 'jpeg'),
-			'img' 	=> array('png', 'jpg', 'jpeg' , 'gif'),
-			'js' 	=> array('js'),
-			'txt' 	=> array('txt'),
-			'vid' 	=> array(
-							'avi', 'mpg', 'qt', 'mov', 'ogg', 'wmv',
-							'png', 'jpg', 'jpeg', 'gif', 'mp3', 'ogg',
-							'aif', 'wma', 'wav'
-	)));
+	var $_map = array(
+		'static'   => array(MEDIA_STATIC => MEDIA_STATIC_URL),
+		'transfer' => array(MEDIA_TRANSFER => MEDIA_TRANSFER_URL),
+		'filter'   => array(MEDIA_FILTER => MEDIA_FILTER_URL)
+	);
 /**
- * Holds cached paths
+ * Maps basenames of directories to absoulte paths
+ *
+ * @var array
+ */
+	var $_directories = array();
+/**
+ * Holds an indexed array of version names
+ *
+ * @var array
+ */
+	var $_versions = array();
+/**
+ * Maps short medium types to extensions
+ *
+ * @var array
+ */
+	var $_extensions = array(
+		'aud' 	=> array('mp3', 'ogg', 'aif', 'wma', 'wav'),
+		'css' 	=> array('css'),
+		'doc' 	=> array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
+		'gen' 	=> array(),
+		'ico' 	=> array('ico', 'png', 'gif', 'jpg', 'jpeg'),
+		'img' 	=> array('png', 'jpg', 'jpeg' , 'gif'),
+		'js' 	=> array('js'),
+		'txt' 	=> array('txt'),
+		'vid' 	=> array(
+			'avi', 'mpg', 'qt', 'mov', 'ogg', 'wmv',
+			'png', 'jpg', 'jpeg', 'gif', 'mp3', 'ogg',
+			'aif', 'wma', 'wav', 'flv'
+	));
+/**
+ * Holds cached resolved paths
  *
  * @var array
  */
@@ -80,18 +93,22 @@ class MediumHelper extends AppHelper {
 /**
  * Constructor
  *
- * Sets up cache and merges user supplied settings with default settings
+ * Sets up cache and merges user supplied map settings with default map
  *
- * @param array $settings
+ * @param array $settings The map settings to add
  * @return void
  */
 	function __construct($settings = array()) {
-		$this->settings['map'] = array_merge($this->settings['map'], $settings);
+		$this->_map = array_merge($this->_map, $settings);
 
-		foreach ($this->settings['map'] as $key => $value) {
-			$this->settings['directories'][basename(key($value))] = key($value);
-			$this->settings['urls'][] = current($value);
+		foreach ($this->_map as $key => $value) {
+			$this->_directories[basename(key($value))] = key($value);
 		}
+
+		foreach (Configure::read('Media.filter') as $type) {
+			$this->_versions += array_keys($type);
+		}
+
 		if (!$this->__cached = Cache::read('media_found', '_cake_core_')) {
 			$this->__cached = array();
 		}
@@ -152,7 +169,7 @@ class MediumHelper extends AppHelper {
 			return null;
 		}
 
-		foreach ($this->settings['map'] as $value) {
+		foreach ($this->_map as $value) {
 			$directory = key($value);
 			$url = current($value);
 
@@ -175,20 +192,20 @@ class MediumHelper extends AppHelper {
  */
 	function embed($path, $options = array()) {
 		$default = array(
-					'restrict' => array(),
-					'background' => '#000000',
-					'autoplay' => false, /* aka `autostart` */
-					'controls' => false, /* aka `controller` */
-					'branding' => false,
-					'alt' => null,
-					'width' => null,
-					'height' => null,
-					);
+			'restrict' => array(),
+			'background' => '#000000',
+			'autoplay' => false, /* aka `autostart` */
+			'controls' => false, /* aka `controller` */
+			'branding' => false,
+			'alt' => null,
+			'width' => null,
+			'height' => null,
+		);
 		$additionalAttributes = array(
-					'id' => null,
-					'class' => null,
-					'usemap' => null,
-					);
+			'id' => null,
+			'class' => null,
+			'usemap' => null,
+		);
 
 		$options = array_merge($default, $options);
 		$attributes = array_intersect_key($options, $additionalAttributes);
@@ -406,12 +423,12 @@ class MediumHelper extends AppHelper {
  */
 	function link($path, $options = array()) {
 		$default = array(
-						'inline' => true,
-						'restrict' => array(),
-						);
+			'inline' => true,
+			'restrict' => array(),
+		);
 		$defaultRss = array(
-						'title' => 'RSS Feed',
-						);
+			'title' => 'RSS Feed',
+		);
 
 		if (is_bool($options)) {
 			$options = array('inline' => $options);
@@ -532,18 +549,17 @@ class MediumHelper extends AppHelper {
 			return file_exists($path) ? $path : false;
 		}
 
-		extract($this->settings);
 		$parts = explode(DS, $path);
 
-		if (in_array($parts[0], $versions)) {
-			array_unshift($parts, basename(key($map['filter'])));
+		if (in_array($parts[0], $this->_versions)) {
+			array_unshift($parts, basename(key($this->_map['filter'])));
 		}
-		if (!in_array($parts[0], array_keys($directories))) {
-			array_unshift($parts, basename(key($map['static'])));
+		if (!in_array($parts[0], array_keys($this->_directories))) {
+			array_unshift($parts, basename(key($this->_map['static'])));
 		}
-		if (in_array($parts[1], $versions)
-		&& !in_array($parts[2], array_keys($directories))) {
-			array_splice($parts, 2, 0, basename(key($map['static'])));
+		if (in_array($parts[1], $this->_versions)
+		&& !in_array($parts[2], array_keys($this->_directories))) {
+			array_splice($parts, 2, 0, basename(key($this->_map['static'])));
 		}
 
 		$path = implode(DS, $parts);
@@ -552,7 +568,7 @@ class MediumHelper extends AppHelper {
 			return $this->__cached[$path];
 		}
 
-		$file = $directories[array_shift($parts)] . implode(DS, $parts);
+		$file = $this->_directories[array_shift($parts)] . implode(DS, $parts);
 
 		if (file_exists($file)) {
 			return $this->__cached[$path] = $file;
@@ -573,7 +589,7 @@ class MediumHelper extends AppHelper {
 		for ($i = 0; $i < 2; $i++) {
 			$file = $i ? $dirname . DS . $filename : $dirname . DS . $basename;
 
-			foreach ($extensions[$short] as $extension) {
+			foreach ($this->_extensions[$short] as $extension) {
 				$try = $file . '.' . $extension;
 				if (file_exists($try)) {
 					return $this->__cached[$path] = $try;
