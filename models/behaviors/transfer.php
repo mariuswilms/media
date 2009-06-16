@@ -788,7 +788,7 @@ class TransferBehavior extends ModelBehavior {
  * @return string
  */
 	function _replaceMarker(&$Model, $subject) {
-		if(is_array($subject)) {
+		if (is_array($subject)) {
 			foreach ($subject as $s) {
 				$result[] = $this->_replaceMarker($Model, $s);
 			}
@@ -802,6 +802,7 @@ class TransferBehavior extends ModelBehavior {
 		$markers = Set::filter($this->runtime[$Model->alias]['markers']);
 		$subject = String::insert($subject, $markers, array(
 			'before' => ':', 'after' => ':',
+			'escape' => '#',
 			'clean' => true,
 			'replacement' => 'unknown_marker'
 		));
