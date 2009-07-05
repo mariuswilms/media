@@ -21,4 +21,9 @@ class Unicorn extends CakeTestModel {
 		return false;
 	}
 }
+
+class Pirate extends CakeTestModel {
+	var $name = 'Pirate';
+	var $useTable = 'pirates';
+}
 ?>

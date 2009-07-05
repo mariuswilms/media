@@ -27,7 +27,10 @@ require_once APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'core.php';
  * @subpackage media.tests.cases.models
  */
 class AttachmentTestCase extends CakeTestCase {
-	var $fixtures = array('plugin.media.movie', 'plugin.media.actor', 'plugin.media.attachment');
+	var $fixtures = array(
+		'plugin.media.movie', 'plugin.media.actor',
+		'plugin.media.attachment', 'plugin.media.pirate'
+	);
 
 	function setUp() {
 		$this->TestData = new TestData();
@@ -45,12 +48,11 @@ class AttachmentTestCase extends CakeTestCase {
 
 	function testHasOne() {
 		$Model = ClassRegistry::init('Movie');
-
 		$assoc = array(
 			'Attachment' => array(
 				'className' => 'Media.Attachment',
 				'foreignKey' => 'foreign_key',
-				'conditions' => array('model' => 'Movie'),
+				'conditions' => array('Attachment.model' => 'Movie'),
 				'dependent' => true,
 		));
 		$Model->bindModel(array('hasOne' => $assoc), false);
@@ -59,12 +61,10 @@ class AttachmentTestCase extends CakeTestCase {
 			'classField' => 'model',
 			'foreignKey' => 'foreign_key'
 		));
-
 		$Model->Attachment->Behaviors->attach('Media.Transfer', array(
 			'baseDirectory' => TMP,
 			'destinationFile' => 'test_suite:DS:transfer:DS::Source.basename:'
 		));
-
 		$Model->Attachment->Behaviors->attach('Media.Media', array(
 			'filterDirectory' => $this->TestFolder->pwd() . 'filter' . DS
 		));
@@ -97,25 +97,23 @@ class AttachmentTestCase extends CakeTestCase {
 
 	function testHasMany() {
 		$Model = ClassRegistry::init('Movie');
-
 		$assoc = array(
 			'Attachment' => array(
 				'className' => 'Media.Attachment',
 				'foreignKey' => 'foreign_key',
-				'conditions' => array('model' => 'Movie'),
+				'conditions' => array('Attachment.model' => 'Movie'),
 				'dependent' => true,
 		));
 		$Model->bindModel(array('hasMany' => $assoc), false);
 
 		$Model->Attachment->Behaviors->attach('Media.Polymorphic', array(
 			'classField' => 'model',
-			'foreignKey' => 'foreign_key'));
-
+			'foreignKey' => 'foreign_key'
+		));
 		$Model->Attachment->Behaviors->attach('Media.Transfer', array(
 			'baseDirectory' => TMP,
 			'destinationFile' => 'test_suite:DS:transfer:DS::Source.basename:'
 		));
-
 		$Model->Attachment->Behaviors->attach('Media.Media', array(
 			'filterDirectory' => $this->TestFolder->pwd() . 'filter' . DS
 		));
@@ -160,38 +158,14 @@ class AttachmentTestCase extends CakeTestCase {
 		$this->assertEqual($result['Attachment'], $expected);
 	}
 
-	function testGroupedHasOneHasMany() {
+	function testGroupedHasMany() {
 		$Model = ClassRegistry::init('Movie');
-
-		$assoc = array(
-			'Poster' => array(
-				'className' => 'Media.Attachment',
-				'foreignKey' => 'foreign_key',
-				'conditions' => array('model' => 'Movie', 'Poster.group' => 'poster'),
-				'dependent' => true,
-		));
-		$Model->bindModel(array('hasOne' => $assoc), false);
-
-		$Model->Poster->Behaviors->attach('Media.Polymorphic', array(
-			'classField' => 'model',
-			'foreignKey' => 'foreign_key'
-		));
-
-		$Model->Poster->Behaviors->attach('Media.Transfer', array(
-			'baseDirectory' => TMP,
-			'destinationFile' => 'test_suite:DS:transfer:DS:poster:DS::Source.basename:'
-		));
-
-		$Model->Poster->Behaviors->attach('Media.Media', array(
-			'filterDirectory' => $this->TestFolder->pwd() . 'filter' . DS
-		));
-
 		$assoc = array(
 			'Photo' => array(
 				'className' => 'Media.Attachment',
 				'foreignKey' => 'foreign_key',
-				'conditions' => array('model' => 'Movie', 'Photo.group' => 'photo'),
-				'dependent' => true,
+				'conditions' => array('Photo.model' => 'Movie', 'Photo.group' => 'photo'),
+				'dependent' => true
 		));
 		$Model->bindModel(array('hasMany' => $assoc), false);
 
@@ -199,33 +173,28 @@ class AttachmentTestCase extends CakeTestCase {
 			'classField' => 'model',
 			'foreignKey' => 'foreign_key'
 		));
-
 		$Model->Photo->Behaviors->attach('Media.Transfer', array(
 			'baseDirectory' => TMP,
 			'destinationFile' => 'test_suite:DS:transfer:DS:photo:DS::Source.basename:'
 		));
-
 		$Model->Photo->Behaviors->attach('Media.Media', array(
 			'filterDirectory' => $this->TestFolder->pwd() . 'filter' . DS
 		));
 
-		$fileA = $this->TestData->getFile(array('image-jpg.jpg' => 'ta.jpg'));
+		$fileA = $this->TestData->getFile(array('image-png.png' => 'ta.png'));
 		$fileB = $this->TestData->getFile(array('image-png.png' => 'tb.png'));
-		$fileC = $this->TestData->getFile(array('image-png.png' => 'tc.png'));
 		$data = array(
 			'Movie' => array('title' => 'Weekend', 'director' => 'Jean-Luc Godard'),
-			'Poster' => array('file' => $fileA, 'model' => 'Movie', 'group' => 'poster'),
 			'Photo' => array(
+				array('file' => $fileA, 'model' => 'Movie', 'group' => 'photo'),
 				array('file' => $fileB, 'model' => 'Movie', 'group' => 'photo'),
-				array('file' => $fileC, 'model' => 'Movie', 'group' => 'photo'),
 		));
 
 		$Model->create();
 		$result = $Model->saveAll($data, array('validate' => 'first'));
 		$this->assertTrue($result);
-		$this->assertTrue(file_exists($this->TestFolder->pwd() . 'transfer' . DS . 'poster' . DS . 'ta.jpg'));
+		$this->assertTrue(file_exists($this->TestFolder->pwd() . 'transfer' . DS . 'photo' . DS . 'ta.png'));
 		$this->assertTrue(file_exists($this->TestFolder->pwd() . 'transfer' . DS . 'photo' . DS . 'tb.png'));
-		$this->assertTrue(file_exists($this->TestFolder->pwd() . 'transfer' . DS . 'photo' . DS . 'tc.png'));
 
 		$result = $Model->find('first', array('conditions' => array('title' => 'Weekend')));
 		$expected = array(
@@ -235,33 +204,23 @@ class AttachmentTestCase extends CakeTestCase {
 				'director' => 'Jean-Luc Godard',
 			),
 			'Actor' => array(),
-			'Poster' => array(
-				'id' => 1,
-				'model' => 'Movie',
-				'foreign_key' => 4,
-				'dirname' => 'tmp/test_suite/transfer/poster',
-				'basename' => 'ta.jpg',
-				'checksum' => '1920c29e7fbe4d1ad2f9173ef4591133',
-				'group' => 'poster',
-				'alternative' => null,
-			),
 			'Photo' => array(
 				0 => array(
-					'id' => 2,
+					'id' => 1,
 					'model' => 'Movie',
 					'foreign_key' => 4,
 					'dirname' => 'tmp/test_suite/transfer/photo',
-					'basename' => 'tb.png',
+					'basename' => 'ta.png',
 					'checksum' => '7f9af648b511f2c83b1744f42254983f',
 					'group' => 'photo',
 					'alternative' => null,
 				),
 				1 => array(
-					'id' => 3,
+					'id' => 2,
 					'model' => 'Movie',
 					'foreign_key' => 4,
 					'dirname' => 'tmp/test_suite/transfer/photo',
-					'basename' => 'tc.png',
+					'basename' => 'tb.png',
 					'checksum' => '7f9af648b511f2c83b1744f42254983f',
 					'group' => 'photo',
 					'alternative' => null,
