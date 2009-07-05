@@ -92,7 +92,10 @@ class AttachmentTestCase extends CakeTestCase {
 			'alternative' => null,
 		);
 		$this->assertEqual($result['Attachment'], $expected);
-		unlink($file);
+
+		$result = $Model->delete($Model->getLastInsertID());
+		$this->assertTrue($result);
+		$this->assertFalse(file_exists($this->TestFolder->pwd() . 'transfer' .  DS . 'ta.jpg'));
 	}
 
 	function testHasMany() {
@@ -156,6 +159,11 @@ class AttachmentTestCase extends CakeTestCase {
 				'alternative' => null,
 		));
 		$this->assertEqual($result['Attachment'], $expected);
+
+		$result = $Model->delete($Model->getLastInsertID());
+		$this->assertTrue($result);
+		$this->assertFalse(file_exists($this->TestFolder->pwd() . 'transfer' .  DS . 'ta.jpg'));
+		$this->assertFalse(file_exists($this->TestFolder->pwd() . 'transfer' .  DS . 'tb.jpg'));
 	}
 
 	function testGroupedHasMany() {
@@ -226,6 +234,11 @@ class AttachmentTestCase extends CakeTestCase {
 					'alternative' => null,
 		)));
 		$this->assertEqual($result, $expected);
+
+		$result = $Model->delete($Model->getLastInsertID());
+		$this->assertTrue($result);
+		$this->assertFalse(file_exists($this->TestFolder->pwd() . 'transfer' . DS . 'photo' . DS . 'ta.png'));
+		$this->assertFalse(file_exists($this->TestFolder->pwd() . 'transfer' . DS . 'photo' . DS . 'tb.png'));
 	}
 }
 ?>
