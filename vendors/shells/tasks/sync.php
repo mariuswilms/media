@@ -125,7 +125,7 @@ class SyncTask extends MediaShell {
 			$this->base = $this->in('Directory to search:', null, MEDIA_TRANSFER);
 		}
 
-		$this->_Model = ClassRegistry::init($ithis->model);
+		$this->_Model = ClassRegistry::init($this->model);
 
 		if (!isset($this->_Model->Behaviors->Media)) {
 			$this->err('MediaBehavior is not attached to Model');
