@@ -37,11 +37,11 @@ class MediumHelper extends AppHelper {
  * @var array
  */
 	var $tags = array(
-		'object'			=> '<object%s>%s%s</object>',
-		'param' 			=> '<param%s/>',
-		'csslink' 			=> '<link type="text/css" rel="stylesheet" href="%s" %s/>',
-		'javascriptlink' 	=> '<script type="text/javascript" src="%s"></script>',
-		'rsslink'			=> '<link type="application/rss+xml" rel="alternate" href="%s" title="%s"/>', /* v2 */
+		'object'         => '<object%s>%s%s</object>',
+		'param'          => '<param%s/>',
+		'csslink'        => '<link type="text/css" rel="stylesheet" href="%s" %s/>',
+		'javascriptlink' => '<script type="text/javascript" src="%s"></script>',
+		'rsslink'        => '<link type="application/rss+xml" rel="alternate" href="%s" title="%s"/>', /* v2 */
 	);
 /**
  * Maps absolute paths to url paths
@@ -71,15 +71,15 @@ class MediumHelper extends AppHelper {
  * @var array
  */
 	var $_extensions = array(
-		'aud' 	=> array('mp3', 'ogg', 'aif', 'wma', 'wav'),
-		'css' 	=> array('css'),
-		'doc' 	=> array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
-		'gen' 	=> array(),
-		'ico' 	=> array('ico', 'png', 'gif', 'jpg', 'jpeg'),
-		'img' 	=> array('png', 'jpg', 'jpeg' , 'gif'),
-		'js' 	=> array('js'),
-		'txt' 	=> array('txt'),
-		'vid' 	=> array(
+		'aud' => array('mp3', 'ogg', 'aif', 'wma', 'wav'),
+		'css' => array('css'),
+		'doc' => array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
+		'gen' => array(),
+		'ico' => array('ico', 'png', 'gif', 'jpg', 'jpeg'),
+		'img' => array('png', 'jpg', 'jpeg' , 'gif'),
+		'js'  => array('js'),
+		'txt' => array('txt'),
+		'vid' => array(
 			'avi', 'mpg', 'qt', 'mov', 'ogg', 'wmv',
 			'png', 'jpg', 'jpeg', 'gif', 'mp3', 'ogg',
 			'aif', 'wma', 'wav', 'flv'
