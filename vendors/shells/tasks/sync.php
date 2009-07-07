@@ -119,7 +119,7 @@ class SyncTask extends MediaShell {
 		$this->directory = array_shift($this->args);
 
 		if (!isset($this->model)) {
-			$this->model = $this->in('Name of model:', null, 'Attachment');
+			$this->model = $this->in('Name of model:', null, 'Media.Attachment');
 		}
 		if (!isset($this->directory)) {
 			$this->base = $this->in('Directory to search:', null, MEDIA_TRANSFER);
