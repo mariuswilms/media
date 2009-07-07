@@ -122,7 +122,7 @@ class SyncTask extends MediaShell {
 			$this->model = $this->in('Name of model:', null, 'Media.Attachment');
 		}
 		if (!isset($this->directory)) {
-			$this->base = $this->in('Directory to search:', null, MEDIA_TRANSFER);
+			$this->directory = $this->in('Directory to search:', null, MEDIA_TRANSFER);
 		}
 
 		$this->_Model = ClassRegistry::init($this->model);
@@ -131,6 +131,8 @@ class SyncTask extends MediaShell {
 			$this->err('MediaBehavior is not attached to Model');
 			return false;
 		}
+		$this->_Model->detach(array('Media.Transfer', 'Media.Media'));
+
 		$this->_baseDirectory = $this->_Model->Behaviors->Media->settings[$this->_Model->alias]['baseDirectory'];
 		$this->_Folder = new Folder($this->directory);
 		$this->interactive = isset($this->model, $this->directory);
@@ -374,6 +376,9 @@ class SyncTask extends MediaShell {
  */
 	function _generateMaps() {
 		$fsFiles = $this->_Folder->findRecursive();
+		$results = $this->_Model->find('all');
+		$fsMap = array();
+		$dbMap = array();
 
 		foreach ($fsFiles as $value) {
 			$File = new File($value);
@@ -382,10 +387,6 @@ class SyncTask extends MediaShell {
 						'checksum' => $File->md5()
 						);
 		}
-
-		$results = $this->_Model->find('all');
-		$dbMap = array();
-
 		foreach ($results as $result) {
 			$dbMap[] = array(
 				'id' => $result[$this->_Model->name]['id'],
