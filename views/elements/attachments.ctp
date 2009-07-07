@@ -98,7 +98,7 @@ if (isset($this->data[$assocAlias][0]['basename'])) {
 				if (isset($number)) {
 					$size = $number->toReadableSize($size);
 				} else {
-					$size .= 'Bytes';
+					$size .= ' Bytes';
 				}
 
 				printf('<span>%s&nbsp;(%s/%s) <em>%s</em></span>',

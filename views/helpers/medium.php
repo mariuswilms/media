@@ -579,7 +579,7 @@ class MediumHelper extends AppHelper {
 		if (!$short) {
 			$message  = "MediumHelper::file - ";
 			$message .= "You've provided a partial path without a medium directory (e.g. img) ";
-			$message .= " which is required to resolve the path.";
+			$message .= "which is required to resolve the path.";
 			trigger_error($message, E_USER_NOTICE);
 			return false;
 		}
