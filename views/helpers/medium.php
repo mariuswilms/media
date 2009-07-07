@@ -106,8 +106,9 @@ class MediumHelper extends AppHelper {
 		}
 
 		foreach (Configure::read('Media.filter') as $type) {
-			$this->_versions += array_keys($type);
+			$this->_versions += $type;
 		}
+		$this->_versions = array_keys($this->_versions);
 
 		if (!$this->__cached = Cache::read('media_found', '_cake_core_')) {
 			$this->__cached = array();
