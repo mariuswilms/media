@@ -447,6 +447,7 @@ class MediaBehavior extends ModelBehavior {
  */
 	function _file(&$Model, $file) {
 		extract($this->settings[$Model->alias]);
+		$file = str_replace(array('\\', '/'), DS, $file);
 
 		if (!is_file($file)) {
 			$file = ltrim($file, DS);
