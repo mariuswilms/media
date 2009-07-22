@@ -82,6 +82,7 @@ class TransferBehavior extends ModelBehavior {
 		'destinationFile' => ':Medium.short::DS::Source.basename:',
 		'baseDirectory'   => MEDIA_TRANSFER,
 		'createDirectory' => true,
+		'alternativeFileTries' => 100
 	);
 /**
  * Default runtime
@@ -310,9 +311,11 @@ class TransferBehavior extends ModelBehavior {
  * @return mixed Array with parsed results on success, false on error
  */
 	function _destination(&$Model, $data) {
+		extract($this->settings[$Model->alias]);
+
 		/* Destination file may not exist yet */
 		if (MediaValidation::file($data , false)) {
-			if (!$data = $this->_alternativeFile($data)) {
+			if (!$data = $this->_alternativeFile($data, $alternativeFileTries)) {
 				$message  = "TransferBehavior::_destination - ";
 				$message .= "Exceeded number of max. tries while finding alt. name ";
 				$message .= "for `" . basename($data) . "`";

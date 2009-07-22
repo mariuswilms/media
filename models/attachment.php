@@ -55,6 +55,7 @@ class Attachment extends MediaAppModel {
 			'destinationFile' => ':Medium.short::DS::Source.basename:',
 			'baseDirectory'   => MEDIA_TRANSFER,
 			'createDirectory' => true,
+			'alternativeFileTries' => 100
 		),
 		'Media.Media' => array(
 			'metadataLevel'   => 2,
