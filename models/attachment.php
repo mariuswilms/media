@@ -62,7 +62,6 @@ class Attachment extends MediaAppModel {
 		),
 		'Media.Generator' => array(
 			'filterDirectory' => MEDIA_FILTER
-		),
 	));
 /**
  * Validation rules for file and alternative fields
