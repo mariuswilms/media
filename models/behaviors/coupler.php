@@ -1,6 +1,6 @@
 <?php
 /**
- * Media Behavior File
+ * Coupler Behavior File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -19,12 +19,12 @@
 App::import('Vendor', 'Media.MimeType');
 App::import('Vendor', 'Media.Medium');
 /**
- * Media Behavior Class
+ * Coupler Behavior Class
  *
  * @package    media
  * @subpackage media.models.behaviors
  */
-class MediaBehavior extends ModelBehavior {
+class CouplerBehavior extends ModelBehavior {
 /**
  * Settings keyed by model alias
  *
@@ -42,25 +42,11 @@ class MediaBehavior extends ModelBehavior {
  * baseDirectory
  * 	An absolute path (with trailing slash) to a directory which will be stripped off the file path
  *
- * makeVersions
- * 	false - Disable version generation
- * 	true  - Creates versions (configured in plugin's `core.php`) of files on create
- *
- * filterDirectory
- * 	An absolute path (with trailing slash) to a directory to use for storing generated versions
- *
- * createDirectory
- * 	false - Fail on missing directories
- * 	true  - Recursively create missing directories
- *
  * @var array
  */
 	var $_defaultSettings = array(
 		'metadataLevel'   => 1,
-		'baseDirectory'   => MEDIA,
-		'makeVersions'    => true,
-		'filterDirectory' => MEDIA_FILTER,
-		'createDirectory' => true,
+		'baseDirectory'   => MEDIA
 	);
 /**
  * Holds cached metadata keyed by model alias
@@ -73,32 +59,18 @@ class MediaBehavior extends ModelBehavior {
  * Setup
  *
  * @param Model $Model
- * @param array $config See defaultSettings for configuration options
+ * @param array $settings See defaultSettings for configuration options
  * @return void
  */
-	function setup(&$Model, $config = null) {
-		if (!is_array($config)) {
-			$config = array();
-		}
+	function setup(&$Model, $settings = array()) {
+		$settings = (array)$settings;
 
-		/* `base` config option deprecation */
-		if (isset($config['base'])) {
-			$message  = "MediaBehavior::setup - ";
-			$message .= "The `base` option has been deprecated in favour of `baseDirectory`.";
-			trigger_error($message, E_USER_NOTICE);
-
-			$config['baseDirectory'] = $config['base'];
-			unset($config['base']);
-		}
-
-		/* Interact with Transfer Behavior */
 		if (isset($Model->Behaviors->Transfer)) {
 			$transferSettings = $Model->Behaviors->Transfer->settings[$Model->alias];
-			$config['baseDirectory'] = dirname($transferSettings['baseDirectory']) . DS;
-			$config['createDirectory'] = $transferSettings['createDirectory'];
+			$settings['baseDirectory'] = dirname($transferSettings['baseDirectory']) . DS;
 		}
+		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
 
-		$this->settings[$Model->alias] = $config + $this->_defaultSettings;
 		$this->__cached[$Model->alias] = Cache::read('media_metadata_' . $Model->alias, '_cake_core_');
 	}
 /**
@@ -176,29 +148,6 @@ class MediaBehavior extends ModelBehavior {
 /**
  * Callback
  *
- * Triggers `make()` if both `dirname` and `basename` fields are present.
- * Otherwise skips and returns `true` to continue the save operation.
- *
- * @param Model $Model
- * @param boolean $created
- * @return boolean
- */
-	function afterSave(&$Model, $created) {
-		extract($this->settings[$Model->alias]);
-
-		if (!$created || !$makeVersions) {
-			return true;
-		}
-		$item =& $Model->data[$Model->alias];
-
-		if (!isset($item['dirname'], $item['basename'])) {
-			return true;
-		}
-		return $this->make($Model, $item['dirname'] . DS . $item['basename']);
-	}
-/**
- * Callback
- *
  * Adds metadata of corresponding file to each result.
  *
  * If the corresponding file of a result is not readable it is removed
@@ -254,9 +203,8 @@ class MediaBehavior extends ModelBehavior {
 			'fields'     => array('dirname', 'basename'),
 			'recursive'  => -1,
 		));
-
 		if (empty($result)) {
-			return false; /* Record did not pass verification? */
+			return false;
 		}
 
 		$count = $Model->find('count', array(
@@ -264,9 +212,8 @@ class MediaBehavior extends ModelBehavior {
 				'dirname' => $result[$Model->alias]['dirname'],
 				'basename' => $result[$Model->alias]['basename']
 		)));
-
 		if ($count > 1) {
-			return true;
+			return false;
 		}
 
 		$file  = $baseDirectory;
@@ -274,78 +221,9 @@ class MediaBehavior extends ModelBehavior {
 		$file .= DS . $result[$Model->alias]['basename'];
 
 		$File = new File($file);
-		$Folder = new Folder($filterDirectory);
-
-		list($versions, ) = $Folder->ls();
-
-		foreach ($versions as $version) {
-			$Folder->cd($filterDirectory . $version	. DS . $result[$Model->alias]['dirname'] . DS);
-			$basenames = $Folder->find($File->name() . '\..*');
-
-			if (count($basenames) > 1) {
-				$message  = "MediaBehavior::beforeDelete - Ambiguous filename ";
-				$message .= "`{$File->name()}` in `{$Folder->pwd()}`.";
-				trigger_error($message, E_USER_NOTICE);
-				continue;
-			} elseif (!isset($basenames[0])) {
-				continue;
-			}
-
-			$FilterFile = new File($Folder->pwd() . $basenames[0]);
-			$FilterFile->delete();
-		}
 		$File->delete();
 		return true;
 	}
-/**
- * Parses instruction sets and invokes `Medium::make()` for a file
- *
- * @param Model $Model
- * @param string $file Path to a file relative to `baseDirectory`  or an absolute path to a file
- * @return boolean
- */
-	function make(&$Model, $file, $overwrite = false) {
-		extract($this->settings[$Model->alias]);
-
-		list($file, $relativeFile) = $this->_file($Model, $file);
-
-		$relativeDirectory = DS . rtrim(dirname($relativeFile), '.');
-
-		$name = Medium::name($file);
-		$filter = Configure::read('Media.filter.' . strtolower($name));
-
-		$hasCallback = method_exists($Model, 'beforeMake');
-
-		foreach ($filter as $version => $instructions) {
-			$directory = Folder::slashTerm($filterDirectory . $version . $relativeDirectory);
-			$Folder = new Folder($directory, $createDirectory);
-
-			if (!$Folder->pwd()) {
-				$message  = "MediaBehavior::make - Directory `{$directory}` ";
-				$message .= "could not be created or is not writable. ";
-				$message .= "Please check the permissions.";
-				trigger_error($message, E_USER_WARNING);
-				continue;
-			}
-
-			if ($hasCallback) {
-				$process = compact('overwrite', 'directory', 'name', 'version', 'instructions');
-
-				if ($Model->beforeMake($file, $process)) {
-					continue;
-				}
-			}
-			if (!$Medium = Medium::make($file, $instructions)) {
-				$message  = "MediaBehavior::make - Failed to make version `{$version}` ";
-				$message .= "of file `{$file}`. ";
-				trigger_error($message, E_USER_WARNING);
-				continue;
-			}
-			$Medium->store($directory . basename($file), $overwrite);
-		}
-		return true;
-	}
-
 /**
  * Retrieve (cached) metadata of a file
  *
@@ -444,7 +322,8 @@ class MediaBehavior extends ModelBehavior {
 		if (!isset($Model->data[$Model->alias]['file'])) {
 			return true;
 		}
-		$value = current($field); /* empty() limitation */
+		$value = current($field); /* empty() limitat
+		* ion */
 		return !empty($value);
 	}
 /**
@@ -453,6 +332,7 @@ class MediaBehavior extends ModelBehavior {
  * @param Model $Model
  * @param string$file
  * @return array
+ * @todo Duplicate Code @see GeneratorBehavior
  */
 	function _file(&$Model, $file) {
 		extract($this->settings[$Model->alias]);
