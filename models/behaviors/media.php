@@ -357,7 +357,7 @@ class MediaBehavior extends ModelBehavior {
 		if (!$File->readable()) {
 			return false;
 		}
-		$checksum = $File->md5();
+		$checksum = $File->md5(true);
 
 		if (isset($this->__cached[$Model->alias][$checksum])) {
 			$data = $this->__cached[$Model->alias][$checksum];

@@ -272,7 +272,7 @@ class SyncTask extends MediaShell {
  * @return mixed
  */
 	function _handleChecksumMismatch() {
-		if ($this->__dbItem['checksum'] == $this->__File->md5()) {
+		if ($this->__dbItem['checksum'] == $this->__File->md5(true)) {
 			return;
 		}
 		$this->out('Checksums mismatch');
@@ -285,7 +285,7 @@ class SyncTask extends MediaShell {
 		if ($input == 'y') {
 			$data = array(
 				'id' => $this->__dbItem['id'],
-				'checksum' => $this->__File->md5(),
+				'checksum' => $this->__File->md5(true),
 			);
 			$this->_Model->save($data);
 			$this->out('Corrected checksum');
@@ -384,7 +384,7 @@ class SyncTask extends MediaShell {
 			$File = new File($value);
 			$fsMap[] = array(
 				'file' => $File->pwd(),
-				'checksum' => $File->md5()
+				'checksum' => $File->md5(true)
 			);
 		}
 		foreach ($results as $result) {
