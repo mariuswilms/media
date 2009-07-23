@@ -84,22 +84,18 @@ class Attachment extends MediaAppModel {
 		'file' => array(
 			'resource'   => array('rule' => 'checkResource'),
 			'access'     => array('rule' => 'checkAccess'),
-			'location'   => array('rule' => array('checkLocation', array(MEDIA_TRANSFER, '/tmp/'))),
+			'location'   => array('rule' => array('checkLocation', array(
+				MEDIA_TRANSFER, '/tmp/'
+			))),
 			'permission' => array('rule' => array('checkPermission', '*')),
 			'size'       => array('rule' => array('checkSize', '5M')),
 			'pixels'     => array('rule' => array('checkPixels', '1600x1600')),
-			'extension'  => array('rule' => array('checkExtension',
-												array(
-													'bin', 'class', 'dll', 'dms', 'exe', 'lha',
-													'lzh', 'so', 'as', 'asp', 'sh', 'java', 'js',
-													'lisp', 'lua', 'pl', 'pm', 'php', 'py', 'pyc',
-													'vb', 'bas', 'jar',
-													),
-												'*'
-												),
-											),
-			'mimeType'   => array('rule' => array('checkMimeType', false, '*')),
-			),
+			'extension'  => array('rule' => array('checkExtension', false, array(
+				'jpg', 'jpeg', 'png', 'tif', 'tiff', 'gif', 'pdf', 'tmp'
+			))),
+			'mimeType'   => array('rule' => array('checkMimeType', false, array(
+				'image/jpeg', 'image/png', 'image/tiff', 'image/gif', 'application/pdf'
+		)))),
 		'alternative' => array(
 			'rule'       => 'checkRepresent',
 			'on'         => 'create',
