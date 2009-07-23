@@ -320,7 +320,6 @@ class TransferBehavior extends ModelBehavior {
 			return false;
 		}
 		$hasPerformed = false;
-
 		$chain = implode('>>', array($source['type'], $temporary['type'], $destination['type']));
 
 		if ($source['type'] === 'http-url-remote') {
@@ -352,13 +351,14 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return $this->runtime[$Model->alias]['hasPerformed'] = $hasPerformed;
 	}
+
 /**
  * Resets runtime property
  *
  * @param Model $Model
  * @return void
  */
-	function reset(&$Model) {
+	function resetTransfer(&$Model) {
 		$this->runtime[$Model->alias] = $this->_defaultRuntime;
 	}
 /**
@@ -759,6 +759,20 @@ class TransferBehavior extends ModelBehavior {
 		$message .= "Has been deprecated in favour of `transferred()`";
 		trigger_error($message, E_USER_NOTICE);
 		return $this->transferred($Model);
+	}
+
+/**
+ * Resets runtime property
+ *
+ * @param Model $Model
+ * @return void
+ * @deprecated
+ */
+	function reset(&$Model) {
+		$message  = "TransferBehavior::reset - ";
+		$message .= "Has been deprecated in favour of `resetTransfer()`";
+		trigger_error($message, E_USER_NOTICE);
+		return $this->resetTransfer($Model);
 	}
 }
 ?>
