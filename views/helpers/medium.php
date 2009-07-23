@@ -182,7 +182,12 @@ class MediumHelper extends AppHelper {
 				break;
 			}
 		}
-		return $this->webroot . str_replace(DS, '/', $path);
+		$path = str_replace('\\', '/', $path);
+
+		if (strpos($path, '://') !== false) {
+			return $path;
+		}
+		return $this->webroot . $path;
 	}
 /**
  * Generates markup to render a file inline
