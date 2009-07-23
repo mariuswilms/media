@@ -120,7 +120,16 @@ class Attachment extends MediaAppModel {
  * @return boolean True signals that the file has been processed,
  * 	false or null signals that the behavior should process the file
  */
-	function beforeMake($file, $process) {
-	}
+	// function beforeMake($file, $process) {
+	// }
+/**
+ * Returns the relative path to the destination file
+ *
+ * @param array $via Information about the temporary file
+ * @param array $from Information about the source file
+ * @return string The path to the destination file or false
+ */
+	// function transferTo($via, $from) {
+	// }
 }
 ?>
