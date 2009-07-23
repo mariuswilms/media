@@ -201,11 +201,18 @@ class TransferBehavior extends ModelBehavior {
 		/* To */
 
 		if (method_exists($Model, 'transferTo')) {
-			$file = $baseDirectory . $Model->transferTo($temporary, $source);
+			$file = $Model->transferTo($temporary, $source);
 		}  else {
-			$file = $baseDirectory . $this->transferTo($Model, $temporary, $source);
+			$file = $this->transferTo($Model, $temporary, $source);
 		}
-		if (!$file = $this->_alternativeFile($file, $alternativeFileTries)) {
+		if (!$file) {
+			$message = "TransferBehavior::prepare - Could not obtain destination file path.";
+			trigger_error($message, E_USER_NOTICE);
+			return false;
+		}
+		$file = $this->_alternativeFile($baseDirectory . $file, $alternativeFileTries);
+
+		if (!$file) {
 			$message  = "TransferBehavior::prepare - ";
 			$message .= "Exceeded number of max. tries while finding alternative file name.";
 			trigger_error($message, E_USER_NOTICE);
