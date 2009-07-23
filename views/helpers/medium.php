@@ -16,6 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
+App::import('Core', 'String');
 App::import('Vendor', 'Media.MimeType');
 App::import('Vendor', 'Media.Medium');
 /**
@@ -99,12 +100,11 @@ class MediumHelper extends AppHelper {
  * @return void
  */
 	function __construct($settings = array()) {
-		$this->_map = array_merge($this->_map, $settings);
+		$this->_map = array_merge($this->_map, (array)$settings);
 
 		foreach ($this->_map as $key => $value) {
 			$this->_directories[basename(key($value))] = key($value);
 		}
-
 		foreach (Configure::read('Media.filter') as $type) {
 			$this->_versions += $type;
 		}
@@ -178,6 +178,9 @@ class MediumHelper extends AppHelper {
 				if ($url === false) {
 					return null;
 				}
+				$url = String::insert($url, array('id' => $this->_id($file)), array(
+					'before' => '{:', 'after' => '}'
+				));
 				$path = str_replace($directory, $url, $file);
 				break;
 			}
@@ -609,6 +612,17 @@ class MediumHelper extends AppHelper {
 		}
 		return false;
 	}
+/**
+ * Calculates the host id for a file
+ *
+ * @link http://yuiblog.com/blog/2007/04/11/performance-research-part-4/
+ * @param string $file
+ * @return integer
+ */
+	function _id($file) {
+		return abs(crc32($file)) % 2;
+	}
+
 /**
  * Generates `param` tags
  *

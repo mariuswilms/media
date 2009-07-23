@@ -55,6 +55,7 @@ if (!defined('MEDIA_TRANSFER')) {
  *
  * Examples:
  * 	`'http://www.example.org/app/media/'`
+ *	`'http://media{:id}.example.org/'`
  * 	`'media/'`
  * 	`false`
  */
