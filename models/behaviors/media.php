@@ -249,15 +249,24 @@ class MediaBehavior extends ModelBehavior {
 	function beforeDelete(&$Model, $cascade = true) {
 		extract($this->settings[$Model->alias]);
 
-		$query = array(
-			'conditions' => array('id' => $Model->id),
+		$result = $Model->find('first', array(
+			'conditions' => array($Model->primaryKey => $Model->id),
 			'fields'     => array('dirname', 'basename'),
 			'recursive'  => -1,
-		);
-		$result = $Model->find('first', $query);
+		));
 
 		if (empty($result)) {
 			return false; /* Record did not pass verification? */
+		}
+
+		$count = $Model->find('count', array(
+			'conditions' => array(
+				'dirname' => $result[$Model->alias]['dirname'],
+				'basename' => $result[$Model->alias]['basename']
+		)));
+
+		if ($count > 1) {
+			return true;
 		}
 
 		$file  = $baseDirectory;
@@ -275,7 +284,7 @@ class MediaBehavior extends ModelBehavior {
 
 			if (count($basenames) > 1) {
 				$message  = "MediaBehavior::beforeDelete - Ambiguous filename ";
-				$message .= "`" . $File->name() . "` in `" . $Folder->pwd() . "`.";
+				$message .= "`{$File->name()}` in `{$Folder->pwd()}`.";
 				trigger_error($message, E_USER_NOTICE);
 				continue;
 			} elseif (!isset($basenames[0])) {

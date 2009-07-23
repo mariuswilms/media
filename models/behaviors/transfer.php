@@ -230,6 +230,7 @@ class TransferBehavior extends ModelBehavior {
 		if ($destination == $source || $destination == $temporary) {
 			return false;
 		}
+
 		$Folder = new Folder($destination['dirname'], $createDirectory);
 
 		if (!$Folder->pwd()) {
@@ -298,7 +299,6 @@ class TransferBehavior extends ModelBehavior {
  * @return mixed Array with parsed results on success, false on error
  */
 	function _destination(&$Model, $data) {
-		/* Destination file may not exist yet */
 		if (MediaValidation::file($data , false)) {
 			return $this->info($Model, $data);
 		}
