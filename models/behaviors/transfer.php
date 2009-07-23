@@ -382,12 +382,7 @@ class TransferBehavior extends ModelBehavior {
  * @return void
  */
 	function reset(&$Model) {
-		$this->runtime[$Model->alias]['source']       = null;
-		$this->runtime[$Model->alias]['temporary']    = null;
-		$this->runtime[$Model->alias]['destination']  = null;
-		$this->runtime[$Model->alias]['isReady']      = false;
-		$this->runtime[$Model->alias]['hasPerformed'] = false;
-		$this->runtime[$Model->alias]['markers']      = array();
+		$this->runtime[$Model->alias] = $this->_defaultRuntime;
 	}
 /**
  * Convenience method which (if available) returns absolute path to last transferred file
