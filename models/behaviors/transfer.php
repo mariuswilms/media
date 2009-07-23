@@ -75,6 +75,9 @@ class TransferBehavior extends ModelBehavior {
  * 	false - Fail on missing directories
  * 	true  - Recursively create missing directories
  *
+ * alternativeFileTries
+ * 	integer - Specifies the maximum number of tries for finding an alternative destination file name
+ *
  * @var array
  */
 	var $_defaultSettings = array(
