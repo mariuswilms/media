@@ -161,7 +161,7 @@ class MimeType extends Object {
 		} elseif (is_a($_this->__magic, 'MimeMagic')) {
 			$magicMatch = $_this->__magic->analyze($file);
 		}
-		$magicMatch = !is_array($magicMatch) && empty($magicMatch) ? array() : array($magicMatch);
+		$magicMatch = empty($magicMatch) ? array() : array($magicMatch);
 
 		if (empty($magicMatch)) {
 			$File =& new File($file);
