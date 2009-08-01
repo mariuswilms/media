@@ -18,7 +18,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.MimeType');
-require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+require_once dirname(dirname(dirname(__FILE__))) . DS . 'fixtures' . DS . 'test_data.php';
 /**
  * Mime Type Test Case Class
  *
@@ -54,7 +54,7 @@ class MimeTypeTest extends CakeTestCase {
 		));
 		MimeType::config('glob', array(
 			'engine' => 'core',
-			'file' => APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'mime_glob.db'
+			'file' => dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'vendors' . DS . 'mime_glob.db'
 		));
 
 		/* Some tests have been commented (if not otherwise stated) because of missing support the extension */
@@ -195,7 +195,7 @@ class MimeTypeTest extends CakeTestCase {
 		$this->skipUnless(extension_loaded('fileinfo'), '%s. Fileinfo extension not loaded.');
 
 		MimeType::config('magic', array('engine' => 'fileinfo'));
-		MimeType::config('glob', array('engine' => 'core', 'file' => APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'mime_glob.php'));
+		MimeType::config('glob', array('engine' => 'core', 'file' => dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'vendors' . DS . 'mime_glob.db'));
 
 		$file = $this->TestData->getFile(array('image-png.png' => TMP . 'image-png.jpg'));
 		$this->assertEqual(MimeType::guessType($file, array('paranoid' => true)), 'image/png');
