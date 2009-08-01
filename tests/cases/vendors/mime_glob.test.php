@@ -18,7 +18,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.MimeGlob');
-require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+require_once dirname(dirname(dirname(__FILE__))) . DS . 'fixtures' . DS . 'test_data.php';
 /**
  * Mime Glob Test Case Class
  *
@@ -168,7 +168,7 @@ class MimeGlobTest extends CakeTestCase {
 	}
 
 	function testShippedAnalyze() {
-		$file = APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'glob.db';
+		$file = dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'vendors' . DS . 'mime_glob.db';
 		$skip = $this->skipIf(!file_exists($file), '%s. No shipped glob db.');
 
 		if ($skip) { /* Skipping does not silence the error */
