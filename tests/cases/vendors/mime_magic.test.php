@@ -17,7 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.MimeMagic');
-require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+require_once dirname(dirname(dirname(__FILE__))) . DS . 'fixtures' . DS . 'test_data.php';
 /**
  * Mime Magic Test Case Class
  *
@@ -86,7 +86,7 @@ class MimeMagicTest extends CakeTestCase {
 	}
 
 	function testShippedAnalyze() {
-		$file = APP . 'plugins' . DS . 'media' . DS . 'vendors' . DS . 'magic.db';
+		$file = dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'vendors' . DS . 'mime_magic.db';
 		$skip = $this->skipIf(!file_exists($file), '%s. No shipped magic db.');
 
 		if ($skip) { /* Skipping does not silence the error */
