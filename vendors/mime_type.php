@@ -294,7 +294,7 @@ class MimeType extends Object {
 		$searchPaths = array(
 			'mime_' . $type . '.php' => array(CONFIGS),
 			'mime_' . $type . '.db' => array_merge(
-				Configure::read('vendorPaths'),
+				App::path('vendors'),
 				array(dirname(__FILE__) . DS)
 			));
 
