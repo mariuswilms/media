@@ -1,6 +1,6 @@
 <?php
 /**
- * Medium Helper File
+ * Media Helper File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -18,14 +18,14 @@
  */
 App::import('Core', 'String');
 App::import('Vendor', 'Media.MimeType');
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 /**
- * Medium Helper Class
+ * Media Helper Class
  *
  * @package    media
  * @subpackage media.views.helpers
  */
-class MediumHelper extends AppHelper {
+class MediaHelper extends AppHelper {
 /**
  * Helpers
  *
@@ -246,18 +246,18 @@ class MediumHelper extends AppHelper {
 		}
 
 		$mimeType = MimeType::guessType($file);
-		$Medium = Medium::factory($file, $mimeType);
+		$Media = Media::factory($file, $mimeType);
 
 		if (!isset($options['width'])) {
-			$options['width'] = $Medium->width();
+			$options['width'] = $Media->width();
 		}
 		if (!isset($options['height'])) {
-			$options['height'] = $Medium->height();
+			$options['height'] = $Media->height();
 		}
 
 		extract($options, EXTR_SKIP);
 
-		if (!empty($restrict) && !in_array(strtolower($Medium->name), (array) $restrict)) {
+		if (!empty($restrict) && !in_array(strtolower($Media->name), (array) $restrict)) {
 			return null;
 		}
 
@@ -469,10 +469,10 @@ class MediumHelper extends AppHelper {
 		}
 
 		$mimeType = MimeType::guessType($file);
-		$Medium = Medium::factory($file, $mimeType);
+		$Media = Media::factory($file, $mimeType);
 
 		if (!empty($options['restrict'])
-		&& !in_array(strtolower($Medium->name), (array) $options['restrict'])) {
+		&& !in_array(strtolower($Media->name), (array) $options['restrict'])) {
 			return null;
 		}
 		unset($options['restrict']);
@@ -583,11 +583,11 @@ class MediumHelper extends AppHelper {
 			return $this->__cached[$path] = $file;
 		}
 
-		$short = current(array_intersect(Medium::short(), $parts));
+		$short = current(array_intersect(Media::short(), $parts));
 
 		if (!$short) {
-			$message  = "MediumHelper::file - ";
-			$message .= "You've provided a partial path without a medium directory (e.g. img) ";
+			$message  = "MediaHelper::file - ";
+			$message .= "You've provided a partial path without a media directory (e.g. img) ";
 			$message .= "which is required to resolve the path.";
 			trigger_error($message, E_USER_NOTICE);
 			return false;

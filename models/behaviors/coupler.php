@@ -17,7 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.MimeType');
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 /**
  * Coupler Behavior Class
  *
@@ -258,47 +258,47 @@ class CouplerBehavior extends ModelBehavior {
 			);
 		}
 		if ($level > 1 && !isset($data[2])) {
-			$Medium = Medium::factory($File->pwd());
+			$Media = Media::factory($File->pwd());
 
-			if ($Medium->name === 'Audio') {
+			if ($Media->name === 'Audio') {
 				$data[2] = array(
-					'artist'        => $Medium->artist(),
-					'album'         => $Medium->album(),
-					'title'         => $Medium->title(),
-					'track'         => $Medium->track(),
-					'year'          => $Medium->year(),
-					'length'        => $Medium->duration(),
-					'quality'       => $Medium->quality(),
-					'sampling_rate' => $Medium->samplingRate(),
-					'bit_rate'       => $Medium->bitRate(),
+					'artist'        => $Media->artist(),
+					'album'         => $Media->album(),
+					'title'         => $Media->title(),
+					'track'         => $Media->track(),
+					'year'          => $Media->year(),
+					'length'        => $Media->duration(),
+					'quality'       => $Media->quality(),
+					'sampling_rate' => $Media->samplingRate(),
+					'bit_rate'       => $Media->bitRate(),
 				);
-			} elseif ($Medium->name === 'Image') {
+			} elseif ($Media->name === 'Image') {
 				$data[2] = array(
-					'width'     => $Medium->width(),
-					'height'    => $Medium->height(),
-					'ratio'     => $Medium->ratio(),
-					'quality'   => $Medium->quality(),
-					'megapixel' => $Medium->megapixel(),
+					'width'     => $Media->width(),
+					'height'    => $Media->height(),
+					'ratio'     => $Media->ratio(),
+					'quality'   => $Media->quality(),
+					'megapixel' => $Media->megapixel(),
 				);
-			} elseif ($Medium->name === 'Text') {
+			} elseif ($Media->name === 'Text') {
 				$data[2] = array(
-					'characters'      => $Medium->characters(),
-					'syllables'       => $Medium->syllables(),
-					'sentences'       => $Medium->sentences(),
-					'words'           => $Medium->words(),
-					'flesch_score'    => $Medium->fleschScore(),
-					'lexical_density' => $Medium->lexicalDensity(),
+					'characters'      => $Media->characters(),
+					'syllables'       => $Media->syllables(),
+					'sentences'       => $Media->sentences(),
+					'words'           => $Media->words(),
+					'flesch_score'    => $Media->fleschScore(),
+					'lexical_density' => $Media->lexicalDensity(),
 				);
-			} elseif ($Medium->name === 'Video') {
+			} elseif ($Media->name === 'Video') {
 				$data[2] = array(
-					'title'   => $Medium->title(),
-					'year'    => $Medium->year(),
-					'length'  => $Medium->duration(),
-					'width'   => $Medium->width(),
-					'height'  => $Medium->height(),
-					'ratio'   => $Medium->ratio(),
-					'quality' => $Medium->quality(),
-					'bit_rate' => $Medium->bitRate(),
+					'title'   => $Media->title(),
+					'year'    => $Media->year(),
+					'length'  => $Media->duration(),
+					'width'   => $Media->width(),
+					'height'  => $Media->height(),
+					'ratio'   => $Media->ratio(),
+					'quality' => $Media->quality(),
+					'bit_rate' => $Media->bitRate(),
 				);
 			} else {
 				$data[2] = array();

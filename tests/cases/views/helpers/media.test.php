@@ -1,6 +1,6 @@
 <?php
 /**
- * Medium Helper Test Case File
+ * Media Helper Test Case File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -17,15 +17,16 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Core', array('Helper', 'AppHelper', 'ClassRegistry'));
-App::import('Helper', 'Media.Medium');
+App::import('Helper', 'Media.Media');
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
- * Mock Medium Helper
+ * Mock Media Helper
  *
  * @package    media
  * @subpackage media.tests.cases.views.helpers
  */
-class MockMediumHelper extends MediumHelper {
+class MockMediaHelper extends MediaHelper {
 
 	function versions() {
 		return $this->_versions;
@@ -36,12 +37,12 @@ class MockMediumHelper extends MediumHelper {
 	}
 }
 /**
- * Medium Helper Test Case Class
+ * Media Helper Test Case Class
  *
  * @package    media
  * @subpackage media.tests.cases.views.helpers
  */
-class MediumHelperTestCase extends CakeTestCase {
+class MediaHelperTestCase extends CakeTestCase {
 
 	function setUp() {
 		$this->_config = Configure::read('Media');
@@ -79,7 +80,7 @@ class MediumHelperTestCase extends CakeTestCase {
 			'transfer' => array($this->TmpFolder->pwd() . 'transfer' . DS => false),
 			'theme' => array($this->TmpFolder->pwd() . 'theme' . DS  => 'media/theme/')
 		);
-		$this->Helper =& new MediumHelper($settings);
+		$this->Helper =& new MediaHelper($settings);
 	}
 
 	function tearDown() {
@@ -98,7 +99,7 @@ class MediumHelperTestCase extends CakeTestCase {
 			'image'	 => array('s' => array(), 'm' => array()),
 			'video' => array('s' => array(), 'xl' => array())
 		));
-		$Helper = new MockMediumHelper($settings);
+		$Helper = new MockMediaHelper($settings);
 
 		$this->assertEqual($Helper->versions(), array('s', 'm', 'xl'));
 

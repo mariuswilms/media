@@ -1,6 +1,6 @@
 <?php
 /**
- * Imagick Medium Adapter File
+ * Imagick Media Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,19 +11,19 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
 /**
- * Imagick Medium Adapter Class
+ * Imagick Media Adapter Class
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @link       http://www.imagemagick.org/
  */
-class ImagickMediumAdapter extends MediumAdapter {
+class ImagickMediaAdapter extends MediaAdapter {
 	var $require = array(
 		'mimeTypes' => array( /* readable */
 			'image/jpeg',
@@ -59,60 +59,60 @@ class ImagickMediumAdapter extends MediumAdapter {
 		'image/psd' => 'psd',
 		);
 
-	function initialize($Medium) {
-		if (isset($Medium->objects['Imagick'])) {
+	function initialize($Media) {
+		if (isset($Media->objects['Imagick'])) {
 			return true;
 		}
 
-		if (!isset($Medium->file)) {
+		if (!isset($Media->file)) {
 			return false;
 		}
 
 		try {
-			$Medium->objects['Imagick'] = new Imagick($Medium->file);
+			$Media->objects['Imagick'] = new Imagick($Media->file);
 		} catch (Exception $E) {
 			return false;
 		}
 		return true;
 	}
 
-	function store($Medium, $file) {
+	function store($Media, $file) {
 		try {
-			return $Medium->objects['Imagick']->writeImage($file);
+			return $Media->objects['Imagick']->writeImage($file);
 		} catch (Exception $E) {
 			return false;
 		}
 	}
 
-	function toString($Medium) {
+	function toString($Media) {
 		try {
-			return $Medium->objects['Imagick']->getImageBlob();
+			return $Media->objects['Imagick']->getImageBlob();
 		} catch (Exception $E) {
 			return false;
 		}
 	}
 
-	function convert($Medium, $mimeType) {
+	function convert($Media, $mimeType) {
 		if (!isset($this->_formatMap[$mimeType])) {
 			return false;
 		}
 
 		try {
-			$Medium->objects['Imagick']->setFormat($this->_formatMap[$mimeType]);
+			$Media->objects['Imagick']->setFormat($this->_formatMap[$mimeType]);
 		} catch (Exception $E) {
 			return false;
 		}
 
-		$Medium->mimeType = $mimeType;
+		$Media->mimeType = $mimeType;
 
-		if ($Medium->name === 'Document') { // application/pdf -> image
-			return Medium::factory($Medium->objects['Imagick'], $mimeType);
+		if ($Media->name === 'Document') { // application/pdf -> image
+			return Media::factory($Media->objects['Imagick'], $mimeType);
 		}
 		return true;
 	}
 
-	function compress($Medium, $value) {
-		switch ($Medium->mimeType) {
+	function compress($Media, $value) {
+		switch ($Media->mimeType) {
 			case 'image/tiff':
 				$type = Imagick::COMPRESSION_LZW;
 				$value = null;
@@ -129,53 +129,53 @@ class ImagickMediumAdapter extends MediumAdapter {
 				return true;
 		}
 		try {
-			return $Medium->objects['Imagick']->setCompression($type)
-			       && $Medium->objects['Imagick']->setCompressionQuality($value);
+			return $Media->objects['Imagick']->setCompression($type)
+			       && $Media->objects['Imagick']->setCompressionQuality($value);
 		} catch (Exception $E) {
 			return false;
 		}
 	}
 
-	function crop($Medium, $left, $top, $width, $height) {
+	function crop($Media, $left, $top, $width, $height) {
 		$left   = (integer)$left;
 		$top    = (integer)$top;
 		$width  = (integer)$width;
 		$height = (integer)$height;
 
 		try {
-			return $Medium->objects['Imagick']->cropImage($width, $height, $left, $top);
+			return $Media->objects['Imagick']->cropImage($width, $height, $left, $top);
 		} catch (Exception $E) {
 			return false;
 		}
 	}
 
-	function resize($Medium, $width, $height) {
+	function resize($Media, $width, $height) {
 		$width  = (integer)$width;
 		$height = (integer)$height;
 
 		try {
-			return $Medium->objects['Imagick']->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
+			return $Media->objects['Imagick']->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1);
 		} catch (Exception $E) {
 			return false;
 		}
 	}
 
-	function cropAndResize($Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
-		return 	$this->crop($Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight)
-				&& $this->resize($Medium, $resizeWidth, $resizeHeight);
+	function cropAndResize($Media, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
+		return 	$this->crop($Media, $cropLeft, $cropTop, $cropWidth, $cropHeight)
+				&& $this->resize($Media, $resizeWidth, $resizeHeight);
 	}
 
-	function width($Medium) {
+	function width($Media) {
 		try {
-			return $Medium->objects['Imagick']->getImageWidth();
+			return $Media->objects['Imagick']->getImageWidth();
 		} catch (Exception $E) {
 			return false;
 		}
 	}
 
-	function height($Medium) {
+	function height($Media) {
 		try {
-			return $Medium->objects['Imagick']->getImageHeight();
+			return $Media->objects['Imagick']->getImageHeight();
 		} catch (Exception $E) {
 			return false;
 		}

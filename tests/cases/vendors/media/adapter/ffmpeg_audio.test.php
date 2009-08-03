@@ -1,6 +1,6 @@
 <?php
 /**
- * FfmpegAudio Medium Adapter Test Case File
+ * FfmpegAudio Media Adapter Test Case File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,30 +11,30 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium.adapter
+ * @subpackage media.tests.cases.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor','Media.AudioMedium', array('file' => 'medium'.DS.'audio.php'));
-App::import('Vendor','FfMpegAudioMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'ff_mpeg_audio.php'));
+App::import('Vendor','Media.AudioMedia', array('file' => 'media'.DS.'audio.php'));
+App::import('Vendor','FfMpegAudioMediaAdapter', array('file' => 'media'.DS.'adapter'.DS.'ff_mpeg_audio.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
- * Test Ffmpeg Audio Medium Adapter Class
+ * Test Ffmpeg Audio Media Adapter Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium.adapter
+ * @subpackage media.tests.cases.libs.media.adapter
  */
-class TestFfmpegAudioMedium extends AudioMedium {
+class TestFfmpegAudioMedia extends AudioMedia {
 	var $adapters = array('FfmpegAudio');
 }
 /**
- * FfMpeg Audio Medium Adapter Test Case Class
+ * FfMpeg Audio Media Adapter Test Case Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium.adapter
+ * @subpackage media.tests.cases.libs.media.adapter
  */
-class FfmpegAudioMediumAdapterTest extends CakeTestCase {
+class FfmpegAudioMediaAdapterTest extends CakeTestCase {
 	function setUp() {
 		$this->TestData = new TestData();
 	}
@@ -48,166 +48,166 @@ class FfmpegAudioMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testBasic() {
-		$result = new TestFfmpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
+		$result = new TestFfmpegAudioMedia($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
 		$this->assertIsA($result, 'object');
 
-		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
-		$result = $Medium->toString();
+		$Media = new TestFfmpegAudioMedia($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
+		$result = $Media->toString();
 		$this->assertTrue(!empty($result));
 	}
 
 	function testInformationId3v1() {
-		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
+		$Media = new TestFfmpegAudioMedia($this->TestData->getFile('audio-mpeg.ID3v1.mp3'));
 
-		$result = $Medium->artist();
+		$result = $Media->artist();
 		$this->assertEqual($result, 'Artist');
 
-		$result = $Medium->title();
+		$result = $Media->title();
 		$this->assertEqual($result, 'Title');
 
-		$result = $Medium->album();
+		$result = $Media->album();
 		$this->assertEqual($result, 'Album');
 
-		$result = $Medium->year();
+		$result = $Media->year();
 		$this->assertEqual($result, 2009);
 
-		$result = $Medium->track();
+		$result = $Media->track();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->duration();
+		$result = $Media->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitRate();
+		$result = $Media->bitRate();
 		$this->assertEqual($result, 64000);
 
-		$result = $Medium->samplingRate();
+		$result = $Media->samplingRate();
 		$this->assertEqual($result, 24000);
 
-		$result = $Medium->quality();
+		$result = $Media->quality();
 		$this->assertEqual($result, 1);
 	}
 
 	function testInformationId3v2() {
-		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-mpeg.ID3v2.mp3'));
+		$Media = new TestFfmpegAudioMedia($this->TestData->getFile('audio-mpeg.ID3v2.mp3'));
 
-		$result = $Medium->artist();
+		$result = $Media->artist();
 		$this->assertEqual($result, 'Artist');
 
-		$result = $Medium->title();
+		$result = $Media->title();
 		$this->assertEqual($result, 'Title');
 
-		$result = $Medium->album();
+		$result = $Media->album();
 		$this->assertEqual($result, 'Album');
 
-		$result = $Medium->year();
+		$result = $Media->year();
 		$this->assertEqual($result, 2009);
 
-		$result = $Medium->track();
+		$result = $Media->track();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->duration();
+		$result = $Media->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitRate();
+		$result = $Media->bitRate();
 		$this->assertEqual($result, 64000);
 
-		$result = $Medium->samplingRate();
+		$result = $Media->samplingRate();
 		$this->assertEqual($result, 24000);
 
-		$result = $Medium->quality();
+		$result = $Media->quality();
 		$this->assertEqual($result, 1);
 	}
 
 	function testInformationNotag() {
-		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-mpeg.notag.mp3'));
+		$Media = new TestFfmpegAudioMedia($this->TestData->getFile('audio-mpeg.notag.mp3'));
 
-		$result = $Medium->artist();
+		$result = $Media->artist();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->title();
+		$result = $Media->title();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->album();
+		$result = $Media->album();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->year();
+		$result = $Media->year();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->track();
+		$result = $Media->track();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->duration();
+		$result = $Media->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitRate();
+		$result = $Media->bitRate();
 		$this->assertEqual($result, 64000);
 
-		$result = $Medium->samplingRate();
+		$result = $Media->samplingRate();
 		$this->assertEqual($result, 24000);
 
-		$result = $Medium->quality();
+		$result = $Media->quality();
 		$this->assertEqual($result, 1);
 	}
 
 	function testInformationVorbisComment() {
-		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-vorbis.comments.ogg'));
+		$Media = new TestFfmpegAudioMedia($this->TestData->getFile('audio-vorbis.comments.ogg'));
 
-		$result = $Medium->artist();
+		$result = $Media->artist();
 		$this->assertEqual($result, 'Artist');
 
-		$result = $Medium->title();
+		$result = $Media->title();
 		$this->assertEqual($result, 'Title');
 
-		$result = $Medium->album();
+		$result = $Media->album();
 		$this->assertEqual($result, 'Album');
 
-		$result = $Medium->year();
+		$result = $Media->year();
 		$this->assertEqual($result, 2009);
 
-		$result = $Medium->track();
+		$result = $Media->track();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->duration();
+		$result = $Media->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitRate();
+		$result = $Media->bitRate();
 		$this->assertEqual($result, 36666);
 
-		$result = $Medium->samplingRate();
+		$result = $Media->samplingRate();
 		$this->assertEqual($result, 24000);
 
-		$result = $Medium->quality();
+		$result = $Media->quality();
 		$this->assertEqual($result, 1);
 	}
 
 	function testInformationVorbisNotag() {
-		$Medium = new TestFfmpegAudioMedium($this->TestData->getFile('audio-vorbis.notag.ogg'));
+		$Media = new TestFfmpegAudioMedia($this->TestData->getFile('audio-vorbis.notag.ogg'));
 
-		$result = $Medium->artist();
+		$result = $Media->artist();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->title();
+		$result = $Media->title();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->album();
+		$result = $Media->album();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->year();
+		$result = $Media->year();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->track();
+		$result = $Media->track();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->duration();
+		$result = $Media->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitRate();
+		$result = $Media->bitRate();
 		$this->assertEqual($result, 36666);
 
-		$result = $Medium->samplingRate();
+		$result = $Media->samplingRate();
 		$this->assertEqual($result, 24000);
 
-		$result = $Medium->quality();
+		$result = $Media->quality();
 		$this->assertEqual($result, 1);
 	}
 }

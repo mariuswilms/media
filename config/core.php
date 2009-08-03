@@ -98,8 +98,8 @@ Configure::write('Mime.magic', array(
 /**
  * Filters and versions
  *
- * For each medium type a set of filters keyed by version name is configured.
- * A filter is a set of instructions which are processed by the Medium class.
+ * For each media type a set of filters keyed by version name is configured.
+ * A filter is a set of instructions which are processed by the MedÏia class.
  */
 Configure::write('Media.filter.audio', array(
 	's'   => array('convert' => 'image/png', 'fitCrop' => array(100, 100)),

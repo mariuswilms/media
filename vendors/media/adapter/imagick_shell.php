@@ -78,7 +78,7 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 			$Medium->files['temporary'] = TMP . uniqid('medium_');
 		}
 
-		return $this->_execute(':command: :source: :format:::destination:',	array(
+		return $this->_execute(':command: :source: :format:::destination:', array(
 			'command'     => 'convert',
 			'source'      => $Medium->file,
 			'destination' => $Medium->files['temporary'],

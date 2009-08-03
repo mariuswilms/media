@@ -2,8 +2,9 @@
 /**
  * Attachments Element File
  *
- * Element listing associated attachments of the view's model
- * Add, delete (detach) an Attachment
+ * Element listing associated attachments of the view's model.
+ * Add, delete (detach) an Attachment. This element requireds
+ * the media helper to be loaded.
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -19,6 +20,12 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
+
+if (is_a($media, 'MediaHelper')) {
+	$message = 'Attachments Element - The media helper is not loaded but required.';
+	trigger_error($message, 'E_USER_NOTICE');
+	return;
+}
 
 if (!isset($previewVersion)) {
 	$previewVersion = 'xxs';
@@ -85,15 +92,15 @@ if (isset($this->data[$assocAlias][0]['basename'])) {
 			echo $form->hidden($assocAlias . '.' . $i . '.basename', array('value' => $item['basename']));
 			echo $form->hidden($assocAlias . '.' . $i . '.alternative', array('value' => $item['alternative']));
 
-			if ($file = $medium->file($item)) {
-				$url = $medium->url($file);
+			if ($file = $media->file($item)) {
+				$url = $media->url($file);
 
-				echo $medium->embed($medium->file($previewVersion . '/', $item), array(
+				echo $media->embed($media->file($previewVersion . '/', $item), array(
 					'restrict' => array('image')
 				));
 
 		 		$Medium = Medium::factory($file);
-				$size = $medium->size($file);
+				$size = $media->size($file);
 
 				if (isset($number)) {
 					$size = $number->toReadableSize($size);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Document Medium Test Case File
+ * Document Media Test Case File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,20 +11,20 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium
+ * @subpackage media.tests.cases.libs.media
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.DocumentMedium', array('file' => 'medium' . DS . 'document.php'));
+App::import('Vendor', 'Media.DocumentMedia', array('file' => 'media' . DS . 'document.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
- * Document Medium Test Case Class
+ * Document Media Test Case Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium
+ * @subpackage media.tests.cases.libs.media
  */
-class DocumentMediumTest extends CakeTestCase {
+class DocumentMediaTest extends CakeTestCase {
 	function setUp() {
 		$this->TestData = new TestData();
 	}
@@ -40,22 +40,22 @@ class DocumentMediumTest extends CakeTestCase {
 
 	function testInformation() {
 		$file = $this->TestData->getFile('application-pdf.pdf');
-		$Medium = new DocumentMedium($file);
-		$result = $Medium->width();
+		$Media = new DocumentMedia($file);
+		$result = $Media->width();
 		$expecting = 595;
-		$this->assertEqual($result,$expecting);
+		$this->assertEqual($result, $expecting);
 
-		$result = $Medium->height();
+		$result = $Media->height();
 		$expecting = 842;
-		$this->assertEqual($result,$expecting);
+		$this->assertEqual($result, $expecting);
 
-		$result = $Medium->quality();
+		$result = $Media->quality();
 		$expecting = 0;
-		$this->assertEqual($result,$expecting);
+		$this->assertEqual($result, $expecting);
 
-		$result = $Medium->ratio();
+		$result = $Media->ratio();
 		$expecting = '1:√2';
-		$this->assertEqual($result,$expecting);
+		$this->assertEqual($result, $expecting);
 	}
 }
 ?>

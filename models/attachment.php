@@ -110,7 +110,7 @@ class Attachment extends MediaAppModel {
  * $process an array with the following contents:
  *	overwrite - If the destination file should be overwritten if it exists
  *	directory - The destination directory (guranteed to exist)
- *  name - Medium name of $file (e.g. `'Image'`)
+ *  name - Media name of $file (e.g. `'Image'`)
  *	version - The version requested to be processed (e.g. `'xl'`)
  *	instructions - An array containing which names of methods to be called
  *

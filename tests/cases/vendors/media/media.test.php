@@ -1,6 +1,6 @@
 <?php
 /**
- * Medium Test Case File
+ * Media Test Case File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,43 +11,43 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium
+ * @subpackage media.tests.cases.libs.media
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
- * Banana Medium Adapter Class
+ * Banana Media Adapter Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium
+ * @subpackage media.tests.cases.libs.media
  */
-class BananaMediumAdapter extends MediumAdapter {}
+class BananaMediaAdapter extends MediaAdapter {}
 /**
- * Cherry Medium Adapter Class
+ * Cherry Media Adapter Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium
+ * @subpackage media.tests.cases.libs.media
  */
-class CherryMediumAdapter extends MediumAdapter {}
+class CherryMediaAdapter extends MediaAdapter {}
 /**
- * Sweet Medium Adapter Class
+ * Sweet Media Adapter Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium
+ * @subpackage media.tests.cases.libs.media
  */
-class SweetMedium extends Medium {
+class SweetMedia extends Media {
 	var $adapters = array('Banana', 'Cherry');
 }
 /**
- * Medium Test Case Class
+ * Media Test Case Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium
+ * @subpackage media.tests.cases.libs.media
  */
-class MediumTest extends CakeTestCase {
+class MediaTest extends CakeTestCase {
 	function setUp() {
 		$this->TestData = new TestData();
 	}
@@ -56,66 +56,62 @@ class MediumTest extends CakeTestCase {
 		$this->TestData->flushFiles();
 	}
 
-	function testMediumFactory() {
+	function testMediaFactory() {
 		$file = $this->TestData->getFile('image-jpg.jpg');
-		$result = Medium::factory($file);
-		$this->assertIsA($result,'ImageMedium');
+		$result = Media::factory($file);
+		$this->assertIsA($result,'ImageMedia');
 
 		$file = $this->TestData->getFile('image-png.png');
-		$result = Medium::factory($file);
-		$this->assertIsA($result,'ImageMedium');
+		$result = Media::factory($file);
+		$this->assertIsA($result,'ImageMedia');
 
 		$file = $this->TestData->getFile('image-gif.gif');
-		$result = Medium::factory($file);
-		$this->assertIsA($result,'ImageMedium');
+		$result = Media::factory($file);
+		$this->assertIsA($result,'ImageMedia');
 
 		$file = $this->TestData->getFile('text-plain.txt');
-		$result = Medium::factory($file);
-		$this->assertIsA($result,'TextMedium');
+		$result = Media::factory($file);
+		$this->assertIsA($result,'TextMedia');
 
 		$file = $this->TestData->getFile('application-pdf.pdf');
-		$result = Medium::factory($file);
-		$this->assertIsA($result,'DocumentMedium');
+		$result = Media::factory($file);
+		$this->assertIsA($result,'DocumentMedia');
 	}
 
-	function testMediumNameAndShort() {
+	function testMediaNameAndShort() {
 		$file = $this->TestData->getFile('image-jpg.jpg');
-		$result = Medium::factory($file);
+		$result = Media::factory($file);
 		$this->assertEqual($result->name,'Image');
 		$this->assertEqual($result->short,'img');
 
 		$file = $this->TestData->getFile('image-png.png');
-		$result = Medium::factory($file);
+		$result = Media::factory($file);
 		$this->assertEqual($result->name,'Image');
 		$this->assertEqual($result->short,'img');
 
 		$file = $this->TestData->getFile('image-gif.gif');
-		$result = Medium::factory($file);
+		$result = Media::factory($file);
 		$this->assertEqual($result->name,'Image');
 		$this->assertEqual($result->short,'img');
 
 		$file = $this->TestData->getFile('text-plain.txt');
-		$result = Medium::factory($file);
+		$result = Media::factory($file);
 		$this->assertEqual($result->name,'Text');
 		$this->assertEqual($result->short,'txt');
 
 		$file = $this->TestData->getFile('application-pdf.pdf');
-		$result = Medium::factory($file);
+		$result = Media::factory($file);
 		$this->assertEqual($result->name,'Document');
 		$this->assertEqual($result->short,'doc');
 	}
 
-	function testMediumAdapterCollection() {
-
-//		$Collection = new MediumAdapterCollection();
-//		$Collection
-
+	function testMediaAdapterCollection() {
 	}
 
 	function testMake() {
 		$instructions = array('convert' => 'image/png', 'zoomCrop' => array(10, 10));
-		$Medium = Medium::make($this->TestData->getFile('image-jpg.jpg'), $instructions);
-		$this->assertIsA($Medium, 'Medium');
+		$Media = Media::make($this->TestData->getFile('image-jpg.jpg'), $instructions);
+		$this->assertIsA($Media, 'Media');
 	}
 }
 ?>
