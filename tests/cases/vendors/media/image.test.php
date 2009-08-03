@@ -38,24 +38,24 @@ class ImageMediaTest extends CakeTestCase {
 		$file = $this->TestData->getFile('image-jpg.jpg');
 		$Media = new ImageMedia($file);
 		$result = $Media->width();
-		$expecting = 70;
-		$this->assertEqual($result, $expecting);
+		$expected = 70;
+		$this->assertEqual($result, $expected);
 
 		$result = $Media->height();
-		$expecting = 47;
-		$this->assertEqual($result, $expecting);
+		$expected = 47;
+		$this->assertEqual($result, $expected);
 
 		$result = $Media->quality();
-		$expecting = 1;
-		$this->assertEqual($result, $expecting);
+		$expected = 1;
+		$this->assertEqual($result, $expected);
 
 		$result = $Media->ratio();
-		$expecting = '3:2';
-		$this->assertEqual($result, $expecting);
+		$expected = '3:2';
+		$this->assertEqual($result, $expected);
 
 		$result = $Media->megapixel();
-		$expecting = 0;
-		$this->assertEqual($result, $expecting);
+		$expected = 0;
+		$this->assertEqual($result, $expected);
 	}
 
 	function testTransitions() {
