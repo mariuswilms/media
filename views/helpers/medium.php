@@ -590,7 +590,12 @@ class MediumHelper extends AppHelper {
 			return false;
 		}
 
-		extract(pathinfo($file), EXTR_SKIP);
+		$extension = null;
+		extract(pathinfo($file), EXTR_OVERWRITE);
+
+		if (!isset($filename)) { /* PHP < 5.2.0 */
+			$filename = substr($basename, 0, isset($extension) ? - (strlen($extension) + 1) : 0);
+		}
 
 		for ($i = 0; $i < 2; $i++) {
 			$file = $i ? $dirname . DS . $filename : $dirname . DS . $basename;

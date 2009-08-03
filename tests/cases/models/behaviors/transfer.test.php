@@ -141,7 +141,7 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$Model->Behaviors->detach('Transfer');
 		$Model->Behaviors->attach('Media.Transfer', array(
 			'baseDirectory' => TMP,
-			'destinationFile' => ':Idont.exist:'
+			'destinationFile' => 'please:raiseanerror:'
 		));
 
 		$file = $this->TestData->getFile('image-jpg.jpg');
@@ -164,6 +164,7 @@ class TransferBehaviorTestCase extends CakeTestCase {
 		$Model->prepare($file);
 		$Model->perform();
 		$file = $Model->getLastTransferredFile();
+
 		$this->assertTrue($file);
 		$this->assertTrue(file_exists($file));
 	}

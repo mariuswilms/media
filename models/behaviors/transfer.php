@@ -250,9 +250,11 @@ class TransferBehavior extends ModelBehavior {
 		$this->_addMarker($Model, 'Model.name', $Model->name);
 		$this->_addMarker($Model, 'Model.alias', $Model->alias);
 
-		$file = $baseDirectory . $this->_replaceMarker($Model, $destinationFile);
+		if (!$destinationFile = $this->_replaceMarker($Model, $destinationFile)) {
+			return false;
+		}
 
-		if ($destination = $this->_destination($Model, $file)) {
+		if ($destination = $this->_destination($Model, $baseDirectory . $destinationFile)) {
 			$this->runtime[$Model->alias]['destination'] = $destination;
 		} else {
 			return false;
@@ -318,10 +320,11 @@ class TransferBehavior extends ModelBehavior {
 
 		/* Destination file may not exist yet */
 		if (MediaValidation::file($data , false)) {
+			$original = $data;
 			if (!$data = $this->_alternativeFile($data, $alternativeFile)) {
 				$message  = "TransferBehavior::_destination - ";
 				$message .= "Exceeded number of max. tries while finding alt. name ";
-				$message .= "for `" . basename($data) . "`";
+				$message .= "for `" . basename($original) . "`";
 				trigger_error($message, E_USER_NOTICE);
 				return false;
 			}
@@ -339,41 +342,43 @@ class TransferBehavior extends ModelBehavior {
  * @return boolean true on success, false on failure
  */
 	function perform(&$Model) {
-		$source      = $this->runtime[$Model->alias]['source'];
-		$temporary   = $this->runtime[$Model->alias]['temporary'];
-		$destination = $this->runtime[$Model->alias]['destination'];
+		extract($this->runtime[$Model->alias]);
 
-		$typeChain = implode('>>', array($source['type'], $temporary['type'], $destination['type']));
-		$fileChain = implode('>>', array($source['file'], $temporary['file'], $destination['file']));
+		if (!$isReady || $hasPerformed) {
+			return false;
+		}
+		$hasPerformed = false;
 
-		if ($typeChain === 'file-upload-remote>>uploaded-file-local>>file-local') {
-			return $this->runtime[$Model->alias]['hasPerformed'] = move_uploaded_file($temporary['file'], $destination['file']);
-		}
-		if ($typeChain === 'file-local>>>>file-local') {
-			return $this->runtime[$Model->alias]['hasPerformed'] = copy($source['file'], $destination['file']);
-		}
-		if ($typeChain === 'file-local>>file-local>>file-local') {
-			return $this->runtime[$Model->alias]['hasPerformed'] = copy($source['file'], $temporary['file']) && rename($temporary['file'], $destination['file']);
-		}
+		$chain = implode('>>', array($source['type'], $temporary['type'], $destination['type']));
+
 		if ($source['type'] === 'http-url-remote') {
-			if(!class_exists('HttpSocket')) {
+			if (!class_exists('HttpSocket')) {
 				App::import('Core','HttpSocket');
 			}
-
 			$Socket = new HttpSocket(array('timeout' => 5));
 			$Socket->request(array('method' => 'GET', 'uri' => $source['file']));
 
 			if (!empty($Socket->error) || $Socket->response['status']['code'] != 200) {
-				return $this->runtime[$Model->alias]['hasPerformed'] = false;
+				return $this->runtime[$Model->alias]['hasPerformed'] = $hasPerformed;
 			}
 		}
-		if ($typeChain === 'http-url-remote>>>>file-local') {
-			return $this->runtime[$Model->alias]['hasPerformed'] = file_put_contents($destination['file'], $Socket->response['body']);
+
+		if ($chain === 'file-upload-remote>>uploaded-file-local>>file-local') {
+			$hasPerformed = move_uploaded_file($temporary['file'], $destination['file']);
+		} elseif ($chain === 'file-local>>>>file-local') {
+			$hasPerformed = copy($source['file'], $destination['file']);
+		} elseif ($chain === 'file-local>>file-local>>file-local') {
+			if (copy($source['file'], $temporary['file'])) {
+				$hasPerformed = rename($temporary['file'], $destination['file']);
+			}
+		} elseif ($chain === 'http-url-remote>>>>file-local') {
+			$hasPerformed = file_put_contents($destination['file'], $Socket->response['body']);
+		} elseif ($chain === 'http-url-remote>>file-local>>file-local') {
+			if (file_put_contents($temporary['file'], $Socket->response['body'])) {
+				$hasPerformed = rename($temporary['file'], $destination['file']);
+			}
 		}
-		if($typeChain === 'http-url-remote>>file-local>>file-local') {
-			return $this->runtime[$Model->alias]['hasPerformed'] = file_put_contents($temporary['file'], $Socket->response['body']) && rename($temporary['file'], $destination['file']);
-		}
-		return $this->runtime[$Model->alias]['hasPerformed'] = false;
+		return $this->runtime[$Model->alias]['hasPerformed'] = $hasPerformed;
 	}
 /**
  * Resets runtime property
@@ -679,7 +684,7 @@ class TransferBehavior extends ModelBehavior {
 				array(
 					'file' => $resource,
 					'host' => 'localhost',
-					'mimeType'   => MimeType::guessType($resource, array('paranoid' => !$trustClient)),
+					'mimeType' => MimeType::guessType($resource, array('paranoid' => !$trustClient)),
 			));
 
 			if (TransferValidation::uploadedFile($resource['file'])) {
@@ -719,6 +724,11 @@ class TransferBehavior extends ModelBehavior {
 			return null;
 		}
 
+		if (!isset($resource['filename'])) { /* PHP < 5.2.0 */
+			$length = isset($resource['extension']) ? strlen($resource['extension']) + 1 : 0;
+			$resource['filename'] = substr($resource['basename'], 0, - $length);
+		}
+
 		if (is_null($what)) {
 			return $resource;
 		} elseif (array_key_exists($what, $resource)) {
@@ -734,13 +744,21 @@ class TransferBehavior extends ModelBehavior {
  * @return mixed A string if an alt. name was found, false if number of tries were exceeded
  */
 	function _alternativeFile($file, $tries = 100) {
-		extract(pathinfo($file), EXTR_SKIP);
+		$extension = null;
+		extract(pathinfo($file), EXTR_OVERWRITE);
 
+		if (!isset($filename)) { /* PHP < 5.2.0 */
+			$filename = substr($basename, 0, isset($extension) ? - (strlen($extension) + 1) : 0);
+		}
 		$newFilename = $filename;
 
 		$Folder = new Folder($dirname);
 		$names = $Folder->find($filename . '.*');
-		$names = array_map(create_function('$basename', 'return pathinfo($basename, PATHINFO_FILENAME);'), $names);
+
+		foreach ($names as &$name) { /* PHP < 5.2.0 */
+			$length =  strlen(pathinfo($name, PATHINFO_EXTENSION));
+			$name = substr(basename($name), 0, $length ? - ($length + 1) : 0);
+		}
 
 		for ($count = 2; in_array($newFilename, $names); $count++) {
 			if ($count > $tries) {
@@ -804,9 +822,12 @@ class TransferBehavior extends ModelBehavior {
 		$subject = String::insert($subject, $markers, array(
 			'before' => ':', 'after' => ':',
 			'escape' => '#',
-			'clean' => true,
-			'replacement' => 'unknown_marker'
-		));
+			'clean' => array(
+				'before' => ':', 'after' => ':',
+				'escape' => '#',
+				'method' => 'text',
+				'replacement' => 'unknown_marker'
+		)));
 
 		if (strpos($subject, 'unknown_marker') !== false) {
 			$message  = "TransferBehavior::_replaceMarker - ";

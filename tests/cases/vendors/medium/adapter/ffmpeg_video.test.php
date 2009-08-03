@@ -44,7 +44,7 @@ class FfmpegVideoMediumAdapterTest extends CakeTestCase {
 	}
 
 	function skip() {
-		$this->skipUnless(extension_loaded('ffmpeg'), 'ffmpeg extention not loaded');
+		$this->skipUnless(extension_loaded('ffmpeg'), '%s ffmpeg extension not loaded');
 	}
 
 	function testBasic() {
