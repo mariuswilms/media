@@ -18,6 +18,7 @@
  */
 App::import('Core', 'Validation');
 App::import('Vendor', 'Media.MediaValidation');
+
 /**
  * Transfer Validation Class
  *
@@ -25,6 +26,7 @@ App::import('Vendor', 'Media.MediaValidation');
  * @subpackage media.libs
  */
 class TransferValidation extends MediaValidation {
+
 /**
  * Checks if subject is transferable
  *
@@ -40,6 +42,7 @@ class TransferValidation extends MediaValidation {
 		}
 		return false;
 	}
+
 /**
  * Checks if resource is not blank or empty
  *
@@ -58,6 +61,7 @@ class TransferValidation extends MediaValidation {
 		}
 		return false;
 	}
+
 /**
  * Identifies a file upload array
  *
@@ -77,6 +81,7 @@ class TransferValidation extends MediaValidation {
 		}
 		return true;
 	}
+
 /**
  * Checks if subject is an uploaded file
  *
@@ -85,6 +90,7 @@ class TransferValidation extends MediaValidation {
 	function uploadedFile($check) {
 		return MediaValidation::file($check) && is_uploaded_file($check);
 	}
+
 /**
  * Validates url
  *

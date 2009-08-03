@@ -19,6 +19,7 @@
 App::import('Vendor','Media.ImageMedium', array('file' => 'medium'.DS.'image.php'));
 App::import('Vendor','GdMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'gd.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Test Gd Medium Adapter Class
  *
@@ -28,6 +29,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' .
 class TestGdImageMedium extends ImageMedium {
 	var $adapters = array('Gd');
 }
+
 /**
  * Gd Medium Adapter Test Case Class
  *

@@ -19,6 +19,7 @@
 App::import('Core', array('ConnectionManager', 'Folder'));
 require_once(APP . 'plugins' . DS . 'media'. DS . 'config' . DS . 'core.php');
 Configure::write('Cache.disable', true);
+
 /**
  * Media Shell Class
  *
@@ -26,6 +27,7 @@ Configure::write('Cache.disable', true);
  * @subpackage media.shells
  */
 class MediaShell extends Shell {
+
 /**
  * Tasks
  *
@@ -33,6 +35,7 @@ class MediaShell extends Shell {
  * @access public
  */
 	var $tasks = array('Sync', 'Make', 'Collect');
+
 /**
  * Verbose mode
  *
@@ -40,6 +43,7 @@ class MediaShell extends Shell {
  * @access public
  */
 	var $verbose = false;
+
 /**
  * Quiet mode
  *
@@ -47,12 +51,14 @@ class MediaShell extends Shell {
  * @access public
  */
 	var $quiet = false;
+
 /**
  * Width of shell in number of characters per line
  *
  * @var integer
  */
 	var $width = 80;
+
 /**
  * Startup
  *
@@ -64,6 +70,7 @@ class MediaShell extends Shell {
 		$this->quiet = isset($this->params['quiet']);
 		parent::startup();
 	}
+
 /**
  * Welcome
  *
@@ -76,6 +83,7 @@ class MediaShell extends Shell {
 		$this->out('Media Shell');
 		$this->hr();
 	}
+
 /**
  * Main
  *
@@ -120,6 +128,7 @@ class MediaShell extends Shell {
 		}
 		$this->main();
 	}
+
 /**
  * Initializes directory structure
  *
@@ -174,6 +183,7 @@ class MediaShell extends Shell {
 		$this->protect();
 		$this->out('Remember to set the correct permissions on transfer and filter directory.');
 	}
+
 /**
  * Protects the transfer directory
  *
@@ -207,6 +217,7 @@ class MediaShell extends Shell {
 		$this->out();
 		return true;
 	}
+
 /**
  * Displays help contents
  *
@@ -270,6 +281,7 @@ class MediaShell extends Shell {
 		}
 		$this->Dispatch->stdout($string, $newline);
 	}
+
 /**
  * clear
  *
@@ -279,6 +291,7 @@ class MediaShell extends Shell {
 	function clear() {
 		$this->out(chr(27).'[H'.chr(27).'[2J');
 	}
+
 /**
  * heading
  *
@@ -299,6 +312,7 @@ class MediaShell extends Shell {
 		$this->out($this->pad($string . ' ', $width, $character));
 		$this->out();
 	}
+
 /**
  * Overridden
  *
@@ -310,6 +324,7 @@ class MediaShell extends Shell {
 	function hr($character = '-', $width = null) {
 		$this->out(str_repeat($character, $width === null ? $this->width : $width));
 	}
+
 /**
  * info
  *
@@ -323,6 +338,7 @@ class MediaShell extends Shell {
 		}
 		$this->out(sprintf(__('Notice: %s', true), $message), true);
 	}
+
 /**
  * warn
  *
@@ -335,6 +351,7 @@ class MediaShell extends Shell {
 		/* Until Dispatcher does not prepend Error: */
 		fwrite($this->Dispatch->stderr, sprintf(__('Warning: %s', true), $message)."\n");
 	}
+
 /**
  * Overridden
  *
@@ -348,6 +365,7 @@ class MediaShell extends Shell {
 		fwrite($this->Dispatch->stderr, sprintf(__('Error: %s', true), $message)."\n");
 		$this->_stop(1);
 	}
+
 /**
  * begin
  *
@@ -358,6 +376,7 @@ class MediaShell extends Shell {
 	function begin($message) {
 		$this->out(sprintf('%s ... ', $message), false);
 	}
+
 /**
  * end
  *
@@ -376,6 +395,7 @@ class MediaShell extends Shell {
 		$this->out(sprintf('%s', $message));
 		return $result;
 	}
+
 /**
  * progress
  *
@@ -401,6 +421,7 @@ class MediaShell extends Shell {
 			$this->out($out);
 		}
 	}
+
 /**
  * Overridden to allow Stop messages
  *

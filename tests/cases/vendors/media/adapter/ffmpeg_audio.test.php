@@ -19,6 +19,7 @@
 App::import('Vendor','Media.AudioMedia', array('file' => 'media'.DS.'audio.php'));
 App::import('Vendor','FfMpegAudioMediaAdapter', array('file' => 'media'.DS.'adapter'.DS.'ff_mpeg_audio.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Test Ffmpeg Audio Media Adapter Class
  *
@@ -28,6 +29,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' .
 class TestFfmpegAudioMedia extends AudioMedia {
 	var $adapters = array('FfmpegAudio');
 }
+
 /**
  * FfMpeg Audio Media Adapter Test Case Class
  *

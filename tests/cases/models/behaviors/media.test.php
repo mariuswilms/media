@@ -21,6 +21,7 @@ require_once CORE_TEST_CASES . DS . 'libs' . DS . 'model' .DS . 'models.php';
 require_once dirname(__FILE__) . DS . '..' . DS . 'models.php';
 require_once dirname(dirname(dirname(dirname(dirname(__FILE__))))) . DS . 'config' . DS . 'core.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Media Behavior Test Case Class
  *

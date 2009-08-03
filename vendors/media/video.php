@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.Medium');
+
 /**
  * Video Medium Class
  *
@@ -24,12 +25,14 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class VideoMedium extends Medium {
+
 /**
  * Compatible adapters
  *
  * @var array
  */
 	var $adapters = array('Getid3Video', 'FfmpegVideo');
+
 /**
  * Title stored in medium metadata
  *
@@ -40,6 +43,7 @@ class VideoMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Year stored in medium metadata
  *
@@ -50,6 +54,7 @@ class VideoMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Duration in seconds
  *
@@ -60,6 +65,7 @@ class VideoMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Current height of medium
  *
@@ -70,6 +76,7 @@ class VideoMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Current width of medium
  *
@@ -80,6 +87,7 @@ class VideoMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Current bit rate of medium
  *
@@ -91,6 +99,7 @@ class VideoMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Determines the quality of the medium by
  * taking definition and bit rate into account
@@ -137,6 +146,7 @@ class VideoMedium extends Medium {
 		}
 		return (integer)round($quality);
 	}
+
 /**
  * Determines a (known) ratio of medium
  *

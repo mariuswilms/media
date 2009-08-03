@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.Medium');
+
 /**
  * Generator Behavior Class
  *
@@ -24,6 +25,7 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.models.behaviors
  */
 class GeneratorBehavior extends ModelBehavior {
+
 /**
  * Default settings
  *
@@ -44,6 +46,7 @@ class GeneratorBehavior extends ModelBehavior {
 		'filterDirectory' => MEDIA_FILTER,
 		'createDirectory' => true
 	);
+
 /**
  * Setup
  *
@@ -61,6 +64,7 @@ class GeneratorBehavior extends ModelBehavior {
 		}
 		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
 	}
+
 /**
  * Callback
  *
@@ -87,6 +91,7 @@ class GeneratorBehavior extends ModelBehavior {
 		}
 		return $this->make($Model, $file);
 	}
+
 /**
  * Parses instruction sets and invokes `Medium::make()` for a file
  *
@@ -135,6 +140,7 @@ class GeneratorBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Returns relative and absolute path to a file
  *

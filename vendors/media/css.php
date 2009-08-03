@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.Medium');
+
 /**
  * Css Medium Class
  *
@@ -24,12 +25,14 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class CssMedium extends Medium {
+
 /**
  * Compatible adapters
  *
  * @var array
  */
 	var $adapters = array('CssTidy', 'BasicText');
+
 /**
  * Number of characters
  *
@@ -40,6 +43,7 @@ class CssMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Compresses contents. of the medium
  *

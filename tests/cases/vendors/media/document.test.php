@@ -18,6 +18,7 @@
  */
 App::import('Vendor', 'Media.DocumentMedia', array('file' => 'media' . DS . 'document.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Document Media Test Case Class
  *

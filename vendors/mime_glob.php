@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 uses('file');
+
 /**
  * Mime Glob Class
  *
@@ -27,6 +28,7 @@ uses('file');
  * @subpackage media.libs
  */
 class MimeGlob extends Object {
+
 /**
  * Items indexed by priority
  *
@@ -34,6 +36,7 @@ class MimeGlob extends Object {
  * @access protected
  */
 	var $_items = array();
+
 /**
  * Constructor
  *
@@ -43,6 +46,7 @@ class MimeGlob extends Object {
 	function __construct($db) {
 		$this->__read($db);
 	}
+
 /**
  * Determine the format of given database
  *
@@ -76,6 +80,7 @@ class MimeGlob extends Object {
 		}
 		return null;
 	}
+
 /**
  * Analyzes a filename and determines the MIME type
  *
@@ -96,6 +101,7 @@ class MimeGlob extends Object {
 
 		return $this->__test($file, $this->_items, false);
 	}
+
 /**
  * Will load a file from various sources
  *
@@ -168,6 +174,7 @@ class MimeGlob extends Object {
 			trigger_error('MimeGlob::read - Unknown db format', E_USER_WARNING);
 		}
 	}
+
 /**
  * Register a glob item
  *
@@ -198,6 +205,7 @@ class MimeGlob extends Object {
 			}
 		}
 	}
+
 /**
  * Exports current items as an array
  *
@@ -214,6 +222,7 @@ class MimeGlob extends Object {
 		}
 		return $result;
 	}
+
 /**
  * Tests a file's contents against glob items
  *
@@ -244,6 +253,7 @@ class MimeGlob extends Object {
 		}
 		return $results;
 	}
+
 /**
  * Does a reverse test against glob items
  *

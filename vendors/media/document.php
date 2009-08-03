@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.Medium');
+
 /**
  * Document Medium Class
  *
@@ -24,12 +25,14 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class DocumentMedium extends Medium {
+
 /**
  * Compatible adapters
  *
  * @var array
  */
 	var $adapters = array('Imagick', 'ImagickShell');
+
 /**
  * Current width of medium
  *
@@ -40,6 +43,7 @@ class DocumentMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Current height of medium
  *
@@ -50,6 +54,7 @@ class DocumentMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Determines a (known) ratio of medium
  *

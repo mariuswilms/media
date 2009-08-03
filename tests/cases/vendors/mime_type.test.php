@@ -19,6 +19,7 @@
  */
 App::import('Vendor', 'Media.MimeType');
 require_once dirname(dirname(dirname(__FILE__))) . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Mime Type Test Case Class
  *

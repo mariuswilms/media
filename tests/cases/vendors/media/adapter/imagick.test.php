@@ -20,6 +20,7 @@ App::import('Vendor','Media.ImageMedium', array('file' => 'medium'.DS.'image.php
 App::import('Vendor','Media.DocumentMedium', array('file' => 'medium'.DS.'document.php'));
 App::import('Vendor','ImagickMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'imagick.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Test Imagick Image Medium Class
  *
@@ -29,6 +30,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' .
 class TestImagickImageMedium extends ImageMedium {
 	var $adapters = array('Imagick');
 }
+
 /**
  * Test Imagick Document Medium Class
  *
@@ -38,6 +40,7 @@ class TestImagickImageMedium extends ImageMedium {
 class TestImagickDocumentMedium extends DocumentMedium {
 	var $adapters = array('Imagick');
 }
+
 /**
  * Imagick Medium Adapter Test Case Class
  *

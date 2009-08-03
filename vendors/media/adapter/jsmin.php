@@ -1,5 +1,6 @@
 <?php
- /**
+
+/**
  * Jsmin Medium Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
@@ -16,6 +17,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
+
 /**
  * Jsmin Medium Adapter Class
  *

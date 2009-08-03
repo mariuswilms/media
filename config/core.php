@@ -24,6 +24,7 @@
  * @link       http://github.com/davidpersson/media
  * @since      media 0.50
  */
+
 /**
  * Directory paths
  *
@@ -45,6 +46,7 @@ if (!defined('MEDIA_FILTER')) {
 if (!defined('MEDIA_TRANSFER')) {
 	define('MEDIA_TRANSFER', MEDIA . 'transfer' . DS);
 }
+
 /**
  * URL paths
  *
@@ -71,6 +73,7 @@ if (!defined('MEDIA_FILTER_URL')) {
 if (!defined('MEDIA_TRANSFER_URL')) {
 	define('MEDIA_TRANSFER_URL', MEDIA_URL . 'transfer/');
 }
+
 /**
  * MIME type detection by file extension
  *
@@ -83,6 +86,7 @@ Configure::write('Mime.glob', array(
 	'engine' => null,
 	'db'     => null,
 ));
+
 /**
  * MIME type detection by file content
  *
@@ -95,6 +99,7 @@ Configure::write('Mime.magic', array(
 	'engine' => null,
 	'db'     => null,
 ));
+
 /**
  * Filters and versions
  *

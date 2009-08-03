@@ -20,6 +20,7 @@ App::import('Vendor', 'Media.MimeType');
 App::import('Vendor', 'Media.Medium');
 App::import('Vendor', 'Media.MediaValidation');
 App::import('Vendor', 'Media.TransferValidation');
+
 /**
  * Transfer Behavior Class
  *
@@ -30,18 +31,21 @@ App::import('Vendor', 'Media.TransferValidation');
  * @subpackage media.models.behaviors
  */
 class TransferBehavior extends ModelBehavior {
+
 /**
  * Holds data between function calls keyed by model alias
  *
  * @var array
  */
 	var $runtime = array();
+
 /**
  * Settings keyed by model alias
  *
  * @var array
  */
 	var $settings = array();
+
 /**
  * Default settings
  *
@@ -67,6 +71,7 @@ class TransferBehavior extends ModelBehavior {
 		'createDirectory' => true,
 		'alternativeFile' => 100
 	);
+
 /**
  * Default runtime
  *
@@ -79,6 +84,7 @@ class TransferBehavior extends ModelBehavior {
 		'isReady'      => false,
 		'hasPerformed' => false
 	);
+
 /**
  * Setup
  *
@@ -105,6 +111,7 @@ class TransferBehavior extends ModelBehavior {
 		$this->settings[$Model->alias] = $config + $this->_defaultSettings;
 		$this->runtime[$Model->alias] = $this->_defaultRuntime;
 	}
+
 /**
  * Run before any or if validation occurs
  *
@@ -122,6 +129,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Triggers `prepare()` and performs transfer
  *
@@ -151,6 +159,7 @@ class TransferBehavior extends ModelBehavior {
 		$Model->data[$Model->alias]['file'] = $destination['dirname'] . DS . $destination['basename'];
 		return $Model->data[$Model->alias];
 	}
+
 /**
  * Triggered by `beforeValidate`, `beforeSave` or upon user request
  *
@@ -244,6 +253,7 @@ class TransferBehavior extends ModelBehavior {
 
 		return $this->runtime[$Model->alias]['isReady'] = true;
 	}
+
 /**
  * Returns a relative path to the destination file
  *
@@ -257,6 +267,7 @@ class TransferBehavior extends ModelBehavior {
 		$path .= !empty($extension) ? '.' . strtolower($extension) : null;
 		return $path;
 	}
+
 /**
  * Parse data to be used as source
  *
@@ -274,6 +285,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return false;
 	}
+
 /**
  * Parse data to be used as temporary
  *
@@ -292,6 +304,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return false;
 	}
+
 /**
  * Parse data to be used as destination
  *
@@ -304,6 +317,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return false;
 	}
+
 /**
  * Performs a transfer
  *
@@ -361,6 +375,7 @@ class TransferBehavior extends ModelBehavior {
 	function resetTransfer(&$Model) {
 		$this->runtime[$Model->alias] = $this->_defaultRuntime;
 	}
+
 /**
  * Convenience method which (if available) returns absolute path to last transferred file
  *
@@ -375,6 +390,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return false;
 	}
+
 /**
  * Checks if field contains a transferable resource
  *
@@ -387,6 +403,7 @@ class TransferBehavior extends ModelBehavior {
 	function checkResource(&$Model, $field) {
 		return TransferValidation::resource(current($field));
 	}
+
 /**
  * Checks if sufficient permissions are set to access the resource
  * Source must be readable, temporary read or writable, destination writable
@@ -423,6 +440,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Checks if resource is located within given locations
  *
@@ -454,6 +472,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Checks if provided or potentially dangerous permissions are set
  *
@@ -477,6 +496,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Checks if resource doesn't exceed provided size
  *
@@ -502,6 +522,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Checks if resource (if it is an image) pixels doesn't exceed provided size
  *
@@ -527,6 +548,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Checks if resource has (not) one of given extensions
  *
@@ -553,6 +575,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Checks if resource has (not) one of given MIME types
  *
@@ -594,6 +617,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Gather/Return information about a resource
  *
@@ -708,6 +732,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return null;
 	}
+
 /**
  * Finds an alternative filename for an already existing file
  *
@@ -747,6 +772,7 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return $new;
 	}
+
 /**
  * Convenience method which (if available) returns absolute path to last transferred file
  *

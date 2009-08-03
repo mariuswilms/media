@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.Medium');
+
 /**
  * Audio Medium Class
  *
@@ -24,12 +25,14 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class AudioMedium extends Medium {
+
 /**
  * Compatible adapters
  *
  * @var array
  */
 	var $adapters = array('Getid3Audio', 'FfmpegAudio', 'PearMp3');
+
 /**
  * Artist stored in medium metadata
  *
@@ -40,6 +43,7 @@ class AudioMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Title stored in medium metadata
  *
@@ -50,6 +54,7 @@ class AudioMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Album name stored in medium metadata
  *
@@ -60,6 +65,7 @@ class AudioMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Year stored in medium metadata
  *
@@ -70,6 +76,7 @@ class AudioMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Track number stored in medium metadata
  *
@@ -80,6 +87,7 @@ class AudioMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Duration in seconds
  *
@@ -90,6 +98,7 @@ class AudioMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Current sampling rate of medium
  *
@@ -101,6 +110,7 @@ class AudioMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Current bit rate of medium
  *
@@ -112,6 +122,7 @@ class AudioMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Determines the quality of the medium by
  * taking bit rate into account

@@ -19,6 +19,7 @@
 App::import('Vendor','Media.AudioMedium', array('file' => 'medium'.DS.'audio.php'));
 App::import('Vendor','PearMp3MediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'pear_mp3.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Test PearMp3 Audio Medium Adapter Class
  *
@@ -28,6 +29,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' .
 class TestPearMp3Medium extends AudioMedium {
 	var $adapters = array('PearMp3');
 }
+
 /**
  * PearMp3 Audio Medium Adapter Test Case Class
  *

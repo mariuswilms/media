@@ -20,6 +20,7 @@ App::import('Model', 'Media.Attachment');
 require_once 'models.php';
 require_once dirname(dirname(dirname(__FILE__))) . DS . 'fixtures' . DS . 'test_data.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'config' . DS . 'core.php';
+
 /**
  * Attachment Test Case Class
  *

@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Core', 'Validation');
+
 /**
  * Media Validation Class
  *
@@ -24,6 +25,7 @@ App::import('Core', 'Validation');
  * @subpackage media.libs
  */
 class MediaValidation extends Validation {
+
 /**
  * Checks if MIME type is (not) one of given MIME types
  *
@@ -50,6 +52,7 @@ class MediaValidation extends Validation {
 		}
 		return true;
 	}
+
 /**
  * Checks if extension is (not) one of given extensions
  *
@@ -76,6 +79,7 @@ class MediaValidation extends Validation {
 		}
 		return true;
 	}
+
 /**
  * Checks if size is within limits
  *
@@ -113,6 +117,7 @@ class MediaValidation extends Validation {
 
 		return $check <= $max;
 	}
+
 /**
  * Checks if pixels are within limits
  *
@@ -131,6 +136,7 @@ class MediaValidation extends Validation {
 		}
 		return $check <= $max;
 	}
+
 /**
  * Checks if path is within given locations
  *
@@ -178,6 +184,7 @@ class MediaValidation extends Validation {
 		}
 		return false;
 	}
+
 /**
  * Checks if read/write permissions are set
  *
@@ -207,6 +214,7 @@ class MediaValidation extends Validation {
 		}
 		return true;
 	}
+
 /**
  * Checks if provided or potentially dangerous permissions are set
  *
@@ -233,6 +241,7 @@ class MediaValidation extends Validation {
 		}
 		return true;
 	}
+
 /**
  * Checks if subject is an (existent) file
  * Please note, that directoires are not treated as files in strict mode
@@ -253,6 +262,7 @@ class MediaValidation extends Validation {
 		}
 		return true;
 	}
+
 /**
  * Checks if subject is an (existent) folder
  * Used mainly for $allow/$deny parameter contents
@@ -270,6 +280,7 @@ class MediaValidation extends Validation {
 		}
 		return true;
 	}
+
 /**
  * Normalizes Parameters
  *
@@ -301,6 +312,7 @@ class MediaValidation extends Validation {
 				return $param;
 		}
 	}
+
 /**
  * Parse `php.ini` style size strings
  *

@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.Medium');
+
 /**
  * Make Task Class
  *
@@ -24,6 +25,7 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.shells.tasks
  */
 class MakeTask extends MediaShell {
+
 /**
  * An absolute path to a file or directory
  *
@@ -31,6 +33,7 @@ class MakeTask extends MediaShell {
  * @access public
  */
 	var $source;
+
 /**
  * An absolute path to a directory
  *
@@ -38,6 +41,7 @@ class MakeTask extends MediaShell {
  * @access public
  */
 	var $destination;
+
 /**
  * Optionally holds the version string
  *
@@ -45,6 +49,7 @@ class MakeTask extends MediaShell {
  * @access public
  */
 	var $version;
+
 /**
  * Force switch
  *
@@ -52,6 +57,7 @@ class MakeTask extends MediaShell {
  * @access public
  */
 	var $force;
+
 /**
  * Overwrite existing files
  *
@@ -59,6 +65,7 @@ class MakeTask extends MediaShell {
  * @access protected
  */
 	var $_overwrite = false;
+
 /**
  * Enable/disable creation of misssing directories
  *
@@ -66,6 +73,7 @@ class MakeTask extends MediaShell {
  * @access protected
  */
 	var $_createDirectories = false;
+
 /**
  * Main execution methpd
  *
@@ -124,6 +132,7 @@ class MakeTask extends MediaShell {
 		}
 		$this->out();
 	}
+
 /**
  * "makes" a file
  *

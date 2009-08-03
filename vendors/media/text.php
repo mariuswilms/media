@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.Medium');
+
 /**
  * Text Medium Class
  *
@@ -24,12 +25,14 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class TextMedium extends Medium {
+
 /**
  * Compatible adapters
  *
  * @var array
  */
 	var $adapters = array('PearText', 'BasicText');
+
 /**
  * Number of characters
  *
@@ -40,6 +43,7 @@ class TextMedium extends Medium {
 			'normalize' => true
 		));
 	 }
+
 /**
  * Flesch Score
  *
@@ -50,6 +54,7 @@ class TextMedium extends Medium {
 			'normalize' => false
 		)), 2);
 	}
+
 /**
  * Lexical Density in percent
  *
@@ -64,6 +69,7 @@ class TextMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Number of sentences
  *
@@ -74,6 +80,7 @@ class TextMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Number of syllables
  *
@@ -84,6 +91,7 @@ class TextMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Truncate to given amount of characters
  *
@@ -93,6 +101,7 @@ class TextMedium extends Medium {
 	function truncate($characters) {
 		return $this->Adapters->dispatchMethod($this, 'truncate', array($characters));
 	}
+
 /**
  * Number of words
  *

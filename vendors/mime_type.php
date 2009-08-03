@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 uses('file');
+
 /**
  * Mime Type Class
  *
@@ -28,6 +29,7 @@ uses('file');
  * @subpackage media.libs
  */
 class MimeType extends Object {
+
 /**
  * Magic
  *
@@ -35,6 +37,7 @@ class MimeType extends Object {
  * @access private
  */
 	var $__magic;
+
 /**
  * Glob
  *
@@ -42,6 +45,7 @@ class MimeType extends Object {
  * @access private
  */
 	var $__glob;
+
 /**
  * Return a singleton instance of MimeType.
  *
@@ -58,6 +62,7 @@ class MimeType extends Object {
 		}
 		return $instance[0];
 	}
+
 /**
  * Change configuration during runtime
  *
@@ -74,6 +79,7 @@ class MimeType extends Object {
 			$_this->__loadGlob($config);
 		}
 	}
+
 /**
  * Guesses the extension (suffix) for an existing file or a MIME type
  *
@@ -114,6 +120,7 @@ class MimeType extends Object {
 		}
 		return null;
 	}
+
 /**
  * Guesses the MIME type of the file
  *
@@ -185,6 +192,7 @@ class MimeType extends Object {
 		}
 		return null;
 	}
+
 /**
  * Simplifies a MIME type string
  *
@@ -207,6 +215,7 @@ class MimeType extends Object {
 		}
 		return $mimeType;
 	}
+
 /**
  * Sets magic property
  *
@@ -249,6 +258,7 @@ class MimeType extends Object {
 			$this->__magic = null;
 		}
 	}
+
 /**
  * Sets glob property
  *
@@ -283,6 +293,7 @@ class MimeType extends Object {
 			$this->__glob = null;
 		}
 	}
+
 /**
  * Finds the db file for given type
  *

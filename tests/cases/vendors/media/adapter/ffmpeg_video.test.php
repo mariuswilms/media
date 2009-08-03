@@ -19,6 +19,7 @@
 App::import('Vendor','Media.VideoMedium', array('file' => 'medium'.DS.'video.php'));
 App::import('Vendor','FfMpegVideoMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'ff_mpeg_video.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Test Ffmpeg Video Medium Adapter Class
  *
@@ -28,6 +29,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' .
 class TestFfmpegVideoMedium extends VideoMedium {
 	var $adapters = array('FfMpegVideo');
 }
+
 /**
  * Ffmpeg Video Medium Adapter Test Case Class
  *

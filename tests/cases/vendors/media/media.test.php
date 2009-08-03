@@ -18,6 +18,7 @@
  */
 App::import('Vendor', 'Media.Media');
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Banana Media Adapter Class
  *
@@ -25,6 +26,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtu
  * @subpackage media.tests.cases.libs.media
  */
 class BananaMediaAdapter extends MediaAdapter {}
+
 /**
  * Cherry Media Adapter Class
  *
@@ -32,6 +34,7 @@ class BananaMediaAdapter extends MediaAdapter {}
  * @subpackage media.tests.cases.libs.media
  */
 class CherryMediaAdapter extends MediaAdapter {}
+
 /**
  * Sweet Media Adapter Class
  *
@@ -41,6 +44,7 @@ class CherryMediaAdapter extends MediaAdapter {}
 class SweetMedia extends Media {
 	var $adapters = array('Banana', 'Cherry');
 }
+
 /**
  * Media Test Case Class
  *

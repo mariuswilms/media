@@ -18,6 +18,7 @@
  */
 App::import('Vendor', 'Media.MimeMagic');
 require_once dirname(dirname(dirname(__FILE__))) . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Mime Magic Test Case Class
  *

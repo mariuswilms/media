@@ -19,6 +19,7 @@
 App::import('Vendor','Media.AudioMedium', array('file' => 'medium'.DS.'audio.php'));
 App::import('Vendor','GetId3AudioMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'get_id3_audio.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Test Getid3 Audio Medium Adapter Class
  *
@@ -28,6 +29,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' .
 class TestGetid3AudioMedium extends AudioMedium {
 	var $adapters = array('Getid3Audio');
 }
+
 /**
  * Getid3 Audio Medium Adapter Test Case Class
  *

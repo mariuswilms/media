@@ -18,6 +18,7 @@
  */
 App::import('Vendor','Media.TransferValidation');
 require_once dirname(dirname(dirname(__FILE__))) . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Transfer Validation Test Case Class
  *

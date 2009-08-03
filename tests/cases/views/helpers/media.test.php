@@ -18,7 +18,7 @@
  */
 App::import('Core', array('Helper', 'AppHelper', 'ClassRegistry'));
 App::import('Helper', 'Media.Media');
-require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+require_once dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'fixtures' . DS . 'test_data.php';
 
 /**
  * Mock Media Helper
@@ -36,6 +36,7 @@ class MockMediaHelper extends MediaHelper {
 		return $this->_directories;
 	}
 }
+
 /**
  * Media Helper Test Case Class
  *

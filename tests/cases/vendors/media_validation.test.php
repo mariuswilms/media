@@ -18,6 +18,7 @@
  */
 App::import('Vendor','Media.MediaValidation');
 require_once dirname(dirname(dirname(__FILE__))) . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Transfer Validation Test Case Class
  *
@@ -101,7 +102,7 @@ class MediaValidationTest extends CakeTestCase {
 		$this->assertFalse($result);
 
 		$deny = array('bin', 'class', 'dll', 'dms', 'exe', 'lha');
-        $allow = array('pdf');
+		$allow = array('pdf');
 		$check = 'tmp';
 		$result = MediaValidation::extension($check, $deny, $allow);
 		$this->assertFalse($result);
@@ -111,13 +112,13 @@ class MediaValidationTest extends CakeTestCase {
 		$this->assertTrue($result);
 
 		$deny = array('bin', 'class', 'dll', 'dms', 'exe', 'lha');
-        $allow = array('pdf', 'tmp');
+		$allow = array('pdf', 'tmp');
 		$check = 'tmp';
 		$result = MediaValidation::extension($check);
 		$this->assertTrue($result);
 
 		$deny = array('bin', 'class', 'dll', 'dms', 'exe', 'lha');
-        $allow = array('*');
+		$allow = array('*');
 		$check = 'tmp';
 		$result = MediaValidation::extension($check);
 		$this->assertTrue($result);

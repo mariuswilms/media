@@ -16,6 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
+
 /**
  * Media Schema Class
  *
@@ -23,6 +24,7 @@
  * @subpackage media.config.sql
  */
 class MediaSchema extends CakeSchema {
+
 /**
  * before
  *
@@ -32,6 +34,7 @@ class MediaSchema extends CakeSchema {
 	function before($event = array()) {
 		return true;
 	}
+
 /**
  * after
  *
@@ -40,6 +43,7 @@ class MediaSchema extends CakeSchema {
  */
 	function after($event = array()) {
 	}
+
 /**
  * attachments
  *

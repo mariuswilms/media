@@ -18,6 +18,7 @@
  */
 App::import('Vendor', 'Media.MimeType');
 App::import('Vendor', 'Media.Media');
+
 /**
  * Coupler Behavior Class
  *
@@ -25,12 +26,14 @@ App::import('Vendor', 'Media.Media');
  * @subpackage media.models.behaviors
  */
 class CouplerBehavior extends ModelBehavior {
+
 /**
  * Settings keyed by model alias
  *
  * @var array
  */
 	var $settings = array();
+
 /**
  * Default settings
  *
@@ -48,6 +51,7 @@ class CouplerBehavior extends ModelBehavior {
 		'metadataLevel'   => 1,
 		'baseDirectory'   => MEDIA
 	);
+
 /**
  * Holds cached metadata keyed by model alias
  *
@@ -55,6 +59,7 @@ class CouplerBehavior extends ModelBehavior {
  * @access private
  */
 	var $__cached;
+
 /**
  * Setup
  *
@@ -73,6 +78,7 @@ class CouplerBehavior extends ModelBehavior {
 
 		$this->__cached[$Model->alias] = Cache::read('media_metadata_' . $Model->alias, '_cake_core_');
 	}
+
 /**
  * Callback
  *
@@ -145,6 +151,7 @@ class CouplerBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Callback
  *
@@ -183,6 +190,7 @@ class CouplerBehavior extends ModelBehavior {
 		}
 		return $results;
 	}
+
 /**
  * Callback
  *
@@ -224,6 +232,7 @@ class CouplerBehavior extends ModelBehavior {
 		$File->delete();
 		return true;
 	}
+
 /**
  * Retrieve (cached) metadata of a file
  *
@@ -311,6 +320,7 @@ class CouplerBehavior extends ModelBehavior {
 		$this->__cached[$Model->alias][$checksum] = $data;
 		return Set::filter($result);
 	}
+
 /**
  * Checks if an alternative text is given only if a file is submitted
  *
@@ -326,6 +336,7 @@ class CouplerBehavior extends ModelBehavior {
 		* ion */
 		return !empty($value);
 	}
+
 /**
  * Returns relative and absolute path to a file
  *

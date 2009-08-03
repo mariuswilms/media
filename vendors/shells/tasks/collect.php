@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 class CollectTask extends MediaShell {
+
 /**
  * Holds mapped files
  *
@@ -24,6 +25,7 @@ class CollectTask extends MediaShell {
  * @access protected
  */
 	var $_map;
+
 /**
  * Holds search paths
  *
@@ -31,6 +33,7 @@ class CollectTask extends MediaShell {
  * @access protected
  */
 	var $_paths;
+
 /**
  * Indicates if copy or link method should be used
  *
@@ -38,6 +41,7 @@ class CollectTask extends MediaShell {
  * @access protected
  */
 	var $_link;
+
 /**
  * Patterns to use for exlcuding files
  *
@@ -45,6 +49,7 @@ class CollectTask extends MediaShell {
  * @access protected
  */
 	var $_exclude;
+
 /**
  * Main task method
  *
@@ -106,6 +111,7 @@ class CollectTask extends MediaShell {
 
 		return $this->_perform();
 	}
+
 /**
  * Returns all common paths where media files are stored
  *
@@ -152,6 +158,7 @@ class CollectTask extends MediaShell {
 		}
 		return $paths;
 	}
+
 /**
  * (Interactively) maps source files to destinations
  *
@@ -205,6 +212,7 @@ class CollectTask extends MediaShell {
 			}
 		}
 	}
+
 /**
  * Deals with collisions of destination files
  *
@@ -236,6 +244,7 @@ class CollectTask extends MediaShell {
 		}
 		return array($Right->pwd() => $this->_rename($Right->pwd()));
 	}
+
 /**
  * Prompts for renaming a file's basename
  *
@@ -248,6 +257,7 @@ class CollectTask extends MediaShell {
 		$basename = $this->in($message, null, basename($file));
 		return dirname($file) . DS . $basename;
 	}
+
 /**
  * Performs the copying/linking of mapped files
  *

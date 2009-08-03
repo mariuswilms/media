@@ -19,6 +19,7 @@
 App::import('Vendor','Media.VideoMedium', array('file' => 'medium'.DS.'video.php'));
 App::import('Vendor','GetId3VideoMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'get_id3_video.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Test Getid3 Video Medium Adapter Class
  *
@@ -28,6 +29,7 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' .
 class TestGetid3VideoMedium extends VideoMedium {
 	var $adapters = array('Getid3Video');
 }
+
 /**
  * Getid3 Video Medium Adapter Test Case Class
  *

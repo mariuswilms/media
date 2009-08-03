@@ -16,6 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
+
 /**
  * Attachment Model Class
  *
@@ -25,6 +26,7 @@
  * @subpackage media.models
  */
 class Attachment extends MediaAppModel {
+
 /**
  * Name of model
  *
@@ -32,6 +34,7 @@ class Attachment extends MediaAppModel {
  * @access public
  */
 	var $name = 'Attachment';
+
 /**
  * Name of table to use
  *
@@ -39,6 +42,7 @@ class Attachment extends MediaAppModel {
  * @access public
  */
 	var $useTable = 'attachments';
+
 /**
  * actsAs property
  *
@@ -62,6 +66,7 @@ class Attachment extends MediaAppModel {
 		'Media.Generator' => array(
 			'filterDirectory' => MEDIA_FILTER
 	));
+
 /**
  * Validation rules for file and alternative fields
  *
@@ -102,6 +107,7 @@ class Attachment extends MediaAppModel {
 			'required'   => false,
 			'allowEmpty' => true,
 		));
+
 /**
  * beforeMake Callback
  *
@@ -122,6 +128,7 @@ class Attachment extends MediaAppModel {
  */
 	// function beforeMake($file, $process) {
 	// }
+
 /**
  * Returns the relative path to the destination file
  *

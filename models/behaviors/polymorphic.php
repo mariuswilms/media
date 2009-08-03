@@ -17,6 +17,7 @@
  * @lastmodified	$Date: 2008-03-07 13:56:09 +0100 (Fri, 07 Mar 2008) $
  * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
  */
+
 /**
  * Polymorphic Behavior Class
  *

@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.MimeType');
+
 /**
  * Media Class
  *
@@ -24,6 +25,7 @@ App::import('Vendor', 'Media.MimeType');
  * @subpackage media.libs.media
  */
 class Media extends Object {
+
 /**
  * Name of the Media
  * e.g. Image
@@ -31,6 +33,7 @@ class Media extends Object {
  * @var string
  */
 	var $name;
+
 /**
  * Abbreviated name of the name
  * e.g. img
@@ -38,6 +41,7 @@ class Media extends Object {
  * @var string
  */
 	var $short;
+
 /**
  * These Adapters will be tried to be loaded in given order
  * works similiar to helpers or components properterties
@@ -46,30 +50,35 @@ class Media extends Object {
  * @access public
  */
 	var $adapters = array();
+
 /**
  * Holds a reference to the 'original' or 'temporary' file of the files property
  *
  * @var string
  */
 	var $file;
+
 /**
  * Related files
  *
  * @var array
  */
 	var $files = array();
+
 /**
  * Related open resources keyed by resource type
  *
  * @var array
  */
 	var $resources = array();
+
 /**
  * Related objects keyed by class name
  *
  * @var array
  */
 	var $objects = array();
+
 /**
  * Related contents (text or binary)
  * The 'raw' key of this property holds - if present -
@@ -78,12 +87,14 @@ class Media extends Object {
  * @var array
  */
 	var $contents = array();
+
 /**
  * The current MIME type
  *
  * @var string
  */
 	var $mimeType;
+
 /**
  * Mapping MIME type (part) to media name
  *
@@ -105,6 +116,7 @@ class Media extends Object {
 		'text/'                 => 'Generic',
 		'/'                     => 'Generic',
 	);
+
 /**
  * Mapping media name to short media name
  *
@@ -121,6 +133,7 @@ class Media extends Object {
 		'Text'     => 'txt',
 		'Video'    => 'vid',
 	);
+
 /**
  * Constructor
  *
@@ -170,6 +183,7 @@ class Media extends Object {
 		$this->Adapters = new MediaAdapterCollection();
 		$this->Adapters->init($this, $this->adapters);
 	}
+
 /**
  * Destructor
  *
@@ -182,6 +196,7 @@ class Media extends Object {
 			unlink($this->files['temporary']);
 		}
 	}
+
 /**
  * Overriden magic method
  *
@@ -191,6 +206,7 @@ class Media extends Object {
  */
 	function __call($method, $args) {
 	}
+
 /**
  * Factory method
  *
@@ -218,6 +234,7 @@ class Media extends Object {
 		$Object = new $class($file, $mimeType);
 		return $Object;
 	}
+
 /**
  * Determines media name for a file or MIME type
  *
@@ -244,6 +261,7 @@ class Media extends Object {
 		}
 		return 'Generic';
 	}
+
 /**
  * Determines media short name for a file or MIME type
  *
@@ -260,6 +278,7 @@ class Media extends Object {
 		}
 		return self::$_namesToShort[self::name($file, $mimeType)];
 	}
+
 /**
  * Automatically processes a file and returns a Media instance
  *
@@ -307,6 +326,7 @@ class Media extends Object {
 		}
 		return $Media;
 	}
+
 /**
  * Stores the media to a file and assures that the output file has the correct extension
  *
@@ -340,6 +360,7 @@ class Media extends Object {
 		}
 		return false;
 	}
+
 /**
  * Convert
  *
@@ -360,6 +381,7 @@ class Media extends Object {
 		}
 		return $this;
 	}
+
 /**
  * Figures out which known ratio is closest to provided one
  *
@@ -396,6 +418,7 @@ class Media extends Object {
 		return array_shift(array_keys($knownRatios));
 	}
 }
+
 /**
  * Media Adapter Collection Class
  *
@@ -403,18 +426,21 @@ class Media extends Object {
  * @subpackage media.libs.media
  */
 class MediaAdapterCollection extends Object {
+
 /**
  * Attached adapter names
  *
  * @var array
  */
 	var $_attached = array();
+
 /**
  * Initialized adapter names
  *
  * @var array
  */
 	var $_initialized = array();
+
 /**
  * Mapped methods of adapters
  *
@@ -422,6 +448,7 @@ class MediaAdapterCollection extends Object {
  * @var array
  */
 	var $__methods = array();
+
 /**
  * Errors
  *
@@ -429,6 +456,7 @@ class MediaAdapterCollection extends Object {
  * @access private
  */
 	var $__errors = false;
+
 /**
  * Messages
  *
@@ -436,6 +464,7 @@ class MediaAdapterCollection extends Object {
  * @access private
  */
 	var $__messages = array();
+
 /**
  * Attaches $adapters to $Media
  *
@@ -447,6 +476,7 @@ class MediaAdapterCollection extends Object {
 			$this->attach($adapter, $config);
 		}
 	}
+
 /**
  * Attaches $adapter and inits it
  *
@@ -469,6 +499,7 @@ class MediaAdapterCollection extends Object {
 		$this->_attached[] = $adapter;
 		return true;
 	}
+
 /**
  * Detaches adapter and does some cleanup
  *
@@ -480,6 +511,7 @@ class MediaAdapterCollection extends Object {
 		$this->_overlay($this->_initialized);
 		$this->__messages[] = "MediaCollection::detach() - Removed `{$name}MediaAdapter`.";
 	}
+
 /**
  * Calls a method of an adapter providing it
  * Loads and initiates the adapter if necessary
@@ -544,6 +576,7 @@ class MediaAdapterCollection extends Object {
 		$message .= "Method `{$method}` not found in any attached adapter";
 		$this->__errors[] = $message;
 	}
+
 /**
  * Checks if $adapter is compatible and initializes it with $Media
  *
@@ -564,6 +597,7 @@ class MediaAdapterCollection extends Object {
 		$this->_initialized[] = $adapter;
 		return true;
 	}
+
 /**
  * Checks if an adapter is already initialized
  * or returns currently initialized adapters
@@ -577,6 +611,7 @@ class MediaAdapterCollection extends Object {
 		}
 		return $this->_initialized;
 	}
+
 /**
  * Adds methods of adapter(s)
  *
@@ -593,6 +628,7 @@ class MediaAdapterCollection extends Object {
 		}
 		$this->__messages[] = "MediaCollection::_overlay() - Regenerated method overlays.";
 	}
+
 /**
  * Normalizes a value
  *
@@ -611,6 +647,7 @@ class MediaAdapterCollection extends Object {
 			return $value;
 		}
 	}
+
 /**
  * Returns messages for this Object
  *
@@ -619,6 +656,7 @@ class MediaAdapterCollection extends Object {
 	function messages() {
 		return $this->__messages;
 	}
+
 /**
  * Returns errors for this Object
  *
@@ -628,6 +666,7 @@ class MediaAdapterCollection extends Object {
 		return $this->__errors;
 	}
 }
+
 /**
  * Media Adapter Class
  *
@@ -637,12 +676,14 @@ class MediaAdapterCollection extends Object {
  * @subpackage media.libs.media
  */
 class MediaAdapter extends Object {
+
 /**
  * Used by the compatible method
  *
  * @var array
  */
 	var $require;
+
 /**
  * Method for checking if the adapter is going to work with the provided $Media
  *
@@ -694,6 +735,7 @@ class MediaAdapter extends Object {
 		}
 		return true;
 	}
+
 /**
  * To-be-overridden
  *
@@ -705,6 +747,7 @@ class MediaAdapter extends Object {
 	function initialize($Media) {
 		return true;
 	}
+
 /**
  * Do system calls
  *
@@ -722,6 +765,7 @@ class MediaAdapter extends Object {
 		exec(escapeshellcmd($line) , $output, $return);
 		return $return !== 0 ? false : (empty($output) ? true : array_pop($output));
 	}
+
 /**
  * Helper method to determine the absolute path to a executable
  *

@@ -19,6 +19,7 @@
 App::import('Vendor','Media.ImageMedia', array('file' => 'media' . DS . 'image.php'));
 App::import('Vendor','Media.DocumentMedia', array('file' => 'media' . DS . 'document.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+
 /**
  * Image Media Test Case Class
  *

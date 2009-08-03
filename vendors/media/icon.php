@@ -19,6 +19,7 @@
 if (!class_exists('ImageMedium')) {
 	App::import('Vendor', 'Media.ImageMedium', array('file' => 'medium' . DS . 'image.php'));
 }
+
 /**
  * Icon Medium Class
  *

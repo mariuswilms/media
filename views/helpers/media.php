@@ -19,6 +19,7 @@
 App::import('Core', 'String');
 App::import('Vendor', 'Media.MimeType');
 App::import('Vendor', 'Media.Media');
+
 /**
  * Media Helper Class
  *
@@ -26,12 +27,14 @@ App::import('Vendor', 'Media.Media');
  * @subpackage media.views.helpers
  */
 class MediaHelper extends AppHelper {
+
 /**
  * Helpers
  *
  * @var array
  */
 	var $helpers = array('Html');
+
 /**
  * Tags
  *
@@ -44,6 +47,7 @@ class MediaHelper extends AppHelper {
 		'javascriptlink' => '<script type="text/javascript" src="%s"></script>',
 		'rsslink'        => '<link type="application/rss+xml" rel="alternate" href="%s" title="%s"/>', /* v2 */
 	);
+
 /**
  * Maps absolute paths to url paths
  *
@@ -54,18 +58,21 @@ class MediaHelper extends AppHelper {
 		'transfer' => array(MEDIA_TRANSFER => MEDIA_TRANSFER_URL),
 		'filter'   => array(MEDIA_FILTER => MEDIA_FILTER_URL)
 	);
+
 /**
  * Maps basenames of directories to absoulte paths
  *
  * @var array
  */
 	var $_directories = array();
+
 /**
  * Holds an indexed array of version names
  *
  * @var array
  */
 	var $_versions = array();
+
 /**
  * Maps short medium types to extensions
  *
@@ -85,12 +92,14 @@ class MediaHelper extends AppHelper {
 			'png', 'jpg', 'jpeg', 'gif', 'mp3', 'ogg',
 			'aif', 'wma', 'wav', 'flv'
 	));
+
 /**
  * Holds cached resolved paths
  *
  * @var array
  */
 	var $__cached;
+
 /**
  * Constructor
  *
@@ -114,6 +123,7 @@ class MediaHelper extends AppHelper {
 			$this->__cached = array();
 		}
 	}
+
 /**
  * Destructor
  *
@@ -124,6 +134,7 @@ class MediaHelper extends AppHelper {
 	function __destruct() {
 		Cache::write('media_found', $this->__cached, '_cake_core_');
 	}
+
 /**
  * Output filtering
  *
@@ -139,6 +150,7 @@ class MediaHelper extends AppHelper {
 		$View =& ClassRegistry::getObject('view');
 		$View->addScript($content);
 	}
+
 /**
  * Turns a file path into a (routed) URL
  *
@@ -157,6 +169,7 @@ class MediaHelper extends AppHelper {
 		}
 		return $full ? FULL_BASE_URL . $path : $path;
 	}
+
 /**
  * Webroot
  *
@@ -192,6 +205,7 @@ class MediaHelper extends AppHelper {
 		}
 		return $this->webroot . $path;
 	}
+
 /**
  * Generates markup to render a file inline
  *
@@ -423,6 +437,7 @@ class MediaHelper extends AppHelper {
 			$alt
 		);
 	}
+
 /**
  * Generates markup to link to file
  *
@@ -497,6 +512,7 @@ class MediaHelper extends AppHelper {
 				return $this->Html->link(basename($file), $url);
 		}
 	}
+
 /**
  * Get MIME type for a path
  *
@@ -509,6 +525,7 @@ class MediaHelper extends AppHelper {
 		}
 		return false;
 	}
+
 /**
  * Get size of file
  *
@@ -521,6 +538,7 @@ class MediaHelper extends AppHelper {
 		}
 		return false;
 	}
+
 /**
  * Resolves partial path
  *
@@ -612,6 +630,7 @@ class MediaHelper extends AppHelper {
 		}
 		return false;
 	}
+
 /**
  * Calculates the host id for a file
  *

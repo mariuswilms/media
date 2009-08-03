@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.Medium');
+
 /**
  * Image Medium Class
  *
@@ -24,12 +25,14 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class ImageMedium extends Medium {
+
 /**
  * Compatible adapters
  *
  * @var array
  */
 	var $adapters = array('BasicImage', 'Imagick', 'Gd', 'ImagickShell');
+
 /**
  * Alias for fitInside
  *
@@ -40,6 +43,7 @@ class ImageMedium extends Medium {
 	function fit($width, $height) {
 		return $this->fitInside($width, $height);
 	}
+
 /**
  * Resizes medium proportionally
  * keeping both sides within given dimensions
@@ -64,6 +68,7 @@ class ImageMedium extends Medium {
 		$args = $this->_normalizeDimensions($width, $height, 'maximum'); /* maximum ?? */
 		return $this->Adapters->dispatchMethod($this, 'resize', $args);
 	}
+
 /**
  * Resizes medium proportionally
  * keeping smaller side within corresponding dimensions
@@ -88,6 +93,7 @@ class ImageMedium extends Medium {
 		$args = $this->_normalizeDimensions($width, $height, 'ratio');
 		return $this->Adapters->dispatchMethod($this, 'resize', $args);
 	}
+
 /**
  * Crops medium to provided dimensions
  *
@@ -100,6 +106,7 @@ class ImageMedium extends Medium {
 		list($left, $top) = $this->_boxify($width, $height);
 		return $this->Adapters->dispatchMethod($this, 'crop', array($left, $top, $width, $height));
 	}
+
 /**
  * Alias for zoomFit
  *
@@ -110,6 +117,7 @@ class ImageMedium extends Medium {
 	function zoom($width, $height) {
 		return $this->zoomFit($width, $height);
 	}
+
 /**
  * Enlarges medium proportionally by factor 2
  *
@@ -125,6 +133,7 @@ class ImageMedium extends Medium {
 
 		return $this->fitOutside($width, $height);
 	}
+
 /**
  * First crops an area (given by dimensions and enlarged by factor 2)
  * out of the center of the medium, then resizes that cropped
@@ -147,6 +156,7 @@ class ImageMedium extends Medium {
 			array($zoomLeft, $zoomTop, $zoomWidth, $zoomHeight, $width, $height)
 		);
 	}
+
 /**
  * First resizes medium so that it fills out the given dimensions,
  * then cuts off overlapping parts
@@ -173,6 +183,7 @@ class ImageMedium extends Medium {
 		list($left, $top) = $this->_boxify($width, $height, $gravity);
 		return $this->Adapters->dispatchMethod($this, 'crop', array($left, $top, $width, $height));
 	}
+
 /**
  * Current width of medium
  *
@@ -183,6 +194,7 @@ class ImageMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Current height of medium
  *
@@ -193,6 +205,7 @@ class ImageMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Selects compression type and filters than compresses the medium
  * according to provided value
@@ -211,6 +224,7 @@ class ImageMedium extends Medium {
 		}
 		return $this->Adapters->dispatchMethod($this, 'compress', array(floatval($value)));
 	}
+
 /**
  * Determines the quality of the medium by
  * taking amount of megapixels into account
@@ -238,6 +252,7 @@ class ImageMedium extends Medium {
 		}
 		return (integer)round($quality);
 	}
+
 /**
  * Determines a (known) ratio of medium
  *
@@ -249,6 +264,7 @@ class ImageMedium extends Medium {
 		}
 		return $this->_knownRatio($this->width(), $this->height());
 	}
+
 /**
  * Determines megapixels of medium
  *
@@ -257,6 +273,7 @@ class ImageMedium extends Medium {
 	function megapixel() {
 		return (integer)($this->width() * $this->height() / 1000000);
 	}
+
 /**
  * Normalizes dimensions
  *
@@ -298,6 +315,7 @@ class ImageMedium extends Medium {
 		}
 		return array($width, $height);
 	}
+
 /**
  * Calculates a box coordinates
  *

@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.Medium');
+
 /**
  * Js Medium Class
  *
@@ -24,12 +25,14 @@ App::import('Vendor', 'Media.Medium');
  * @subpackage media.libs.medium
  */
 class JsMedium extends Medium {
+
 /**
  * Compatible adapters
  *
  * @var array
  */
 	var $adapters = array('Jsmin', 'BasicText');
+
 /**
  * Number of characters
  *
@@ -40,6 +43,7 @@ class JsMedium extends Medium {
 			'normalize' => true
 		));
 	}
+
 /**
  * Compresses contents. of the medium
  *
