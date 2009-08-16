@@ -20,13 +20,32 @@ App::import('Core', array('Helper', 'AppHelper', 'ClassRegistry'));
 App::import('Helper', 'Media.Medium');
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 /**
+ * Mock Medium Helper
+ *
+ * @package    media
+ * @subpackage media.tests.cases.views.helpers
+ */
+class MockMediumHelper extends MediumHelper {
+
+	function versions() {
+		return $this->_versions;
+	}
+
+	function directories() {
+		return $this->_directories;
+	}
+}
+/**
  * Medium Helper Test Case Class
  *
  * @package    media
  * @subpackage media.tests.cases.views.helpers
  */
 class MediumHelperTestCase extends CakeTestCase {
+
 	function setUp() {
+		$this->_config = Configure::read('Media');
+
 		$this->TmpFolder = new Folder(TMP . 'tests' . DS, true);
 		$this->TmpFolder->create($this->TmpFolder->pwd() . 'static');
 		$this->TmpFolder->create($this->TmpFolder->pwd() . 'static' . DS . 'img');
@@ -64,9 +83,32 @@ class MediumHelperTestCase extends CakeTestCase {
 	}
 
 	function tearDown() {
+		Configure::write('Media', $this->_config);
 		$this->TestData->flushFiles();
 		$this->TmpFolder->delete();
 		ClassRegistry::flush();
+	}
+
+	function testConstruct() {
+		$settings = array(
+			'static' => array($this->TmpFolder->pwd() . 'static' . DS => 'media/static/'),
+			'theme' => array($this->TmpFolder->pwd() . 'theme' . DS  => 'media/theme/')
+		);
+		Configure::write('Media.filter', array(
+			'image'	 => array('s' => array(), 'm' => array()),
+			'video' => array('s' => array(), 'xl' => array())
+		));
+		$Helper = new MockMediumHelper($settings);
+
+		$this->assertEqual($Helper->versions(), array('s', 'm', 'xl'));
+
+		$expected = array(
+			'static' => $this->TmpFolder->pwd() . 'static' . DS,
+			'transfer' => MEDIA_TRANSFER,
+			'filter' =>  MEDIA_FILTER,
+			'theme' => $this->TmpFolder->pwd() . 'theme' . DS
+		);
+		$this->assertEqual($Helper->directories(), $expected);
 	}
 
 	function testUrl() {
