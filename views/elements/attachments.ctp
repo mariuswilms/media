@@ -60,8 +60,8 @@ if (isset($this->data[$assocAlias][0]['basename'])) {
 				'permission' => __('Executable files cannot be uploaded.', true),
 				'size'       => __('The file is too large.', true),
 				'pixels'     => __('The file is too large.', true),
-				'extension'  => __('The file has wrong extension.', true),
-				'mimeType'   => __('The file has wrong mime type.', true),
+				'extension'  => __('The file has the wrong extension.', true),
+				'mimeType'   => __('The file has the wrong MIME type.', true),
 		)));
 		echo $form->input($assocAlias . '.0.alternative', array(
 			'label' => __('Textual replacement', true),
