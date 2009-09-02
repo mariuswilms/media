@@ -37,7 +37,7 @@ class FfmpegVideoMediumAdapter extends MediumAdapter {
 		'extensions' => array('ffmpeg', 'gd'),
 	);
 
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		if (isset($Medium->objects['ffmpeg_movie'])) {
 			return true;
 		}
@@ -50,7 +50,7 @@ class FfmpegVideoMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function convert(&$Medium, $mimeType) {
+	function convert($Medium, $mimeType) {
 		if (Medium::name(null, $mimeType) === 'Image') {
 			$randomFrame = rand(1, $Medium->objects['ffmpeg_movie']->getFrameCount() - 1);
 			$resource = $Medium->objects['ffmpeg_movie']->getFrame($randomFrame)->toGDImage();
@@ -65,27 +65,27 @@ class FfmpegVideoMediumAdapter extends MediumAdapter {
 		return false;
 	}
 
-	function title(&$Medium) {
+	function title($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getTitle();
 	}
 
-	function year(&$Medium) {
+	function year($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getYear();
 	}
 
-	function duration(&$Medium) {
+	function duration($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getDuration();
 	}
 
-	function width(&$Medium) {
+	function width($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getFrameWidth();
 	}
 
-	function height(&$Medium) {
+	function height($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getFrameHeight();
 	}
 
-	function bitRate(&$Medium) {
+	function bitRate($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getBitRate();
 	}
 }

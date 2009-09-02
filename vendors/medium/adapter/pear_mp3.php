@@ -30,7 +30,7 @@ class PearMp3MediumAdapter extends MediumAdapter {
 			array('type' => 'Vendor', 'name'=> 'MP3_Id', 'file' => 'MP3/Id.php')
 	));
 
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		if (isset($Medium->objects['MP3_Id'])) {
 			return true;
 		}
@@ -47,23 +47,23 @@ class PearMp3MediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function artist(&$Medium) {
+	function artist($Medium) {
 		return $Medium->objects['MP3_Id']->getTag('artists');
 	}
 
-	function title(&$Medium) {
+	function title($Medium) {
 		return $Medium->objects['MP3_Id']->getTag('name');
 	}
 
-	function album(&$Medium) {
+	function album($Medium) {
 		return $Medium->objects['MP3_Id']->getTag('album');
 	}
 
-	function year(&$Medium) {
+	function year($Medium) {
 		return $Medium->objects['MP3_Id']->getTag('year');
 	}
 
-	function duration(&$Medium) {
+	function duration($Medium) {
 		$duration = $Medium->objects['MP3_Id']->getTag('lengths');
 
 		if ($duration != -1) {
@@ -71,15 +71,15 @@ class PearMp3MediumAdapter extends MediumAdapter {
 		}
 	}
 
-	function track(&$Medium) {
+	function track($Medium) {
 		return $Medium->objects['MP3_Id']->getTag('track');
 	}
 
-	function samplingRate(&$Medium) {
+	function samplingRate($Medium) {
 		return $Medium->objects['MP3_Id']->getTag('frequency');
 	}
 
-	function bitRate(&$Medium) {
+	function bitRate($Medium) {
 		if ($bitrate = $Medium->objects['MP3_Id']->getTag('bitrate')) {
 			return $bitrate * 1000;
 		}

@@ -63,14 +63,14 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 	var $_compression;
 	var $_pngFilter;
 
-	function compatible(&$Medium) {
+	function compatible($Medium) {
 		if ($this->_which(array('gs', 'gswin32c'))) { /* Check for ghostscript */
 			$this->require['mimeTypes'][] = 'application/pdf';
 		}
 		return parent::compatible($Medium);
 	}
 
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		if (!isset($Medium->files['temporary'])) {
 			if (!isset($Medium->file)) {
 				return false;
@@ -86,7 +86,7 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 		 ));
 	}
 
-	function store(&$Medium, $file) {
+	function store($Medium, $file) {
 		$args =	array(
 			'command'      => 'convert',
 			'source'       => $Medium->files['temporary'],
@@ -112,7 +112,7 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 								. ' :sourceFormat:::source: :format:::destination:', $args);
 	}
 
-	function convert(&$Medium, $mimeType) {
+	function convert($Medium, $mimeType) {
 		if (!isset($this->_formatMap[$mimeType])) {
 			return false;
 		}
@@ -131,7 +131,7 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function compress(&$Medium, $value) {
+	function compress($Medium, $value) {
 		switch ($Medium->mimeType) {
 			case 'image/tiff':
 				$this->_compressionType = 'LZW';
@@ -149,7 +149,7 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function crop(&$Medium, $left, $top, $width, $height) {
+	function crop($Medium, $left, $top, $width, $height) {
 		return $this->_execute(':command: -crop :width:x:height:+:left:+:top: :source: :destination:', array(
 			'command'     => 'convert',
 			'width'       => (integer)$width,
@@ -161,7 +161,7 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 		));
 	}
 
-	function resize(&$Medium, $width, $height) {
+	function resize($Medium, $width, $height) {
 		return $this->_execute(':command: -geometry :width:x:height:! :source: :destination:', array(
 			'command'     => 'convert',
 			'width'       => (integer)$width,
@@ -171,7 +171,7 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 		));
 	}
 
-	function cropAndResize(&$Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
+	function cropAndResize($Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
 		return 	$this->crop($Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight)
 				&& $this->resize($Medium, $resizeWidth, $resizeHeight);
 
@@ -192,14 +192,14 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 		*/
 	}
 
-	function width(&$Medium) {
+	function width($Medium) {
 		return $this->_execute(':command: -format %w :file:', array(
 			'command'     => 'identify',
 			'file' => $Medium->files['temporary'],
 		));
 	}
 
-	function height(&$Medium) {
+	function height($Medium) {
 		return $this->_execute(':command: -format %h :file:', array(
 			'command'     => 'identify',
 			 'file' => $Medium->files['temporary'],

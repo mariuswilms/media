@@ -38,7 +38,7 @@ class FfmpegAudioMediumAdapter extends MediumAdapter {
 		'extensions' => array('ffmpeg'),
 	);
 
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		if (isset($Medium->objects['ffmpeg_movie'])) {
 			return true;
 		}
@@ -55,35 +55,35 @@ class FfmpegAudioMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function artist(&$Medium) {
+	function artist($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getArtist();
 	}
 
-	function title(&$Medium) {
+	function title($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getTitle();
 	}
 
-	function album(&$Medium) {
+	function album($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getAlbum();
 	}
 
-	function year(&$Medium) {
+	function year($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getYear();
 	}
 
-	function duration(&$Medium) {
+	function duration($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getDuration();
 	}
 
-	function track(&$Medium) {
+	function track($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getTrackNumber();
 	}
 
-	function samplingRate(&$Medium) {
+	function samplingRate($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getAudioSampleRate();
 	}
 
-	function bitRate(&$Medium) {
+	function bitRate($Medium) {
 		return $Medium->objects['ffmpeg_movie']->getBitRate();
 	}
 }

@@ -37,19 +37,19 @@ class BasicImageMediumAdapter extends MediumAdapter {
 			'image/psd',
 	));
 
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		if (!isset($Medium->file)) {
 			return false;
 		}
 		return true;
 	}
 
-	function width(&$Medium) {
+	function width($Medium) {
 		list($width, $height) = getimagesize($Medium->file);
 		return $width;
 	}
 
-	function height(&$Medium) {
+	function height($Medium) {
 		list($width, $height) = getimagesize($Medium->file);
 		return $height;
 	}

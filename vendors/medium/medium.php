@@ -442,7 +442,7 @@ class MediumAdapterCollection extends Object {
  * @param object $Medium
  * @param array $adapters
  */
-	function init(&$Medium, $adapters = array()) {
+	function init($Medium, $adapters = array()) {
 		foreach (Set::normalize($adapters) as $adapter => $config) {
 			$this->attach($adapter, $config);
 		}
@@ -488,13 +488,13 @@ class MediumAdapterCollection extends Object {
  * @param array $args
  * @return mixed
  */
-	function dispatchMethod(&$Medium, $method, $params = array(), $options = array()) {
+	function dispatchMethod($Medium, $method, $params = array(), $options = array()) {
 		$options += array('normalize' => false);
 
 		if (!is_array($params)) {
 			$params = (array)$params;
 		}
-		array_unshift($params, &$Medium);
+		array_unshift($params, $Medium);
 
 		if (isset($this->__methods[$method])) {
 			list($method, $name) = $this->__methods[$method];
@@ -551,7 +551,7 @@ class MediumAdapterCollection extends Object {
  * @param string $adapter
  * @return boolean
  */
-	function _initialize(&$Medium, $adapter) {
+	function _initialize($Medium, $adapter) {
 		if (!in_array($adapter, $this->_attached)) {
 			return false;
 		}
@@ -652,7 +652,7 @@ class MediumAdapter extends Object {
  * @param object $Medium
  * @return boolean
  */
-	function compatible(&$Medium) {
+	function compatible($Medium) {
 		$default = array(
 			/* sourceFile must have one out of given MIME types */
 			'mimeTypes' => array(),
@@ -702,7 +702,7 @@ class MediumAdapter extends Object {
  * @param object $Medium
  * @return boolean
  */
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		return true;
 	}
 /**

@@ -30,7 +30,7 @@ class PearTextMediumAdapter extends MediumAdapter {
 			array('type' => 'Vendor','name' => 'Text_Statistics','file' => 'Text/Statistics.php')
 	));
 
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		if (isset($Medium->objects['Text_Statistics'])) {
 			return true;
 		}
@@ -49,7 +49,7 @@ class PearTextMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function syllables(&$Medium) {
+	function syllables($Medium) {
 		return $Medium->objects['Text_Statistics']->numSyllables;
 	}
 
@@ -60,11 +60,11 @@ class PearTextMediumAdapter extends MediumAdapter {
 		return $this->_Text->numWords;
 	}
 
-	function sentences(&$Medium) {
+	function sentences($Medium) {
 		return $Medium->objects['Text_Statistics']->numSentences;
 	}
 
-	function fleschScore(&$Medium) {
+	function fleschScore($Medium) {
 		return $Medium->objects['Text_Statistics']->flesch;
 	}
 

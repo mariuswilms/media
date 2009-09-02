@@ -25,14 +25,14 @@
 class BasicTextMediumAdapter extends MediumAdapter {
 	var $require = array('mimeTypes' => array('text/plain'));
 
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		if (!isset($Medium->file)) {
 			return false;
 		}
 		return true;
 	}
 
-	function characters(&$Medium) {
+	function characters($Medium) {
 		return filesize($Medium->file);
 	}
 }

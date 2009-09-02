@@ -29,7 +29,7 @@ class JsminMediumAdapter extends MediumAdapter {
 		'imports' => array(array('type' => 'Vendor', 'name'=> 'JSMin', 'file' => 'jsmin.php')),
 	);
 
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		if (isset($Medium->contents['raw'])) {
 			return true;
 		}
@@ -40,11 +40,11 @@ class JsminMediumAdapter extends MediumAdapter {
 		return $Medium->contents['raw'] = file_get_contents($Medium->file);
 	}
 
-	function store(&$Medium, $file) {
+	function store($Medium, $file) {
 		return file_put_contents($Medium->contents['raw'], $file);
 	}
 
-	function compress(&$Medium) {
+	function compress($Medium) {
 		return $Medium->contents['raw'] = trim(JSMin::minify($Medium->contents['raw']));
 	}
 }

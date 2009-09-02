@@ -34,18 +34,18 @@ class CssTidyMediumAdapter extends MediumAdapter {
 
 	var $_template = 'high_compression'; // or: highest_compression
 
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		if (!isset($Medium->contents['raw']) && isset($Medium->file)) {
 			return $Medium->contents['raw'] = file_get_contents($Medium->file);
 		}
 		return true;
 	}
 
-	function store(&$Medium, $file) {
+	function store($Medium, $file) {
 		return file_put_contents($Medium->contents['raw'], $file);
 	}
 
-	function compress(&$Medium) {
+	function compress($Medium) {
 		$Tidy = new csstidy() ;
 		$Tidy->load_template($this->_template);
 		$Tidy->parse($Medium->contents['raw']);

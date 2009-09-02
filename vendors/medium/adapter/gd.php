@@ -45,7 +45,7 @@ class GdMediumAdapter extends MediumAdapter {
 
 	var $_pngFilter;
 
-	function compatible(&$Medium) {
+	function compatible($Medium) {
 		$types = imageTypes();
 		if ($types & IMG_GIF) {
 			$this->require['mimeTypes'][] = 'image/gif';
@@ -65,7 +65,7 @@ class GdMediumAdapter extends MediumAdapter {
 		return parent::compatible($Medium);
 	}
 
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		$this->_format = $this->_formatMap[$Medium->mimeType];
 
 		if (isset($Medium->resources['gd'])) {
@@ -91,13 +91,13 @@ class GdMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function toString(&$Medium) {
+	function toString($Medium) {
 		ob_start();
 		$this->store($Medium, null);
 		return ob_get_clean();
 	}
 
-	function store(&$Medium, $file) {
+	function store($Medium, $file) {
 		$args = array($Medium->resources['gd'], $file);
 
 		switch ($Medium->mimeType) {
@@ -120,14 +120,14 @@ class GdMediumAdapter extends MediumAdapter {
 		return call_user_func_array('image' . $this->_format, $args);
 	}
 
-	function convert(&$Medium, $mimeType) {
+	function convert($Medium, $mimeType) {
 		if (in_array($mimeType, $this->require['mimeTypes'])) {
 			return $this->_format = $this->_formatMap[$mimeType];
 		}
 		return false;
 	}
 
-	function compress(&$Medium, $value) {
+	function compress($Medium, $value) {
 		switch ($Medium->mimeType) {
 			case 'image/jpeg':
 				$this->_compression = (integer)(100 - ($value * 10));
@@ -164,7 +164,7 @@ class GdMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function crop(&$Medium, $left, $top, $width, $height) {
+	function crop($Medium, $left, $top, $width, $height) {
 		$left   = (integer)$left;
 		$top    = (integer)$top;
 		$width  = (integer)$width;
@@ -199,7 +199,7 @@ class GdMediumAdapter extends MediumAdapter {
 		return false;
 	}
 
-	function resize(&$Medium, $width, $height) {
+	function resize($Medium, $width, $height) {
 		$width  = (integer)$width;
 		$height = (integer)$height;
 
@@ -232,7 +232,7 @@ class GdMediumAdapter extends MediumAdapter {
 		return false;
 	}
 
-	function cropAndResize(&$Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
+	function cropAndResize($Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
 		$cropLeft     = (integer)$cropLeft;
 		$cropTop      = (integer)$cropTop;
 		$cropWidth    = (integer)$cropWidth;
@@ -269,11 +269,11 @@ class GdMediumAdapter extends MediumAdapter {
 		return false;
 	}
 
-	function width(&$Medium) {
+	function width($Medium) {
 		return imageSX($Medium->resources['gd']);
 	}
 
-	function height(&$Medium) {
+	function height($Medium) {
 		return imageSY($Medium->resources['gd']);
 	}
 

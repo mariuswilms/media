@@ -59,7 +59,7 @@ class ImagickMediumAdapter extends MediumAdapter {
 		'image/psd' => 'psd',
 		);
 
-	function initialize(&$Medium) {
+	function initialize($Medium) {
 		if (isset($Medium->objects['Imagick'])) {
 			return true;
 		}
@@ -76,7 +76,7 @@ class ImagickMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function store(&$Medium, $file) {
+	function store($Medium, $file) {
 		try {
 			return $Medium->objects['Imagick']->writeImage($file);
 		} catch (Exception $E) {
@@ -84,7 +84,7 @@ class ImagickMediumAdapter extends MediumAdapter {
 		}
 	}
 
-	function toString(&$Medium) {
+	function toString($Medium) {
 		try {
 			return $Medium->objects['Imagick']->getImageBlob();
 		} catch (Exception $E) {
@@ -92,7 +92,7 @@ class ImagickMediumAdapter extends MediumAdapter {
 		}
 	}
 
-	function convert(&$Medium, $mimeType) {
+	function convert($Medium, $mimeType) {
 		if (!isset($this->_formatMap[$mimeType])) {
 			return false;
 		}
@@ -111,7 +111,7 @@ class ImagickMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function compress(&$Medium, $value) {
+	function compress($Medium, $value) {
 		switch ($Medium->mimeType) {
 			case 'image/tiff':
 				$type = Imagick::COMPRESSION_LZW;
@@ -136,7 +136,7 @@ class ImagickMediumAdapter extends MediumAdapter {
 		}
 	}
 
-	function crop(&$Medium, $left, $top, $width, $height) {
+	function crop($Medium, $left, $top, $width, $height) {
 		$left   = (integer)$left;
 		$top    = (integer)$top;
 		$width  = (integer)$width;
@@ -149,7 +149,7 @@ class ImagickMediumAdapter extends MediumAdapter {
 		}
 	}
 
-	function resize(&$Medium, $width, $height) {
+	function resize($Medium, $width, $height) {
 		$width  = (integer)$width;
 		$height = (integer)$height;
 
@@ -160,12 +160,12 @@ class ImagickMediumAdapter extends MediumAdapter {
 		}
 	}
 
-	function cropAndResize(&$Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
+	function cropAndResize($Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
 		return 	$this->crop($Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight)
 				&& $this->resize($Medium, $resizeWidth, $resizeHeight);
 	}
 
-	function width(&$Medium) {
+	function width($Medium) {
 		try {
 			return $Medium->objects['Imagick']->getImageWidth();
 		} catch (Exception $E) {
@@ -173,7 +173,7 @@ class ImagickMediumAdapter extends MediumAdapter {
 		}
 	}
 
-	function height(&$Medium) {
+	function height($Medium) {
 		try {
 			return $Medium->objects['Imagick']->getImageHeight();
 		} catch (Exception $E) {
