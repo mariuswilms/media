@@ -16,9 +16,9 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor','Media.ImageMedia', array('file' => 'medium'.DS.'image.php'));
-App::import('Vendor','Media.DocumentMedia', array('file' => 'medium'.DS.'document.php'));
-App::import('Vendor','ImagickShellMediaAdapter', array('file' => 'medium'.DS.'adapter'.DS.'imagick_shell.php'));
+App::import('Vendor','Media.ImageMedia', array('file' => 'media'.DS.'image.php'));
+App::import('Vendor','Media.DocumentMedia', array('file' => 'media'.DS.'document.php'));
+App::import('Vendor','ImagickShellMediaAdapter', array('file' => 'media'.DS.'adapter'.DS.'imagick_shell.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 
 /**

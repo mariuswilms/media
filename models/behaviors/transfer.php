@@ -17,7 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Vendor', 'Media.MimeType');
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 App::import('Vendor', 'Media.MediaValidation');
 App::import('Vendor', 'Media.TransferValidation');
 
@@ -262,7 +262,7 @@ class TransferBehavior extends ModelBehavior {
  */
 	function transferTo(&$Model, $via, $from) {
 		extract($from);
-		$path  = Medium::short($file, $mimeType) . DS;
+		$path  = Media::short($file, $mimeType) . DS;
 		$path .= strtolower(Inflector::slug($filename));
 		$path .= !empty($extension) ? '.' . strtolower($extension) : null;
 		return $path;

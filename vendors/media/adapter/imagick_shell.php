@@ -1,6 +1,6 @@
 <?php
 /**
- * ImagickShell Medium Adapter File
+ * ImagickShell Media Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,20 +11,20 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
 
 /**
- * ImagickShell Medium Adapter Class
+ * ImagickShell Media Adapter Class
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @link       http://www.imagemagick.org/
  */
-class ImagickShellMediumAdapter extends MediumAdapter {
+class ImagickShellMediaAdapter extends MediaAdapter {
 	var $require = array(
 		'mimeTypes' => array( /* readable */
 			'image/jpeg',
@@ -64,36 +64,36 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 	var $_compression;
 	var $_pngFilter;
 
-	function compatible($Medium) {
+	function compatible($Media) {
 		if ($this->_which(array('gs', 'gswin32c'))) { /* Check for ghostscript */
 			$this->require['mimeTypes'][] = 'application/pdf';
 		}
-		return parent::compatible($Medium);
+		return parent::compatible($Media);
 	}
 
-	function initialize($Medium) {
-		if (!isset($Medium->files['temporary'])) {
-			if (!isset($Medium->file)) {
+	function initialize($Media) {
+		if (!isset($Media->files['temporary'])) {
+			if (!isset($Media->file)) {
 				return false;
 			}
-			$Medium->files['temporary'] = TMP . uniqid('medium_');
+			$Media->files['temporary'] = TMP . uniqid('media_');
 		}
 
 		return $this->_execute(':command: :source: :format:::destination:', array(
 			'command'     => 'convert',
-			'source'      => $Medium->file,
-			'destination' => $Medium->files['temporary'],
+			'source'      => $Media->file,
+			'destination' => $Media->files['temporary'],
 			'format'      => $this->_temporaryFormat
 		 ));
 	}
 
-	function store($Medium, $file) {
+	function store($Media, $file) {
 		$args =	array(
 			'command'      => 'convert',
-			'source'       => $Medium->files['temporary'],
+			'source'       => $Media->files['temporary'],
 			'sourceFormat' => $this->_temporaryFormat,
 			'destination'  => $file,
-			'format'       => $this->_formatMap[$Medium->mimeType],
+			'format'       => $this->_formatMap[$Media->mimeType],
 		);
 
 		if (isset($this->_compressionType)) {
@@ -113,27 +113,27 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 								. ' :sourceFormat:::source: :format:::destination:', $args);
 	}
 
-	function convert($Medium, $mimeType) {
+	function convert($Media, $mimeType) {
 		if (!isset($this->_formatMap[$mimeType])) {
 			return false;
 		}
 
-		$Medium->mimeType = $mimeType;
+		$Media->mimeType = $mimeType;
 
-		if ($Medium->name === 'Document') { // application/pdf -> image
-			$this->store($Medium, $Medium->files['temporary']);
+		if ($Media->name === 'Document') { // application/pdf -> image
+			$this->store($Media, $Media->files['temporary']);
 
-			/* Unset files to prevent too early deletion by $Medium */
-			$temporary = $Medium->files['temporary'];
-			unset($Medium->files);
+			/* Unset files to prevent too early deletion by $Media */
+			$temporary = $Media->files['temporary'];
+			unset($Media->files);
 
-			return Medium::factory(array('temporary' => $temporary), $mimeType);
+			return Media::factory(array('temporary' => $temporary), $mimeType);
 		}
 		return true;
 	}
 
-	function compress($Medium, $value) {
-		switch ($Medium->mimeType) {
+	function compress($Media, $value) {
+		switch ($Media->mimeType) {
 			case 'image/tiff':
 				$this->_compressionType = 'LZW';
 				break;
@@ -150,31 +150,31 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function crop($Medium, $left, $top, $width, $height) {
+	function crop($Media, $left, $top, $width, $height) {
 		return $this->_execute(':command: -crop :width:x:height:+:left:+:top: :source: :destination:', array(
 			'command'     => 'convert',
 			'width'       => (integer)$width,
 			'height'      => (integer)$height,
 			'left'        => (integer)$left,
 			'top'         => (integer)$top,
-			'source'      => $Medium->files['temporary'],
-			'destination' => $Medium->files['temporary'],
+			'source'      => $Media->files['temporary'],
+			'destination' => $Media->files['temporary'],
 		));
 	}
 
-	function resize($Medium, $width, $height) {
+	function resize($Media, $width, $height) {
 		return $this->_execute(':command: -geometry :width:x:height:! :source: :destination:', array(
 			'command'     => 'convert',
 			'width'       => (integer)$width,
 			'height'      => (integer)$height,
-			'source'      => $Medium->files['temporary'],
-			'destination' => $Medium->files['temporary'],
+			'source'      => $Media->files['temporary'],
+			'destination' => $Media->files['temporary'],
 		));
 	}
 
-	function cropAndResize($Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
-		return 	$this->crop($Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight)
-				&& $this->resize($Medium, $resizeWidth, $resizeHeight);
+	function cropAndResize($Media, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
+		return 	$this->crop($Media, $cropLeft, $cropTop, $cropWidth, $cropHeight)
+				&& $this->resize($Media, $resizeWidth, $resizeHeight);
 
 		/* This is faster but broken: convert: geometry does not contain image `xxxx.jpg'.
 		return $this->_execute(':command: -crop :cropWidth:x:cropHeight:+:cropLeft:+:cropTop: -geometry :resizeWidth:x:resizeHeight:! :source: :destination:',
@@ -186,24 +186,24 @@ class ImagickShellMediumAdapter extends MediumAdapter {
 									  'cropHeight'   => intval($cropHeight),
 									  'resizeWidth'  => intval($resizeWidth),
 									  'resizeHeight' => intval($resizeHeight),
-									  'source'       => $Medium->files['temporary'],
-									  'destination'  => $Medium->files['temporary'],
+									  'source'       => $Media->files['temporary'],
+									  'destination'  => $Media->files['temporary'],
 									 )
 								 );
 		*/
 	}
 
-	function width($Medium) {
+	function width($Media) {
 		return $this->_execute(':command: -format %w :file:', array(
 			'command'     => 'identify',
-			'file' => $Medium->files['temporary'],
+			'file' => $Media->files['temporary'],
 		));
 	}
 
-	function height($Medium) {
+	function height($Media) {
 		return $this->_execute(':command: -format %h :file:', array(
 			'command'     => 'identify',
-			 'file' => $Medium->files['temporary'],
+			 'file' => $Media->files['temporary'],
 		));
 	}
 }

@@ -16,7 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 
 /**
  * Make Task Class
@@ -142,7 +142,7 @@ class MakeTask extends MediaShell {
  */
 	function _make($file) {
 		$File = new File($file);
-		$name = Medium::name($file);
+		$name = Media::name($file);
 		$subdir = array_pop(explode(DS, dirname($this->source)));
 
 		if ($name === 'Icon' || strpos($file, 'ico' . DS) !== false) {
@@ -167,13 +167,13 @@ class MakeTask extends MediaShell {
 				return false;
 			}
 
-			$Medium = Medium::make($File->pwd(), $instructions);
+			$Media = Media::make($File->pwd(), $instructions);
 
-			if (!$Medium) {
-				$this->err('Failed to make version ' . $version . ' of medium.');
+			if (!$Media) {
+				$this->err('Failed to make version ' . $version . ' of media.');
 				return false;
 			}
-			$Medium->store($Folder->pwd() . $File->name, $this->overwrite);
+			$Media->store($Folder->pwd() . $File->name, $this->overwrite);
 		}
 		return true;
 	}

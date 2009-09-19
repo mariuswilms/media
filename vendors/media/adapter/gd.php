@@ -1,6 +1,6 @@
 <?php
 /**
- * Gd Medium Adapter File
+ * Gd Media Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,19 +11,19 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
 
 /**
- * Gd Medium Adapter Class
+ * Gd Media Adapter Class
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  */
-class GdMediumAdapter extends MediumAdapter {
+class GdMediaAdapter extends MediaAdapter {
 	var $require = array(
 		'mimeTypes' => array('image/gd'), /* Gets dynamically set in constructor */
 		'extensions' => array('gd'),
@@ -46,7 +46,7 @@ class GdMediumAdapter extends MediumAdapter {
 
 	var $_pngFilter;
 
-	function compatible($Medium) {
+	function compatible($Media) {
 		$types = imageTypes();
 		if ($types & IMG_GIF) {
 			$this->require['mimeTypes'][] = 'image/gif';
@@ -63,45 +63,45 @@ class GdMediumAdapter extends MediumAdapter {
 		if ($types & IMG_XPM) {
 			$this->require['mimeTypes'][] = 'image/xpm';
 		}
-		return parent::compatible($Medium);
+		return parent::compatible($Media);
 	}
 
-	function initialize($Medium) {
-		$this->_format = $this->_formatMap[$Medium->mimeType];
+	function initialize($Media) {
+		$this->_format = $this->_formatMap[$Media->mimeType];
 
-		if (isset($Medium->resources['gd'])) {
+		if (isset($Media->resources['gd'])) {
 			return true;
 		}
-		if (!isset($Medium->file)) {
+		if (!isset($Media->file)) {
 			return false;
 		}
 
-		$Medium->resources['gd'] = call_user_func_array(
+		$Media->resources['gd'] = call_user_func_array(
 			'imageCreateFrom' . $this->_format,
-			array($Medium->file)
+			array($Media->file)
 		);
 
-		if (!$this->_isResource($Medium->resources['gd'])) {
+		if (!$this->_isResource($Media->resources['gd'])) {
 			return false;
 		}
 
-		if (imageIsTrueColor($Medium->resources['gd'])) {
-			imageAlphaBlending($Medium->resources['gd'], false);
-			imageSaveAlpha($Medium->resources['gd'], true);
+		if (imageIsTrueColor($Media->resources['gd'])) {
+			imageAlphaBlending($Media->resources['gd'], false);
+			imageSaveAlpha($Media->resources['gd'], true);
 		}
 		return true;
 	}
 
-	function toString($Medium) {
+	function toString($Media) {
 		ob_start();
-		$this->store($Medium, null);
+		$this->store($Media, null);
 		return ob_get_clean();
 	}
 
-	function store($Medium, $file) {
-		$args = array($Medium->resources['gd'], $file);
+	function store($Media, $file) {
+		$args = array($Media->resources['gd'], $file);
 
-		switch ($Medium->mimeType) {
+		switch ($Media->mimeType) {
 			case 'image/jpeg':
 				if (isset($this->_compression)) {
 					$args[] = $this->_compression;
@@ -121,15 +121,15 @@ class GdMediumAdapter extends MediumAdapter {
 		return call_user_func_array('image' . $this->_format, $args);
 	}
 
-	function convert($Medium, $mimeType) {
+	function convert($Media, $mimeType) {
 		if (in_array($mimeType, $this->require['mimeTypes'])) {
 			return $this->_format = $this->_formatMap[$mimeType];
 		}
 		return false;
 	}
 
-	function compress($Medium, $value) {
-		switch ($Medium->mimeType) {
+	function compress($Media, $value) {
+		switch ($Media->mimeType) {
 			case 'image/jpeg':
 				$this->_compression = (integer)(100 - ($value * 10));
 				break;
@@ -151,7 +151,7 @@ class GdMediumAdapter extends MediumAdapter {
 					if (array_key_exists($filter, $map)) {
 						$this->_pngFilter = $map[$filter];
 					} elseif ($filter == 5) {
-						if (intval($value) <= 5 && imageIsTrueColor($Medium->resources['gd'])) {
+						if (intval($value) <= 5 && imageIsTrueColor($Media->resources['gd'])) {
 							$this->_pngFilter = PNG_ALL_FILTERS;
 						} else {
 							$this->_pngFilter = PNG_NO_FILTER;
@@ -165,19 +165,19 @@ class GdMediumAdapter extends MediumAdapter {
 		return true;
 	}
 
-	function crop($Medium, $left, $top, $width, $height) {
+	function crop($Media, $left, $top, $width, $height) {
 		$left   = (integer)$left;
 		$top    = (integer)$top;
 		$width  = (integer)$width;
 		$height = (integer)$height;
 
 		$Image = imageCreateTrueColor($width, $height);
-		$this->_adjustTransparency($Medium->resources['gd'], $Image);
+		$this->_adjustTransparency($Media->resources['gd'], $Image);
 
-		if ($this->_isTransparent($Medium->resources['gd'])) {
+		if ($this->_isTransparent($Media->resources['gd'])) {
 			imageCopyResized(
 				$Image,
-				$Medium->resources['gd'],
+				$Media->resources['gd'],
 				0, 0,
 				$left, $top,
 				$width, $height,
@@ -186,7 +186,7 @@ class GdMediumAdapter extends MediumAdapter {
 		} else {
 			imageCopyResampled(
 				$Image,
-				$Medium->resources['gd'],
+				$Media->resources['gd'],
 				0, 0,
 				$left, $top,
 				$width, $height,
@@ -194,46 +194,46 @@ class GdMediumAdapter extends MediumAdapter {
 			);
 		}
 		if ($this->_isResource($Image)) {
-			$Medium->resources['gd'] = $Image;
+			$Media->resources['gd'] = $Image;
 			return true;
 		}
 		return false;
 	}
 
-	function resize($Medium, $width, $height) {
+	function resize($Media, $width, $height) {
 		$width  = (integer)$width;
 		$height = (integer)$height;
 
 		$Image = imageCreateTrueColor($width, $height);
-		$this->_adjustTransparency($Medium->resources['gd'], $Image);
+		$this->_adjustTransparency($Media->resources['gd'], $Image);
 
-		if ($this->_isTransparent($Medium->resources['gd'])) {
+		if ($this->_isTransparent($Media->resources['gd'])) {
 			imageCopyResized(
 				$Image,
-				$Medium->resources['gd'],
+				$Media->resources['gd'],
 				0, 0,
 				0, 0,
 				$width, $height,
-				$this->width($Medium), $this->height($Medium)
+				$this->width($Media), $this->height($Media)
 			);
 		} else {
 			imageCopyResampled(
 				$Image,
-				$Medium->resources['gd'],
+				$Media->resources['gd'],
 				0, 0,
 				0, 0,
 				$width, $height,
-				$this->width($Medium), $this->height($Medium)
+				$this->width($Media), $this->height($Media)
 			);
 		}
 		if ($this->_isResource($Image)) {
-			$Medium->resources['gd'] = $Image;
+			$Media->resources['gd'] = $Image;
 			return true;
 		}
 		return false;
 	}
 
-	function cropAndResize($Medium, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
+	function cropAndResize($Media, $cropLeft, $cropTop, $cropWidth, $cropHeight, $resizeWidth, $resizeHeight) {
 		$cropLeft     = (integer)$cropLeft;
 		$cropTop      = (integer)$cropTop;
 		$cropWidth    = (integer)$cropWidth;
@@ -242,12 +242,12 @@ class GdMediumAdapter extends MediumAdapter {
 		$resizeHeight = (integer)$resizeHeight;
 
 		$Image = imageCreateTrueColor($resizeWidth, $resizeHeight);
-		$this->_adjustTransparency($Medium->resources['gd'], $Image);
+		$this->_adjustTransparency($Media->resources['gd'], $Image);
 
-		if ($this->_isTransparent($Medium->resources['gd'])) {
+		if ($this->_isTransparent($Media->resources['gd'])) {
 			imageCopyResized(
 				$Image,
-				$Medium->resources['gd'],
+				$Media->resources['gd'],
 				0, 0,
 				$cropLeft, $cropTop,
 				$resizeWidth, $resizeHeight,
@@ -256,7 +256,7 @@ class GdMediumAdapter extends MediumAdapter {
 		} else {
 			imageCopyResampled(
 				$Image,
-				$Medium->resources['gd'],
+				$Media->resources['gd'],
 				0, 0,
 				$cropLeft, $cropTop,
 				$resizeWidth, $resizeHeight,
@@ -264,18 +264,18 @@ class GdMediumAdapter extends MediumAdapter {
 			);
 		}
 		if ($this->_isResource($Image)) {
-			$Medium->resources['gd'] = $Image;
+			$Media->resources['gd'] = $Image;
 			return true;
 		}
 		return false;
 	}
 
-	function width($Medium) {
-		return imageSX($Medium->resources['gd']);
+	function width($Media) {
+		return imageSX($Media->resources['gd']);
 	}
 
-	function height($Medium) {
-		return imageSY($Medium->resources['gd']);
+	function height($Media) {
+		return imageSY($Media->resources['gd']);
 	}
 
 	function _isResource($Image) {

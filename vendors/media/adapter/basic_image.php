@@ -1,6 +1,6 @@
 <?php
 /**
- * Basic Image Medium Adapter File
+ * Basic Image Media Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,19 +11,19 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
 
 /**
- * Basic Image Medium Adapter Class
+ * Basic Image Media Adapter Class
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  */
-class BasicImageMediumAdapter extends MediumAdapter {
+class BasicImageMediaAdapter extends MediaAdapter {
 	var $require = array(
 		'mimeTypes' => array(
 			'image/jpeg',
@@ -38,20 +38,20 @@ class BasicImageMediumAdapter extends MediumAdapter {
 			'image/psd',
 	));
 
-	function initialize($Medium) {
-		if (!isset($Medium->file)) {
+	function initialize($Media) {
+		if (!isset($Media->file)) {
 			return false;
 		}
 		return true;
 	}
 
-	function width($Medium) {
-		list($width, $height) = getimagesize($Medium->file);
+	function width($Media) {
+		list($width, $height) = getimagesize($Media->file);
 		return $width;
 	}
 
-	function height($Medium) {
-		list($width, $height) = getimagesize($Medium->file);
+	function height($Media) {
+		list($width, $height) = getimagesize($Media->file);
 		return $height;
 	}
 }

@@ -99,7 +99,7 @@ if (isset($this->data[$assocAlias][0]['basename'])) {
 					'restrict' => array('image')
 				));
 
-		 		$Medium = Medium::factory($file);
+		 		$Media = Media::factory($file);
 				$size = $media->size($file);
 
 				if (isset($number)) {
@@ -110,7 +110,7 @@ if (isset($this->data[$assocAlias][0]['basename'])) {
 
 				printf('<span>%s&nbsp;(%s/%s) <em>%s</em></span>',
 						$url ? $html->link($item['basename'], $url) : $item['basename'],
-						strtolower($Medium->name), $size, $item['alternative']);
+						strtolower($Media->name), $size, $item['alternative']);
 			}
 
 			echo $form->input($assocAlias . '.' . $i . '.delete', array(

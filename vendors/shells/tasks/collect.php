@@ -187,11 +187,11 @@ class CollectTask extends MediaShell {
 				continue;
 			}
 			$search[] = '/' . preg_quote($Folder->pwd(), '/') . '/';
-			$search[] = '/(' . implode('|', Medium::short()) . ')' . preg_quote(DS, '/') . '/';
+			$search[] = '/(' . implode('|', Media::short()) . ')' . preg_quote(DS, '/') . '/';
 			$fragment = preg_replace($search, null, $file);
 
 			$mapped = array(
-				$file => MEDIA_STATIC . Medium::short($file) . DS . $fragment
+				$file => MEDIA_STATIC . Media::short($file) . DS . $fragment
 			);
 
 			while (in_array(current($mapped), $this->_map) && $mapped) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ffmpeg Video Medium Adapter File
+ * Ffmpeg Video Media Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,20 +11,20 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
 
 /**
- * Ffmpeg Video Medium Adapter Class
+ * Ffmpeg Video Media Adapter Class
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @link       http://ffmpeg.mplayerhq.hu/
  */
-class FfmpegVideoMediumAdapter extends MediumAdapter {
+class FfmpegVideoMediaAdapter extends MediaAdapter {
 	var $require = array(
 		'mimeTypes' => array(
 			'video/mpeg',
@@ -38,56 +38,56 @@ class FfmpegVideoMediumAdapter extends MediumAdapter {
 		'extensions' => array('ffmpeg', 'gd'),
 	);
 
-	function initialize($Medium) {
-		if (isset($Medium->objects['ffmpeg_movie'])) {
+	function initialize($Media) {
+		if (isset($Media->objects['ffmpeg_movie'])) {
 			return true;
 		}
 
-		if (!isset($Medium->file)) {
+		if (!isset($Media->file)) {
 			return false;
 		}
 
-		$Medium->objects['ffmpeg_movie'] = new ffmpeg_movie($Medium->file);
+		$Media->objects['ffmpeg_movie'] = new ffmpeg_movie($Media->file);
 		return true;
 	}
 
-	function convert($Medium, $mimeType) {
-		if (Medium::name(null, $mimeType) === 'Image') {
-			$randomFrame = rand(1, $Medium->objects['ffmpeg_movie']->getFrameCount() - 1);
-			$resource = $Medium->objects['ffmpeg_movie']->getFrame($randomFrame)->toGDImage();
+	function convert($Media, $mimeType) {
+		if (Media::name(null, $mimeType) === 'Image') {
+			$randomFrame = rand(1, $Media->objects['ffmpeg_movie']->getFrameCount() - 1);
+			$resource = $Media->objects['ffmpeg_movie']->getFrame($randomFrame)->toGDImage();
 
 			if (!is_resource($resource)) {
 				return false;
 			}
 
-			$Image = Medium::factory(array('gd' => $resource), 'image/gd');
+			$Image = Media::factory(array('gd' => $resource), 'image/gd');
 			return $Image->convert($mimeType);
 		}
 		return false;
 	}
 
-	function title($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getTitle();
+	function title($Media) {
+		return $Media->objects['ffmpeg_movie']->getTitle();
 	}
 
-	function year($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getYear();
+	function year($Media) {
+		return $Media->objects['ffmpeg_movie']->getYear();
 	}
 
-	function duration($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getDuration();
+	function duration($Media) {
+		return $Media->objects['ffmpeg_movie']->getDuration();
 	}
 
-	function width($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getFrameWidth();
+	function width($Media) {
+		return $Media->objects['ffmpeg_movie']->getFrameWidth();
 	}
 
-	function height($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getFrameHeight();
+	function height($Media) {
+		return $Media->objects['ffmpeg_movie']->getFrameHeight();
 	}
 
-	function bitRate($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getBitRate();
+	function bitRate($Media) {
+		return $Media->objects['ffmpeg_movie']->getBitRate();
 	}
 }
 ?>

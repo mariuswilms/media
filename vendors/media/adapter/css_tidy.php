@@ -1,6 +1,6 @@
 <?php
 /**
- * Css Tidy Medium Adapter File
+ * Css Tidy Media Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,20 +11,20 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
 
 /**
- * Css Tidy Medium Adapter Class
+ * Css Tidy Media Adapter Class
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @link       http://csstidy.sourceforge.net/
  */
-class CssTidyMediumAdapter extends MediumAdapter {
+class CssTidyMediaAdapter extends MediaAdapter {
 
 	var $require = array(
 		'mimeTypes' => array('text/css'),
@@ -35,24 +35,24 @@ class CssTidyMediumAdapter extends MediumAdapter {
 
 	var $_template = 'high_compression'; // or: highest_compression
 
-	function initialize($Medium) {
-		if (!isset($Medium->contents['raw']) && isset($Medium->file)) {
-			return $Medium->contents['raw'] = file_get_contents($Medium->file);
+	function initialize($Media) {
+		if (!isset($Media->contents['raw']) && isset($Media->file)) {
+			return $Media->contents['raw'] = file_get_contents($Media->file);
 		}
 		return true;
 	}
 
-	function store($Medium, $file) {
-		return file_put_contents($Medium->contents['raw'], $file);
+	function store($Media, $file) {
+		return file_put_contents($Media->contents['raw'], $file);
 	}
 
-	function compress($Medium) {
+	function compress($Media) {
 		$Tidy = new csstidy() ;
 		$Tidy->load_template($this->_template);
-		$Tidy->parse($Medium->contents['raw']);
+		$Tidy->parse($Media->contents['raw']);
 
 		if ($compressed = $Tidy->print->plain()) {
-			$Medium->content['raw'] = $compressed;
+			$Media->content['raw'] = $compressed;
 			return true;
 		}
 		return false;

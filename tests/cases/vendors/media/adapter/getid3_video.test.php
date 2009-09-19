@@ -1,6 +1,6 @@
 <?php
 /**
- * Getid3Video Medium Adapter Test Case File
+ * Getid3Video Media Adapter Test Case File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,32 +11,32 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium.adapter
+ * @subpackage media.tests.cases.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor','Media.VideoMedium', array('file' => 'medium'.DS.'video.php'));
-App::import('Vendor','GetId3VideoMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'get_id3_video.php'));
+App::import('Vendor','Media.VideoMedia', array('file' => 'media'.DS.'video.php'));
+App::import('Vendor','GetId3VideoMediaAdapter', array('file' => 'media'.DS.'adapter'.DS.'get_id3_video.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 
 /**
- * Test Getid3 Video Medium Adapter Class
+ * Test Getid3 Video Media Adapter Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium.adapter
+ * @subpackage media.tests.cases.libs.media.adapter
  */
-class TestGetid3VideoMedium extends VideoMedium {
+class TestGetid3VideoMedia extends VideoMedia {
 	var $adapters = array('Getid3Video');
 }
 
 /**
- * Getid3 Video Medium Adapter Test Case Class
+ * Getid3 Video Media Adapter Test Case Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium.adapter
+ * @subpackage media.tests.cases.libs.media.adapter
  */
-class Getid3VideoMediumAdapterTest extends CakeTestCase {
+class Getid3VideoMediaAdapterTest extends CakeTestCase {
 	function setUp() {
 		$this->TestData = new TestData();
 	}
@@ -54,62 +54,62 @@ class Getid3VideoMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testBasic() {
-		$result = new TestGetid3VideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
+		$result = new TestGetid3VideoMedia($this->TestData->getFile('video-h264.qt-tag.mp4'));
 		$this->assertIsA($result, 'object');
 
-		$Medium = new TestGetid3VideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
-		$result = $Medium->toString();
+		$Media = new TestGetid3VideoMedia($this->TestData->getFile('video-h264.qt-tag.mp4'));
+		$result = $Media->toString();
 		$this->assertTrue(!empty($result));
 	}
 
 	function testInformationMp4tag() {
-		$Medium = new TestGetid3VideoMedium($this->TestData->getFile('video-h264.qt-tag.mp4'));
+		$Media = new TestGetid3VideoMedia($this->TestData->getFile('video-h264.qt-tag.mp4'));
 
 		/* Fails because info->tags->quicktime->field
-		$result = $Medium->title();
+		$result = $Media->title();
 		$this->assertEqual($result, 'Title');
 
-		$result = $Medium->year();
+		$result = $Media->year();
 		$this->assertEqual($result, 2009);
 		 */
-		$result = $Medium->duration();
+		$result = $Media->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitRate();
+		$result = $Media->bitRate();
 		$this->assertEqual($result, 243006);
 
-		$result = $Medium->width();
+		$result = $Media->width();
 		$this->assertEqual($result, 320);
 
-		$result = $Medium->height();
+		$result = $Media->height();
 		$this->assertEqual($result, 180);
 
-		$result = $Medium->quality();
+		$result = $Media->quality();
 		$this->assertEqual($result, 2);
 	}
 
 	function testInformationMp4notag() {
-		$Medium = new TestGetid3VideoMedium($this->TestData->getFile('video-h264.notag.mp4'));
+		$Media = new TestGetid3VideoMedia($this->TestData->getFile('video-h264.notag.mp4'));
 
-		$result = $Medium->title();
+		$result = $Media->title();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->year();
+		$result = $Media->year();
 		$this->assertEqual($result, null);
 
-		$result = $Medium->duration();
+		$result = $Media->duration();
 		$this->assertEqual($result, 1);
 
-		$result = $Medium->bitRate();
+		$result = $Media->bitRate();
 		$this->assertEqual($result, 241671);
 
-		$result = $Medium->width();
+		$result = $Media->width();
 		$this->assertEqual($result, 320);
 
-		$result = $Medium->height();
+		$result = $Media->height();
 		$this->assertEqual($result, 180);
 
-		$result = $Medium->quality();
+		$result = $Media->quality();
 		$this->assertEqual($result, 2);
 	}
 }

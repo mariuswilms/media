@@ -1,6 +1,6 @@
 <?php
 /**
- * Document Medium File
+ * Document Media File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,20 +11,20 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 
 /**
- * Document Medium Class
+ * Document Media Class
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  */
-class DocumentMedium extends Medium {
+class DocumentMedia extends Media {
 
 /**
  * Compatible adapters
@@ -34,7 +34,7 @@ class DocumentMedium extends Medium {
 	var $adapters = array('Imagick', 'ImagickShell');
 
 /**
- * Current width of medium
+ * Current width of media
  *
  * @return integer
  */
@@ -45,7 +45,7 @@ class DocumentMedium extends Medium {
 	}
 
 /**
- * Current height of medium
+ * Current height of media
  *
  * @return integer
  */
@@ -56,7 +56,7 @@ class DocumentMedium extends Medium {
 	}
 
 /**
- * Determines a (known) ratio of medium
+ * Determines a (known) ratio of media
  *
  * @return mixed if String if $known is true or float if false
  */

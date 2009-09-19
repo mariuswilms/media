@@ -144,8 +144,8 @@ class MediaShell extends Shell {
 
 		$dirs = array(
 			MEDIA => array(),
-			MEDIA_STATIC => Medium::short(),
-			MEDIA_TRANSFER => Medium::short(),
+			MEDIA_STATIC => Media::short(),
+			MEDIA_TRANSFER => Media::short(),
 			MEDIA_FILTER => array(),
 		);
 

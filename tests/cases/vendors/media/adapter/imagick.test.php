@@ -1,6 +1,6 @@
 <?php
 /**
- * Imagick Medium Adapter Test Case File
+ * Imagick Media Adapter Test Case File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,43 +11,43 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium.adapter
+ * @subpackage media.tests.cases.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor','Media.ImageMedium', array('file' => 'medium'.DS.'image.php'));
-App::import('Vendor','Media.DocumentMedium', array('file' => 'medium'.DS.'document.php'));
-App::import('Vendor','ImagickMediumAdapter', array('file' => 'medium'.DS.'adapter'.DS.'imagick.php'));
+App::import('Vendor','Media.ImageMedia', array('file' => 'media'.DS.'image.php'));
+App::import('Vendor','Media.DocumentMedia', array('file' => 'media'.DS.'document.php'));
+App::import('Vendor','ImagickMediaAdapter', array('file' => 'media'.DS.'adapter'.DS.'imagick.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
 
 /**
- * Test Imagick Image Medium Class
+ * Test Imagick Image Media Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium.adapter
+ * @subpackage media.tests.cases.libs.media.adapter
  */
-class TestImagickImageMedium extends ImageMedium {
+class TestImagickImageMedia extends ImageMedia {
 	var $adapters = array('Imagick');
 }
 
 /**
- * Test Imagick Document Medium Class
+ * Test Imagick Document Media Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium.adapter
+ * @subpackage media.tests.cases.libs.media.adapter
  */
-class TestImagickDocumentMedium extends DocumentMedium {
+class TestImagickDocumentMedia extends DocumentMedia {
 	var $adapters = array('Imagick');
 }
 
 /**
- * Imagick Medium Adapter Test Case Class
+ * Imagick Media Adapter Test Case Class
  *
  * @package    media
- * @subpackage media.tests.cases.libs.medium.adapter
+ * @subpackage media.tests.cases.libs.media.adapter
  */
-class ImagickMediumAdapterTest extends CakeTestCase {
+class ImagickMediaAdapterTest extends CakeTestCase {
 	function setUp() {
 		$this->TestData = new TestData();
 	}
@@ -65,58 +65,58 @@ class ImagickMediumAdapterTest extends CakeTestCase {
 	}
 
 	function testBasic() {
-		$result = new TestImagickImageMedium($this->TestData->getFile('image-jpg.jpg'));
+		$result = new TestImagickImageMedia($this->TestData->getFile('image-jpg.jpg'));
 		$this->assertIsA($result, 'object');
 
-		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-jpg.jpg'));
-		$result = $Medium->toString();
+		$Media = new TestImagickImageMedia($this->TestData->getFile('image-jpg.jpg'));
+		$result = $Media->toString();
 		$this->assertTrue(!empty($result));
 	}
 
 	function testInformation() {
 		$file = $this->TestData->getFile('image-jpg.jpg');
-		$Medium = new TestImagickImageMedium($file);
+		$Media = new TestImagickImageMedia($file);
 
-		$result = $Medium->width();
+		$result = $Media->width();
 		$this->assertEqual($result, 70);
 
-		$result = $Medium->height();
+		$result = $Media->height();
 		$this->assertEqual($result, 47);
 	}
 
 	function testManipulation() {
-		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-jpg.jpg'));
-		$Medium->fit(10, 10);
-		$this->assertTrue($Medium->width() <= 10);
-		$this->assertTrue($Medium->height() <= 10);
+		$Media = new TestImagickImageMedia($this->TestData->getFile('image-jpg.jpg'));
+		$Media->fit(10, 10);
+		$this->assertTrue($Media->width() <= 10);
+		$this->assertTrue($Media->height() <= 10);
 
-		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-jpg.jpg'));
-		$Medium = $Medium->convert('image/png');
-		if ($this->assertIsA($Medium, 'ImageMedium')) {
-			$result = $Medium->mimeType;
+		$Media = new TestImagickImageMedia($this->TestData->getFile('image-jpg.jpg'));
+		$Media = $Media->convert('image/png');
+		if ($this->assertIsA($Media, 'ImageMedia')) {
+			$result = $Media->mimeType;
 			$this->assertEqual($result, 'image/png');
 		}
 
-		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-jpg.jpg'));
-		$Medium = $Medium->convert('image/png');
-		if ($this->assertIsA($Medium, 'ImageMedium')) {
+		$Media = new TestImagickImageMedia($this->TestData->getFile('image-jpg.jpg'));
+		$Media = $Media->convert('image/png');
+		if ($this->assertIsA($Media, 'ImageMedia')) {
 			$tmpFile = TMP . uniqid('test_suite_');
-			$tmpFile = $Medium->store($tmpFile);
+			$tmpFile = $Media->store($tmpFile);
 			$this->assertEqual(MimeType::guessType($tmpFile), 'image/png');
 			unlink($tmpFile);
 		}
 	}
 
 	function testCompress() {
-		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-jpg.jpg'));
-		$resultCompress = $Medium->compress(1.5);
-		$resultStore = $Medium->store($this->TestData->getFile('test-compress-1.5.jpg'), true);
+		$Media = new TestImagickImageMedia($this->TestData->getFile('image-jpg.jpg'));
+		$resultCompress = $Media->compress(1.5);
+		$resultStore = $Media->store($this->TestData->getFile('test-compress-1.5.jpg'), true);
 		$this->assertTrue($resultCompress);
 		$this->assertTrue($resultStore);
 
-		$Medium = new TestImagickImageMedium($this->TestData->getFile('image-png.png'));
-		$resultCompress = $Medium->compress(1.5);
-		$resultStore = $Medium->store($this->TestData->getFile('test-compress-1.5.png'), true);
+		$Media = new TestImagickImageMedia($this->TestData->getFile('image-png.png'));
+		$resultCompress = $Media->compress(1.5);
+		$resultStore = $Media->store($this->TestData->getFile('test-compress-1.5.png'), true);
 		$this->assertTrue($resultCompress);
 		$this->assertTrue($resultStore);
 	}

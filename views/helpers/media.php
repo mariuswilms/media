@@ -74,7 +74,7 @@ class MediaHelper extends AppHelper {
 	var $_versions = array();
 
 /**
- * Maps short medium types to extensions
+ * Maps short media types to extensions
  *
  * @var array
  */
@@ -210,7 +210,7 @@ class MediaHelper extends AppHelper {
  * Generates markup to render a file inline
  *
  * @param string $path Absolute or partial path to a file
- * @param array $options restrict: embed to display certain medium types only
+ * @param array $options restrict: embed to display certain media types only
  * @return string
  */
 	function embed($path, $options = array()) {

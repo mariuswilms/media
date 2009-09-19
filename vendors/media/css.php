@@ -1,6 +1,6 @@
 <?php
 /**
- * Css Medium File
+ * Css Media File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,20 +11,20 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 
 /**
- * Css Medium Class
+ * Css Media Class
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  */
-class CssMedium extends Medium {
+class CssMedia extends Media {
 
 /**
  * Compatible adapters
@@ -45,7 +45,7 @@ class CssMedium extends Medium {
 	}
 
 /**
- * Compresses contents. of the medium
+ * Compresses contents. of the media
  *
  * @return string
  */

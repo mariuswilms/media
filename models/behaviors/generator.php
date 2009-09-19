@@ -16,7 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 
 /**
  * Generator Behavior Class
@@ -93,7 +93,7 @@ class GeneratorBehavior extends ModelBehavior {
 	}
 
 /**
- * Parses instruction sets and invokes `Medium::make()` for a file
+ * Parses instruction sets and invokes `Media::make()` for a file
  *
  * @param Model $Model
  * @param string $file Path to a file relative to `baseDirectory`  or an absolute path to a file
@@ -106,7 +106,7 @@ class GeneratorBehavior extends ModelBehavior {
 
 		$relativeDirectory = DS . rtrim(dirname($relativeFile), '.');
 
-		$name = Medium::name($file);
+		$name = Media::name($file);
 		$filter = Configure::read('Media.filter.' . strtolower($name));
 
 		$hasCallback = method_exists($Model, 'beforeMake');
@@ -130,13 +130,13 @@ class GeneratorBehavior extends ModelBehavior {
 					continue;
 				}
 			}
-			if (!$Medium = Medium::make($file, $instructions)) {
+			if (!$Media = Media::make($file, $instructions)) {
 				$message  = "GeneratorBehavior::make - Failed to make version `{$version}` ";
 				$message .= "of file `{$file}`. ";
 				trigger_error($message, E_USER_WARNING);
 				continue;
 			}
-			$Medium->store($directory . basename($file), $overwrite);
+			$Media->store($directory . basename($file), $overwrite);
 		}
 		return true;
 	}

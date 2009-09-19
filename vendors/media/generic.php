@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic Medium File
+ * Generic Media File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,19 +11,19 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 
 /**
- * Generic Medium Class
+ * Generic Media Class
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  */
-class GenericMedium extends Medium {
+class GenericMedia extends Media {
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ffmpeg Audio Medium Adapter File
+ * Ffmpeg Audio Media Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,20 +11,20 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
 
 /**
- * Ffmpeg Audio Medium Adapter Class
+ * Ffmpeg Audio Media Adapter Class
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @link       http://ffmpeg.mplayerhq.hu/
  */
-class FfmpegAudioMediumAdapter extends MediumAdapter {
+class FfmpegAudioMediaAdapter extends MediaAdapter {
 	var $require = array(
 		'mimeTypes' => array(
 			'audio/mpeg',
@@ -39,53 +39,53 @@ class FfmpegAudioMediumAdapter extends MediumAdapter {
 		'extensions' => array('ffmpeg'),
 	);
 
-	function initialize($Medium) {
-		if (isset($Medium->objects['ffmpeg_movie'])) {
+	function initialize($Media) {
+		if (isset($Media->objects['ffmpeg_movie'])) {
 			return true;
 		}
-		if (!isset($Medium->file)) {
+		if (!isset($Media->file)) {
 			return false;
 		}
 
-		$Medium->objects['ffmpeg_movie'] = new ffmpeg_movie($Medium->file);
+		$Media->objects['ffmpeg_movie'] = new ffmpeg_movie($Media->file);
 
-		if (!$Medium->objects['ffmpeg_movie']->hasAudio()) {
+		if (!$Media->objects['ffmpeg_movie']->hasAudio()) {
 			return false;
 		}
 
 		return true;
 	}
 
-	function artist($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getArtist();
+	function artist($Media) {
+		return $Media->objects['ffmpeg_movie']->getArtist();
 	}
 
-	function title($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getTitle();
+	function title($Media) {
+		return $Media->objects['ffmpeg_movie']->getTitle();
 	}
 
-	function album($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getAlbum();
+	function album($Media) {
+		return $Media->objects['ffmpeg_movie']->getAlbum();
 	}
 
-	function year($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getYear();
+	function year($Media) {
+		return $Media->objects['ffmpeg_movie']->getYear();
 	}
 
-	function duration($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getDuration();
+	function duration($Media) {
+		return $Media->objects['ffmpeg_movie']->getDuration();
 	}
 
-	function track($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getTrackNumber();
+	function track($Media) {
+		return $Media->objects['ffmpeg_movie']->getTrackNumber();
 	}
 
-	function samplingRate($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getAudioSampleRate();
+	function samplingRate($Media) {
+		return $Media->objects['ffmpeg_movie']->getAudioSampleRate();
 	}
 
-	function bitRate($Medium) {
-		return $Medium->objects['ffmpeg_movie']->getBitRate();
+	function bitRate($Media) {
+		return $Media->objects['ffmpeg_movie']->getBitRate();
 	}
 }
 ?>

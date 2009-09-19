@@ -1,6 +1,6 @@
 <?php
 /**
- * Video Medium File
+ * Video Media File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,20 +11,20 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 
 /**
- * Video Medium Class
+ * Video Media Class
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  */
-class VideoMedium extends Medium {
+class VideoMedia extends Media {
 
 /**
  * Compatible adapters
@@ -34,7 +34,7 @@ class VideoMedium extends Medium {
 	var $adapters = array('Getid3Video', 'FfmpegVideo');
 
 /**
- * Title stored in medium metadata
+ * Title stored in media metadata
  *
  * @return mixed String if metadata info exists, else null
  */
@@ -45,7 +45,7 @@ class VideoMedium extends Medium {
 	}
 
 /**
- * Year stored in medium metadata
+ * Year stored in media metadata
  *
  * @return mixed Integer if metadata info exists, else null
  */
@@ -67,7 +67,7 @@ class VideoMedium extends Medium {
 	}
 
 /**
- * Current height of medium
+ * Current height of media
  *
  * @return integer
  */
@@ -78,7 +78,7 @@ class VideoMedium extends Medium {
 	}
 
 /**
- * Current width of medium
+ * Current width of media
  *
  * @return integer
  */
@@ -89,7 +89,7 @@ class VideoMedium extends Medium {
 	}
 
 /**
- * Current bit rate of medium
+ * Current bit rate of media
  *
  * @url http://en.wikipedia.org/wiki/Bit_rate
  * @return integer
@@ -101,7 +101,7 @@ class VideoMedium extends Medium {
 	}
 
 /**
- * Determines the quality of the medium by
+ * Determines the quality of the media by
  * taking definition and bit rate into account
  *
  * @return integer A number indicating quality between 1 (worst) and 5 (best)
@@ -148,7 +148,7 @@ class VideoMedium extends Medium {
 	}
 
 /**
- * Determines a (known) ratio of medium
+ * Determines a (known) ratio of media
  *
  * @return mixed String if $known is true or float if false
  */

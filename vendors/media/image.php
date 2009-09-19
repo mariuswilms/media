@@ -1,6 +1,6 @@
 <?php
 /**
- * Image Medium File
+ * Image Media File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,20 +11,20 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 
 /**
- * Image Medium Class
+ * Image Media Class
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  */
-class ImageMedium extends Medium {
+class ImageMedia extends Media {
 
 /**
  * Compatible adapters
@@ -45,7 +45,7 @@ class ImageMedium extends Medium {
 	}
 
 /**
- * Resizes medium proportionally
+ * Resizes media proportionally
  * keeping both sides within given dimensions
  *
  * @param integer $width
@@ -70,7 +70,7 @@ class ImageMedium extends Medium {
 	}
 
 /**
- * Resizes medium proportionally
+ * Resizes media proportionally
  * keeping smaller side within corresponding dimensions
  *
  * @param integer $width
@@ -95,7 +95,7 @@ class ImageMedium extends Medium {
 	}
 
 /**
- * Crops medium to provided dimensions
+ * Crops media to provided dimensions
  *
  * @param integer $width
  * @param integer $height
@@ -119,7 +119,7 @@ class ImageMedium extends Medium {
 	}
 
 /**
- * Enlarges medium proportionally by factor 2
+ * Enlarges media proportionally by factor 2
  *
  * @param integer $width
  * @param integer $height
@@ -136,7 +136,7 @@ class ImageMedium extends Medium {
 
 /**
  * First crops an area (given by dimensions and enlarged by factor 2)
- * out of the center of the medium, then resizes that cropped
+ * out of the center of the media, then resizes that cropped
  * area to given dimensions
  *
  * @param integer $width
@@ -158,7 +158,7 @@ class ImageMedium extends Medium {
 	}
 
 /**
- * First resizes medium so that it fills out the given dimensions,
+ * First resizes media so that it fills out the given dimensions,
  * then cuts off overlapping parts
  *
  * @param integer $width
@@ -185,7 +185,7 @@ class ImageMedium extends Medium {
 	}
 
 /**
- * Current width of medium
+ * Current width of media
  *
  * @return integer
  */
@@ -196,7 +196,7 @@ class ImageMedium extends Medium {
 	}
 
 /**
- * Current height of medium
+ * Current height of media
  *
  * @return integer
  */
@@ -207,7 +207,7 @@ class ImageMedium extends Medium {
 	}
 
 /**
- * Selects compression type and filters than compresses the medium
+ * Selects compression type and filters than compresses the media
  * according to provided value
  *
  * Compressing may result in lossy quality for e.g. jpeg but
@@ -226,7 +226,7 @@ class ImageMedium extends Medium {
 	}
 
 /**
- * Determines the quality of the medium by
+ * Determines the quality of the media by
  * taking amount of megapixels into account
  *
  * @return integer A number indicating quality between 1 (worst) and 5 (best)
@@ -254,7 +254,7 @@ class ImageMedium extends Medium {
 	}
 
 /**
- * Determines a (known) ratio of medium
+ * Determines a (known) ratio of media
  *
  * @return mixed String if $known is true or float if false
  */
@@ -266,7 +266,7 @@ class ImageMedium extends Medium {
 	}
 
 /**
- * Determines megapixels of medium
+ * Determines megapixels of media
  *
  * @return integer
  */
@@ -280,7 +280,7 @@ class ImageMedium extends Medium {
  * @param integer $width
  * @param integer $height
  * @param integer $set Either "ratio" or "maximum" Maximum replaces sizes execeeding limits
- * 	with medium's corresponding size
+ * 	with media's corresponding size
  * @return array An array containing width and height
  */
 	function _normalizeDimensions($width, $height, $set = 'ratio') {

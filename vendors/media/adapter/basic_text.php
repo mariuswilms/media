@@ -1,6 +1,6 @@
 <?php
 /**
- * Basic Text Medium Adapter File
+ * Basic Text Media Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,30 +11,30 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
 
 /**
- * Basic Text Medium Adapter Class
+ * Basic Text Media Adapter Class
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  */
-class BasicTextMediumAdapter extends MediumAdapter {
+class BasicTextMediaAdapter extends MediaAdapter {
 	var $require = array('mimeTypes' => array('text/plain'));
 
-	function initialize($Medium) {
-		if (!isset($Medium->file)) {
+	function initialize($Media) {
+		if (!isset($Media->file)) {
 			return false;
 		}
 		return true;
 	}
 
-	function characters($Medium) {
-		return filesize($Medium->file);
+	function characters($Media) {
+		return filesize($Media->file);
 	}
 }
 ?>

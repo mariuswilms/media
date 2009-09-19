@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Jsmin Medium Adapter File
+ * Jsmin Media Adapter File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -12,42 +12,42 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
 
 /**
- * Jsmin Medium Adapter Class
+ * Jsmin Media Adapter Class
  *
  * @package    media
- * @subpackage media.libs.medium.adapter
+ * @subpackage media.libs.media.adapter
  * @link       http://code.google.com/p/jsmin-php/
  */
-class JsminMediumAdapter extends MediumAdapter {
+class JsminMediaAdapter extends MediaAdapter {
 	var $require = array(
 		'mimeTypes' => array('application/javascript'),
 		'imports' => array(array('type' => 'Vendor', 'name'=> 'JSMin', 'file' => 'jsmin.php')),
 	);
 
-	function initialize($Medium) {
-		if (isset($Medium->contents['raw'])) {
+	function initialize($Media) {
+		if (isset($Media->contents['raw'])) {
 			return true;
 		}
 
-		if (!isset($Medium->file)) {
+		if (!isset($Media->file)) {
 			return false;
 		}
-		return $Medium->contents['raw'] = file_get_contents($Medium->file);
+		return $Media->contents['raw'] = file_get_contents($Media->file);
 	}
 
-	function store($Medium, $file) {
-		return file_put_contents($Medium->contents['raw'], $file);
+	function store($Media, $file) {
+		return file_put_contents($Media->contents['raw'], $file);
 	}
 
-	function compress($Medium) {
-		return $Medium->contents['raw'] = trim(JSMin::minify($Medium->contents['raw']));
+	function compress($Media) {
+		return $Media->contents['raw'] = trim(JSMin::minify($Media->contents['raw']));
 	}
 }
 ?>

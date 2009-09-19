@@ -1,6 +1,6 @@
 <?php
 /**
- * Audio Medium File
+ * Audio Media File
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -11,20 +11,20 @@
  * CakePHP version 1.2
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.Medium');
+App::import('Vendor', 'Media.Media');
 
 /**
- * Audio Medium Class
+ * Audio Media Class
  *
  * @package    media
- * @subpackage media.libs.medium
+ * @subpackage media.libs.media
  */
-class AudioMedium extends Medium {
+class AudioMedia extends Media {
 
 /**
  * Compatible adapters
@@ -34,7 +34,7 @@ class AudioMedium extends Medium {
 	var $adapters = array('Getid3Audio', 'FfmpegAudio', 'PearMp3');
 
 /**
- * Artist stored in medium metadata
+ * Artist stored in media metadata
  *
  * @return mixed String if metadata info exists, else null
  */
@@ -45,7 +45,7 @@ class AudioMedium extends Medium {
 	}
 
 /**
- * Title stored in medium metadata
+ * Title stored in media metadata
  *
  * @return mixed String if metadata info exists, else null
  */
@@ -56,7 +56,7 @@ class AudioMedium extends Medium {
 	}
 
 /**
- * Album name stored in medium metadata
+ * Album name stored in media metadata
  *
  * @return mixed String if metadata info exists, else null
  */
@@ -67,7 +67,7 @@ class AudioMedium extends Medium {
 	}
 
 /**
- * Year stored in medium metadata
+ * Year stored in media metadata
  *
  * @return mixed Integer if metadata info exists, else null
  */
@@ -78,7 +78,7 @@ class AudioMedium extends Medium {
 	}
 
 /**
- * Track number stored in medium metadata
+ * Track number stored in media metadata
  *
  * @return mixed Integer if metadata info exists, else null
  */
@@ -100,7 +100,7 @@ class AudioMedium extends Medium {
 	}
 
 /**
- * Current sampling rate of medium
+ * Current sampling rate of media
  *
  * @url http://en.wikipedia.org/wiki/Sampling_rate
  * @return integer
@@ -112,7 +112,7 @@ class AudioMedium extends Medium {
 	}
 
 /**
- * Current bit rate of medium
+ * Current bit rate of media
  *
  * @url http://en.wikipedia.org/wiki/Bit_rate
  * @return integer
@@ -124,7 +124,7 @@ class AudioMedium extends Medium {
 	}
 
 /**
- * Determines the quality of the medium by
+ * Determines the quality of the media by
  * taking bit rate into account
  *
  * @return integer A number indicating quality between 1 (worst) and 5 (best)
