@@ -3,8 +3,14 @@
  * Attachments Element File
  *
  * Element listing associated attachments of the view's model.
- * Add, delete (detach) an Attachment. This element requireds
- * the media helper to be loaded.
+ * Add, delete (detach) an Attachment.  This element requires
+ * the media helper to be loaded and `$this->data` to be populated.
+ *
+ * Possible options:
+ *  - `'previewVersion'` Defaults to `'xxs'`.
+ *  - `'assocAlias'` Defaults to `'Attachment'`.
+ *  - `'model'` Defaults to the model of the current form.
+ *  - `'title'` Defaults to the plural form of `'assocAlias'`.
  *
  * Copyright (c) 2007-2009 David Persson
  *
@@ -48,9 +54,13 @@ $modelId = $form->value($form->model().'.id');
 if (isset($this->data[$assocAlias][0]['basename'])) {
 	array_unshift($this->data[$assocAlias],array());
 }
+
+if (!isset($title)) {
+	$title = sprintf(__('%s', true), Inflector::pluralize($assocAlias));
+}
 ?>
 <div class="attachments element">
-	<?php printf(__('%s', true), Inflector::pluralize($assocAlias)) ?>
+	<?php echo $title ?>
 	<!-- New Attachment -->
 	<div class="new">
 	<?php
