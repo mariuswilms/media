@@ -21,9 +21,9 @@
  * @link       http://github.com/davidpersson/media
  */
 
-if (is_a($media, 'MediaHelper')) {
+if (!isset($media) || !is_a($media, 'MediaHelper')) {
 	$message = 'Attachments Element - The media helper is not loaded but required.';
-	trigger_error($message, 'E_USER_NOTICE');
+	trigger_error($message, E_USER_NOTICE);
 	return;
 }
 
