@@ -73,10 +73,6 @@ class MetaBehavior extends ModelBehavior {
  *
  * Adds metadata of corresponding file to each result.
  *
- * If the corresponding file of a result is not readable it is removed
- * from the results array, as it is inconsistent. This can be fixed
- * by calling `cake media sync` from the command line.
- *
  * @param Model $Model
  * @param array $results
  * @param boolean $primary
@@ -92,15 +88,11 @@ class MetaBehavior extends ModelBehavior {
 			if (!isset($result[$Model->alias]['file'])) {
 				continue;
 			}
-
 			$metadata = $this->metadata($Model, $result[$Model->alias]['file'], $level);
 
-			/* `metadata()` checks if the file is readable */
-			if ($metadata === false) {
-				unset($results[$key]);
-				continue;
+			if ($metadata) {
+				$result[$Model->alias] = array_merge($result[$Model->alias], $metadata);
 			}
-			$result[$Model->alias] = array_merge($result[$Model->alias], $metadata);
 		}
 		return $results;
 	}

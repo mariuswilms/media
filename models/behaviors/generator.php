@@ -147,7 +147,6 @@ class GeneratorBehavior extends ModelBehavior {
  * @param Model $Model
  * @param string$file
  * @return array
- * @todo Duplicate Code @see CouplerBehavior
  */
 	function _file(&$Model, $file) {
 		extract($this->settings[$Model->alias]);

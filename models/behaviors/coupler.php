@@ -181,6 +181,44 @@ class CouplerBehavior extends PolymorphicBehavior {
 	}
 
 /**
+ * Callback
+ *
+ * Adds the `file` field to each result.
+ *
+ * If the corresponding file of a result is not readable it is removed
+ * from the results array, as it is inconsistent. This can be fixed
+ * by calling `cake media sync` from the command line.
+ *
+ * @param Model $Model
+ * @param array $results
+ * @param boolean $primary
+ * @return array
+ */
+	function afterFind(&$Model, $results, $primary = false) {
+		if (empty($results)) {
+			return $results;
+		}
+		extract($this->settings[$Model->alias]);
+
+		foreach ($results as $key => &$result) {
+			if (!isset($result[$Model->alias]['basename'], $result[$Model->alias]['basename'])) {
+				continue;
+			}
+			$file  = $baseDirectory;
+			$file .= $result[$Model->alias]['dirname'];
+			$file .= DS . $result[$Model->alias]['basename'];
+			$file = str_replace(array('\\', '/'), DS, $file);
+
+			if (!is_file($file)) {
+				unset($results[$key]);
+				continue;
+			}
+			$result[$Model->alias]['file'] = $file;
+		}
+		return parent::afterFind($Model, $results, $primary);
+	}
+
+/**
  * Checks if an alternative text is given only if a file is submitted
  *
  * @param unknown_type $Model
