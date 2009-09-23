@@ -109,7 +109,7 @@ class MetaBehavior extends ModelBehavior {
  * Retrieve (cached) metadata of a file
  *
  * @param Model $Model
- * @param string $file Path to a file relative to `baseDirectory` or an absolute path to a file
+ * @param string $file An absolute path to a file
  * @param integer $level level of amount of info to add, `0` disable, `1` for basic, `2` for detailed info
  * @return mixed Array with results or false if file is not readable
  */
@@ -118,8 +118,6 @@ class MetaBehavior extends ModelBehavior {
 			return array();
 		}
 		extract($this->settings[$Model->alias]);
-
-		list($file,) = $this->_file($Model, $file);
 		$File = new File($file);
 
 		if (!$File->readable()) {
