@@ -42,7 +42,7 @@ class CouplerBehavior extends PolymorphicBehavior {
  * @var array
  */
 	var $_defaultSettings = array(
-		'baseDirectory'   => MEDIA
+		'baseDirectory' => MEDIA
 	);
 
 /**
@@ -54,15 +54,23 @@ class CouplerBehavior extends PolymorphicBehavior {
  */
 	function setup(&$Model, $settings = array()) {
 		$settings = (array)$settings;
+		$parentVars = get_class_vars(get_parent_class($this));
+
+		if (isset($Model->Behaviors->Polymorphic)) {
+			$message  = "CouplerBehavior::setup - Since 1.3.0 it's not neccessary ";
+			$message .= "to manually attach the polymorphic behavior to the model anymore. ";
+			$message .= "Remove it from the actsAs property of the `{$Model->alias}` model.";
+			trigger_error($message, E_USER_NOTICE);
+		}
 
 		if (isset($Model->Behaviors->Transfer)) {
 			$transferSettings = $Model->Behaviors->Transfer->settings[$Model->alias];
 			$settings['baseDirectory'] = dirname($transferSettings['baseDirectory']) . DS;
 		}
-		$settings['classField'] = 'model';
-		$settings['foreignKey'] = 'foreign_key';
 
-		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
+		$this->settings[$Model->alias] = array_merge(
+			$parentVars['_defaultSettings'], $this->_defaultSettings, $settings
+		);
 	}
 
 /**
