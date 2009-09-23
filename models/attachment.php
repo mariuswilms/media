@@ -60,8 +60,9 @@ class Attachment extends MediaAppModel {
 			'createDirectory' => true,
 			'alternativeFile' => 100
 		),
-		'Media.Coupler' => array(
-			'metadataLevel' => 2
+		'Media.Coupler',
+		'Media.Meta' => array(
+			'level'	 => 2
 		),
 		'Media.Generator' => array(
 			'filterDirectory' => MEDIA_FILTER
