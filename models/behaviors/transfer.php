@@ -91,12 +91,17 @@ class TransferBehavior extends ModelBehavior {
  * Merges default settings with provided config and sets default validation options
  *
  * @param Model $Model
- * @param array $config @see _defaultSettings for configuration options
+ * @param array $settings See defaultSettings for configuration options
  * @return void
  */
-	function setup(&$Model, $config = null) {
-		if (!is_array($config)) {
-			$config = array();
+	function setup(&$Model, $settings = array()) {
+		$settings = (array)$settings;
+
+		if (isset($settings['destinationFile'])) {
+			$message  = "TransferBehavior::setup - The `destinationFile` settings has been ";
+			$message .= "removed in favor of the `transferTo()` callback. Implement the method ";
+			$message .= "in the `{$Model->alias}` model to get custom destination paths.";
+			trigger_error($message, E_USER_WARNING);
 		}
 
 		/* If present validation rules get some sane default values */
@@ -108,7 +113,7 @@ class TransferBehavior extends ModelBehavior {
 			}
 		}
 
-		$this->settings[$Model->alias] = $config + $this->_defaultSettings;
+		$this->settings[$Model->alias] = $settings + $this->_defaultSettings;
 		$this->runtime[$Model->alias] = $this->_defaultRuntime;
 	}
 
@@ -179,7 +184,7 @@ class TransferBehavior extends ModelBehavior {
 			return null;
 		}
 		if ($this->runtime[$Model->alias]['hasPerformed']) {
-			$this->reset($Model);
+			$this->resetTransfer($Model);
 		}
 		if ($this->runtime[$Model->alias]['isReady']) {
 			return true;
@@ -796,7 +801,7 @@ class TransferBehavior extends ModelBehavior {
  */
 	function reset(&$Model) {
 		$message  = "TransferBehavior::reset - ";
-		$message .= "Has been deprecated in favour of `resetTransfer()`";
+		$message .= "Has been deprecated in favor of `resetTransfer()`";
 		trigger_error($message, E_USER_NOTICE);
 		return $this->resetTransfer($Model);
 	}
