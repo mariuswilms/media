@@ -221,9 +221,9 @@ class CouplerBehavior extends PolymorphicBehavior {
 /**
  * Checks if an alternative text is given only if a file is submitted
  *
- * @param unknown_type $Model
- * @param unknown_type $field
- * @return unknown
+ * @param Model $Model
+ * @param array $field
+ * @return boolean
  */
 	function checkRepresent(&$Model, $field) {
 		if (!isset($Model->data[$Model->alias]['file'])) {
