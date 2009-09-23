@@ -16,6 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
+App::import('Behavior', 'Media.Polymorphic');
 
 /**
  * Coupler Behavior Class
@@ -23,7 +24,7 @@
  * @package    media
  * @subpackage media.models.behaviors
  */
-class CouplerBehavior extends ModelBehavior {
+class CouplerBehavior extends PolymorphicBehavior {
 
 /**
  * Settings keyed by model alias
@@ -58,6 +59,9 @@ class CouplerBehavior extends ModelBehavior {
 			$transferSettings = $Model->Behaviors->Transfer->settings[$Model->alias];
 			$settings['baseDirectory'] = dirname($transferSettings['baseDirectory']) . DS;
 		}
+		$settings['classField'] = 'model';
+		$settings['foreignKey'] = 'foreign_key';
+
 		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
 	}
 

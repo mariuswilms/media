@@ -50,22 +50,18 @@ class Attachment extends MediaAppModel {
  * @access public
  */
 	var $actsAs = array(
-		'Media.Polymorphic' => array(
-			'classField' => 'model',
-			'foreignKey' => 'foreign_key',
-		),
 		'Media.Transfer' => array(
 			'trustClient' => false,
 			'baseDirectory' => MEDIA_TRANSFER,
 			'createDirectory' => true,
 			'alternativeFile' => 100
 		),
+		'Media.Generator' => array(
+			'filterDirectory' => MEDIA_FILTER
+		),
 		'Media.Coupler',
 		'Media.Meta' => array(
 			'level'	 => 2
-		),
-		'Media.Generator' => array(
-			'filterDirectory' => MEDIA_FILTER
 	));
 
 /**
