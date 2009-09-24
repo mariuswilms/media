@@ -172,6 +172,114 @@ class TransferBehavior extends ModelBehavior {
 	}
 
 /**
+ * Retrieves metadata of any transferrable resource
+ *
+ * @param Model $Model
+ * @param array|string $resource Transfer resource
+ * @return array|void
+ */
+	function transferMeta(&$Model, $resource) {
+		extract($this->settings[$Model->alias]);
+
+		$defaultResource = array(
+			'scheme'      => null,
+			'host'        => null,
+			'port'        => null,
+			'file'        => null,
+			'mimeType'    => null,
+			'size'        => null,
+			'pixels'      => null,
+			'permisssion' => null,
+			'dirname'     => null,
+			'basename'    => null,
+			'filename'    => null,
+			'extension'   => null,
+			'type'        => null
+		);
+
+		/* Currently HTTP is supported only */
+		if (TransferValidation::url($resource, array('scheme' => 'http'))) {
+			$resource = array_merge(
+				$defaultResource,
+				pathinfo(parse_url($resource, PHP_URL_PATH)),
+				array(
+					'scheme' => parse_url($resource, PHP_URL_SCHEME),
+					'host'   => parse_url($resource, PHP_URL_HOST),
+					'port'   => parse_url($resource, PHP_URL_PORT),
+					'file'   => $resource,
+					'type'   => 'http-url-remote'
+			));
+
+			if (!class_exists('HttpSocket')) {
+				App::import('Core', 'HttpSocket');
+			}
+			$Socket =& new HttpSocket(array('timeout' => 5));
+			$Socket->request(array('method' => 'HEAD', 'uri' => $resource['file']));
+
+			if (empty($Socket->error) && $Socket->response['status']['code'] == 200) {
+				$resource = array_merge(
+					$resource,
+					array(
+						'size'       => $Socket->response['header']['Content-Length'],
+						'mimeType'   => $trustClient ? $Socket->response['header']['Content-Type'] : null,
+						'permission' => '0004'
+				));
+			}
+		} elseif (MediaValidation::file($resource, false)) {
+			$resource = array_merge(
+				$defaultResource,
+				pathinfo($resource),
+				array(
+					'file' => $resource,
+					'host' => 'localhost',
+					'mimeType' => MimeType::guessType($resource, array('paranoid' => !$trustClient))
+			));
+
+			if (TransferValidation::uploadedFile($resource['file'])) {
+				$resource['type'] = 'uploaded-file-local';
+			} else {
+				$resource['type'] = 'file-local';
+			}
+
+			if (is_readable($resource['file'])) {
+				/*
+				 * Because there is not better  way to determine if resource is an image
+				 * first, we suppress a warning that would be thrown here otherwise.
+				 */
+				list($width, $height) = @getimagesize($resource['file']);
+
+				$resource = array_merge(
+					$resource,
+					array(
+						'size'       => filesize($resource['file']),
+						'permission' => substr(sprintf('%o', fileperms($resource['file'])), -4),
+						'pixels'     => $width * $height
+				));
+			}
+		} elseif (TransferValidation::fileUpload($resource)) {
+			$resource = array_merge(
+				$defaultResource,
+				pathinfo($resource['name']),
+				array(
+					'file'       => $resource['name'],
+					'host'       => env('REMOTE_ADDR'),
+					'size'       => $resource['size'],
+					'mimeType'   => $trustClient ? $resource['type'] : null,
+					'permission' => '0004',
+					'type'       => 'file-upload-remote'
+			));
+		} else {
+			return null;
+		}
+
+		if (!isset($resource['filename'])) { /* PHP < 5.2.0 */
+			$length = isset($resource['extension']) ? strlen($resource['extension']) + 1 : 0;
+			$resource['filename'] = substr($resource['basename'], 0, - $length);
+		}
+		return $resource;
+	}
+
+/**
  * Returns a relative path to the destination file
  *
  * @param array $source Information about the source
@@ -600,114 +708,6 @@ class TransferBehavior extends ModelBehavior {
 			}
 		}
 		return true;
-	}
-
-/**
- * Retrieves metadata of any transferrable resource
- *
- * @param Model $Model
- * @param array|string $resource Transfer resource
- * @return array|void
- */
-	function transferMeta(&$Model, $resource) {
-		extract($this->settings[$Model->alias]);
-
-		$defaultResource = array(
-			'scheme'      => null,
-			'host'        => null,
-			'port'        => null,
-			'file'        => null,
-			'mimeType'    => null,
-			'size'        => null,
-			'pixels'      => null,
-			'permisssion' => null,
-			'dirname'     => null,
-			'basename'    => null,
-			'filename'    => null,
-			'extension'   => null,
-			'type'        => null
-		);
-
-		/* Currently HTTP is supported only */
-		if (TransferValidation::url($resource, array('scheme' => 'http'))) {
-			$resource = array_merge(
-				$defaultResource,
-				pathinfo(parse_url($resource, PHP_URL_PATH)),
-				array(
-					'scheme' => parse_url($resource, PHP_URL_SCHEME),
-					'host'   => parse_url($resource, PHP_URL_HOST),
-					'port'   => parse_url($resource, PHP_URL_PORT),
-					'file'   => $resource,
-					'type'   => 'http-url-remote'
-			));
-
-			if (!class_exists('HttpSocket')) {
-				App::import('Core', 'HttpSocket');
-			}
-			$Socket =& new HttpSocket(array('timeout' => 5));
-			$Socket->request(array('method' => 'HEAD', 'uri' => $resource['file']));
-
-			if (empty($Socket->error) && $Socket->response['status']['code'] == 200) {
-				$resource = array_merge(
-					$resource,
-					array(
-						'size'       => $Socket->response['header']['Content-Length'],
-						'mimeType'   => $trustClient ? $Socket->response['header']['Content-Type'] : null,
-						'permission' => '0004'
-				));
-			}
-		} elseif (MediaValidation::file($resource, false)) {
-			$resource = array_merge(
-				$defaultResource,
-				pathinfo($resource),
-				array(
-					'file' => $resource,
-					'host' => 'localhost',
-					'mimeType' => MimeType::guessType($resource, array('paranoid' => !$trustClient))
-			));
-
-			if (TransferValidation::uploadedFile($resource['file'])) {
-				$resource['type'] = 'uploaded-file-local';
-			} else {
-				$resource['type'] = 'file-local';
-			}
-
-			if (is_readable($resource['file'])) {
-				/*
-				 * Because there is not better  way to determine if resource is an image
-				 * first, we suppress a warning that would be thrown here otherwise.
-				 */
-				list($width, $height) = @getimagesize($resource['file']);
-
-				$resource = array_merge(
-					$resource,
-					array(
-						'size'       => filesize($resource['file']),
-						'permission' => substr(sprintf('%o', fileperms($resource['file'])), -4),
-						'pixels'     => $width * $height
-				));
-			}
-		} elseif (TransferValidation::fileUpload($resource)) {
-			$resource = array_merge(
-				$defaultResource,
-				pathinfo($resource['name']),
-				array(
-					'file'       => $resource['name'],
-					'host'       => env('REMOTE_ADDR'),
-					'size'       => $resource['size'],
-					'mimeType'   => $trustClient ? $resource['type'] : null,
-					'permission' => '0004',
-					'type'       => 'file-upload-remote'
-			));
-		} else {
-			return null;
-		}
-
-		if (!isset($resource['filename'])) { /* PHP < 5.2.0 */
-			$length = isset($resource['extension']) ? strlen($resource['extension']) + 1 : 0;
-			$resource['filename'] = substr($resource['basename'], 0, - $length);
-		}
-		return $resource;
 	}
 
 /**
