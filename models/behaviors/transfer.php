@@ -81,7 +81,7 @@ class TransferBehavior extends ModelBehavior {
 		'source'       => null,
 		'temporary'    => null,
 		'destination'  => null,
-		'isReady'      => false,
+		'isPrepared'   => false,
 		'hasPerformed' => false
 	);
 
@@ -128,7 +128,17 @@ class TransferBehavior extends ModelBehavior {
  * @return boolean
  */
 	function beforeValidate(&$Model) {
-		if ($this->prepare($Model) === false) {
+		if (!isset($Model->data[$Model->alias]['file'])) {
+			return true;
+		}
+		$file = $Model->data[$Model->alias]['file'];
+
+		if (TransferValidation::blank($file)) {
+			$Model->data[$Model->alias]['file'] = null;
+			return true;
+		}
+
+		if (!$this->_prepare($Model, $file)) {
 			$Model->invalidate('file', 'error');
 			return false;
 		}
@@ -144,61 +154,118 @@ class TransferBehavior extends ModelBehavior {
  * @return boolean
  */
 	function beforeSave(&$Model) {
-		$preparation = $this->prepare($Model);
+		if (!isset($Model->data[$Model->alias]['file'])) {
+			return true;
+		}
+		$file = $Model->data[$Model->alias]['file'];
 
-		if ($preparation === false) {
+		if (TransferValidation::blank($file)) {
+			unset($Model->data[$Model->alias]['file']);
+			return true;
+		}
+
+		if (!$file = $this->transfer($Model, $file)) {
 			return false;
 		}
-		if ($preparation === null) {
-			if (array_key_exists('file', $Model->data[$Model->alias])) {
-				unset($Model->data[$Model->alias]['file']);
-			}
- 			return true;
-		}
-		extract($this->runtime[$Model->alias], EXTR_SKIP);
-		extract($this->settings[$Model->alias], EXTR_SKIP);
-
-		if (!$this->perform($Model)) { /* uses source, etc. from runtime */
-			return false;
-		}
-		$Model->data[$Model->alias]['file'] = $destination['dirname'] . DS . $destination['basename'];
+		$Model->data[$Model->alias]['file'] = $file;
 		return $Model->data[$Model->alias];
 	}
 
 /**
- * Triggered by `beforeValidate`, `beforeSave` or upon user request
+ * Returns a relative path to the destination file
  *
- * Prepares runtime for being used by `perform()`
+ * @param array $source Information about the source
+ * @return string
+ */
+	function transferTo(&$Model, $via, $from) {
+		extract($from);
+		$path  = Media::short($file, $mimeType) . DS;
+		$path .= strtolower(Inflector::slug($filename));
+		$path .= !empty($extension) ? '.' . strtolower($extension) : null;
+		return $path;
+	}
+
+/**
+ * Prepares (if neccessary) and performs a transfer
  *
  * @param Model $Model
- * @param string $file Optionally provide a valid transfer resource to be used as source
- * @return mixed true if transfer is ready to be performed, false on error, null if no data was found
+ * @param mixed $file File from which source, temporary and destination are derived
+ * @return string|boolean Destination file on success, false on failure
  */
-	function prepare(&$Model, $file = null) {
-		/* Pre */
-
-		if (isset($Model->data[$Model->alias]['file'])) {
-			$file = $Model->data[$Model->alias]['file'];
-		}
-		if (empty($file)) {
-			return null;
-		}
+	function transfer(&$Model, $file) {
 		if ($this->runtime[$Model->alias]['hasPerformed']) {
-			$this->resetTransfer($Model);
+			$this->runtime[$Model->alias] = $this->_defaultRuntime;
+			$this->runtime[$Model->alias]['hasPerformed'] = true;
 		}
-		if ($this->runtime[$Model->alias]['isReady']) {
-			return true;
+		if (!$this->runtime[$Model->alias]['isPrepared']) {
+			if (!$this->_prepare($Model, $file)) {
+				return false;
+			}
 		}
-		/* Extraction must happen after reset */
+		extract($this->runtime[$Model->alias]);
+
+		if ($source['type'] === 'http-url-remote') {
+			if (!class_exists('HttpSocket')) {
+				App::import('Core','HttpSocket');
+			}
+			$Socket = new HttpSocket(array('timeout' => 5));
+			$Socket->request(array('method' => 'GET', 'uri' => $source['file']));
+
+			if (!empty($Socket->error) || $Socket->response['status']['code'] != 200) {
+				return false;
+			}
+		}
+
+		$chain = implode('>>', array($source['type'], $temporary['type'], $destination['type']));
+		$result = false;
+
+		switch ($chain) {
+			case 'file-upload-remote>>uploaded-file-local>>file-local':
+				$result = move_uploaded_file($temporary['file'], $destination['file']);
+				break;
+			case 'file-local>>>>file-local':
+				$result = copy($source['file'], $destination['file']);
+				break;
+			case 'file-local>>file-local>>file-local':
+				if (copy($source['file'], $temporary['file'])) {
+					$result = rename($temporary['file'], $destination['file']);
+				}
+				break;
+			case 'http-url-remote>>>>file-local':
+				$result = file_put_contents($destination['file'], $Socket->response['body']);
+				break;
+			case 'http-url-remote>>file-local>>file-local':
+				if (file_put_contents($temporary['file'], $Socket->response['body'])) {
+					$result = rename($temporary['file'], $destination['file']);
+				}
+				break;
+		}
+		return $result ? $destination['file'] : false;
+	}
+
+/**
+ * Convenience method which (if available) returns absolute path to last transferred file
+ *
+ * @param Model $Model
+ * @return string|boolean
+ */
+	function transferred(&$Model) {
+		extract($this->runtime[$Model->alias], EXTR_SKIP);
+		return isset($destination['file']) ? $destination['file'] : false;
+	}
+
+/**
+ * Triggered by `beforeValidate` and `transfer()`
+ *
+ * @param Model $Model
+ * @param string $file A valid transfer resource to be used as source
+ * @return boolean true if transfer is ready to be performed, false on error
+ */
+	function _prepare(&$Model, $file) {
+		$Model->runtime[$Model->alias]['isPrepared'] = true;
+
 		extract($this->settings[$Model->alias], EXTR_SKIP);
 		extract($this->runtime[$Model->alias], EXTR_SKIP);
-
-		if (TransferValidation::blank($file)) {
-			/* Set explicitly null enabling allowEmpty in rules act upon emptiness */
-			return $Model->data[$Model->alias]['file'] = null;
-		}
-
-		/* From */
 
 		if ($source = $this->_source($Model, $file)) {
 			$this->runtime[$Model->alias]['source'] = $source;
@@ -206,13 +273,9 @@ class TransferBehavior extends ModelBehavior {
 			return false;
 		}
 
-		/* Via */
-
 		if ($source['type'] !== 'file-local') {
 			$temporary = $this->runtime[$Model->alias]['temporary'] = $this->_temporary($Model, $file);
 		}
-
-		/* To */
 
 		if (method_exists($Model, 'transferTo')) {
 			$file = $Model->transferTo($temporary, $source);
@@ -220,7 +283,7 @@ class TransferBehavior extends ModelBehavior {
 			$file = $this->transferTo($Model, $temporary, $source);
 		}
 		if (!$file) {
-			$message = "TransferBehavior::prepare - Could not obtain destination file path.";
+			$message = "TransferBehavior::_prepare - Could not obtain destination file path.";
 			trigger_error($message, E_USER_NOTICE);
 			return false;
 		}
@@ -229,7 +292,7 @@ class TransferBehavior extends ModelBehavior {
 			$file = $this->_alternativeFile($baseDirectory . $file, $alternativeFile);
 
 			if (!$file) {
-				$message  = "TransferBehavior::prepare - ";
+				$message  = "TransferBehavior::_prepare - ";
 				$message .= "Exceeded number of max. tries while finding alternative file name.";
 				trigger_error($message, E_USER_NOTICE);
 				return false;
@@ -248,29 +311,12 @@ class TransferBehavior extends ModelBehavior {
 		$Folder = new Folder($destination['dirname'], $createDirectory);
 
 		if (!$Folder->pwd()) {
-			$message  = "TransferBehavior::prepare - Directory `{$destination['dirname']}` could ";
+			$message  = "TransferBehavior::_prepare - Directory `{$destination['dirname']}` could ";
 			$message .= "not be created or is not writable. Please check the permissions.";
 			trigger_error($message, E_USER_WARNING);
 			return false;
 		}
-
-		/* Post */
-
-		return $this->runtime[$Model->alias]['isReady'] = true;
-	}
-
-/**
- * Returns a relative path to the destination file
- *
- * @param array $source Information about the source
- * @return string
- */
-	function transferTo(&$Model, $via, $from) {
-		extract($from);
-		$path  = Media::short($file, $mimeType) . DS;
-		$path .= strtolower(Inflector::slug($filename));
-		$path .= !empty($extension) ? '.' . strtolower($extension) : null;
-		return $path;
+		return true;
 	}
 
 /**
@@ -319,79 +365,6 @@ class TransferBehavior extends ModelBehavior {
 	function _destination(&$Model, $data) {
 		if (MediaValidation::file($data , false)) {
 			return $this->info($Model, $data);
-		}
-		return false;
-	}
-
-/**
- * Performs a transfer
- *
- * @param Model $Model
- * @param array $source
- * @param array $temporary
- * @param array $destination
- * @return boolean true on success, false on failure
- */
-	function perform(&$Model) {
-		extract($this->runtime[$Model->alias]);
-
-		if (!$isReady || $hasPerformed) {
-			return false;
-		}
-		$hasPerformed = false;
-		$chain = implode('>>', array($source['type'], $temporary['type'], $destination['type']));
-
-		if ($source['type'] === 'http-url-remote') {
-			if (!class_exists('HttpSocket')) {
-				App::import('Core','HttpSocket');
-			}
-			$Socket = new HttpSocket(array('timeout' => 5));
-			$Socket->request(array('method' => 'GET', 'uri' => $source['file']));
-
-			if (!empty($Socket->error) || $Socket->response['status']['code'] != 200) {
-				return $this->runtime[$Model->alias]['hasPerformed'] = $hasPerformed;
-			}
-		}
-
-		if ($chain === 'file-upload-remote>>uploaded-file-local>>file-local') {
-			$hasPerformed = move_uploaded_file($temporary['file'], $destination['file']);
-		} elseif ($chain === 'file-local>>>>file-local') {
-			$hasPerformed = copy($source['file'], $destination['file']);
-		} elseif ($chain === 'file-local>>file-local>>file-local') {
-			if (copy($source['file'], $temporary['file'])) {
-				$hasPerformed = rename($temporary['file'], $destination['file']);
-			}
-		} elseif ($chain === 'http-url-remote>>>>file-local') {
-			$hasPerformed = file_put_contents($destination['file'], $Socket->response['body']);
-		} elseif ($chain === 'http-url-remote>>file-local>>file-local') {
-			if (file_put_contents($temporary['file'], $Socket->response['body'])) {
-				$hasPerformed = rename($temporary['file'], $destination['file']);
-			}
-		}
-		return $this->runtime[$Model->alias]['hasPerformed'] = $hasPerformed;
-	}
-
-/**
- * Resets runtime property
- *
- * @param Model $Model
- * @return void
- */
-	function resetTransfer(&$Model) {
-		$this->runtime[$Model->alias] = $this->_defaultRuntime;
-	}
-
-/**
- * Convenience method which (if available) returns absolute path to last transferred file
- *
- * @param Model $Model
- * @return mixed
- */
-	function transferred(&$Model) {
-		extract($this->runtime[$Model->alias], EXTR_SKIP);
-
-		if ($hasPerformed) {
-			return $destination['file'];
 		}
 		return false;
 	}
@@ -779,6 +752,35 @@ class TransferBehavior extends ModelBehavior {
 	}
 
 /**
+ * Triggered by `beforeValidate` and `transfer()`
+ *
+ * @param Model $Model
+ * @param string $file A valid transfer resource to be used as source
+ * @return boolean true if transfer is ready to be performed, false on error
+ * @deprecated
+ */
+	function prepare(&$Model, $file = null) {
+		$message  = "TransferBehavior::prepare - ";
+		$message .= "Has been deprecated. Preparation is now handled by `transfer()`.";
+		trigger_error($message, E_USER_NOTICE);
+		return false;
+	}
+
+/**
+ * Performs a transfer
+ *
+ * @param Model $Model
+ * @return boolean true on success, false on failure
+ * @deprecated
+ */
+	function perform(&$Model) {
+		$message  = "TransferBehavior::perform - ";
+		$message .= "Has been deprecated in favor of `transfer()`";
+		trigger_error($message, E_USER_WARNING);
+		return false;
+	}
+
+/**
  * Convenience method which (if available) returns absolute path to last transferred file
  *
  * @param Model $Model
@@ -787,7 +789,7 @@ class TransferBehavior extends ModelBehavior {
  */
 	function getLastTransferredFile(&$Model) {
 		$message  = "TransferBehavior::getLastTransferredFile - ";
-		$message .= "Has been deprecated in favour of `transferred()`";
+		$message .= "Has been deprecated in favor of `transferred()`.";
 		trigger_error($message, E_USER_NOTICE);
 		return $this->transferred($Model);
 	}
@@ -801,9 +803,10 @@ class TransferBehavior extends ModelBehavior {
  */
 	function reset(&$Model) {
 		$message  = "TransferBehavior::reset - ";
-		$message .= "Has been deprecated in favor of `resetTransfer()`";
+		$message .= "Has been deprecated. It's not necessarry to directly call the method anymore.";
 		trigger_error($message, E_USER_NOTICE);
-		return $this->resetTransfer($Model);
+		$this->runtime[$Model->alias] = $this->_defaultRuntime;
+
 	}
 }
 ?>

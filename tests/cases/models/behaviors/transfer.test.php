@@ -134,8 +134,7 @@ class TransferBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertFalse($Model->transferred());
 
 		$file = $this->Data->getFile('image-jpg.jpg');
-		$Model->prepare($file);
-		$Model->perform();
+		$Model->transfer($file);
 		$file = $Model->transferred();
 
 		$this->assertTrue($file);
@@ -158,8 +157,7 @@ class TransferBehaviorTestCase extends BaseBehaviorTestCase {
 		$Model->Behaviors->attach('Media.Transfer', $this->_behaviorSettings['Transfer']);
 
 		$file = $this->Data->getFile(array('image-jpg.jpg' => 'tb.jpg'));
-		$this->assertTrue($Model->prepare($file));
-		$this->assertTrue($Model->perform());
+		$this->assertTrue($Model->transfer($file));
 		$this->assertTrue(file_exists($file));
 		$expected = $this->_transferDirectory . 'img' . DS . 'tb.jpg';
 		$this->assertEqual($Model->transferred(), $expected);
@@ -197,8 +195,7 @@ class TransferBehaviorTestCase extends BaseBehaviorTestCase {
 		$Model->Behaviors->attach('Media.Transfer', $this->_behaviorSettings['Transfer']);
 
 		$file = 'http://cakephp.org/img/cake-logo.png';
-		$this->assertTrue($Model->prepare($file));
-		$this->assertTrue($Model->perform());
+		$this->assertTrue($Model->transfer($file));
 		$expected = $this->_transferDirectory . 'img' . DS . 'cake_logo_2.png';
 		$this->assertEqual($Model->transferred(), $expected);
 	}
@@ -208,8 +205,7 @@ class TransferBehaviorTestCase extends BaseBehaviorTestCase {
 		$Model->Behaviors->attach('Media.Transfer', $this->_behaviorSettings['Transfer']);
 
 		$file = $this->Data->getFile('image-jpg.jpg');
-		$Model->prepare($file);
-		$Model->perform();
+		$Model->transfer($file);
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
 		$this->assertIdentical($result, 'image/jpeg');
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
@@ -221,8 +217,7 @@ class TransferBehaviorTestCase extends BaseBehaviorTestCase {
 		) + $this->_behaviorSettings['Transfer']);
 
 		$file = $this->Data->getFile('image-jpg.jpg');
-		$Model->prepare($file);
-		$Model->perform();
+		$Model->transfer($file);
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
 		$this->assertIdentical($result, 'image/jpeg');
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
@@ -238,8 +233,7 @@ class TransferBehaviorTestCase extends BaseBehaviorTestCase {
 		$Model->Behaviors->attach('Media.Transfer', $this->_behaviorSettings['Transfer']);
 
 		$file = 'http://cakephp.org/img/cake-logo.png';
-		$Model->prepare($file);
-		$Model->perform();
+		$Model->transfer($file);
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
 		$this->assertNull($result);
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
@@ -251,8 +245,7 @@ class TransferBehaviorTestCase extends BaseBehaviorTestCase {
 		) + $this->_behaviorSettings['Transfer']);
 
 		$file = 'http://cakephp.org/img/cake-logo.png';
-		$Model->prepare($file);
-		$Model->perform();
+		$Model->transfer($file);
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['source']['mimeType'];
 		$this->assertIdentical($result, 'image/png');
 		$result = $Model->Behaviors->Transfer->runtime['TheVoid']['destination']['mimeType'];
