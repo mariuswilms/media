@@ -258,23 +258,23 @@ class TransferBehavior extends ModelBehavior {
  * Triggered by `beforeValidate` and `transfer()`
  *
  * @param Model $Model
- * @param string $file A valid transfer resource to be used as source
+ * @param array|string $resource Transfer resource
  * @return boolean true if transfer is ready to be performed, false on error
  */
-	function _prepare(&$Model, $file) {
+	function _prepare(&$Model, $resource) {
 		$Model->runtime[$Model->alias]['isPrepared'] = true;
 
 		extract($this->settings[$Model->alias], EXTR_SKIP);
 		extract($this->runtime[$Model->alias], EXTR_SKIP);
 
-		if ($source = $this->_source($Model, $file)) {
+		if ($source = $this->_source($Model, $resource)) {
 			$this->runtime[$Model->alias]['source'] = $source;
 		} else {
 			return false;
 		}
 
 		if ($source['type'] !== 'file-local') {
-			$temporary = $this->runtime[$Model->alias]['temporary'] = $this->_temporary($Model, $file);
+			$temporary = $this->runtime[$Model->alias]['temporary'] = $this->_temporary($Model, $resource);
 		}
 
 		if (method_exists($Model, 'transferTo')) {
@@ -322,19 +322,21 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Parse data to be used as source
  *
- * @param mixed Path to file in local FS, URL or file-upload array
- * @return mixed Array with parsed results on success, false on error
+ * @param Model $Model
+ * @param array|string $resource Transfer resource good for deriving the source data from it
+ * @return array|boolean Parsed results on success, false on error
  * @todo evaluate errors in file uploads
  */
-	function _source(&$Model, $data) {
-		if (TransferValidation::fileUpload($data)) {
+	function _source(&$Model, $resource) {
+		if (TransferValidation::fileUpload($resource)) {
 			return array_merge(
-				$this->transferMeta($Model, $data), array('error' => $data['error'])
+				$this->transferMeta($Model, $resource),
+				array('error' => $resource['error'])
 			);
-		} elseif (MediaValidation::file($data)) {
-			return $this->transferMeta($Model, $data);
-		} elseif (TransferValidation::url($data, array('scheme' => 'http'))) {
-			return $this->transferMeta($Model, $data);
+		} elseif (MediaValidation::file($resource)) {
+			return $this->transferMeta($Model, $resource);
+		} elseif (TransferValidation::url($resource, array('scheme' => 'http'))) {
+			return $this->transferMeta($Model, $resource);
 		}
 		return false;
 	}
@@ -342,17 +344,19 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Parse data to be used as temporary
  *
- * @param mixed Path to file in local FS or file-upload array
- * @return mixed Array with parsed results on success, false on error
+ * @param Model $Model
+ * @param array|string $resource Transfer resource good for deriving the temporary data from it
+ * @return array|boolean Parsed results on success, false on error
  */
-	function _temporary(&$Model, $data) {
-		if (TransferValidation::fileUpload($data)
-		&& TransferValidation::uploadedFile($data['tmp_name'])) {
+	function _temporary(&$Model, $resource) {
+		if (TransferValidation::fileUpload($resource)
+		&& TransferValidation::uploadedFile($resource['tmp_name'])) {
 			return array_merge(
-				$this->transferMeta($Model, $data['tmp_name']), array('error' => $data['error'])
+				$this->transferMeta($Model, $resource['tmp_name']),
+				array('error' => $resource['error'])
 			);
-		} elseif (MediaValidation::file($data)) {
-			return $this->transferMeta($Model, $data);
+		} elseif (MediaValidation::file($resource)) {
+			return $this->transferMeta($Model, $resource);
 		}
 		return false;
 	}
@@ -360,12 +364,13 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Parse data to be used as destination
  *
- * @param mixed Path to file in local FS
- * @return mixed Array with parsed results on success, false on error
+ * @param Model $Model
+ * @param array|string $resource Transfer resource good for deriving the destination data from it
+ * @return array|boolean Parsed results on success, false on error
  */
-	function _destination(&$Model, $data) {
-		if (MediaValidation::file($data , false)) {
-			return $this->transferMeta($Model, $data);
+	function _destination(&$Model, $resource) {
+		if (MediaValidation::file($resource , false)) {
+			return $this->transferMeta($Model, $resource);
 		}
 		return false;
 	}
@@ -600,7 +605,8 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Retrieves metadata of any transferrable resource
  *
- * @param mixed $resource Path to file in local FS, URL or file-upload array
+ * @param Model $Model
+ * @param array|string $resource Transfer resource
  * @return array|void
  */
 	function transferMeta(&$Model, $resource) {
