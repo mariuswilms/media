@@ -328,11 +328,13 @@ class TransferBehavior extends ModelBehavior {
  */
 	function _source(&$Model, $data) {
 		if (TransferValidation::fileUpload($data)) {
-			return array_merge($this->info($Model, $data), array('error' => $data['error']));
+			return array_merge(
+				$this->transferMeta($Model, $data), array('error' => $data['error'])
+			);
 		} elseif (MediaValidation::file($data)) {
-			return $this->info($Model, $data);
+			return $this->transferMeta($Model, $data);
 		} elseif (TransferValidation::url($data, array('scheme' => 'http'))) {
-			return $this->info($Model, $data);
+			return $this->transferMeta($Model, $data);
 		}
 		return false;
 	}
@@ -347,11 +349,10 @@ class TransferBehavior extends ModelBehavior {
 		if (TransferValidation::fileUpload($data)
 		&& TransferValidation::uploadedFile($data['tmp_name'])) {
 			return array_merge(
-				$this->info($Model, $data['tmp_name']),
-				array('error' => $data['error'])
+				$this->transferMeta($Model, $data['tmp_name']), array('error' => $data['error'])
 			);
 		} elseif (MediaValidation::file($data)) {
-			return $this->info($Model, $data);
+			return $this->transferMeta($Model, $data);
 		}
 		return false;
 	}
@@ -364,7 +365,7 @@ class TransferBehavior extends ModelBehavior {
  */
 	function _destination(&$Model, $data) {
 		if (MediaValidation::file($data , false)) {
-			return $this->info($Model, $data);
+			return $this->transferMeta($Model, $data);
 		}
 		return false;
 	}
@@ -597,15 +598,13 @@ class TransferBehavior extends ModelBehavior {
 	}
 
 /**
- * Gather/Return information about a resource
+ * Retrieves metadata of any transferrable resource
  *
  * @param mixed $resource Path to file in local FS, URL or file-upload array
- * @param string $what scheme, host, port, file, MIME type, size, permission,
- * 	dirname, basename, filename, extension or type
- * @return mixed
+ * @return array|void
  */
-	function info(&$Model, $resource, $what = null) {
-		extract($this->settings[$Model->alias], EXTR_SKIP);
+	function transferMeta(&$Model, $resource) {
+		extract($this->settings[$Model->alias]);
 
 		$defaultResource = array(
 			'scheme'      => null,
@@ -620,7 +619,7 @@ class TransferBehavior extends ModelBehavior {
 			'basename'    => null,
 			'filename'    => null,
 			'extension'   => null,
-			'type'        => null,
+			'type'        => null
 		);
 
 		/* Currently HTTP is supported only */
@@ -633,7 +632,7 @@ class TransferBehavior extends ModelBehavior {
 					'host'   => parse_url($resource, PHP_URL_HOST),
 					'port'   => parse_url($resource, PHP_URL_PORT),
 					'file'   => $resource,
-					'type'   => 'http-url-remote',
+					'type'   => 'http-url-remote'
 			));
 
 			if (!class_exists('HttpSocket')) {
@@ -658,7 +657,7 @@ class TransferBehavior extends ModelBehavior {
 				array(
 					'file' => $resource,
 					'host' => 'localhost',
-					'mimeType' => MimeType::guessType($resource, array('paranoid' => !$trustClient)),
+					'mimeType' => MimeType::guessType($resource, array('paranoid' => !$trustClient))
 			));
 
 			if (TransferValidation::uploadedFile($resource['file'])) {
@@ -679,7 +678,7 @@ class TransferBehavior extends ModelBehavior {
 					array(
 						'size'       => filesize($resource['file']),
 						'permission' => substr(sprintf('%o', fileperms($resource['file'])), -4),
-						'pixels'     => $width * $height,
+						'pixels'     => $width * $height
 				));
 			}
 		} elseif (TransferValidation::fileUpload($resource)) {
@@ -692,7 +691,7 @@ class TransferBehavior extends ModelBehavior {
 					'size'       => $resource['size'],
 					'mimeType'   => $trustClient ? $resource['type'] : null,
 					'permission' => '0004',
-					'type'       => 'file-upload-remote',
+					'type'       => 'file-upload-remote'
 			));
 		} else {
 			return null;
@@ -702,13 +701,7 @@ class TransferBehavior extends ModelBehavior {
 			$length = isset($resource['extension']) ? strlen($resource['extension']) + 1 : 0;
 			$resource['filename'] = substr($resource['basename'], 0, - $length);
 		}
-
-		if (is_null($what)) {
-			return $resource;
-		} elseif (array_key_exists($what, $resource)) {
-			return $resource[$what];
-		}
-		return null;
+		return $resource;
 	}
 
 /**
@@ -808,5 +801,23 @@ class TransferBehavior extends ModelBehavior {
 		$this->runtime[$Model->alias] = $this->_defaultRuntime;
 
 	}
+
+/**
+ * Gather/Return information about a resource
+ *
+ * @param mixed $resource Path to file in local FS, URL or file-upload array
+ * @param string $what scheme, host, port, file, MIME type, size, permission,
+ * 	dirname, basename, filename, extension or type
+ * @return mixed
+ * @deprecated
+ */
+	function info(&$Model, $resource, $what = null) {
+		$message  = "TransferBehavior::info - ";
+		$message .= "Has been deprecated in favor of `transferMeta()` which - ";
+		$message .= "unlike `info()` - does not accept a 3rd parameter.";
+		trigger_error($message, E_USER_NOTICE);
+		return $this->transferMeta($Model, $resource);
+	}
+
 }
 ?>
