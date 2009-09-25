@@ -439,81 +439,6 @@ class MediaHelper extends AppHelper {
 	}
 
 /**
- * Generates markup to link to file
- *
- * @param string $path Absolute or partial path to a file
- * @param array $options
- * @return mixed
- */
-	function link($path, $options = array()) {
-		$default = array(
-			'inline' => true,
-			'restrict' => array(),
-		);
-		$defaultRss = array(
-			'title' => 'RSS Feed',
-		);
-
-		if (is_bool($options)) {
-			$options = array('inline' => $options);
-		}
-		$options = array_merge($default, $options);
-
-		if (is_array($path) && !array_key_exists('controller', $path)) {
-			$out = null;
-			foreach ($path as $i) {
-				$out .= $this->link($i, $options);
-			}
-			if (empty($out)) {
-				return null;
-			}
-			return $out;
-		}
-
-		$inline = $options['inline'];
-		unset($options['inline']);
-
-		if (!$url = $this->url($path)) {
-			return null;
-		}
-
-		if (strpos('://', $path) !== false) {
-			$file = parse_url($url, PHP_URL_PATH);
-		} else {
-			$file = $this->file($path);
-		}
-
-		$mimeType = MimeType::guessType($file);
-		$Media = Media::factory($file, $mimeType);
-
-		if (!empty($options['restrict'])
-		&& !in_array(strtolower($Media->name), (array) $options['restrict'])) {
-			return null;
-		}
-		unset($options['restrict']);
-
-		switch ($mimeType) {
-			case 'text/css':
-				$out = sprintf(
-					$this->tags['csslink'],
-					$url,
-					$this->_parseAttributes($options, null, '', ' ')
-				);
-				return $this->output($out, $inline);
-			case 'application/javascript':
-			case 'application/x-javascript':
-				$out = sprintf($this->tags['javascriptlink'], $url);
-				return $this->output($out, $inline);
-			case 'application/rss+xml':
-				$options = array_merge($defaultRss,$options);
-				$out = sprintf($this->tags['rsslink'], $url, $options['title']);
-				return $this->output($out, $inline);
-			default:
-				return $this->Html->link(basename($file), $url);
-		}
-	}
-
-/**
  * Get MIME type for a path
  *
  * @param string|array $path Absolute or partial path to a file
@@ -543,7 +468,7 @@ class MediaHelper extends AppHelper {
  * Resolves partial path
  *
  * Examples:
- * 	css/cake.generic         >>> MEDIA_STATIC/css/cake.generic.css
+ * 	ico/cake.power           >>> MEDIA_STATIC/ico/cake.power.ico
  *  transfer/img/image.jpg   >>> MEDIA_TRANSFER/img/image.jpg
  * 	s/img/image.jpg          >>> MEDIA_FILTER/s/static/img/image.jpg
  *
@@ -664,6 +589,86 @@ class MediaHelper extends AppHelper {
 			);
 		}
 		return implode("\n", $parameters);
+	}
+
+/**
+ * Generates markup to link to file
+ *
+ * @param string $path Absolute or partial path to a file
+ * @param array $options
+ * @return mixed
+ * @deprecated
+ */
+	function link($path, $options = array()) {
+		$message  = "MediaHelper::__construct - ";
+		$message .= "All functionality related to assets has been deprecated.";
+		trigger_error($message, E_USER_NOTICE);
+
+		$default = array(
+			'inline' => true,
+			'restrict' => array(),
+		);
+		$defaultRss = array(
+			'title' => 'RSS Feed',
+		);
+
+		if (is_bool($options)) {
+			$options = array('inline' => $options);
+		}
+		$options = array_merge($default, $options);
+
+		if (is_array($path) && !array_key_exists('controller', $path)) {
+			$out = null;
+			foreach ($path as $i) {
+				$out .= $this->link($i, $options);
+			}
+			if (empty($out)) {
+				return null;
+			}
+			return $out;
+		}
+
+		$inline = $options['inline'];
+		unset($options['inline']);
+
+		if (!$url = $this->url($path)) {
+			return null;
+		}
+
+		if (strpos('://', $path) !== false) {
+			$file = parse_url($url, PHP_URL_PATH);
+		} else {
+			$file = $this->file($path);
+		}
+
+		$mimeType = MimeType::guessType($file);
+		$Media = Media::factory($file, $mimeType);
+
+		if (!empty($options['restrict'])
+		&& !in_array(strtolower($Media->name), (array) $options['restrict'])) {
+			return null;
+		}
+		unset($options['restrict']);
+
+		switch ($mimeType) {
+			case 'text/css':
+				$out = sprintf(
+					$this->tags['csslink'],
+					$url,
+					$this->_parseAttributes($options, null, '', ' ')
+				);
+				return $this->output($out, $inline);
+			case 'application/javascript':
+			case 'application/x-javascript':
+				$out = sprintf($this->tags['javascriptlink'], $url);
+				return $this->output($out, $inline);
+			case 'application/rss+xml':
+				$options = array_merge($defaultRss,$options);
+				$out = sprintf($this->tags['rsslink'], $url, $options['title']);
+				return $this->output($out, $inline);
+			default:
+				return $this->Html->link(basename($file), $url);
+		}
 	}
 }
 ?>

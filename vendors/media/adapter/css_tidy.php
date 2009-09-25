@@ -23,6 +23,7 @@
  * @package    media
  * @subpackage media.libs.media.adapter
  * @link       http://csstidy.sourceforge.net/
+ * @deprecated
  */
 class CssTidyMediaAdapter extends MediaAdapter {
 

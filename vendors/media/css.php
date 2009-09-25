@@ -23,6 +23,7 @@ App::import('Vendor', 'Media.Media');
  *
  * @package    media
  * @subpackage media.libs.media
+ * @deprecated
  */
 class CssMedia extends Media {
 
@@ -32,6 +33,13 @@ class CssMedia extends Media {
  * @var array
  */
 	var $adapters = array('CssTidy', 'BasicText');
+
+	function __construct($file, $mimeType = null) {
+		$message  = "CssMedia::__construct - ";
+		$message .= "All functionality related to assets has been deprecated.";
+		trigger_error($message, E_USER_NOTICE);
+		parent::__construct($file, $mimeType);
+	}
 
 /**
  * Number of characters

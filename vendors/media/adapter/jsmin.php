@@ -24,6 +24,7 @@
  * @package    media
  * @subpackage media.libs.media.adapter
  * @link       http://code.google.com/p/jsmin-php/
+ * @deprecated
  */
 class JsminMediaAdapter extends MediaAdapter {
 	var $require = array(
