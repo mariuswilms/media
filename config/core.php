@@ -51,15 +51,9 @@ if (!defined('MEDIA_TRANSFER')) {
  * URL paths
  *
  * Each constant is defined with a value which is
- * either a (slash terminated) complete URL or an path fragment relative to your webroot.
+ * an (slash terminated) URL path fragment relative to your webroot.
  *
  * In case the corresponding directory isn't served use `false` as a value.
- *
- * Examples:
- * 	`'http://www.example.org/app/media/'`
- *	`'http://media{:id}.example.org/'`
- * 	`'media/'`
- * 	`false`
  */
 if (!defined('MEDIA_URL')) {
 	define('MEDIA_URL', 'media/');

@@ -161,13 +161,7 @@ class MediaHelper extends AppHelper {
  * @return string
  */
 	function url($path = null, $full = false) {
-		if (is_array($path) || strpos($path, '://') !== false) {
-			return parent::url($path, $full);
-		}
-		if (!$path = $this->webroot($path)) {
-			return null;
-		}
-		return $full ? FULL_BASE_URL . $path : $path;
+		return parent::url($this->webroot($path), $full);
 	}
 
 /**
@@ -179,6 +173,9 @@ class MediaHelper extends AppHelper {
  * @return mixed
  */
 	function webroot($path) {
+		if (is_array($path) || strpos($path, '://') !== false) {
+			return $path;
+		}
 		if (!$file = $this->file($path)) {
 			return null;
 		}
@@ -191,19 +188,11 @@ class MediaHelper extends AppHelper {
 				if ($url === false) {
 					return null;
 				}
-				$url = String::insert($url, array('id' => $this->_id($file)), array(
-					'before' => '{:', 'after' => '}'
-				));
 				$path = str_replace($directory, $url, $file);
 				break;
 			}
 		}
-		$path = str_replace('\\', '/', $path);
-
-		if (strpos($path, '://') !== false) {
-			return $path;
-		}
-		return $this->webroot . $path;
+		return $this->webroot . str_replace('\\', '/', $path);
 	}
 
 /**
@@ -554,17 +543,6 @@ class MediaHelper extends AppHelper {
 			}
 		}
 		return false;
-	}
-
-/**
- * Calculates the host id for a file
- *
- * @link http://yuiblog.com/blog/2007/04/11/performance-research-part-4/
- * @param string $file
- * @return integer
- */
-	function _id($file) {
-		return abs(crc32($file)) % 2;
 	}
 
 /**
