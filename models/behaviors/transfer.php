@@ -385,12 +385,7 @@ class TransferBehavior extends ModelBehavior {
 			$temporary = $this->runtime[$Model->alias]['temporary'] = $this->_temporary($Model, $resource);
 		}
 
-		if (method_exists($Model, 'transferTo')) {
-			$file = $Model->transferTo($temporary, $source);
-		}  else {
-			$file = $this->transferTo($Model, $temporary, $source);
-		}
-		if (!$file) {
+		if (!$file = $Model->transferTo($temporary, $source)) {
 			$message = "TransferBehavior::_prepare - Could not obtain destination file path.";
 			trigger_error($message, E_USER_NOTICE);
 			return false;
