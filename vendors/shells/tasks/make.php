@@ -104,7 +104,7 @@ class MakeTask extends MediaShell {
 			$this->version = $this->params['version'];
 		}
 
-		$this->out();
+		$this->out('');
 		$this->out(sprintf('%-25s: %s', 'Source', $this->shortPath($this->source)));
 		$this->out(sprintf('%-25s: %s', 'Destination', $this->shortPath($this->destination)));
 		$this->out(sprintf('%-25s: %s', 'Overwrite existing', $this->_overwrite ? 'yes' : 'no'));
@@ -113,7 +113,7 @@ class MakeTask extends MediaShell {
 		if ($this->in('Looks OK?', 'y,n', 'y') == 'n') {
 			return false;
 		}
-		$this->out();
+		$this->out('');
 		$this->out('Making');
 		$this->hr();
 
@@ -130,7 +130,7 @@ class MakeTask extends MediaShell {
 			$this->progress($key, $this->shortPath($file));
 			$this->_make($file);
 		}
-		$this->out();
+		$this->out('');
 	}
 
 /**

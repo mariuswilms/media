@@ -85,7 +85,7 @@ class CollectTask extends MediaShell {
 			$answer = $this->in('Would you like to link (instead of copy) the files?', 'y,n', 'n');
 			$this->_link = $answer == 'y';
 		}
-		$this->out();
+		$this->out('');
 		$this->out('Mapping');
 		$this->hr();
 
@@ -99,13 +99,13 @@ class CollectTask extends MediaShell {
 			$this->out($message);
 		}
 
-		$this->out();
+		$this->out('');
 
 		if ($this->in('Looks OK?', 'y,n', 'y') == 'n') {
 			return false;
 		}
 
-		$this->out();
+		$this->out('');
 		$this->out('Collecting');
 		$this->hr();
 
@@ -225,13 +225,13 @@ class CollectTask extends MediaShell {
 		$Right = new File(key($mapped));
 
 		$this->out('Collision:');
-		$this->out();
+		$this->out('');
 		$this->out(sprintf('%s', $this->shortPath($Left->pwd())));
 		$this->out(sprintf('|  %s', $this->shortPath($Right->pwd())));
 		$this->out(sprintf('|  | '));
 		$this->out(sprintf('V  V '));
 		$this->out(sprintf('%s', $this->shortPath(current($mapped))));
-		$this->out();
+		$this->out('');
 
 		if ($Left->md5() == $Right->md5()) {
 			$this->out('Both files have the same checksum.');
@@ -280,7 +280,7 @@ class CollectTask extends MediaShell {
 			$message = sprintf('[%-6s] %s', 	$result ? 'OK' : 'FAILED', 	$this->shortPath($old));
 			$this->progress(++$i, $message);
 		}
-		$this->out();
+		$this->out('');
 		return true;
 	}
 }

@@ -53,13 +53,6 @@ class MediaShell extends Shell {
 	var $quiet = false;
 
 /**
- * Width of shell in number of characters per line
- *
- * @var integer
- */
-	var $width = 80;
-
-/**
  * Startup
  *
  * @access public
@@ -78,7 +71,6 @@ class MediaShell extends Shell {
  * @return void
  */
 	function _welcome() {
-		$this->clear();
 		$this->hr();
 		$this->out('Media Shell');
 		$this->hr();
@@ -179,7 +171,7 @@ class MediaShell extends Shell {
 			}
 		}
 
-		$this->out();
+		$this->out('');
 		$this->protect();
 		$this->out('Remember to set the correct permissions on transfer and filter directory.');
 	}
@@ -214,7 +206,7 @@ class MediaShell extends Shell {
 		$File->close();
 
 		$this->out($this->shortPath($File->pwd()) . ' created.');
-		$this->out();
+		$this->out('');
 		return true;
 	}
 
@@ -227,173 +219,41 @@ class MediaShell extends Shell {
 		// 63 chars ===============================================================
 		$this->out("NAME");
 		$this->out("\tmedia -- the 23rd shell");
-		$this->out();
+		$this->out('');
 		$this->out("SYNOPSIS");
 		$this->out("\tcake media <params> <command> <args>");
-		$this->out();
+		$this->out('');
 		$this->out("COMMANDS");
 		$this->out("\tinit");
 		$this->out("\t\tInitializes the media directory structure.");
-		$this->out();
+		$this->out('');
 		$this->out("\tprotect");
 		$this->out("\t\tCreates a htaccess file to protect the transfer dir.");
-		$this->out();
+		$this->out('');
 		$this->out("\tcollect [-link] [-exclude name] [sourcedir]");
 		$this->out("\t\tCollects files and copies them to the media dir.");
-		$this->out();
+		$this->out('');
 		$this->out("\t\t-link Use symlinks instead of copying.");
 		$this->out("\t\t-exclude Comma separated list of names to exclude.");
-		$this->out();
+		$this->out('');
 		$this->out("\tsync [-auto] [model] [searchdir]");
 		$this->out("\t\tChecks if records are in sync with files and vice versa.");
-		$this->out();
+		$this->out('');
 		$this->out("\t\t-auto Automatically repair without asking for confirmation.");
-		$this->out();
+		$this->out('');
 		$this->out("\tmake [-force] [-version name] [sourcefile/sourcedir] [destinationdir]");
 		$this->out("\t\tProcess a file or directory according to filters.");
-		$this->out();
+		$this->out('');
 		$this->out("\t\t-version name Restrict command to a specfic filter version (e.g. xxl).");
 		$this->out("\t\t-force Overwrite files if they exist.");
-		$this->out();
+		$this->out('');
 		$this->out("\thelp");
 		$this->out("\t\tShows this help message.");
-		$this->out();
+		$this->out('');
 		$this->out("OPTIONS");
 		$this->out("\t-verbose");
 		$this->out("\t-quiet");
-		$this->out();
-	}
-
-	/* Useful display methods */
-
-/**
- * Outputs to the stdout filehandle.
- *
- * Overridden to enable quiet mode
- *
- * @param string $string String to output.
- * @param boolean $newline If true, the outputs gets an added newline.
- * @access public
- */
-	function out($string = '', $newline = true) {
-		if ($this->quiet) {
-			return null;
-		}
-		$this->Dispatch->stdout($string, $newline);
-	}
-
-/**
- * clear
- *
- * @access public
- * @return void
- */
-	function clear() {
-		$this->out(chr(27).'[H'.chr(27).'[2J');
-	}
-
-/**
- * heading
- *
- * @param mixed $string
- * @param mixed $width
- * @param string $character
- * @access public
- * @return void
- */
-	function heading($string, $width = null, $character = '=') {
-		if (is_string($width)) {
-			$character = $width;
-			$width = null;
-		}
-		if ($width === null) {
-			$width = $this->width;
-		}
-		$this->out($this->pad($string . ' ', $width, $character));
-		$this->out();
-	}
-
-/**
- * Overridden
- *
- * @param string $character
- * @param mixed $width
- * @access public
- * @return void
- */
-	function hr($character = '-', $width = null) {
-		$this->out(str_repeat($character, $width === null ? $this->width : $width));
-	}
-
-/**
- * info
- *
- * @param mixed $message
- * @access public
- * @return void
- */
-	function info($message) {
-		if (!$this->verbose) {
-			return null;
-		}
-		$this->out(sprintf(__('Notice: %s', true), $message), true);
-	}
-
-/**
- * warn
- *
- * @param mixed $message
- * @access public
- * @return void
- * @link /usr/lib/portage/bin/isolated-functions.sh
- */
-	function warn($message) {
-		/* Until Dispatcher does not prepend Error: */
-		fwrite($this->Dispatch->stderr, sprintf(__('Warning: %s', true), $message)."\n");
-	}
-
-/**
- * Overridden
- *
- * Needed because ShellDispatcher prepends "Error:"
- *
- * @param mixed $message
- * @access public
- * @return void
- */
-	function err($message) 	{
-		fwrite($this->Dispatch->stderr, sprintf(__('Error: %s', true), $message)."\n");
-		$this->_stop(1);
-	}
-
-/**
- * begin
- *
- * @param mixed $message
- * @access public
- * @return void
- */
-	function begin($message) {
-		$this->out(sprintf('%s ... ', $message), false);
-	}
-
-/**
- * end
- *
- * @param mixed $result
- * @access public
- * @return void
- */
-	function end($result = null) {
-		if ($result == true) {
-			$message =  __('ok', true);
-		} elseif (empty($result)) {
-			$message = __('unknown', true);
-		} else {
-			$message = __('failed', true);
-		}
-		$this->out(sprintf('%s', $message));
-		return $result;
+		$this->out('');
 	}
 
 /**
@@ -422,16 +282,5 @@ class MediaShell extends Shell {
 		}
 	}
 
-/**
- * Overridden to allow Stop messages
- *
- * @param integer $status
- * @access protected
- * @return void
- */
-	function _stop($status = 0) {
-		$this->out($status === 0 ? __('Quitting.', true) : __('Aborting.', true));
-		parent::_stop($status);
-	}
 }
 ?>

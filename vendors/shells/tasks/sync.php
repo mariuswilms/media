@@ -180,7 +180,7 @@ class SyncTask extends MediaShell {
  * @return void
  */
 	function _checkFilesWithRecords() {
-		$this->out();
+		$this->out('');
 		$this->out('Checking if files are in sync with records');
 		$this->hr();
 
@@ -192,7 +192,7 @@ class SyncTask extends MediaShell {
 				$this->shortPath($dbItem['file']),
 				$this->_Model->name, $dbItem['id']
 			);
-			$this->out();
+			$this->out('');
 			$this->out($message);
 
 			$this->__dbItem = $dbItem;
@@ -222,7 +222,7 @@ class SyncTask extends MediaShell {
  * @return void
  */
 	function _checkRecordsWithFiles() {
-		$this->out();
+		$this->out('');
 		$this->out('Checking if records are in sync with files');
 		$this->hr();
 
