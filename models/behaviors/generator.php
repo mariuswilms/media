@@ -75,9 +75,6 @@ class GeneratorBehavior extends ModelBehavior {
  * @return boolean
  */
 	function afterSave(&$Model, $created) {
-		if (!$created) {
-			return true;
-		}
 		extract($this->settings[$Model->alias]);
 		$item =& $Model->data[$Model->alias];
 
