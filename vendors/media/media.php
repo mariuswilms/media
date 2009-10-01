@@ -312,9 +312,7 @@ class Media extends Object {
 				trigger_error($message, E_USER_WARNING);
 				return false;
 			}
-
 			$result = call_user_func_array(array($Media, $method), $args);
-
 			if ($result === false) {
 				$message  = "Media::make - Instruction ";
 				$message .=  "`" . get_class($Media) . "::{$method}()` failed.";
@@ -334,7 +332,7 @@ class Media extends Object {
  * @param boolean $overwrite Enable overwriting of an existent file
  * @return mixed
  */
-	function store($file, $overwrite = false) {
+	function store($file, $overwrite = false, $guessExtension = true) {
 		$File = new File($file);
 
 		if ($overwrite) {
@@ -345,14 +343,15 @@ class Media extends Object {
 			trigger_error($message, E_USER_NOTICE);
 			return false;
 		}
+		if ($guessExtension) {
+			$file = $File->Folder->pwd() . DS . $File->name();
+			$correctExtension = MimeType::guessExtension($this->mimeType);
 
-		$file = $File->Folder->pwd() . DS . $File->name();
-		$correctExtension = MimeType::guessExtension($this->mimeType);
-
-		if ($correctExtension) {
-			$file .= '.' . $correctExtension;
-		} elseif (isset($extension)) {
-			$file .= '.' . $File->ext();
+			if ($correctExtension) {
+				$file .= '.' . $correctExtension;
+			} elseif (isset($extension)) {
+				$file .= '.' . $File->ext();
+			}
 		}
 
 		if ($this->Adapters->dispatchMethod($this, 'store', array($file))) {
