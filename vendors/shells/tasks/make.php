@@ -87,13 +87,13 @@ class MakeTask extends MediaShell {
 		$this->destination = array_shift($this->args);
 
 		if (!isset($this->source)) {
-			$this->source = $this->in('Source File/Directory', null, MEDIA . 'static' . DS);
+			$this->source = $this->in('Source File/Directory', null, MEDIA_STATIC);
 		}
 		if (is_dir($this->source)) {
 			$this->source = Folder::slashTerm($this->source);
 		}
 		if (!isset($this->destination)) {
-			$this->destination = $this->in('Destination Directory', null, MEDIA . 'filter' . DS);
+			$this->destination = $this->in('Destination Directory', null, MEDIA_FILTER);
 		}
 		$this->destination = Folder::slashTerm($this->destination);
 
@@ -159,7 +159,7 @@ class MakeTask extends MediaShell {
 
 		foreach ($filter as $version => $instructions) {
 			$directory = Folder::slashTerm(rtrim($this->destination . $version . DS . $subdir, '.'));
-			$Folder = new Folder($directory, $this->createDirectories);
+			$Folder = new Folder($directory, $this->_createDirectories);
 
 			if (!$Folder->pwd()) {
 				$this->err($directory . ' could not be created or is not writable.');

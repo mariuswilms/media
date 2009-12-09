@@ -194,6 +194,10 @@ class MediaShell extends Shell {
 			$this->err($this->shortPath($file) . ' is already present.');
 			return true;
 		}
+		if (strpos(WWW_ROOT, MEDIA_TRANSFER) === false) {
+			$this->err($this->shortPath($file) . ' is not in your webroot.');
+			return;
+		}
 		$this->out('Your transfer directory is missing a htaccess file to block requests.');
 
 		if ($this->in('Do you want to create it now?', 'y,n', 'n') == 'n') {

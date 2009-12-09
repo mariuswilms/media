@@ -119,10 +119,9 @@ class CollectTask extends MediaShell {
  * @return array
  */
 	function _paths() {
-		$plugins = array_map('strtolower', Configure::listObjects('plugin'));
-
+		$plugins = array_map('Inflector::underscore', Configure::listObjects('plugin'));
 		foreach ($plugins as $plugin) {
-			foreach (Configure::read('pluginPaths') as $pluginPath) {
+			foreach (App::path('plugins') as $pluginPath) {
 				if (is_dir($pluginPath . $plugin)) {
 					$pluginVendorPaths[] = $pluginPath . $plugin .  DS . 'vendors' . DS;
 				}
@@ -130,7 +129,7 @@ class CollectTask extends MediaShell {
 		}
 
 		$paths = array_merge(
-			Configure::read('vendorPaths'),
+			App::path('vendors'),
 			array(WWW_ROOT),
 			$pluginVendorPaths
 		);
