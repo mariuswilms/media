@@ -378,7 +378,7 @@ class TransferBehavior extends ModelBehavior {
  * @return boolean true if transfer is ready to be performed, false on error
  */
 	function _prepare(&$Model, $resource) {
-		$Model->runtime[$Model->alias]['isPrepared'] = true;
+		$this->runtime[$Model->alias]['isPrepared'] = true;
 
 		extract($this->settings[$Model->alias], EXTR_SKIP);
 		extract($this->runtime[$Model->alias], EXTR_SKIP);
