@@ -246,7 +246,7 @@ class MediaHelper extends AppHelper {
 			unset($options['url']);
 
 			$out = $this->embed($path, $options);
-			return $this->Html->link($out, $link, array(), false, false);
+			return $this->Html->link($out, $link, array('escape' => false));
 		}
 
 		if (!$url = $this->url($path)) {

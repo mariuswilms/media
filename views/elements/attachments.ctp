@@ -118,7 +118,7 @@ if (!isset($title)) {
 					$size .= ' Bytes';
 				}
 
-				printf('<span>%s&nbsp;(%s/%s) <em>%s</em></span>',
+				printf('<span class="description">%s&nbsp;(%s/%s) <em>%s</em></span>',
 						$url ? $html->link($item['basename'], $url) : $item['basename'],
 						strtolower($Media->name), $size, $item['alternative']);
 			}
