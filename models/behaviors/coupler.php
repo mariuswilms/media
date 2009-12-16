@@ -16,7 +16,6 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Behavior', 'Media.Polymorphic');
 
 /**
  * Coupler Behavior Class
@@ -24,7 +23,7 @@ App::import('Behavior', 'Media.Polymorphic');
  * @package    media
  * @subpackage media.models.behaviors
  */
-class CouplerBehavior extends PolymorphicBehavior {
+class CouplerBehavior extends ModelBehavior {
 
 /**
  * Settings keyed by model alias
@@ -54,23 +53,12 @@ class CouplerBehavior extends PolymorphicBehavior {
  */
 	function setup(&$Model, $settings = array()) {
 		$settings = (array)$settings;
-		$parentVars = get_class_vars(get_parent_class($this));
-
-		if (isset($Model->Behaviors->Polymorphic)) {
-			$message  = "CouplerBehavior::setup - Since 1.3.0 it's not neccessary ";
-			$message .= "to manually attach the polymorphic behavior to the model anymore. ";
-			$message .= "Remove it from the actsAs property of the `{$Model->alias}` model.";
-			trigger_error($message, E_USER_NOTICE);
-		}
 
 		if (isset($Model->Behaviors->Transfer)) {
 			$transferSettings = $Model->Behaviors->Transfer->settings[$Model->alias];
 			$settings['baseDirectory'] = dirname($transferSettings['baseDirectory']) . DS;
 		}
-
-		$this->settings[$Model->alias] = array_merge(
-			$parentVars['_defaultSettings'], $this->_defaultSettings, $settings
-		);
+		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
 	}
 
 /**
@@ -126,7 +114,6 @@ class CouplerBehavior extends PolymorphicBehavior {
 
 		if (isset($Model->data[$Model->alias]['file'])) {
 			$File = new File($Model->data[$Model->alias]['file']);
-			unset($Model->data[$Model->alias]['file']);
 
 			/* `baseDirectory` may equal the file's directory or use backslashes */
 			$dirname = substr(str_replace(
@@ -223,7 +210,7 @@ class CouplerBehavior extends PolymorphicBehavior {
 			}
 			$result[$Model->alias]['file'] = $file;
 		}
-		return parent::afterFind($Model, $results, $primary);
+		return $results;
 	}
 
 /**

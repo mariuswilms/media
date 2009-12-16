@@ -211,6 +211,7 @@ class AttachmentTestCase extends CakeTestCase {
 			'filterDirectory' => $this->Folder->pwd() . 'filter' . DS
 		));
 		$Model->{$assocModelName}->Behaviors->attach('Media.Coupler');
+		$Model->{$assocModelName}->Behaviors->attach('Media.Polymorphic');
 		$Model->{$assocModelName}->Behaviors->attach('Media.Meta', array(
 			'level' => 2
 		));
