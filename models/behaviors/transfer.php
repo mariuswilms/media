@@ -63,13 +63,18 @@ class TransferBehavior extends ModelBehavior {
  * alternativeFileTries
  * 	integer - Specifies the maximum number of tries for finding an alternative destination file name
  *
+ * overwrite
+ * 	false - Existing destination files with the same are not overridden, an alternative name is used
+ * 	true - Overwrites existing destination files with the same name
+ *
  * @var array
  */
 	var $_defaultSettings = array(
 		'trustClient'     => false,
 		'baseDirectory'   => MEDIA_TRANSFER,
 		'createDirectory' => true,
-		'alternativeFile' => 100
+		'alternativeFile' => 100,
+		'overwrite'       => true
 	);
 
 /**
@@ -296,6 +301,9 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Prepares (if neccessary) and performs a transfer
  *
+ * Please note that if a file with the same name as the destination exists,
+ * it will be silently overwritten.
+ *
  * @param Model $Model
  * @param mixed $file File from which source, temporary and destination are derived
  * @return string|boolean Destination file on success, false on failure
@@ -391,7 +399,7 @@ class TransferBehavior extends ModelBehavior {
 			return false;
 		}
 
-		if ($alternativeFile) {
+		if (!$overwrite) {
 			$file = $this->_alternativeFile($baseDirectory . $file, $alternativeFile);
 
 			if (!$file) {

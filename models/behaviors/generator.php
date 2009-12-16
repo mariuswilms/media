@@ -39,12 +39,17 @@ class GeneratorBehavior extends ModelBehavior {
  * 	false - Fail on missing directories
  * 	true  - Recursively create missing directories
  *
+ * overwrite
+ * 	false - Will fail if a version with the same already exists
+ * 	true - Overwrites existing versions with the same name
+ *
  * @var array
  */
 	var $_defaultSettings = array(
 		'baseDirectory'   => MEDIA,
 		'filterDirectory' => MEDIA_FILTER,
-		'createDirectory' => true
+		'createDirectory' => true,
+		'overwrite' => false
 	);
 
 /**
@@ -89,7 +94,7 @@ class GeneratorBehavior extends ModelBehavior {
 		} else {
 			return false;
 		}
-		return $this->make($Model, $file);
+		return $this->make($Model, $file, $overwrite);
 	}
 
 /**
@@ -97,6 +102,7 @@ class GeneratorBehavior extends ModelBehavior {
  *
  * @param Model $Model
  * @param string $file Path to a file relative to `baseDirectory`  or an absolute path to a file
+ * @param boolean Whether to overwrite existing versions with the same name or not
  * @return boolean
  */
 	function make(&$Model, $file, $overwrite = false) {
