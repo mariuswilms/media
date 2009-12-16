@@ -61,12 +61,6 @@ class GeneratorBehavior extends ModelBehavior {
  */
 	function setup(&$Model, $settings = array()) {
 		$settings = (array)$settings;
-
-		if (isset($Model->Behaviors->Transfer)) {
-			$transferSettings = $Model->Behaviors->Transfer->settings[$Model->alias];
-			$settings['baseDirectory'] = dirname($transferSettings['baseDirectory']) . DS;
-			$settings['createDirectory'] = $transferSettings['createDirectory'];
-		}
 		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
 	}
 

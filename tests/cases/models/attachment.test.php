@@ -208,6 +208,7 @@ class AttachmentTestCase extends CakeTestCase {
 			'baseDirectory' => $this->Folder->pwd() . 'transfer' . DS
 		));
 		$Model->{$assocModelName}->Behaviors->attach('Media.Generator', array(
+			'baseDirectory' => $this->Folder->pwd(),
 			'filterDirectory' => $this->Folder->pwd() . 'filter' . DS
 		));
 		$Model->{$assocModelName}->Behaviors->attach('Media.Coupler');
