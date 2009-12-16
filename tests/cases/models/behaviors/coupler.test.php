@@ -71,7 +71,7 @@ class CouplerBehaviorTestCase extends BaseBehaviorTestCase {
 				'id' => '5',
 					'dirname' => 'static/doc',
 					'basename' => 'application-pdf.pdf',
-					'checksum' => 'f7ee91cffd90881f3d719e1bab1c4697',
+					'checksum' => null,
 					'file' => $file
 		));
 		$this->assertEqual($expected, $result);

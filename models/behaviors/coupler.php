@@ -123,7 +123,6 @@ class CouplerBehavior extends ModelBehavior {
 			), 0, -1);
 
 			$result = array(
-				'checksum' => $File->md5(true),
 				'dirname'  => $dirname,
 				'basename' => $File->name,
 			);

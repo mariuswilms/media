@@ -45,7 +45,7 @@ class MetaBehavior extends ModelBehavior {
  * @var array
  */
 	var $_defaultSettings = array(
-		'level'   => 1
+		'level' => 1,
 	);
 
 /**
@@ -66,6 +66,26 @@ class MetaBehavior extends ModelBehavior {
 	function setup(&$Model, $settings = array()) {
 		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, (array)$settings);
 		$this->__cached[$Model->alias] = Cache::read('media_metadata_' . $Model->alias, '_cake_core_');
+	}
+
+/**
+ * Callback
+ *
+ * Adds metadata to be stored in table if a record is about to be created.
+ *
+ * @param Model $Model
+ * @return boolean
+ */
+	function beforeSave(&$Model) {
+		if ($Model->exists() || !isset($Model->data[$Model->alias]['file'])) {
+			return true;
+		}
+		extract($this->settings[$Model->alias]);
+
+		$Model->data[$Model->alias] += $this->metadata(
+			$Model, $Model->data[$Model->alias]['file'], $level
+		);
+		return true;
 	}
 
 /**

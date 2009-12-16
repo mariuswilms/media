@@ -44,6 +44,20 @@ class MetaBehaviorTestCase extends BaseBehaviorTestCase {
 		$Model->Behaviors->attach('Media.Meta');
 	}
 
+	function testSave() {
+		$Model =& ClassRegistry::init('Song');
+		$Model->Behaviors->attach('Media.Meta', $this->_behaviorSettings['Meta']);
+
+		$data = array('Song' => array('file' => $this->file0));
+		$result = $Model->save($data);
+		$Model->Behaviors->detach('Media.Meta');
+
+		$id = $Model->getLastInsertID();
+		$result = $Model->findById($id);
+		$Model->delete($id);
+		$this->assertEqual($result['Song']['checksum'], md5_file($this->file0));
+	}
+
 	function testFind() {
 		$Model =& ClassRegistry::init('Song');
 		$Model->Behaviors->attach('Media.Coupler', $this->_behaviorSettings['Coupler']);
