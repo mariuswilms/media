@@ -17,7 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Core', array('ConnectionManager', 'Folder'));
-require_once(APP . 'plugins' . DS . 'media'. DS . 'config' . DS . 'core.php');
+require_once(dirname(dirname(dirname(__FILE__))) . DS . 'config' . DS . 'core.php');
 Configure::write('Cache.disable', true);
 
 /**
