@@ -285,6 +285,5 @@ class MediaShell extends Shell {
 			$this->out($out);
 		}
 	}
-
 }
 ?>
