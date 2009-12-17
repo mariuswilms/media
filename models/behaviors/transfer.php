@@ -398,11 +398,10 @@ class TransferBehavior extends ModelBehavior {
 			trigger_error($message, E_USER_NOTICE);
 			return false;
 		}
+		$file = $baseDirectory . $file;
 
 		if (!$overwrite) {
-			$file = $this->_alternativeFile($baseDirectory . $file, $alternativeFile);
-
-			if (!$file) {
+			if (!$file = $this->_alternativeFile($file, $alternativeFile)) {
 				$message  = "TransferBehavior::_prepare - ";
 				$message .= "Exceeded number of max. tries while finding alternative file name.";
 				trigger_error($message, E_USER_NOTICE);
