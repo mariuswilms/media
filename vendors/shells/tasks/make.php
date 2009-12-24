@@ -150,7 +150,7 @@ class MakeTask extends MediaShell {
 
 		foreach ($filter as $version => $instructions) {
 			$directory = Folder::slashTerm(rtrim($this->destination . $version . DS . $subdir, '.'));
-			$Folder = new Folder($directory, $this->createDirectories);
+			$Folder = new Folder($directory, $this->_createDirectories);
 
 			if (!$Folder->pwd()) {
 				$this->err($directory . ' could not be created or is not writable.');
