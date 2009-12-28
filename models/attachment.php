@@ -58,7 +58,7 @@ class Attachment extends MediaAppModel {
 		),
 		'Media.Generator' => array(
 			'baseDirectory' => MEDIA,
-			'filterDirectory' => MEDIA_FILTER
+			'filterDirectory' => MEDIA_FILTER,
 			'createDirectory' => true,
 		),
 		'Media.Polymorphic',
