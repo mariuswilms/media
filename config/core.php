@@ -110,7 +110,6 @@ Configure::write('Media.filter.document', array(
 	'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
 ));
 Configure::write('Media.filter.generic', array());
-Configure::write('Media.filter.icon', array());
 Configure::write('Media.filter.image', array(
 	'xxs' => array('convert' => 'image/png', 'zoomCrop' => array(16, 16)),
 	'xs'  => array('convert' => 'image/png', 'zoomCrop' => array(32, 32)),
@@ -133,6 +132,7 @@ Configure::write('Media.filter.video', array(
 Configure::write('Media.filter.css', array(
 	'c'   => array('compress')
 ));
+Configure::write('Media.filter.icon', array());
 Configure::write('Media.filter.js', array(
 	'c'   => array('compress')
 ));

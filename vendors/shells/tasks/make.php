@@ -146,6 +146,9 @@ class MakeTask extends MediaShell {
 		$subdir = array_pop(explode(DS, dirname($this->source)));
 
 		if ($name === 'Icon' || strpos($file, 'ico' . DS) !== false) {
+			$message  = "MakeTask::_make - ";
+			$message .= "All functionality related to assets has been deprecated.";
+			trigger_error($message, E_USER_NOTICE);
 			return true;
 		}
 

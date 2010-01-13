@@ -27,5 +27,12 @@ if (!class_exists('ImageMedia')) {
  * @subpackage media.libs.media
  */
 class IconMedia extends ImageMedia {
+
+	function __construct($file, $mimeType = null) {
+		$message  = "IconMedia::__construct - ";
+		$message .= "All functionality related to assets has been deprecated.";
+		trigger_error($message, E_USER_NOTICE);
+		parent::__construct($file, $mimeType);
+	}
 }
 ?>

@@ -84,7 +84,7 @@ class MediaHelper extends AppHelper {
 		'doc' => array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
 		'gen' => array(),
 		'ico' => array('ico', 'png', 'gif', 'jpg', 'jpeg'),
-		'img' => array('png', 'jpg', 'jpeg' , 'gif'),
+		'img' => array('png', 'jpg', 'jpeg' , 'gif', 'ico'),
 		'js'  => array('js'),
 		'txt' => array('txt'),
 		'vid' => array(
@@ -275,6 +275,9 @@ class MediaHelper extends AppHelper {
 					'height' => $height,
 				));
 				if (strpos($path, 'ico/') !== false) {
+					$message  = "MediaHelper::embed - ";
+					$message .= "All functionality related to assets has been deprecated.";
+					trigger_error($message, E_USER_NOTICE);
 					$attributes = $this->addClass($attributes, 'icon');
 				}
 				return sprintf(
@@ -457,9 +460,9 @@ class MediaHelper extends AppHelper {
  * Resolves partial path
  *
  * Examples:
- * 	ico/cake.power           >>> MEDIA_STATIC/ico/cake.power.ico
+ * 	img/cern                 >>> MEDIA_STATIC/img/cern.png
  *  transfer/img/image.jpg   >>> MEDIA_TRANSFER/img/image.jpg
- * 	s/img/image.jpg          >>> MEDIA_FILTER/s/static/img/image.jpg
+ * 	s/img/image.jpg           >>> MEDIA_FILTER/s/static/img/image.jpg
  *
  * @param string|array $path Either a string or an array with dirname and basename keys
  * @return string|boolean False on error or if path couldn't be resolbed otherwise
