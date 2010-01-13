@@ -462,11 +462,13 @@ class TransferBehavior extends ModelBehavior {
 	function checkLocation(&$Model, $field, $allow = true) {
 		extract($this->runtime[$Model->alias]);
 
-		if (strpos(':', $allow) !== false) {
-			$message  = "TransferBehavior::checkLocation - ";
-			$message .= "Makers cannot be used in parameters for this method anymore. ";
-			$message .= "Please use predefined constants instead.";
-			trigger_error($message, E_USER_NOTICE);
+		foreach ((array)$allow as $allowed) {
+			if (strpos(':', $allowed) !== false) {
+				$message  = "TransferBehavior::checkLocation - ";
+				$message .= "Makers cannot be used in parameters for this method anymore. ";
+				$message .= "Please use predefined constants instead.";
+				trigger_error($message, E_USER_NOTICE);
+			}
 		}
 
 		foreach (array('source', 'temporary', 'destination') as $type) {
