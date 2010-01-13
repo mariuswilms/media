@@ -2,7 +2,7 @@
 /**
  * Imagick Media Adapter Test Case File
  *
- * Copyright (c) 2007-2009 David Persson
+ * Copyright (c) 2007-2010 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
@@ -12,7 +12,7 @@
  *
  * @package    media
  * @subpackage media.tests.cases.libs.media.adapter
- * @copyright  2007-2009 David Persson <davidpersson@gmx.de>
+ * @copyright  2007-2010 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
@@ -20,7 +20,6 @@ App::import('Vendor','Media.ImageMedia', array('file' => 'media'.DS.'image.php')
 App::import('Vendor','Media.DocumentMedia', array('file' => 'media'.DS.'document.php'));
 App::import('Vendor','ImagickMediaAdapter', array('file' => 'media'.DS.'adapter'.DS.'imagick.php'));
 require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
-
 /**
  * Test Imagick Image Media Class
  *
@@ -30,7 +29,6 @@ require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' .
 class TestImagickImageMedia extends ImageMedia {
 	var $adapters = array('Imagick');
 }
-
 /**
  * Test Imagick Document Media Class
  *
@@ -40,7 +38,6 @@ class TestImagickImageMedia extends ImageMedia {
 class TestImagickDocumentMedia extends DocumentMedia {
 	var $adapters = array('Imagick');
 }
-
 /**
  * Imagick Media Adapter Test Case Class
  *
