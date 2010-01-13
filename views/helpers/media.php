@@ -173,7 +173,7 @@ class MediaHelper extends AppHelper {
  * @return mixed
  */
 	function webroot($path) {
-		if (is_array($path) || strpos($path, '://') !== false) {
+		if (is_array($path) || strpos($path, '://') !== false) {
 			return $path;
 		}
 		if (!$file = $this->file($path)) {
