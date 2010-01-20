@@ -161,7 +161,9 @@ class MediaHelper extends AppHelper {
  * @return string
  */
 	function url($path = null, $full = false) {
-		return parent::url($this->webroot($path), $full);
+		if ($path = $this->webroot($path)) {
+			return parent::url($path, $full);
+		}
 	}
 
 /**
@@ -192,7 +194,8 @@ class MediaHelper extends AppHelper {
 				break;
 			}
 		}
-		return $this->webroot . str_replace('\\', '/', $path);
+		$path = str_replace('\\', '/', $path);
+		return strpos($path, '://') !== false ? $path : $this->webroot . $path;
 	}
 
 /**
