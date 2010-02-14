@@ -164,7 +164,7 @@ class MakeTask extends MediaShell {
 				$this->err('Failed to make version ' . $version . ' of medium.');
 				return false;
 			}
-			$Medium->store($Folder->pwd() . $File->name, $this->overwrite);
+			$Medium->store($Folder->pwd() . $File->name, $this->_overwrite);
 		}
 		return true;
 	}
