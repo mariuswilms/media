@@ -187,7 +187,7 @@ class Media extends Object {
 /**
  * Destructor
  *
- * Deletes temporary files
+ * Deletes temporary files and frees memory (e.g. GD library image resources)
  *
  * @return void
  */
@@ -195,6 +195,7 @@ class Media extends Object {
 		if (isset($this->files['temporary']) && file_exists($this->files['temporary'])) {
 			unlink($this->files['temporary']);
 		}
+		$this->Adapters->dispatchMethod($this, 'close');
 	}
 
 /**
@@ -744,6 +745,18 @@ class MediaAdapter extends Object {
  * @return boolean
  */
 	function initialize($Media) {
+		return true;
+	}
+
+/**
+ * To-be-overridden
+ *
+ * Called when adapter is destroyed
+ *
+ * @param object $Media
+ * @return boolean
+ */
+	function close($Media) {
 		return true;
 	}
 

@@ -92,6 +92,13 @@ class GdMediaAdapter extends MediaAdapter {
 		return true;
 	}
 
+	function close($Media) {
+		if (is_resource($Media->resources['gd'])) {
+			return imagedestroy($Media->resources['gd']);
+		}
+		return false;
+	}
+
 	function toString($Media) {
 		ob_start();
 		$this->store($Media, null);
