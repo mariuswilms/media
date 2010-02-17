@@ -16,9 +16,9 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor','Media.VideoMedia', array('file' => 'media'.DS.'video.php'));
-App::import('Vendor','GetId3VideoMediaAdapter', array('file' => 'media'.DS.'adapter'.DS.'get_id3_video.php'));
-require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+App::import('Vendor','Media.VideoMedia', array('file' => 'media' . DS . 'video.php'));
+App::import('Vendor','GetId3VideoMediaAdapter', array('file' => 'media' . DS . 'adapter' . DS . 'get_id3_video.php'));
+require_once dirname(dirname(dirname(dirname(dirname(__FILE__))))) . DS . 'fixtures' . DS . 'test_data.php';
 
 /**
  * Test Getid3 Video Media Adapter Class

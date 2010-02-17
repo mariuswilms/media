@@ -16,9 +16,9 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor','Media.ImageMedia', array('file' => 'media'.DS.'image.php'));
-App::import('Vendor','GdMediaAdapter', array('file' => 'media'.DS.'adapter'.DS.'gd.php'));
-require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+App::import('Vendor','Media.ImageMedia', array('file' => 'media' . DS . 'image.php'));
+App::import('Vendor','GdMediaAdapter', array('file' => 'media' . DS . 'adapter' . DS . 'gd.php'));
+require_once dirname(dirname(dirname(dirname(dirname(__FILE__))))) . DS . 'fixtures' . DS . 'test_data.php';
 
 /**
  * Test Gd Media Adapter Class

@@ -18,9 +18,9 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor','Media.AudioMedia', array('file' => 'media'.DS.'audio.php'));
-App::import('Vendor','FfMpegAudioMediaAdapter', array('file' => 'media'.DS.'adapter'.DS.'ff_mpeg_audio.php'));
-require_once dirname(__FILE__) . DS . '..' . DS . '..' . DS . '..' . DS . '..' . DS . 'fixtures' . DS . 'test_data.php';
+App::import('Vendor','Media.AudioMedia', array('file' => 'media' . DS . 'audio.php'));
+App::import('Vendor','FfMpegAudioMediaAdapter', array('file' => 'media' . DS . 'adapter' . DS . 'ff_mpeg_audio.php'));
+require_once dirname(dirname(dirname(dirname(dirname(__FILE__))))) . DS . 'fixtures' . DS . 'test_data.php';
 
 /**
  * Test Ffmpeg Audio Media Adapter Class
