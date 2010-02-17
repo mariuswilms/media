@@ -77,6 +77,10 @@ class ImagickMediaAdapter extends MediaAdapter {
 		return true;
 	}
 
+	function close($Media) {
+		return $Media->objects['Imagick']->clear();
+	}
+
 	function store($Media, $file) {
 		try {
 			return $Media->objects['Imagick']->writeImage($file);
@@ -104,10 +108,10 @@ class ImagickMediaAdapter extends MediaAdapter {
 			return false;
 		}
 
-		$Media->mimeType = $mimeType;
-
-		if ($Media->name === 'Document') { // application/pdf -> image
-			return Media::factory($Media->objects['Imagick'], $mimeType);
+		if ($Media->name !== Media::name(null, $mimeType)) { // document -> image
+			return Media::factory(clone $Media->objects['Imagick'], $mimeType);
+		} else {
+			$Media->mimeType = $mimeType;
 		}
 		return true;
 	}
