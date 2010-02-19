@@ -198,7 +198,7 @@ class MimeMagic extends Object {
 			$sectionRegex = '^\[(\d{1,3}):([-\w.\+]+\/[-\w.\+]+)\]$';
 			$itemRegex = '^(\d*)\>+(\d+)=+([^&~\+]{2})([^&~\+]+)&?([^~\+]*)~?(\d*)\+?(\d*).*$';
 
-			$File =& new File($db);
+			$File = new File($db);
 			$File->open('rb');
 			$File->offset(12);
 
@@ -240,7 +240,7 @@ class MimeMagic extends Object {
 		} elseif ($format === 'Apache Module mod_mime_magic') {
 			$itemRegex = '^(\>*)(\d+)\t+(\S+)\t+([\S^\040]+)\t*([-\w.\+]+\/[-\w.\+]+)*\t*(\S*)$';
 
-			$File =& new File($db);
+			$File = new File($db);
 			$File->open('rb');
 
 			while (!feof($File->handle)) {
@@ -280,7 +280,7 @@ class MimeMagic extends Object {
  * @access private
  */
 	function __test($file, $items) {
-		$File =& new File($file);
+		$File = new File($file);
 
 		if (!$File->readable()) {
 			return false;

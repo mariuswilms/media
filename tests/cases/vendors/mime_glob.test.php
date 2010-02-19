@@ -52,20 +52,20 @@ class MimeGlobTest extends CakeTestCase {
 		$fileA = $this->TestData->getFile('glob.apache.snippet.db');
 		$fileB = $this->TestData->getFile('glob.freedesktop.snippet.db');
 
-		$Mime =& new MimeGlob($fileA);
+		$Mime = new MimeGlob($fileA);
 
-		$Mime =& new MimeGlob($fileB);
+		$Mime = new MimeGlob($fileB);
 
 		$this->expectError();
-		$Mime =& new MimeGlob(5);
+		$Mime = new MimeGlob(5);
 	}
 
 	function testToArrayAndRead() {
 		$file = $this->TestData->getFile('glob.apache.snippet.db');
 
-		$Mime =& new MimeGlob($file);
+		$Mime = new MimeGlob($file);
 		$expected = $Mime->toArray();
-		$Mime =& new MimeGlob($expected);
+		$Mime = new MimeGlob($expected);
 		$result = $Mime->toArray();
 
 		$this->assertEqual($result, $expected);
@@ -73,17 +73,17 @@ class MimeGlobTest extends CakeTestCase {
 
 	function testAnalyzeFail() {
 		$file = $this->TestData->getFile('glob.apache.snippet.db');
-		$Mime =& new MimeGlob($file);
+		$Mime = new MimeGlob($file);
 
 		$this->assertEqual($Mime->analyze('i-dont-exist.sla'), array());
 
 		$file = $this->TestData->getFile('glob.freedesktop.snippet.db');
-		$Mime =& new MimeGlob($file);
+		$Mime = new MimeGlob($file);
 	}
 
 	function testApacheAnalyze() {
 		$file = $this->TestData->getFile('glob.apache.snippet.db');
-		$Mime =& new MimeGlob($file);
+		$Mime = new MimeGlob($file);
 
 		$this->assertEqual($Mime->analyze('file.3gp'), array());
 		$this->assertEqual($Mime->analyze('file.avi'), array());
@@ -122,7 +122,7 @@ class MimeGlobTest extends CakeTestCase {
 
 	function testApacheAnalyzeReverse() {
 		$file = $this->TestData->getFile('glob.apache.snippet.db');
-		$Mime =& new MimeGlob($file);
+		$Mime = new MimeGlob($file);
 
 		$this->assertEqual($Mime->analyze('text/plain', true), array('asc', 'txt', 'text', 'diff', 'pot'));
 		$this->assertEqual($Mime->analyze('application/pdf', true), array('pdf'));
@@ -130,7 +130,7 @@ class MimeGlobTest extends CakeTestCase {
 
 	function testFreedesktopAnalyze() {
 		$file = $this->TestData->getFile('glob.freedesktop.snippet.db');
-		$Mime =& new MimeGlob($file);
+		$Mime = new MimeGlob($file);
 
 		$this->assertEqual($Mime->analyze('file.3gp'), array());
 		$this->assertEqual($Mime->analyze('file.avi'), array());
@@ -174,7 +174,7 @@ class MimeGlobTest extends CakeTestCase {
 		if ($skip) { /* Skipping does not silence the error */
 			$this->expectError();
 		}
-		$Mime =& new MimeGlob($file);
+		$Mime = new MimeGlob($file);
 
 		$this->assertEqual($Mime->analyze('file.3gp'), array('video/3gpp'));
 		$this->assertEqual($Mime->analyze('file.avi'), array('video/x-msvideo'));

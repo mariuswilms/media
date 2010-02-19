@@ -124,7 +124,7 @@ class MimeGlob extends Object {
 				$this->register($item);
 			}
 		} elseif ($format === 'Freedesktop Shared MIME-info Database') {
-			$File =& new File($db);
+			$File = new File($db);
 			$File->open('rb');
 
 			while (!feof($File->handle)) {

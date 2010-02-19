@@ -79,7 +79,7 @@ class MediumHelperTestCase extends CakeTestCase {
 			'transfer' => array($this->TmpFolder->pwd() . 'transfer' . DS => false),
 			'theme' => array($this->TmpFolder->pwd() . 'theme' . DS  => 'media/theme/')
 		);
-		$this->Helper =& new MediumHelper($settings);
+		$this->Helper = new MediumHelper($settings);
 	}
 
 	function tearDown() {
