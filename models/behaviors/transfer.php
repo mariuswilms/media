@@ -643,7 +643,7 @@ class TransferBehavior extends ModelBehavior {
 			'mimeType'    => null,
 			'size'        => null,
 			'pixels'      => null,
-			'permisssion' => null,
+			'permission'  => null,
 			'dirname'     => null,
 			'basename'    => null,
 			'filename'    => null,
