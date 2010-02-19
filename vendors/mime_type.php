@@ -56,7 +56,7 @@ class MimeType extends Object {
 		static $instance = array();
 
 		if (!$instance) {
-			$instance[0] =& new MimeType();
+			$instance[0] = new MimeType();
 			$instance[0]->__loadMagic(Configure::read('Mime.magic'));
 			$instance[0]->__loadGlob(Configure::read('Mime.glob'));
 		}
@@ -171,7 +171,7 @@ class MimeType extends Object {
 		$magicMatch = empty($magicMatch) ? array() : array($magicMatch);
 
 		if (empty($magicMatch)) {
-			$File =& new File($file);
+			$File = new File($file);
 
 			if (preg_match('/[\t\n\r]+/', $File->read(32))) {
 				return 'text/plain';
@@ -231,9 +231,9 @@ class MimeType extends Object {
 
 		if (($engine === 'fileinfo' || $engine === null) && extension_loaded('fileinfo')) {
 			if (isset($db)) {
-				$this->__magic =& new finfo(FILEINFO_MIME, $db);
+				$this->__magic = new finfo(FILEINFO_MIME, $db);
 			} else {
-				$this->__magic =& new finfo(FILEINFO_MIME);
+				$this->__magic = new finfo(FILEINFO_MIME);
 			}
 		} elseif (($engine === 'mime_magic' || $engine === null) && extension_loaded('mime_magic')) {
 			$this->__magic = 'mime_magic';
@@ -248,7 +248,7 @@ class MimeType extends Object {
 				$db = $this->__db('magic');
 			}
 			if (isset($db)) {
-				$this->__magic =& new MimeMagic($db);
+				$this->__magic = new MimeMagic($db);
 
 				if (!$cached) {
 					Cache::write('mime_magic_db', $this->__magic->toArray(), '_cake_core_');
@@ -283,7 +283,7 @@ class MimeType extends Object {
 				$db = $this->__db('glob');
 			}
 			if (isset($db)) {
-				$this->__glob =& new MimeGlob($db);
+				$this->__glob = new MimeGlob($db);
 
 				if (!$cached) {
 					Cache::write('mime_glob_db', $this->__glob->toArray(), '_cake_core_');

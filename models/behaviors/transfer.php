@@ -194,7 +194,7 @@ class TransferBehavior extends ModelBehavior {
 			'mimeType'    => null,
 			'size'        => null,
 			'pixels'      => null,
-			'permisssion' => null,
+			'permission'  => null,
 			'dirname'     => null,
 			'basename'    => null,
 			'filename'    => null,
@@ -218,7 +218,7 @@ class TransferBehavior extends ModelBehavior {
 			if (!class_exists('HttpSocket')) {
 				App::import('Core', 'HttpSocket');
 			}
-			$Socket =& new HttpSocket(array('timeout' => 5));
+			$Socket = new HttpSocket(array('timeout' => 5));
 			$Socket->request(array('method' => 'HEAD', 'uri' => $resource['file']));
 
 			if (empty($Socket->error) && $Socket->response['status']['code'] == 200) {
