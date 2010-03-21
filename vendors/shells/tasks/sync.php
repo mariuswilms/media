@@ -141,11 +141,11 @@ class SyncTask extends MediaShell {
 
 		$this->_Model = ClassRegistry::init($this->model);
 
-		if (!isset($this->_Model->Behaviors->Media)) {
-			$this->err('MediaBehavior is not attached to Model');
+		if (!isset($this->_Model->Behaviors->Coupler)) {
+			$this->err('CouplerBehavior is not attached to Model');
 			return false;
 		}
-		$this->_baseDirectory = $this->_Model->Behaviors->Media->settings[$this->_Model->alias]['baseDirectory'];
+		$this->_baseDirectory = $this->_Model->Behaviors->Coupler->settings[$this->_Model->alias]['baseDirectory'];
 		$this->_Folder = new Folder($this->directory);
 		$this->interactive = isset($this->model, $this->directory);
 
@@ -159,16 +159,16 @@ class SyncTask extends MediaShell {
 
 		$this->out();
 		$this->out(sprintf('%-25s: %s', 'Model', $this->_Model->name));
-		$this->out(sprintf('%-25s: %s', 'Search directory', $this->shortPath($this->_Folder->pwd())));
+		$this->out(sprintf('%-25s: %s', 'Search directory', $this->_Folder->pwd()));
 		$this->out(sprintf('%-25s: %s', 'Automatic repair', $this->_answer == 'y' ? 'yes' : 'no'));
 
 		if ($this->in('Looks OK?', 'y,n', 'y') == 'n') {
 			return false;
 		}
-		$this->_Model->Behaviors->disable('Media');
+		$this->_Model->Behaviors->disable('Coupler');
 		$this->_checkFilesWithRecords();
 		$this->_checkRecordsWithFiles();
-		$this->_Model->Behaviors->enable('Media');
+		$this->_Model->Behaviors->enable('Coupler');
 		$this->out();
 		return true;
 	}
