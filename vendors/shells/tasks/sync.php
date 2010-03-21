@@ -290,6 +290,9 @@ class SyncTask extends MediaShell {
  * @return mixed
  */
 	function _handleChecksumMismatch() {
+		if (!$this->__File->exists()) {
+			return;
+		}
 		if ($this->__dbItem['checksum'] == $this->__File->md5(true)) {
 			return;
 		}
