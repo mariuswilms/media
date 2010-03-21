@@ -218,6 +218,7 @@ class MediaHelper extends AppHelper {
 		);
 		$additionalAttributes = array(
 			'id' => null,
+			'title' => null,
 			'class' => null,
 			'usemap' => null,
 		);
