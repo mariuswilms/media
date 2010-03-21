@@ -213,6 +213,7 @@ class SyncTask extends MediaShell {
 				continue;
 			}
 		}
+		$this->out('Done.');
 	}
 
 /**
@@ -245,6 +246,7 @@ class SyncTask extends MediaShell {
 				continue;
 			}
 		}
+		$this->out('Done.');
 	}
 
 	/* handle methods */
@@ -257,9 +259,12 @@ class SyncTask extends MediaShell {
  */
 	function _handleNotReadable() {
 		if (!$this->__File->readable() && $this->__File->exists()) {
-			$this->out('File exists but is not readable');
+			$message  = 'File `' . $this->shortPath($this->__File->pwd()) . '`';
+			$message .= ' exists but is not readable.';
+			$this->out($message);
 			return true;
 		}
+		return false;
 	}
 
 /**
@@ -272,7 +277,9 @@ class SyncTask extends MediaShell {
 		if ($this->__File->exists()) {
 			return;
 		}
-		$this->out('Orphaned');
+		$message  = 'File `' . $this->shortPath($this->__File->pwd()) . '`';
+		$message .= ' is orphaned.';
+		$this->out($message);
 
 		if ($this->_fixWithAlternative()) {
 			return true;
@@ -296,7 +303,9 @@ class SyncTask extends MediaShell {
 		if ($this->__dbItem['checksum'] == $this->__File->md5(true)) {
 			return;
 		}
-		$this->out('Checksums mismatch');
+		$message  = 'The checksums for file `' . $this->shortPath($this->__File->pwd()) . '`';
+		$message .= ' and its corresponding record mismatch.';
+		$this->out($message);
 
 		if ($this->_fixWithAlternative()) {
 			return true;
@@ -328,7 +337,9 @@ class SyncTask extends MediaShell {
 		if ($this->_findByFile($this->__fsItem['file'], $this->__dbMap)) {
 			return;
 		}
-		$this->out('Orphaned');
+		$message  = 'File `' . $this->shortPath($this->__File->pwd()) . '`';
+		$message .= ' is orphaned.';
+		$this->out($message);
 
 		$input = $this->in('Delete file?', 'y,n', $this->_answer);
 
