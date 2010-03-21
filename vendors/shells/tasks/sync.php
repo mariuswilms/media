@@ -147,7 +147,7 @@ class SyncTask extends MediaShell {
 		}
 		$this->_baseDirectory = $this->_Model->Behaviors->Coupler->settings[$this->_Model->alias]['baseDirectory'];
 		$this->_Folder = new Folder($this->directory);
-		$this->interactive = isset($this->model, $this->directory);
+		$this->interactive = !isset($this->model, $this->directory);
 
 		if ($this->interactive) {
 			$input = $this->in('Interactive?', 'y/n', 'y');
