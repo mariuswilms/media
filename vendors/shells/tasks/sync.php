@@ -50,6 +50,14 @@ class SyncTask extends MediaShell {
 	var $_answer = 'n';
 
 /**
+ * Verbosity of output, control via argument `-quiet`
+ *
+ * @var boolean
+ * @access protected
+ */
+	var $_quiet;
+
+/**
  * Model
  *
  * @var Model
@@ -131,6 +139,7 @@ class SyncTask extends MediaShell {
 		$this->_answer = isset($this->params['auto']) ? 'y' : 'n';
 		$this->model = array_shift($this->args);
 		$this->directory = array_shift($this->args);
+		$this->_quiet = isset($this->params['quiet']);
 
 		if (!isset($this->model)) {
 			$this->model = $this->in('Name of model:', null, 'Media.Attachment');
@@ -192,8 +201,9 @@ class SyncTask extends MediaShell {
 				$this->shortPath($dbItem['file']),
 				$this->_Model->name, $dbItem['id']
 			);
-			$this->out('');
-			$this->out($message);
+			if (!$this->_quiet) {
+				$this->out($message);
+			}
 
 			$this->__dbItem = $dbItem;
 			$this->__File = new File($dbItem['file']);
@@ -236,8 +246,9 @@ class SyncTask extends MediaShell {
 				$this->_Model->name,
 				'?'
 			);
-			$this->out();
-			$this->out($message);
+			if (!$this->_quiet) {
+				$this->out($message);
+			}
 
 			$this->__File = new File($fsItem['file']);
 			$this->__fsItem = $fsItem;
