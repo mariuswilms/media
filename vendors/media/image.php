@@ -321,20 +321,28 @@ class ImageMedia extends Media {
  *
  * @param integer $width
  * @param integer $height
- * @param string $align Currently "center" is supported only
+ * @param string $align Currently supported values are "center", "topleft", "topright", "bottomleft", "bottomright"
  * @return array An array containing left and top coordinates
  */
 	function _boxify($width, $height, $gravity = 'center') {
-		if ($width > $this->width()) {
-			$left = 0;
-		} else {
-			$left = ($this->width() - $width) / 2;
+		if ( 'center' == $gravity ){
+			$left = max(0, ($this->width() - $width) / 2);
+			$top = max(0, ($this->height() - $height) / 2);
 		}
-
-		if ($height > $this->width()) {
+		elseif( 'topleft' == $gravity ){
+			$left = $top = 0;
+		}
+		elseif( 'topright' == $gravity ){
+			$left = max(0, $this->width() - $width);
 			$top = 0;
-		} else {
-			$top = ($this->height() - $height) / 2;
+		}
+		elseif( 'bottomleft' == $gravity ){
+			$left = 0;
+			$top = max(0, $this->height() - $height);
+		}
+		elseif( 'bottomright' == $gravity ){
+			$left = max(0, $this->width() - $width);
+			$top = max(0, $this->height() - $height);
 		}
 		return array($left, $top);
 	}
