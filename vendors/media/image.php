@@ -321,28 +321,34 @@ class ImageMedia extends Media {
  *
  * @param integer $width
  * @param integer $height
- * @param string $align Currently supported values are "center", "topleft", "topright", "bottomleft", "bottomright"
+ * @param string $gravity Currently supported values are "center", "topleft",
+ *                      "topright", "bottomleft", "bottomright", defaults to "center"
  * @return array An array containing left and top coordinates
  */
 	function _boxify($width, $height, $gravity = 'center') {
-		if ( 'center' == $gravity ){
-			$left = max(0, ($this->width() - $width) / 2);
-			$top = max(0, ($this->height() - $height) / 2);
-		}
-		elseif( 'topleft' == $gravity ){
-			$left = $top = 0;
-		}
-		elseif( 'topright' == $gravity ){
-			$left = max(0, $this->width() - $width);
-			$top = 0;
-		}
-		elseif( 'bottomleft' == $gravity ){
-			$left = 0;
-			$top = max(0, $this->height() - $height);
-		}
-		elseif( 'bottomright' == $gravity ){
-			$left = max(0, $this->width() - $width);
-			$top = max(0, $this->height() - $height);
+		switch ($gravity) {
+			default:
+				$message = 'Image::_boxify - Unsupported value given for gravity parameter.';
+				trigger_error($message, E_USER_NOTICE);
+			case 'center':
+				$left = max(0, ($this->width() - $width) / 2);
+				$top = max(0, ($this->height() - $height) / 2);
+				break;
+			case 'topleft':
+				$left = $top = 0;
+				break;
+			case 'topright':
+				$left = max(0, $this->width() - $width);
+				$top = 0;
+				break;
+			case 'bottomleft':
+				$left = 0;
+				$top = max(0, $this->height() - $height);
+				break;
+			case 'bottomright':
+				$left = max(0, $this->width() - $width);
+				$top = max(0, $this->height() - $height);
+				break;
 		}
 		return array($left, $top);
 	}
