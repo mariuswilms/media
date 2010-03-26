@@ -21,6 +21,20 @@ App::import('Vendor', 'Media.DocumentMedia', array('file' => 'media' . DS . 'doc
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'fixtures' . DS . 'test_data.php';
 
 /**
+ * Test Image Media Class
+ *
+ * @package    media
+ * @subpackage media.tests.cases.libs.media.image
+ */
+class TestImageMedia extends ImageMedia {
+
+	function testBoxify($width, $height, $gravity = 'center') {
+		return parent::_boxify($width, $height, $gravity);
+	}
+
+}
+
+/**
  * Image Media Test Case Class
  *
  * @package    media
@@ -80,5 +94,36 @@ class ImageMediaTest extends CakeTestCase {
 			$this->assertTrue($Media->height() <= 10);
 		}
 	}
+
+	function testBoxify() {
+		$Media = new TestImageMedia($this->TestData->getFile('image-jpg.jpg'));
+		// media has 70px width and 47px height
+
+		$result = $Media->testBoxify(20, 20, 'center');
+		$expected = array(25, 13.5);
+		$this->assertEqual($result, $expected);
+
+		$result = $Media->testBoxify(20, 20, 'topleft');
+		$expected = array(0, 0);
+		$this->assertEqual($result, $expected);
+
+		$result = $Media->testBoxify(20, 20, 'topright');
+		$expected = array(50, 0);
+		$this->assertEqual($result, $expected);
+
+		$result = $Media->testBoxify(20, 20, 'bottomleft');
+		$expected = array(0, 27);
+		$this->assertEqual($result, $expected);
+
+		$result = $Media->testBoxify(20, 20, 'bottomright');
+		$expected = array(50, 27);
+		$this->assertEqual($result, $expected);
+
+		$this->expectError();
+		$result = $Media->testBoxify(20, 20, 'XXXXXXX');
+		$expected = array(25, 13.5);
+		$this->assertEqual($result, $expected);
+	}
+
 }
 ?>
