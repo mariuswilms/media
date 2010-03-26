@@ -141,6 +141,8 @@ class ImageMedia extends Media {
  *
  * @param integer $width
  * @param integer $height
+ * @param string $gravity Currently supported values are "center", "topleft",
+ *                      "topright", "bottomleft", "bottomright", defaults to "center"
  * @return boolean
  */
 	function zoomCrop($width, $height, $gravity = 'center') {
@@ -163,7 +165,8 @@ class ImageMedia extends Media {
  *
  * @param integer $width
  * @param integer $height
- * @param string $align
+ * @param string $gravity Currently supported values are "center", "topleft",
+ *                      "topright", "bottomleft", "bottomright", defaults to "center"
  * @return boolean
  */
 	function fitCrop($width, $height, $gravity = 'center') {
