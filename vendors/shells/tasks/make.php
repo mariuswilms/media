@@ -87,7 +87,7 @@ class MakeTask extends MediaShell {
 		$this->destination = array_shift($this->args);
 
 		if (!isset($this->source)) {
-			$this->source = $this->in('Source File/Directory', null, MEDIA_STATIC);
+			$this->source = $this->in('Source File/Directory', null, MEDIA_TRANSFER);
 		}
 		if (is_dir($this->source)) {
 			$this->source = Folder::slashTerm($this->source);
