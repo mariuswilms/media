@@ -18,7 +18,7 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * PHP version 5
- * CakePHP version 1.2
+ * CakePHP version 1.3
  *
  * @package    media
  * @subpackage media.views.elements
