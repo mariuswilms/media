@@ -143,7 +143,7 @@ class MakeTask extends MediaShell {
 	function _make($file) {
 		$File = new File($file);
 		$name = Media::name($file);
-		$subdir = array_pop(explode(DS, dirname($this->source)));
+		$subdir = basename($this->source) . DS . dirname(str_replace($this->source, '', $file));
 
 		if ($name === 'Icon' || strpos($file, 'ico' . DS) !== false) {
 			$message  = "MakeTask::_make - ";
