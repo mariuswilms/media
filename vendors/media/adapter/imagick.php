@@ -109,7 +109,7 @@ class ImagickMediaAdapter extends MediaAdapter {
 		}
 
 		if ($Media->name !== Media::name(null, $mimeType)) { // document -> image
-			return Media::factory(clone $Media->objects['Imagick'], $mimeType);
+			return Media::factory($Media->objects['Imagick']->clone(), $mimeType);
 		} else {
 			$Media->mimeType = $mimeType;
 		}
