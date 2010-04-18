@@ -17,8 +17,8 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Core', 'String');
-App::import('Vendor', 'Media.MimeType');
-App::import('Vendor', 'Media.Media');
+App::import('Lib', 'Media.MimeType');
+App::import('Lib', 'Media.Media');
 
 /**
  * Media Helper Class

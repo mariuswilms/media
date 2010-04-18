@@ -16,10 +16,10 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.MimeType');
-App::import('Vendor', 'Media.Media');
-App::import('Vendor', 'Media.MediaValidation');
-App::import('Vendor', 'Media.TransferValidation');
+App::import('Lib', 'Media.MimeType');
+App::import('Lib', 'Media.Media');
+App::import('Lib', 'Media.MediaValidation');
+App::import('Lib', 'Media.TransferValidation');
 
 /**
  * Transfer Behavior Class
