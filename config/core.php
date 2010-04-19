@@ -76,10 +76,7 @@ if (!defined('MEDIA_TRANSFER_URL')) {
  * 	db     - Absolute path to a glob db file in freedesktop, apache, or php format
  * 	         (required for core engine)
  */
-Configure::write('Mime.glob', array(
-	'engine' => null,
-	'db'     => null,
-));
+// Configure::write('Mime.glob', array('engine' => null, 'db' => null));
 
 /**
  * MIME type detection by file content
@@ -89,10 +86,7 @@ Configure::write('Mime.glob', array(
  * 	db     - Absolute path to a glob db file in freedesktop, apache, or php format
  * 	         (optional for the fileinfo and mime_magic engine, required for core engine)
  */
-Configure::write('Mime.magic', array(
-	'engine' => null,
-	'db'     => null,
-));
+// Configure::write('Mime.magic', array('engine' => null, 'db' => null));
 
 /**
  * Filters and versions
