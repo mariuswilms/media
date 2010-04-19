@@ -92,34 +92,20 @@ if (!defined('MEDIA_TRANSFER_URL')) {
  * Filters and versions
  *
  * For each media type a set of filters keyed by version name is configured.
- * A filter is a set of instructions which are processed by the MedÏia class.
+ * A filter is a set of instructions which are processed by the Media class.
  */
 // $sRGB = dirname(dirname(__FILE__)) . DS . 'vendors' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
-Configure::write('Media.filter.audio', array(
-	's'   => array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
-	'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
-));
-Configure::write('Media.filter.document', array(
-	'xxs' => array('convert' => 'image/png', 'zoomCrop' => array(16, 16)),
-	's'   => array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
-	'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
-));
+
+$s = array('convert' => 'image/png', 'zoomCrop' => array(100, 100));
+$m = array('convert' => 'image/png', 'fitCrop' => array(300, 300));
+$l = array('convert' => 'image/png', 'fit' => array(600, 440));
+
+Configure::write('Media.filter.audio', compact('s', 'm'));
+Configure::write('Media.filter.document', compact('s', 'm'));
 Configure::write('Media.filter.generic', array());
-Configure::write('Media.filter.image', array(
-	'xxs' => array('convert' => 'image/png', 'zoomCrop' => array(16, 16)),
-	'xs'  => array('convert' => 'image/png', 'zoomCrop' => array(32, 32)),
-	's'   => array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
-	'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
-	'l'   => array('convert' => 'image/png', 'fit' => array(450, 450)),
-	'xl'  => array('convert' => 'image/png', 'fit' => array(680, 440)),
-	)
-);
+Configure::write('Media.filter.image', compact('s', 'm', 'l'));
 Configure::write('Media.filter.text', array());
-Configure::write('Media.filter.video', array(
-	'xxs' => array('convert' => 'image/png', 'zoomCrop' => array(16, 16)),
-	's'   => array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
-	'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
-));
+Configure::write('Media.filter.video', compact('s', 'm'));
 
 /**
  * @deprecated
