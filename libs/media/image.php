@@ -229,6 +229,59 @@ class ImageMedia extends Media {
 	}
 
 /**
+ * Embeds the provided ICC profile into the image. Allows for forcing a certain profile and
+ * transitioning from one color space to another.
+ *
+ * In case the image already has a color profile  embedded (which is highly recommended) it
+ * is used to convert to the target. In absence of an  embedded profile it is assumed that
+ * the image has the `sRGB IEC61966-2.1` (with blackpoint scaling) profile.
+ *
+ * Please note that most adapters will try to recover from a embedded corrupt profile
+ * by deleting it. Color profiles specified in the EXIF data of the image are not honored.
+ * This method works with ICC profiles only.
+ *
+ * @param string $file Absolute path to a profile file (most often with a `'icc'` extension).
+ * @param string $intent Set the rendering intent. Should be either a value of `'absolute'`,
+ *                       `'perceptual'` (the default), `'relative'` or `'saturation'`.
+ * @return boolean
+ * @link http://www.cambridgeincolour.com/tutorials/color-space-conversion.htm
+ * @
+ */
+	function color($profile, $intent = 'perceptual') {
+		if (!is_file($profile)) {
+			return false;
+		}
+		if (!$this->Adapters->dispatchMethod($this, 'profile', array('icc'))) {
+			$default  = App::pluginPath('Media') . 'vendors' . DS;
+			$default .= 'sRGB_IEC61966-2-1_black_scaled.icc';
+			$data = file_get_contents($default);
+
+			if (!$this->Adapters->dispatchMethod($this, 'profile', array('icc', $data))) {
+				return false;
+			}
+			if ($profile == $default) { /* If we converted to sRGB anyway this saves us cycles */
+				return true;
+			}
+		}
+		$data = file_get_contents($profile);
+
+		if (!$this->Adapters->dispatchMethod($this, 'profile', array('icc', $data))) {
+			return false;
+		}
+		if ($intent) {
+			if (!in_array($intent, array('absolute', 'perceptual', 'relative', 'saturation'))) {
+				$message  = 'Image::color - Invalid value for `intent`.';
+				trigger_error($message, E_USER_WARNING);
+				return false;
+			}
+			if (!$this->Adapters->dispatchMethod($this, 'intent', array($intent))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+/**
  * Determines the quality of the media by
  * taking amount of megapixels into account
  *

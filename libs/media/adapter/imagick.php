@@ -141,6 +141,41 @@ class ImagickMediaAdapter extends MediaAdapter {
 		}
 	}
 
+	function profile($Media, $type, $data = null) {
+		try {
+			if (!$data) {
+				$profiles = $Media->objects['Imagick']->getImageProfiles('*', false);
+
+				if (!in_array($type, $profiles)) {
+					return false;
+				}
+				return $Media->objects['Imagick']->getImageProfile($type);
+			}
+			return $Media->objects['Imagick']->profileImage($type, $data);
+		} catch (Exception $E) {
+			$corruptProfileMessage = 'color profile operates on another colorspace `icc';
+			// $corruptProfileCode = 465;
+
+			if (strpos($E->getMessage(), $corruptProfileMessage) !== false) {
+				return $this->deleteProfile($Media, $type) && $this->profile($Media, $type, $data);
+			}
+			return false;
+		}
+	}
+
+	function deleteProfile($Media, $type) {
+		try {
+			return $Media->objects['Imagick']->profileImage($type, null);
+		} catch (Exception $E) {
+			return false;
+		}
+	}
+
+	function intent($Media, $type) {
+		$type = constant('Imagick::RENDERINGINTENT_' . strtoupper($type));
+		return $Media->objects['Imagick']->setImageRenderingIntent($type);
+	}
+
 	function crop($Media, $left, $top, $width, $height) {
 		$left   = (integer)$left;
 		$top    = (integer)$top;

@@ -152,6 +152,53 @@ class ImagickShellMediaAdapter extends MediaAdapter {
 		return true;
 	}
 
+	function profile($Media, $type, $data = null) {
+		if (!in_array($type, array('icc', 'xmp', 'iptc', 'exif', '8bim'))) {
+			return false;
+		}
+		if (!$data) {
+			return $this->_execute(':command: :source: :format::-', array(
+				'command'     => 'convert',
+				'format'      => $type,
+				'source'      => $Media->files['temporary'],
+			));
+		}
+		$File = new File(TMP . uniqid('media_'));
+
+		if (!$File->write($data)) {
+			$File->delete();
+			return false;
+		}
+
+		/* It assumed that the image already has a profile */
+		$result = $this->_execute(':command: :source: -profile :profile: :destination:', array(
+			'command'     => 'convert',
+			'profile'     => $File->pwd(),
+			'source'      => $Media->files['temporary'],
+			'destination' => $Media->files['temporary']
+		));
+		$File->delete();
+		return true;
+	}
+
+	function deleteProfile($Media, $type) {
+		return $this->_execute(':command: :source: +profile :profileType: :destination:', array(
+			'command'     => 'convert',
+			'profileType' => $type,
+			'source'      => $Media->files['temporary'],
+			'destination' => $Media->files['temporary']
+		));
+	}
+
+	function intent($Media, $type) {
+		return $this->_execute(':command: :source: -intent :intentType: :destination:', array(
+			'command'     => 'convert',
+			'intentType'  => $type,
+			'source'      => $Media->files['temporary'],
+			'destination' => $Media->files['temporary']
+		));
+	}
+
 	function crop($Media, $left, $top, $width, $height) {
 		return $this->_execute(':command: -crop :width:x:height:+:left:+:top: :source: :destination:', array(
 			'command'     => 'convert',
