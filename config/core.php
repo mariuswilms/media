@@ -100,6 +100,7 @@ Configure::write('Mime.magic', array(
  * For each media type a set of filters keyed by version name is configured.
  * A filter is a set of instructions which are processed by the MedÏia class.
  */
+// $sRGB = dirname(dirname(__FILE__)) . DS . 'vendors' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
 Configure::write('Media.filter.audio', array(
 	's'   => array('convert' => 'image/png', 'fitCrop' => array(100, 100)),
 	'm'   => array('convert' => 'image/png', 'fit' => array(300, 300)),
