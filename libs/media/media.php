@@ -767,7 +767,9 @@ class MediaAdapter extends Object {
  *
  * @param string $string A string containing placeholders e.g. :command: -f xy
  * @param array $data Data to be filled into the marker string
- * @return boolean
+ * @return boolean|string If the return value was not zero, `false` is returned otherwise `true`
+ *                        if there was no output from the sytem call in which case the output
+ *                        is returned.
  */
 	function _execute($string, $data) {
 		if (!$data['command'] = $this->_which($data['command'])) {
