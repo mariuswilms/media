@@ -107,10 +107,12 @@ class ImagickShellMediaAdapter extends MediaAdapter {
 			}
 		}
 
-		return $this->_execute(':command:'
-								. (isset($args['compress']) ? ' -compress :compress:' : '')
-								. (isset($args['quality']) ? ' -quality :quality:' : '')
-								. ' :sourceFormat:::source: :format:::destination:', $args);
+		$command  = ':command:';
+		$command .= (isset($args['compress']) ? ' -compress :compress:' : '');
+		$command .= (isset($args['quality']) ? ' -quality :quality:' : '');
+		$command .= ' :sourceFormat:::source: :format:::destination:';
+
+		return $this->_execute($command, $args);
 	}
 
 	function convert($Media, $mimeType) {
