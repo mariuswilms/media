@@ -228,7 +228,14 @@ class ImageMedia extends Media {
 		return $this->Adapters->dispatchMethod($this, 'compress', array(floatval($value)));
 	}
 
-	// always lossfull
+/**
+ * Strips unwanted data from an image. This operation is therefore always lossful.
+ * Be careful when removing color profiles (icc) and copyright information (iptc/xmp).
+ *
+ * @param string $type One of either `'8bim'`, `'icc'`, `'iptc'`, `'xmp'`. Repeat
+ *                     argument to strip multiple types.
+ * @return boolean
+ */
 	function strip($type) {
 		foreach (func_get_args() as $type) {
 			switch ($type) {
@@ -267,28 +274,27 @@ class ImageMedia extends Media {
  *                       `'perceptual'` (the default), `'relative'` or `'saturation'`.
  * @return boolean
  * @link http://www.cambridgeincolour.com/tutorials/color-space-conversion.htm
- * @
  */
 	function color($profile, $intent = 'perceptual') {
 		if (!is_file($profile)) {
 			return false;
 		}
-		if (!$this->Adapters->dispatchMethod($this, 'profile', array('icc'))) {
-			$default  = App::pluginPath('Media') . 'vendors' . DS;
-			$default .= 'sRGB_IEC61966-2-1_black_scaled.icc';
-			$data = file_get_contents($default);
 
-			if (!$this->Adapters->dispatchMethod($this, 'profile', array('icc', $data))) {
+		$current = $this->Adapters->dispatchMethod($this, 'profile', array('icc'));
+		$target  = file_get_contents($profile);
+
+		if (!$current) {
+			$profile = App::pluginPath('Media') . 'vendors' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
+			$current = file_get_contents($profile);
+
+			if (!$this->Adapters->dispatchMethod($this, 'profile', array('icc', $current))) {
 				return false;
 			}
-			if ($profile == $default) { /* If we converted to sRGB anyway this saves us cycles */
-				return true;
-			}
 		}
-		$data = file_get_contents($profile);
-
-		if (!$this->Adapters->dispatchMethod($this, 'profile', array('icc', $data))) {
-			return false;
+		if ($current != $target) {
+			if (!$this->Adapters->dispatchMethod($this, 'profile', array('icc', $target))) {
+				return false;
+			}
 		}
 		if ($intent) {
 			if (!in_array($intent, array('absolute', 'perceptual', 'relative', 'saturation'))) {
