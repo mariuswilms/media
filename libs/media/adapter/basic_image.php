@@ -24,6 +24,7 @@
  * @subpackage media.libs.media.adapter
  */
 class BasicImageMediaAdapter extends MediaAdapter {
+
 	var $require = array(
 		'mimeTypes' => array(
 			'image/jpeg',
@@ -35,23 +36,21 @@ class BasicImageMediaAdapter extends MediaAdapter {
 			'image/ms-bmp',
 			'image/xpm',
 			'image/ico',
-			'image/psd',
-	));
+			'image/psd'
+		)
+	);
 
 	function initialize($Media) {
-		if (!isset($Media->file)) {
-			return false;
-		}
-		return true;
+		return isset($Media->file);
 	}
 
 	function width($Media) {
-		list($width, $height) = getimagesize($Media->file);
+		list($width) = getimagesize($Media->file);
 		return $width;
 	}
 
 	function height($Media) {
-		list($width, $height) = getimagesize($Media->file);
+		list(, $height) = getimagesize($Media->file);
 		return $height;
 	}
 }
