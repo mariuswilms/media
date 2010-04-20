@@ -330,7 +330,9 @@ class Media extends Object {
  * Stores the media to a file and assures that the output file has the correct extension
  *
  * @param string $file Absolute path to a file
- * @param boolean $overwrite Enable overwriting of an existent file
+ * @param boolean $overwrite Controls overwriting of an existent file, defaults to `false`
+ * @param boolean $guessExtension Controls whether the correct extension should be guessed
+ *                                using the `MimeType` class or not, defaults to `true`.
  * @return mixed
  */
 	function store($file, $overwrite = false, $guessExtension = true) {
