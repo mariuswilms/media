@@ -228,6 +228,28 @@ class ImageMedia extends Media {
 		return $this->Adapters->dispatchMethod($this, 'compress', array(floatval($value)));
 	}
 
+	// always lossfull
+	function strip($type) {
+		foreach (func_get_args() as $type) {
+			switch ($type) {
+				case '8bim':
+				case 'icc':
+				case 'iptc':
+				case 'xmp':
+					$result = $this->Adapters->dispatchMethod($this, 'deleteProfile', array($type));
+					break;
+				default:
+					$message  = 'Image::strip - Unknown type, skipping.';
+					trigger_error($message, E_USER_NOTICE);
+					continue;
+			}
+			if (!$result) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 /**
  * Embeds the provided ICC profile into the image. Allows for forcing a certain profile and
  * transitioning from one color space to another.
