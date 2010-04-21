@@ -232,29 +232,17 @@ class ImageMedia extends Media {
  * Strips unwanted data from an image. This operation is therefore always lossful.
  * Be careful when removing color profiles (icc) and copyright information (iptc/xmp).
  *
- * @param string $type One of either `'8bim'`, `'icc'`, `'iptc'`, `'xmp'`. Repeat
- *                     argument to strip multiple types.
+ * @param string $type One of either `'8bim'`, `'icc'`, `'iptc'`, `'xmp'`, `'app1'`, `'app12'`, `'exif'`.
+ *                     Repet argument to strip multiple types.
  * @return boolean
  */
 	function strip($type) {
 		foreach (func_get_args() as $type) {
-			switch ($type) {
-				case '8bim':
-				case 'icc':
-				case 'iptc':
-				case 'xmp':
-					$result = $this->Adapters->dispatchMethod($this, 'deleteProfile', array($type));
-					break;
-				default:
-					$message  = 'Image::strip - Unknown type, skipping.';
-					trigger_error($message, E_USER_NOTICE);
-					continue;
-			}
-			if (!$result) {
+			if (!$this->Adapters->dispatchMethod($this, 'strip', array($type))) {
 				return false;
 			}
 		}
-		return true;
+		return true;;
 	}
 
 /**

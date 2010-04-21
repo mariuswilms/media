@@ -161,13 +161,13 @@ class ImagickMediaAdapter extends MediaAdapter {
 			// $corruptProfileCode = 465;
 
 			if (strpos($E->getMessage(), $corruptProfileMessage) !== false) {
-				return $this->deleteProfile($Media, $type) && $this->profile($Media, $type, $data);
+				return $this->strip($Media, $type) && $this->profile($Media, $type, $data);
 			}
 			return false;
 		}
 	}
 
-	function deleteProfile($Media, $type) {
+	function strip($Media, $type) {
 		try {
 			return $Media->objects['Imagick']->profileImage($type, null);
 		} catch (Exception $E) {

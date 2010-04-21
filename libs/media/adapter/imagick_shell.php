@@ -178,10 +178,14 @@ class ImagickShellMediaAdapter extends MediaAdapter {
 			'destination' => $Media->files['temporary']
 		));
 		$File->delete();
+
+		if (!$result) {
+			return $this->strip($Media, $type) && $this->profile($Media, $type, $data);
+		}
 		return true;
 	}
 
-	function deleteProfile($Media, $type) {
+	function strip($Media, $type) {
 		return $this->_execute(':command: :source: +profile :profileType: :destination:', array(
 			'command'     => 'convert',
 			'profileType' => $type,
