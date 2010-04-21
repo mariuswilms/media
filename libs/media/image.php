@@ -258,22 +258,20 @@ class ImageMedia extends Media {
  * This method works with ICC profiles only.
  *
  * @param string $file Absolute path to a profile file (most often with a `'icc'` extension).
- * @param string $intent Set the rendering intent. Should be either a value of `'absolute'`,
- *                       `'perceptual'` (the default), `'relative'` or `'saturation'`.
  * @return boolean
  * @link http://www.cambridgeincolour.com/tutorials/color-space-conversion.htm
  */
-	function color($profile, $intent = 'perceptual') {
-		if (!is_file($profile)) {
+	function profileColor($file) {
+		if (!is_file($file)) {
 			return false;
 		}
 
+		$target  = file_get_contents($file);
 		$current = $this->Adapters->dispatchMethod($this, 'profile', array('icc'));
-		$target  = file_get_contents($profile);
 
 		if (!$current) {
-			$profile = App::pluginPath('Media') . 'vendors' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
-			$current = file_get_contents($profile);
+			$file = App::pluginPath('Media') . 'vendors' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
+			$current = file_get_contents($file);
 
 			if (!$this->Adapters->dispatchMethod($this, 'profile', array('icc', $current))) {
 				return false;

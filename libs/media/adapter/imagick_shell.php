@@ -153,9 +153,6 @@ class ImagickShellMediaAdapter extends MediaAdapter {
 	}
 
 	function profile($Media, $type, $data = null) {
-		if (!in_array($type, array('icc', 'xmp', 'iptc', 'exif', '8bim'))) {
-			return false;
-		}
 		if (!$data) {
 			return $this->_execute(':command: :source: :format::-', array(
 				'command'     => 'convert',
