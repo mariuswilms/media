@@ -175,11 +175,6 @@ class ImagickMediaAdapter extends MediaAdapter {
 		}
 	}
 
-	function intent($Media, $type) {
-		$type = constant('Imagick::RENDERINGINTENT_' . strtoupper($type));
-		return $Media->objects['Imagick']->setImageRenderingIntent($type);
-	}
-
 	function crop($Media, $left, $top, $width, $height) {
 		$left   = (integer)$left;
 		$top    = (integer)$top;

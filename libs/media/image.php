@@ -284,16 +284,6 @@ class ImageMedia extends Media {
 				return false;
 			}
 		}
-		if ($intent) {
-			if (!in_array($intent, array('absolute', 'perceptual', 'relative', 'saturation'))) {
-				$message  = 'Image::color - Invalid value for `intent`.';
-				trigger_error($message, E_USER_WARNING);
-				return false;
-			}
-			if (!$this->Adapters->dispatchMethod($this, 'intent', array($intent))) {
-				return false;
-			}
-		}
 		return true;
 	}
 

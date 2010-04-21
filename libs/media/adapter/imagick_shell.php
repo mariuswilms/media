@@ -194,15 +194,6 @@ class ImagickShellMediaAdapter extends MediaAdapter {
 		));
 	}
 
-	function intent($Media, $type) {
-		return $this->_execute(':command: :source: -intent :intentType: :destination:', array(
-			'command'     => 'convert',
-			'intentType'  => $type,
-			'source'      => $Media->files['temporary'],
-			'destination' => $Media->files['temporary']
-		));
-	}
-
 	function crop($Media, $left, $top, $width, $height) {
 		return $this->_execute(':command: -crop :width:x:height:+:left:+:top: :source: :destination:', array(
 			'command'     => 'convert',
