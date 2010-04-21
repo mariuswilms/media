@@ -151,6 +151,10 @@ class ImagickMediaAdapter extends MediaAdapter {
 				}
 				return $Media->objects['Imagick']->getImageProfile($type);
 			}
+		} catch (Exception $E) {
+			return false;
+		}
+		try {
 			return $Media->objects['Imagick']->profileImage($type, $data);
 		} catch (Exception $E) {
 			$corruptProfileMessage = 'color profile operates on another colorspace `icc';
