@@ -201,8 +201,17 @@ class MediaHelper extends AppHelper {
 /**
  * Generates markup to render a file inline
  *
+ * Determines correct dimensions for all images automatically. Dimensions for all
+ * other media should be passed explictly within the options array in order to prevent
+ * the browser refloating the layout.
+ *
  * @param string $path Absolute or partial path to a file
- * @param array $options restrict: embed to display certain media types only
+ * @param array $options Following are valid options:
+ *                       - restrict: an array of lowercase media names (i.e. image) to restrict to
+ *                                   Causes markup for other media not to be generated.
+ *                       - width
+ *                       - height
+ *                       - several HTML attributes: alt, title, class
  * @return string
  */
 	function embed($path, $options = array()) {
@@ -255,13 +264,6 @@ class MediaHelper extends AppHelper {
 		$mimeType = MimeType::guessType($file);
 		$Media = Media::factory($file, $mimeType);
 
-		if (!isset($options['width'])) {
-			$options['width'] = $Media->width();
-		}
-		if (!isset($options['height'])) {
-			$options['height'] = $Media->height();
-		}
-
 		extract($options, EXTR_SKIP);
 
 		if (!empty($restrict) && !in_array(strtolower($Media->name), (array) $restrict)) {
@@ -275,8 +277,8 @@ class MediaHelper extends AppHelper {
 			case 'image/png':
 				$attributes = array_merge($attributes, array(
 					'alt' => $alt,
-					'width' => $width,
-					'height' => $height,
+					'width' => $width ? $width : $Media->width(),
+					'height' => $height ? $height : $Media->height()
 				));
 				if (strpos($path, 'ico/') !== false) {
 					$message  = "MediaHelper::embed - ";
