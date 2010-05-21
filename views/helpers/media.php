@@ -80,12 +80,12 @@ class MediaHelper extends AppHelper {
  */
 	var $_extensions = array(
 		'aud' => array('mp3', 'ogg', 'aif', 'wma', 'wav'),
-		'css' => array('css'),
+		'css' => array('css'), // @deprecated
 		'doc' => array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
 		'gen' => array(),
 		'ico' => array('ico', 'png', 'gif', 'jpg', 'jpeg'),
 		'img' => array('png', 'jpg', 'jpeg' , 'gif', 'ico'),
-		'js'  => array('js'),
+		'js'  => array('js'), // @deprecated
 		'txt' => array('txt'),
 		'vid' => array(
 			'avi', 'mpg', 'qt', 'mov', 'ogg', 'wmv',
