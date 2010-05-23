@@ -174,7 +174,12 @@ class MetaBehavior extends ModelBehavior {
 					'length'        => $Media->duration(),
 					'quality'       => $Media->quality(),
 					'sampling_rate' => $Media->samplingRate(),
-					'bit_rate'       => $Media->bitRate(),
+					'bit_rate'       => $Media->bitRate()
+				);
+			} elseif ($Media->name === 'Document') {
+				$data[2] = array(
+					'width'   => $Media->width(),
+					'height'  => $Media->height()
 				);
 			} elseif ($Media->name === 'Image') {
 				$data[2] = array(
