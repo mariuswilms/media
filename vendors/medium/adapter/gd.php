@@ -46,7 +46,11 @@ class GdMediumAdapter extends MediumAdapter {
 	var $_pngFilter;
 
 	function compatible($Medium) {
+		if (!function_exists('imageTypes')) {
+			return false;
+		}
 		$types = imageTypes();
+
 		if ($types & IMG_GIF) {
 			$this->require['mimeTypes'][] = 'image/gif';
 		}
