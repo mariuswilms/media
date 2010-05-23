@@ -140,13 +140,17 @@ class MediaHelper extends AppHelper {
  * Reimplemented method from Helper
  *
  * @param string $path Absolute or partial path to a file
- * @param boolean $full
- * @return string
+ * @param boolean $full Forces the URL to be fully qualified
+ * @return string|void An URL to the file
  */
 	function url($path = null, $full = false) {
-		if ($path = $this->webroot($path)) {
-			return parent::url($path, $full);
+		if (!$path = $this->webroot($path)) {
+			return null;
 		}
+		if ($full && strpos($path, '://') === false) {
+			$path = FULL_BASE_URL . $path;
+		}
+		return $path;
 	}
 
 /**
@@ -155,12 +159,9 @@ class MediaHelper extends AppHelper {
  * Reimplemented method from Helper
  *
  * @param string $path Absolute or partial path to a file
- * @return mixed
+ * @return string|void An URL to the file
  */
 	function webroot($path) {
-		if (is_array($path) || strpos($path, '://') !== false) {
-			return $path;
-		}
 		if (!$file = $this->file($path)) {
 			return null;
 		}
@@ -178,7 +179,11 @@ class MediaHelper extends AppHelper {
 			}
 		}
 		$path = str_replace('\\', '/', $path);
-		return strpos($path, '://') !== false ? $path : $this->webroot . $path;
+
+		if (strpos($path, '://') !== false) {
+			return $path;
+		}
+		return $this->webroot . $path;
 	}
 
 /**
