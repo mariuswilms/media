@@ -42,9 +42,9 @@ class MediaHelper extends AppHelper {
 	var $tags = array(
 		'object'         => '<object%s>%s%s</object>',
 		'param'          => '<param%s/>',
-		'csslink'        => '<link type="text/css" rel="stylesheet" href="%s" %s/>',
-		'javascriptlink' => '<script type="text/javascript" src="%s"></script>',
-		'rsslink'        => '<link type="application/rss+xml" rel="alternate" href="%s" title="%s"/>', /* v2 */
+		'csslink'        => '<link type="text/css" rel="stylesheet" href="%s" %s/>', // @deprecated
+		'javascriptlink' => '<script type="text/javascript" src="%s"></script>', // @deprecated
+		'rsslink'        => '<link type="application/rss+xml" rel="alternate" href="%s" title="%s"/>', /* v2 */ // @deprecated
 	);
 
 /**
@@ -82,7 +82,7 @@ class MediaHelper extends AppHelper {
 		'css' => array('css'), // @deprecated
 		'doc' => array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
 		'gen' => array(),
-		'ico' => array('ico', 'png', 'gif', 'jpg', 'jpeg'),
+		'ico' => array('ico', 'png', 'gif', 'jpg', 'jpeg'), // @deprecated
 		'img' => array('png', 'jpg', 'jpeg' , 'gif', 'ico'),
 		'js'  => array('js'), // @deprecated
 		'txt' => array('txt'),
@@ -135,23 +135,7 @@ class MediaHelper extends AppHelper {
 	}
 
 /**
- * Output filtering
- *
- * @param string $content
- * @param boolean $inline True to return content, false to add content to `scripts_for_layout`
- * @return mixed String if inline is true or null
- */
-	function output($content, $inline = true) {
-		if ($inline) {
-			return $content;
-		}
-
-		$View =& ClassRegistry::getObject('view');
-		$View->addScript($content);
-	}
-
-/**
- * Turns a file path into a (routed) URL
+ * Turns a file path into an URL (without passing it through `Router::url()`)
  *
  * Reimplemented method from Helper
  *
@@ -586,7 +570,7 @@ class MediaHelper extends AppHelper {
  * @deprecated
  */
 	function link($path, $options = array()) {
-		$message  = "MediaHelper::__construct - ";
+		$message  = "MediaHelper::link - ";
 		$message .= "All functionality related to assets has been deprecated.";
 		trigger_error($message, E_USER_NOTICE);
 
@@ -656,5 +640,27 @@ class MediaHelper extends AppHelper {
 				return $this->Html->link(basename($file), $url);
 		}
 	}
+
+/**
+ * Output filtering
+ *
+ * @param string $content
+ * @param boolean $inline True to return content, false to add content to `scripts_for_layout`
+ * @return mixed String if inline is true or null
+ * @deprecated
+ */
+	function output($content, $inline = true) {
+		$message  = "MediaHelper::output - ";
+		$message .= "All functionality related to assets has been deprecated.";
+		trigger_error($message, E_USER_NOTICE);
+
+		if ($inline) {
+			return $content;
+		}
+
+		$View =& ClassRegistry::getObject('view');
+		$View->addScript($content);
+	}
 }
+
 ?>
