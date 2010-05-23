@@ -39,6 +39,9 @@ class GeneratorBehavior extends ModelBehavior {
  *   false - Fail on missing directories
  *   true  - Recursively create missing directories
  *
+ * createDirectoryMode
+ *   Octal mode value to use when creating directories
+ *
  * overwrite
  *   false - Will fail if a version with the same already exists
  *   true - Overwrites existing versions with the same name
@@ -46,10 +49,11 @@ class GeneratorBehavior extends ModelBehavior {
  * @var array
  */
 	var $_defaultSettings = array(
-		'baseDirectory'   => MEDIA,
-		'filterDirectory' => MEDIA_FILTER,
-		'createDirectory' => true,
-		'overwrite' => false
+		'baseDirectory'       => MEDIA,
+		'filterDirectory'     => MEDIA_FILTER,
+		'createDirectory'     => true,
+		'createDirectoryMode' => 0755,
+		'overwrite'           => false
 	);
 
 /**
