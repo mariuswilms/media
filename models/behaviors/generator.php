@@ -62,6 +62,14 @@ class GeneratorBehavior extends ModelBehavior {
 	function setup(&$Model, $settings = array()) {
 		$settings = (array)$settings;
 		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
+
+		if (method_exists($Model, 'beforeMake')) {
+			$message  = 'GeneratorBehavior::setup - ';
+			$message .= 'The `beforeMake` callback has been deprecated ';
+			$message .= 'in favor of the `makeVersion` method. ';
+			$message .=  "There is no workaround in place.";
+			trigger_error($message, E_USER_NOTICE);
+		}
 	}
 
 /**
@@ -89,53 +97,73 @@ class GeneratorBehavior extends ModelBehavior {
 	}
 
 /**
- * Parses instruction sets and invokes `Media::make()` for a file
+ * Parses instruction sets and invokes `makeVersion()` for each version on a file
+ *
+ * If the `makeVersion()` method is implemented in the current model it'll be used
+ * for generating a specifc version of the file (i.e. `s`, `m` or `l`) otherwise
+ * the method within this behavior is going to be used.
  *
  * @param Model $Model
  * @param string $file Path to a file relative to `baseDirectory`  or an absolute path to a file
- * @param boolean Whether to overwrite existing versions with the same name or not
+ * @param boolean $overwrite Whether to overwrite existing versions with the same name or not
  * @return boolean
  */
 	function make(&$Model, $file, $overwrite = false) {
 		extract($this->settings[$Model->alias]);
 
 		list($file, $relativeFile) = $this->_file($Model, $file);
-
 		$relativeDirectory = DS . rtrim(dirname($relativeFile), '.');
 
 		$name = Media::name($file);
 		$filter = Configure::read('Media.filter.' . strtolower($name));
 
-		$hasCallback = method_exists($Model, 'beforeMake');
-
 		foreach ($filter as $version => $instructions) {
 			$directory = Folder::slashTerm($filterDirectory . $version . $relativeDirectory);
-			$Folder = new Folder($directory, $createDirectory);
 
-			if (!$Folder->pwd()) {
-				$message  = "GeneratorBehavior::make - Directory `{$directory}` ";
-				$message .= "could not be created or is not writable. ";
-				$message .= "Please check the permissions.";
-				trigger_error($message, E_USER_WARNING);
-				continue;
-			}
-
-			if ($hasCallback) {
-				$process = compact('overwrite', 'directory', 'name', 'version', 'instructions');
-
-				if ($Model->beforeMake($file, $process)) {
-					continue;
-				}
-			}
-			if (!$Media = Media::make($file, $instructions)) {
+			$result = $Model->makeVersion($file, compact(
+				'overwrite', 'directory', 'name', 'version', 'instructions'
+			));
+			if (!$result) {
 				$message  = "GeneratorBehavior::make - Failed to make version `{$version}` ";
 				$message .= "of file `{$file}`. ";
 				trigger_error($message, E_USER_WARNING);
-				continue;
 			}
-			$Media->store($directory . basename($file), $overwrite);
 		}
 		return true;
+	}
+
+/**
+ * Generate a version of a file
+ *
+ * $process an array with the following contents:
+ *  overwrite - If the destination file should be overwritten if it exists
+ *  directory - The destination directory (may not exist)
+ *  name - Media name of $file (e.g. `'Image'`)
+ *  version - The version requested to be processed (e.g. `l`)
+ *  instructions - An array containing which names of methods to be called
+ *
+ * @param Model $Model
+ * @param string $file Absolute path to the source file
+ * @param array $process directory, version, name, instructions, overwrite
+ * @return boolean `true` if version for the file was successfully stored
+ */
+	function makeVersion(&$Model, $file, $process) {
+		extract($process);
+		extract($this->settings[$Model->alias]);
+
+		$Folder = new Folder($directory, $createDirectory, $createDirectoryMode);
+		if (!$Folder->pwd()) {
+			$message  = "GeneratorBehavior::generateVersion - Directory `{$directory}` ";
+			$message .= "could not be created or is not writable. ";
+			$message .= "Please check the permissions.";
+			trigger_error($message, E_USER_WARNING);
+			return false;
+		}
+
+		if (!$Media = Media::make($file, $instructions)) {
+			return false;
+		}
+		return $Media->store($directory . basename($file), $overwrite);
 	}
 
 /**

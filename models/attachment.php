@@ -109,24 +109,25 @@ class Attachment extends MediaAppModel {
 		));
 
 /**
- * beforeMake Callback
+ * Generate a version of a file
  *
- * Called from within `MediaBehavior::make()`
+ * Uncomment to force Generator Behavior to use this method when
+ * generating versions of files.
+ *
+ * If you want to fall back from your code back to the default method use:
+ * `return $this->Behaviors->Generator->makeVersion($this, $file, $process);`
  *
  * $process an array with the following contents:
- *	overwrite - If the destination file should be overwritten if it exists
- *	directory - The destination directory (guranteed to exist)
+ *  overwrite - If the destination file should be overwritten if it exists
+ *  directory - The destination directory (may not exist)
  *  name - Media name of $file (e.g. `'Image'`)
- *	version - The version requested to be processed (e.g. `'xl'`)
- *	instructions - An array containing which names of methods to be called
+ *  version - The version requested to be processed (e.g. `l`)
+ *  instructions - An array containing which names of methods to be called
  *
- * @param string $file Absolute path to the source file
  * @param array $process directory, version, name, instructions, overwrite
- * @access public
- * @return boolean True signals that the file has been processed,
- * 	false or null signals that the behavior should process the file
+ * @return boolean `true` if version for the file was successfully stored
  */
-	// function beforeMake($file, $process) {
+	// function makeVersion($file, $process) {
 	// }
 
 /**
