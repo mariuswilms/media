@@ -30,18 +30,18 @@ class GeneratorBehavior extends ModelBehavior {
  * Default settings
  *
  * baseDirectory
- * 	An absolute path (with trailing slash) to a directory which will be stripped off the file path
+ *   An absolute path (with trailing slash) to a directory which will be stripped off the file path
  *
  * filterDirectory
- * 	An absolute path (with trailing slash) to a directory to use for storing generated versions
+ *   An absolute path (with trailing slash) to a directory to use for storing generated versions
  *
  * createDirectory
- * 	false - Fail on missing directories
- * 	true  - Recursively create missing directories
+ *   false - Fail on missing directories
+ *   true  - Recursively create missing directories
  *
  * overwrite
- * 	false - Will fail if a version with the same already exists
- * 	true - Overwrites existing versions with the same name
+ *   false - Will fail if a version with the same already exists
+ *   true - Overwrites existing versions with the same name
  *
  * @var array
  */
@@ -142,7 +142,7 @@ class GeneratorBehavior extends ModelBehavior {
  * Returns relative and absolute path to a file
  *
  * @param Model $Model
- * @param string$file
+ * @param string $file
  * @return array
  */
 	function _file(&$Model, $file) {

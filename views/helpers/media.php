@@ -454,13 +454,13 @@ class MediaHelper extends AppHelper {
  * Resolves partial path
  *
  * Examples:
- * 	img/cern                 >>> MEDIA_STATIC/img/cern.png
- *  transfer/img/image.jpg   >>> MEDIA_TRANSFER/img/image.jpg
- * 	s/img/image.jpg           >>> MEDIA_FILTER/s/static/img/image.jpg
+ * img/cern                 >>> MEDIA_STATIC/img/cern.png
+ * transfer/img/image.jpg   >>> MEDIA_TRANSFER/img/image.jpg
+ * s/img/image.jpg          >>> MEDIA_FILTER/s/static/img/image.jpg
  *
  * @param string|array $path Either a string or an array with dirname and basename keys
  * @return string|boolean False on error or if path couldn't be resolbed otherwise
- * 							an absolute path to the file
+ *                        an absolute path to the file
  */
 	function file($path) {
 		$path = array();

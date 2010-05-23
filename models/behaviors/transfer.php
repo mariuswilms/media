@@ -50,22 +50,22 @@ class TransferBehavior extends ModelBehavior {
  * Default settings
  *
  * trustClient
- * 	false -
- * 	true  - Trust the MIME type submitted together with an upload
+ *   false -
+ *   true  - Trust the MIME type submitted together with an upload
  *
  * baseDirectory
- * 	string - An absolute path (with trailing slash) to a directory
+ *   string - An absolute path (with trailing slash) to a directory
  *
  * createDirectory
- * 	false - Fail on missing directories
- * 	true  - Recursively create missing directories
+ *   false - Fail on missing directories
+ *   true  - Recursively create missing directories
  *
  * alternativeFileTries
- * 	integer - Specifies the maximum number of tries for finding an alternative destination file name
+ *   integer - Specifies the maximum number of tries for finding an alternative destination file name
  *
  * overwrite
- * 	false - Existing destination files with the same are not overridden, an alternative name is used
- * 	true - Overwrites existing destination files with the same name
+ *   false - Existing destination files with the same are not overridden, an alternative name is used
+ *   true - Overwrites existing destination files with the same name
  *
  * @var array
  */

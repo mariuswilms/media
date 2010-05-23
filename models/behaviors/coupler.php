@@ -36,7 +36,7 @@ class CouplerBehavior extends ModelBehavior {
  * Default settings
  *
  * baseDirectory
- * 	An absolute path (with trailing slash) to a directory which will be stripped off the file path
+ *   An absolute path (with trailing slash) to a directory which will be stripped off the file path
  *
  * @var array
  */

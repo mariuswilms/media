@@ -38,14 +38,14 @@ class MetaBehavior extends ModelBehavior {
  * Default settings
  *
  * metadataLevel
- * 	0 - (disabled) No retrieval of additional metadata
+ *  0 - (disabled) No retrieval of additional metadata
  *  1 - (basic) Adds `mime_type` and `size` fields
  *  2 - (detailed) Adds Multiple fields dependent on the type of the file e.g. `artist`, `title`
  *
  * @var array
  */
 	var $_defaultSettings = array(
-		'level' => 1,
+		'level' => 1
 	);
 
 /**
@@ -187,7 +187,7 @@ class MetaBehavior extends ModelBehavior {
 					'height'    => $Media->height(),
 					'ratio'     => $Media->ratio(),
 					'quality'   => $Media->quality(),
-					'megapixel' => $Media->megapixel(),
+					'megapixel' => $Media->megapixel()
 				);
 			} elseif ($Media->name === 'Text') {
 				$data[2] = array(
@@ -196,7 +196,7 @@ class MetaBehavior extends ModelBehavior {
 					'sentences'       => $Media->sentences(),
 					'words'           => $Media->words(),
 					'flesch_score'    => $Media->fleschScore(),
-					'lexical_density' => $Media->lexicalDensity(),
+					'lexical_density' => $Media->lexicalDensity()
 				);
 			} elseif ($Media->name === 'Video') {
 				$data[2] = array(
@@ -207,7 +207,7 @@ class MetaBehavior extends ModelBehavior {
 					'height'  => $Media->height(),
 					'ratio'   => $Media->ratio(),
 					'quality' => $Media->quality(),
-					'bit_rate' => $Media->bitRate(),
+					'bit_rate' => $Media->bitRate()
 				);
 			} else {
 				$data[2] = array();

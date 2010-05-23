@@ -38,7 +38,7 @@ class DocumentMedia extends Media {
  *
  * @return integer
  */
-	function width()	{
+	function width() {
 		return $this->Adapters->dispatchMethod($this, 'width', null, array(
 			'normalize' => true
 		));
