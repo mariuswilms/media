@@ -47,7 +47,11 @@ class GdMediaAdapter extends MediaAdapter {
 	var $_pngFilter;
 
 	function compatible($Media) {
+		if (!function_exists('imageTypes')) {
+			return false;
+		}
 		$types = imageTypes();
+
 		if ($types & IMG_GIF) {
 			$this->require['mimeTypes'][] = 'image/gif';
 		}
