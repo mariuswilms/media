@@ -133,6 +133,9 @@ class Attachment extends MediaAppModel {
 /**
  * Returns the relative path to the destination file
  *
+ * Uncomment to force Transfer Behavior to use this method when
+ * determining the destination path instead of the builtin one.
+ *
  * @param array $via Information about the temporary file
  * @param array $from Information about the source file
  * @return string The path to the destination file or false
