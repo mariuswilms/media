@@ -54,10 +54,10 @@ class MetaBehavior extends ModelBehavior {
  * @var array
  * @access private
  */
-	var $__cached;
+	var $__cached = array();
 
 /**
- * Setup
+ * Setup behavior settings and cached metadata for the current model
  *
  * @param Model $Model
  * @param array $settings See defaultSettings for configuration options
@@ -65,7 +65,20 @@ class MetaBehavior extends ModelBehavior {
  */
 	function setup(&$Model, $settings = array()) {
 		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, (array)$settings);
-		$this->__cached[$Model->alias] = Cache::read('media_metadata_' . $Model->alias, '_cake_core_');
+		$this->__cached[$Model->alias] = Cache::read('media_metadata_' . $Model->alias);
+	}
+
+/**
+ * Write cached data on a per model basis
+ *
+ * @return void
+ */
+	function __destruct() {
+		foreach ($this->__cached as $alias => $data) {
+			if ($data) {
+				Cache::write('media_metadata_' . $alias, $data);
+			}
+		}
 	}
 
 /**
