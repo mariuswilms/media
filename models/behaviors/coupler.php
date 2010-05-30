@@ -52,13 +52,7 @@ class CouplerBehavior extends ModelBehavior {
  * @return void
  */
 	function setup(&$Model, $settings = array()) {
-		$settings = (array)$settings;
-
-		if (isset($Model->Behaviors->Transfer)) {
-			$transferSettings = $Model->Behaviors->Transfer->settings[$Model->alias];
-			$settings['baseDirectory'] = dirname($transferSettings['baseDirectory']) . DS;
-		}
-		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
+		$this->settings[$Model->alias] = (array) $settings + $this->_defaultSettings;
 	}
 
 /**
