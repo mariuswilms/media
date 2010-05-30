@@ -58,80 +58,18 @@ class MediaHelper extends AppHelper {
 		'filter'   => array(MEDIA_FILTER => MEDIA_FILTER_URL)
 	);
 
-/**
- * Maps basenames of directories to absoulte paths
- *
- * @var array
- */
-	var $_directories = array();
-
-/**
- * Holds an indexed array of version names
- *
- * @var array
- */
-	var $_versions = array();
-
-/**
- * Maps short media types to extensions
- *
- * @var array
- */
-	var $_extensions = array(
-		'aud' => array('mp3', 'ogg', 'aif', 'wma', 'wav'),
-		'css' => array('css'), // @deprecated
-		'doc' => array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
-		'gen' => array(),
-		'ico' => array('ico', 'png', 'gif', 'jpg', 'jpeg'), // @deprecated
-		'img' => array('png', 'jpg', 'jpeg' , 'gif', 'ico'),
-		'js'  => array('js'), // @deprecated
-		'txt' => array('txt'),
-		'vid' => array(
-			'avi', 'mpg', 'qt', 'mov', 'ogg', 'wmv',
-			'png', 'jpg', 'jpeg', 'gif', 'mp3', 'ogg',
-			'aif', 'wma', 'wav', 'flv'
-	));
-
-/**
- * Holds cached resolved paths
- *
- * @var array
- */
-	var $__cached;
 
 /**
  * Constructor
  *
- * Sets up cache and merges user supplied map settings with default map
+ * Merges user supplied map settings with default map
  *
  * @param array $settings The map settings to add
  * @return void
  */
 	function __construct($settings = array()) {
 		$this->_map = array_merge($this->_map, (array)$settings);
-
-		foreach ($this->_map as $key => $value) {
-			$this->_directories[basename(key($value))] = key($value);
-		}
-		foreach (Configure::read('Media.filter') as $type) {
-			$this->_versions += $type;
-		}
-		$this->_versions = array_keys($this->_versions);
-
-		if (!$this->__cached = Cache::read('media_found', '_cake_core_')) {
-			$this->__cached = array();
-		}
-	}
-
-/**
- * Destructor
- *
- * Updates cache
- *
- * @return void
- */
-	function __destruct() {
-		Cache::write('media_found', $this->__cached, '_cake_core_');
+		$this->__compatConstruct();
 	}
 
 /**
@@ -463,6 +401,165 @@ class MediaHelper extends AppHelper {
  *                        an absolute path to the file
  */
 	function file($path) {
+		$bases = array(MEDIA_FILTER, MEDIA, MEDIA_TRANSFER, MEDIA_STATIC);
+
+		// 1st try
+		if (Folder::isAbsolute($path)) {
+			return file_exists($path) ? $path : $this->__compatFile($path);
+		}
+
+		// 2nd try
+		foreach ($bases as $base) {
+			if (file_exists($base  . $path)) {
+				return $base . $path;
+			}
+		}
+
+		// 3rd try
+		$extension = null;
+		extract(pathinfo($path), EXTR_OVERWRITE);
+
+		if (!isset($filename)) { /* PHP < 5.2.0 */
+			$filename = substr($basename, 0, isset($extension) ? - (strlen($extension) + 1) : 0);
+		}
+
+		$pattern  = '{' . implode(',', $bases) . '}';
+		$pattern .= $dirname . DS . $filename . '*';
+		$files = glob($pattern, GLOB_BRACE | GLOB_NOSORT | GLOB_NOESCAPE);
+
+		if (!$files) {
+			return $this->__compatFile($path);
+		}
+		if (count($files) > 1) {
+			$message  = "MediaHelper::file - ";
+			$message .= "A relative path was given which triggered heuristic search. ";
+			$message .= "This resulted in multiple files being found. ";
+			$message .= "However the first file being found has been picked.";
+			trigger_error($message, E_USER_NOTICE);
+		}
+		return array_shift($files);
+	}
+
+/**
+ * Generates `param` tags
+ *
+ * @param array $options
+ * @return string
+ */
+	function _parseParameters($options) {
+		$parameters = array();
+		$options = Set::filter($options);
+
+		foreach ($options as $key => $value) {
+			if ($value === true) {
+				$value = 'true';
+			} elseif ($value === false) {
+				$value = 'false';
+			}
+			$parameters[] = sprintf(
+				$this->tags['param'],
+				$this->_parseAttributes(array('name' => $key, 'value' => $value))
+			);
+		}
+		return implode("\n", $parameters);
+	}
+
+	/* Deprecated */
+
+/**
+ * Maps basenames of directories to absoulte paths
+ *
+ * @var array
+ * @deprecated
+ */
+	var $_directories = array();
+
+/**
+ * Holds an indexed array of version names
+ *
+ * @var array
+ * @deprecated
+ */
+	var $_versions = array();
+
+/**
+ * Maps short media types to extensions
+ *
+ * @var array
+ * @deprecated
+ */
+	var $_extensions = array(
+		'aud' => array('mp3', 'ogg', 'aif', 'wma', 'wav'),
+		'css' => array('css'), // @deprecated
+		'doc' => array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
+		'gen' => array(),
+		'ico' => array('ico', 'png', 'gif', 'jpg', 'jpeg'), // @deprecated
+		'img' => array('png', 'jpg', 'jpeg' , 'gif', 'ico'),
+		'js'  => array('js'), // @deprecated
+		'txt' => array('txt'),
+		'vid' => array(
+			'avi', 'mpg', 'qt', 'mov', 'ogg', 'wmv',
+			'png', 'jpg', 'jpeg', 'gif', 'mp3', 'ogg',
+			'aif', 'wma', 'wav', 'flv'
+	));
+
+/**
+ * Holds cached resolved paths
+ *
+ * @var array
+ * @deprecated
+ */
+	var $__cached;
+
+/**
+ * Compat Constructor
+ *
+ * Sets up cache and merges user supplied map settings with default map
+ *
+ * @param array $settings The map settings to add
+ * @return void
+ * @deprecated
+ */
+	function __compatConstruct() {
+		foreach ($this->_map as $key => $value) {
+			$this->_directories[basename(key($value))] = key($value);
+		}
+		foreach (Configure::read('Media.filter') as $type) {
+			$this->_versions += $type;
+		}
+		$this->_versions = array_keys($this->_versions);
+
+		if (!$this->__cached = Cache::read('media_found', '_cake_core_')) {
+			$this->__cached = array();
+		}
+	}
+
+/**
+ * Destructor
+ *
+ * Updates cache
+ *
+ * @return void
+ * @deprecated
+ */
+	function __destruct() {
+		Cache::write('media_found', $this->__cached, '_cake_core_');
+	}
+
+/**
+ * Resolves partial path (compat)
+ *
+ * Examples:
+ * img/cern                 >>> MEDIA_STATIC/img/cern.png
+ * transfer/img/image.jpg   >>> MEDIA_TRANSFER/img/image.jpg
+ * s/img/image.jpg          >>> MEDIA_FILTER/s/static/img/image.jpg
+ *
+ * @param string|array $path Either a string or an array with dirname and basename keys
+ * @return string|boolean False on error or if path couldn't be resolbed otherwise
+ *                        an absolute path to the file
+ * @deprecated
+ */
+	function __compatFile($path) {
 		$path = array();
 
 		foreach (func_get_args() as $arg) {
@@ -540,30 +637,6 @@ class MediaHelper extends AppHelper {
 			}
 		}
 		return false;
-	}
-
-/**
- * Generates `param` tags
- *
- * @param array $options
- * @return string
- */
-	function _parseParameters($options) {
-		$parameters = array();
-		$options = Set::filter($options);
-
-		foreach ($options as $key => $value) {
-			if ($value === true) {
-				$value = 'true';
-			} elseif ($value === false) {
-				$value = 'false';
-			}
-			$parameters[] = sprintf(
-				$this->tags['param'],
-				$this->_parseAttributes(array('name' => $key, 'value' => $value))
-			);
-		}
-		return implode("\n", $parameters);
 	}
 
 /**
