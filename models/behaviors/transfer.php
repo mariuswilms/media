@@ -247,19 +247,20 @@ class TransferBehavior extends ModelBehavior {
 			}
 
 			if (is_readable($resource['file'])) {
-				/*
-				 * Because there is not better  way to determine if resource is an image
-				 * first, we suppress a warning that would be thrown here otherwise.
-				 */
-				list($width, $height) = @getimagesize($resource['file']);
-
 				$resource = array_merge(
 					$resource,
 					array(
 						'size'       => filesize($resource['file']),
 						'permission' => substr(sprintf('%o', fileperms($resource['file'])), -4),
-						'pixels'     => $width * $height
 				));
+				/*
+				 * Because there is not better way to determine if resource is an image
+				 * first, we suppress a warning that would be thrown here otherwise.
+				 */
+				if (function_exists('getimagesize')) {
+					list($width, $height) = @getimagesize($resource['file']);
+					$resource['pixels'] = $width * $height;
+				}
 			}
 		} elseif (TransferValidation::fileUpload($resource)) {
 			$resource = array_merge(
