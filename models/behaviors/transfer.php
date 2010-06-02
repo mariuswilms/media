@@ -53,7 +53,7 @@ class TransferBehavior extends ModelBehavior {
  *   false -
  *   true  - Trust the MIME type submitted together with an upload
  *
- * baseDirectory
+ * transferDirectory
  *   string - An absolute path (with trailing slash) to a directory
  *
  * createDirectory
@@ -70,11 +70,11 @@ class TransferBehavior extends ModelBehavior {
  * @var array
  */
 	var $_defaultSettings = array(
-		'trustClient'     => false,
-		'baseDirectory'   => MEDIA_TRANSFER,
-		'createDirectory' => true,
-		'alternativeFile' => 100,
-		'overwrite'       => true
+		'trustClient'       => false,
+		'transferDirectory' => MEDIA_TRANSFER,
+		'createDirectory'   => true,
+		'alternativeFile'   => 100,
+		'overwrite'         => true
 	);
 
 /**
@@ -399,7 +399,7 @@ class TransferBehavior extends ModelBehavior {
 			trigger_error($message, E_USER_NOTICE);
 			return false;
 		}
-		$file = $baseDirectory . $file;
+		$file = $transferDirectory . $file;
 
 		if (!$overwrite) {
 			if (!$file = $this->_alternativeFile($file, $alternativeFile)) {

@@ -52,7 +52,7 @@ class Attachment extends MediaAppModel {
 	var $actsAs = array(
 		'Media.Transfer' => array(
 			'trustClient' => false,
-			'baseDirectory' => MEDIA_TRANSFER,
+			'transferDirectory' => MEDIA_TRANSFER,
 			'createDirectory' => true,
 			'alternativeFile' => 100
 		),
