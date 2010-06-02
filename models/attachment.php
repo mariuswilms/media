@@ -125,13 +125,13 @@ class Attachment extends MediaAppModel {
  * `return $this->Behaviors->Generator->makeVersion($this, $file, $process);`
  *
  * $process an array with the following contents:
- *  overwrite - If the destination file should be overwritten if it exists
- *  directory - The destination directory (may not exist)
- *  name - Media name of $file (e.g. `'Image'`)
+ *  directory - The destination directory (If this method was called
+ *              by `make()` the directory is already created)
  *  version - The version requested to be processed (e.g. `l`)
  *  instructions - An array containing which names of methods to be called
  *
- * @param array $process directory, version, name, instructions, overwrite
+ * @param file $file Absolute path to source file
+ * @param array $process version, directory, instructions
  * @return boolean `true` if version for the file was successfully stored
  */
 	// function makeVersion($file, $process) {

@@ -101,7 +101,8 @@ class GeneratorBehavior extends ModelBehavior {
 	}
 
 /**
- * Parses instruction sets and invokes `makeVersion()` for each version on a file
+ * Parses instruction sets and invokes `makeVersion()` for each version on a file.
+ * Also creates the destination directory if enabled by settings.
  *
  * If the `makeVersion()` method is implemented in the current model it'll be used
  * for generating a specifc version of the file (i.e. `s`, `m` or `l`) otherwise
@@ -109,65 +110,61 @@ class GeneratorBehavior extends ModelBehavior {
  *
  * @param Model $Model
  * @param string $file Path to a file relative to `baseDirectory`  or an absolute path to a file
- * @param boolean $overwrite Whether to overwrite existing versions with the same name or not
  * @return boolean
  */
-	function make(&$Model, $file, $overwrite = false) {
+	function make(&$Model, $file) {
 		extract($this->settings[$Model->alias]);
 
 		list($file, $relativeFile) = $this->_file($Model, $file);
 		$relativeDirectory = DS . rtrim(dirname($relativeFile), '.');
 
-		$name = Media::name($file);
-		$filter = Configure::read('Media.filter.' . strtolower($name));
+		$filter = Configure::read('Media.filter.' . strtolower(Media::name($file)));
+		$result = true;
 
 		foreach ($filter as $version => $instructions) {
 			$directory = Folder::slashTerm($filterDirectory . $version . $relativeDirectory);
 
-			$result = $Model->makeVersion($file, compact(
-				'overwrite', 'directory', 'name', 'version', 'instructions'
-			));
-			if (!$result) {
+			$Folder = new Folder($directory, $createDirectory, $createDirectoryMode);
+			if (!$Folder->pwd()) {
+				$message  = "GeneratorBehavior::generateVersion - Directory `{$directory}` ";
+				$message .= "could not be created or is not writable. ";
+				$message .= "Please check the permissions.";
+				trigger_error($message, E_USER_WARNING);
+				$result = false;
+				continue;
+			}
+
+			if (!$Model->makeVersion($file, compact('version', 'directory', 'instructions'))) {
 				$message  = "GeneratorBehavior::make - Failed to make version `{$version}` ";
 				$message .= "of file `{$file}`. ";
 				trigger_error($message, E_USER_WARNING);
+				$result = false;
 			}
 		}
-		return true;
+		return $result;
 	}
 
 /**
  * Generate a version of a file
  *
  * $process an array with the following contents:
- *  overwrite - If the destination file should be overwritten if it exists
- *  directory - The destination directory (may not exist)
- *  name - Media name of $file (e.g. `'Image'`)
+ *  directory - The destination directory (If this method was called
+ *              by `make()` the directory is already created)
  *  version - The version requested to be processed (e.g. `l`)
  *  instructions - An array containing which names of methods to be called
  *
  * @param Model $Model
  * @param string $file Absolute path to the source file
- * @param array $process directory, version, name, instructions, overwrite
+ * @param array $process directory, version, instructions
  * @return boolean `true` if version for the file was successfully stored
  */
 	function makeVersion(&$Model, $file, $process) {
-		extract($process);
-		extract($this->settings[$Model->alias]);
+		$overwrite = $this->settings[$Model->alias]['overwrite'];
 
-		$Folder = new Folder($directory, $createDirectory, $createDirectoryMode);
-		if (!$Folder->pwd()) {
-			$message  = "GeneratorBehavior::generateVersion - Directory `{$directory}` ";
-			$message .= "could not be created or is not writable. ";
-			$message .= "Please check the permissions.";
-			trigger_error($message, E_USER_WARNING);
+		if (!$Media = Media::make($file, $process['instructions'])) {
 			return false;
 		}
-
-		if (!$Media = Media::make($file, $instructions)) {
-			return false;
-		}
-		return $Media->store($directory . basename($file), $overwrite);
+		return $Media->store($process['directory'] . basename($file), $overwrite);
 	}
 
 /**
