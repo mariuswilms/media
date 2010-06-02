@@ -413,7 +413,7 @@ class MediaHelper extends AppHelper {
 
 		// 2nd try
 		foreach ($bases as $base) {
-			if (file_exists($base  . $path)) {
+			if (file_exists($base . $path)) {
 				return $base . $path;
 			}
 		}
