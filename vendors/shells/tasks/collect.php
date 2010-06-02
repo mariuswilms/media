@@ -15,6 +15,7 @@
  * @copyright  2007-2010 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
+ * @deprecated
  */
 class CollectTask extends MediaShell {
 
@@ -57,6 +58,10 @@ class CollectTask extends MediaShell {
  * @return boolean
  */
 	function execute() {
+		$message  = "CollectTask::execute - ";
+		$message .= "All functionality related to assets has been deprecated.";
+		trigger_error($message, E_USER_NOTICE);
+
 		$this->_map = array();
 		$this->_paths = array();
 		$this->_link = null;

@@ -34,7 +34,7 @@ class MediaShell extends Shell {
  * @var string
  * @access public
  */
-	var $tasks = array('Sync', 'Make', 'Collect');
+	var $tasks = array('Sync', 'Make', 'Collect' /* @deprecated */);
 
 /**
  * Verbose mode
@@ -87,7 +87,7 @@ class MediaShell extends Shell {
 		$this->out('[P]rotect Transfer Directory');
 		$this->out('[S]ynchronize');
 		$this->out('[M]ake');
-		$this->out('[C]ollect');
+		$this->out('[C]ollect (deprecated)');
 		$this->out('[H]elp');
 		$this->out('[Q]uit');
 
@@ -234,7 +234,7 @@ class MediaShell extends Shell {
 		$this->out("\tprotect");
 		$this->out("\t\tCreates a htaccess file to protect the transfer dir.");
 		$this->out('');
-		$this->out("\tcollect [-link] [-exclude name] [sourcedir]");
+		$this->out("\tcollect [-link] [-exclude name] [sourcedir] (deprecated)");
 		$this->out("\t\tCollects files and copies them to the media dir.");
 		$this->out('');
 		$this->out("\t\t-link Use symlinks instead of copying.");
