@@ -110,6 +110,10 @@ class Attachment extends MediaAppModel {
 			'allowEmpty' => true,
 		));
 
+	// var $virtualFields = array(
+	//	'path' => "CONCAT_WS('/', dirname, basename)",
+	// );
+
 /**
  * Generate a version of a file
  *
