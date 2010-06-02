@@ -48,28 +48,33 @@ class MediaHelper extends AppHelper {
 	);
 
 /**
- * Maps absolute paths to url paths
+ * Directory paths mapped to URLs. Can be modified by passing custom paths as
+ * settings to the constructor.
  *
  * @var array
  */
-	var $_map = array(
-		'static'   => array(MEDIA_STATIC => MEDIA_STATIC_URL),
-		'transfer' => array(MEDIA_TRANSFER => MEDIA_TRANSFER_URL),
-		'filter'   => array(MEDIA_FILTER => MEDIA_FILTER_URL)
+	var $_paths = array(
+		MEDIA_STATIC => MEDIA_STATIC_URL,
+		MEDIA_TRANSFER => MEDIA_TRANSFER_URL,
+		MEDIA_FILTER => MEDIA_FILTER_URL
 	);
-
 
 /**
  * Constructor
  *
  * Merges user supplied map settings with default map
  *
- * @param array $settings The map settings to add
+ * @param array $settings An array of base directory paths mapped to URLs. Used for determining
+ *                        the absolute path to a file in `file()` and for determining the URL
+ *                        corresponding to an absolute path. Paths are expected to end with a
+ *                        trailing slash.
  * @return void
  */
 	function __construct($settings = array()) {
-		$this->_map = array_merge($this->_map, (array)$settings);
-		$this->__compatConstruct();
+		if (!is_array(current($settings))) { // for BC
+			$this->_paths = array_merge($this->_paths, (array) $settings);
+		}
+		$this->__compatConstruct($settings);
 	}
 
 /**
@@ -104,10 +109,7 @@ class MediaHelper extends AppHelper {
 			return null;
 		}
 
-		foreach ($this->_map as $value) {
-			$directory = key($value);
-			$url = current($value);
-
+		foreach ($this->_paths as $directory => $url) {
 			if (strpos($file, $directory) !== false) {
 				if ($url === false) {
 					return null;
@@ -512,6 +514,18 @@ class MediaHelper extends AppHelper {
 	var $__cached;
 
 /**
+ * Maps absolute paths to url paths
+ *
+ * @var array
+ * @deprecated
+ */
+	var $_map = array(
+		'static'   => array(MEDIA_STATIC => MEDIA_STATIC_URL),
+		'transfer' => array(MEDIA_TRANSFER => MEDIA_TRANSFER_URL),
+		'filter'   => array(MEDIA_FILTER => MEDIA_FILTER_URL)
+	);
+
+/**
  * Compat Constructor
  *
  * Sets up cache and merges user supplied map settings with default map
@@ -520,7 +534,11 @@ class MediaHelper extends AppHelper {
  * @return void
  * @deprecated
  */
-	function __compatConstruct() {
+	function __compatConstruct($settings) {
+		if (is_array(current($settings))) {
+			$this->_map = array_merge($this->_map, (array)$settings);
+		}
+
 		foreach ($this->_map as $key => $value) {
 			$this->_directories[basename(key($value))] = key($value);
 		}
