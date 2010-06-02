@@ -16,7 +16,6 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Lib', 'Media.Media');
 
 /**
  * Make Task Class
@@ -26,53 +25,11 @@ App::import('Lib', 'Media.Media');
  */
 class MakeTask extends MediaShell {
 
-/**
- * An absolute path to a file or directory
- *
- * @var string
- * @access public
- */
 	var $source;
 
-/**
- * An absolute path to a directory
- *
- * @var string
- * @access public
- */
-	var $destination;
+	var $model;
 
-/**
- * Optionally holds the version string
- *
- * @var string
- * @access public
- */
-	var $version;
-
-/**
- * Force switch
- *
- * @var boolean
- * @access public
- */
-	var $force;
-
-/**
- * Overwrite existing files
- *
- * @var boolean
- * @access protected
- */
-	var $_overwrite = false;
-
-/**
- * Enable/disable creation of misssing directories
- *
- * @var boolean
- * @access protected
- */
-	var $_createDirectories = false;
+	var $_Model;
 
 /**
  * Main execution methpd
@@ -81,104 +38,47 @@ class MakeTask extends MediaShell {
  * @return void
  */
 	function execute() {
-		$this->interactive = count($this->args) != 2;
-		$this->force = isset($this->params['force']);
-		$this->source = array_shift($this->args);
-		$this->destination = array_shift($this->args);
+		if (isset($this->params['model'])) {
+			$this->model = $this->params['model'];
+		 } else {
+			$this->model = $this->in('Model', null, 'Media.Attachment');
+		}
+		$this->_Model = ClassRegistry::init($this->model);
 
-		if (!isset($this->source)) {
-			$this->source = $this->in('Source File/Directory', null, MEDIA_TRANSFER);
+		if (!isset($this->_Model->Behaviors->Generator)) {
+			$this->error("Model `{$this->model}` has the `Generator` behavior not attached to it.");
 		}
-		if (is_dir($this->source)) {
-			$this->source = Folder::slashTerm($this->source);
-		}
-		if (!isset($this->destination)) {
-			$this->destination = $this->in('Destination Directory', null, MEDIA_FILTER);
-		}
-		$this->destination = Folder::slashTerm($this->destination);
+		$settings = $this->_Model->Behaviors->Generator->settings[$this->_Model->alias];
 
-		if ($this->force) {
-			$this->_overwrite = $this->_createDirectories = true;
-		}
-		if (isset($this->params['version'])) {
-			$this->version = $this->params['version'];
+		if (!$this->source = array_shift($this->args)) {
+			$this->source = $this->in('Source directory', null, $settings['baseDirectory']);
 		}
 
-		$this->out('');
+		$this->out();
+		$this->out(sprintf('%-25s: %s', 'Base', $this->shortPath($settings['baseDirectory'])));
 		$this->out(sprintf('%-25s: %s', 'Source', $this->shortPath($this->source)));
-		$this->out(sprintf('%-25s: %s', 'Destination', $this->shortPath($this->destination)));
-		$this->out(sprintf('%-25s: %s', 'Overwrite existing', $this->_overwrite ? 'yes' : 'no'));
-		$this->out(sprintf('%-25s: %s', 'Create directories', $this->_createDirectories ? 'yes' : 'no'));
+		$this->out(sprintf('%-25s: %s', 'Destination', $this->shortPath($settings['filterDirectory'])));
+		$this->out(sprintf('%-25s: %s', 'Overwrite existing', $settings['overwrite'] ? 'yes' : 'no'));
+		$this->out(sprintf('%-25s: %s', 'Create directories', $settings['createDirectory'] ? 'yes' : 'no'));
 
 		if ($this->in('Looks OK?', 'y,n', 'y') == 'n') {
 			return false;
 		}
-		$this->out('');
+		$this->out();
 		$this->out('Making');
 		$this->hr();
 
-		if (is_file($this->source)) {
-			$files = array($this->source);
-		} else {
-			$Folder = new Folder($this->source);
-			$files = $Folder->findRecursive();
-		}
+		$Folder = new Folder($this->source);
+		$files = $Folder->findRecursive();
 
 		$this->progress(count($files));
 
 		foreach ($files as $key => $file) {
 			$this->progress($key, $this->shortPath($file));
-			$this->_make($file);
+			$this->_Model->make($file);
 		}
-		$this->out('');
-	}
-
-/**
- * "makes" a file
- *
- * @param string $file Absolute path to a file
- * @access protected
- * @return boolean
- */
-	function _make($file) {
-		$File = new File($file);
-		$name = Media::name($file);
-		$subdir = basename($this->source) . DS . dirname(str_replace($this->source, '', $file));
-
-		if ($name === 'Icon' || strpos($file, 'ico' . DS) !== false) {
-			$message  = "MakeTask::_make - ";
-			$message .= "All functionality related to assets has been deprecated.";
-			trigger_error($message, E_USER_NOTICE);
-			return true;
-		}
-
-		if ($this->version) {
-			$configString = 'Media.filter.' . strtolower($name) . '.' . $this->version;
-			$filter = array(Configure::read($configString));
-		} else {
-			$configString = 'Media.filter.' . strtolower($name);
-			$filter = Configure::read($configString);
-		}
-
-		foreach ($filter as $version => $instructions) {
-			$directory = Folder::slashTerm(rtrim($this->destination . $version . DS . $subdir, '.'));
-			$Folder = new Folder($directory, $this->_createDirectories);
-
-			if (!$Folder->pwd()) {
-				$this->err($directory . ' could not be created or is not writable.');
-				$this->err('Please check your permissions.');
-				return false;
-			}
-
-			$Media = Media::make($File->pwd(), $instructions);
-
-			if (!$Media) {
-				$this->err('Failed to make version ' . $version . ' of media.');
-				return false;
-			}
-			$Media->store($Folder->pwd() . $File->name, $this->_overwrite);
-		}
-		return true;
+		$this->out();
 	}
 }
+
 ?>
