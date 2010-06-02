@@ -41,7 +41,7 @@ class CouplerBehavior extends ModelBehavior {
  * @var array
  */
 	var $_defaultSettings = array(
-		'baseDirectory' => MEDIA
+		'baseDirectory' => MEDIA_TRANSFER
 	);
 
 /**
