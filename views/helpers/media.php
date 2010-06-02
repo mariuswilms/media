@@ -389,19 +389,22 @@ class MediaHelper extends AppHelper {
 	}
 
 /**
- * Resolves partial path
+ * Resolves partial path to an absolute path by trying to find an existing file matching the
+ * pattern `{<base path 1>, <base path 2>, [...]}/<provided partial path without ext>.*`.
+ * The base paths are coming from the `_paths` property.
  *
  * Examples:
  * img/cern                 >>> MEDIA_STATIC/img/cern.png
- * transfer/img/image.jpg   >>> MEDIA_TRANSFER/img/image.jpg
- * s/img/image.jpg          >>> MEDIA_FILTER/s/static/img/image.jpg
+ * img/mit.jpg              >>> MEDIA_TRANSFER/img/mit.jpg
+ * s/<...>/img/hbk.jpg      >>> MEDIA_FILTER/s/<...>/img/hbk.png
  *
- * @param string|array $path Either a string or an array with dirname and basename keys
- * @return string|boolean False on error or if path couldn't be resolbed otherwise
- *                        an absolute path to the file
+ * @param string $path A relative or absolute path to a file.
+ * @return string|boolean False on error or if path couldn't be resolved otherwise
+ *                        an absolute path to the file.
  */
 	function file($path) {
-		$bases = array(MEDIA_FILTER, MEDIA, MEDIA_TRANSFER, MEDIA_STATIC);
+		// Most recent paths are probably searched more often
+		$bases = array_reverse(array_keys($this->_paths));
 
 		// 1st try
 		if (Folder::isAbsolute($path)) {
