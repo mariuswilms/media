@@ -367,27 +367,25 @@ class MediaHelper extends AppHelper {
 /**
  * Get MIME type for a path
  *
- * @param string|array $path Absolute or partial path to a file
- * @return string|boolean
+ * @param string $path Absolute or partial path to a file
+ * @return string|void
  */
 	function mimeType($path) {
 		if ($file = $this->file($path)) {
 			return MimeType::guessType($file);
 		}
-		return false;
 	}
 
 /**
  * Get size of file
  *
- * @param string|array $path Absolute or partial path to a file
- * @return integer|boolean False on error or integer
+ * @param string $path Absolute or partial path to a file
+ * @return integer|void
  */
 	function size($path)	{
 		if ($file = $this->file($path)) {
 			return filesize($file);
 		}
-		return false;
 	}
 
 /**
