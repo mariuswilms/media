@@ -91,12 +91,15 @@ class MediaShell extends Shell {
 		$this->out('[H]elp');
 		$this->out('[Q]uit');
 
-		$action = strtoupper($this->in(__('What would you like to do?', true),
-										array('I', 'P', 'S', 'M', 'C', 'H', 'Q'),'q'));
+		$action = $this->in(
+			__('What would you like to do?', true),
+			array('I', 'P', 'S', 'M', 'C', 'H', 'Q'),
+			'q'
+		);
 
 		$this->out();
 
-		switch ($action) {
+		switch (strtoupper($action)) {
 			case 'I':
 				$this->init();
 				break;

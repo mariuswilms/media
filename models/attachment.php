@@ -66,8 +66,9 @@ class Attachment extends MediaAppModel {
 			'baseDirectory' => MEDIA_TRANSFER
 		),
 		'Media.Meta' => array(
-			'level'	 => 2
-	));
+			'level' => 2
+		)
+	);
 
 /**
  * Validation rules for file and alternative fields
