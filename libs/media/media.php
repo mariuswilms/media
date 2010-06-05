@@ -281,52 +281,6 @@ class Media extends Object {
 	}
 
 /**
- * Automatically processes a file and returns a Media instance
- *
- * Possible values for $instructions:
- * 	array('name of method', 'name of other method')
- *  array('name of method' => array('arg1', 'arg2'))
- *
- * @param string $file Absolute path to a file
- * @param array $instructions See description above
- * @return object
- */
-	static function make($file, $instructions = array()) {
-		$Media = Media::factory($file);
-
-		foreach ($instructions as $key => $value) {
-			if (is_int($key)) {
-				$method = $value;
-				$args = null;
-			} else {
-				$method = $key;
-				if (is_array($value)) {
-					$args = $value;
-				} else {
-					$args = array($value);
-				}
-			}
-
-			if (!method_exists($Media, $method)) {
-				$message  = "Media::make - Invalid instruction ";
-				$message .= "`" . get_class($Media) . "::{$method}()`.";
-				trigger_error($message, E_USER_WARNING);
-				return false;
-			}
-			$result = call_user_func_array(array($Media, $method), $args);
-			if ($result === false) {
-				$message  = "Media::make - Instruction ";
-				$message .=  "`" . get_class($Media) . "::{$method}()` failed.";
-				trigger_error($message, E_USER_WARNING);
-				return false;
-			} elseif (is_a($result, 'Media')) {
-				$Media = $result;
-			}
-		}
-		return $Media;
-	}
-
-/**
  * Stores the media to a file and assures that the output file has the correct extension
  *
  * @param string $file Absolute path to a file
@@ -418,6 +372,56 @@ class Media extends Object {
 
 		asort($knownRatios);
 		return array_shift(array_keys($knownRatios));
+	}
+
+/**
+ * Automatically processes a file and returns a Media instance
+ *
+ * Possible values for $instructions:
+ * 	array('name of method', 'name of other method')
+ *  array('name of method' => array('arg1', 'arg2'))
+ *
+ * @param string $file Absolute path to a file
+ * @param array $instructions See description above
+ * @return object
+ * @deprecated
+ */
+	static function make($file, $instructions = array()) {
+		$message = 'Media::make - Deprecated. Functionality has been moved to GeneratorBehavior.';
+		trigger_error($message, E_USER_NOTICE);
+
+		$Media = Media::factory($file);
+
+		foreach ($instructions as $key => $value) {
+			if (is_int($key)) {
+				$method = $value;
+				$args = null;
+			} else {
+				$method = $key;
+				if (is_array($value)) {
+					$args = $value;
+				} else {
+					$args = array($value);
+				}
+			}
+
+			if (!method_exists($Media, $method)) {
+				$message  = "Media::make - Invalid instruction ";
+				$message .= "`" . get_class($Media) . "::{$method}()`.";
+				trigger_error($message, E_USER_WARNING);
+				return false;
+			}
+			$result = call_user_func_array(array($Media, $method), $args);
+			if ($result === false) {
+				$message  = "Media::make - Instruction ";
+				$message .=  "`" . get_class($Media) . "::{$method}()` failed.";
+				trigger_error($message, E_USER_WARNING);
+				return false;
+			} elseif (is_a($result, 'Media')) {
+				$Media = $result;
+			}
+		}
+		return $Media;
 	}
 }
 

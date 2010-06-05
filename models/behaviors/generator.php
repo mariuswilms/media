@@ -145,26 +145,58 @@ class GeneratorBehavior extends ModelBehavior {
 	}
 
 /**
- * Generate a version of a file
+ * Generate a version of a file. If this method is reimplemented in the
+ * model, than that one is used by `make()` instead of the implementation
+ * below.
  *
  * $process an array with the following contents:
  *  directory - The destination directory (If this method was called
  *              by `make()` the directory is already created)
  *  version - The version requested to be processed (e.g. `l`)
- *  instructions - An array containing which names of methods to be called
- *
+ *  instructions - An array containing which names of methods to be called.
+ *                 Possible instructions are:
+ *                  - `array('name of method', 'name of other method')`
+ *                  - `array('name of method' => array('arg1', 'arg2'))`
  * @param Model $Model
  * @param string $file Absolute path to the source file
  * @param array $process directory, version, instructions
  * @return boolean `true` if version for the file was successfully stored
  */
 	function makeVersion(&$Model, $file, $process) {
-		$overwrite = $this->settings[$Model->alias]['overwrite'];
+		$Media = Media::factory($file);
 
-		if (!$Media = Media::make($file, $process['instructions'])) {
-			return false;
+		foreach ($process['instructions'] as $key => $value) {
+			if (is_int($key)) {
+				$method = $value;
+				$args = null;
+			} else {
+				$method = $key;
+				if (is_array($value)) {
+					$args = $value;
+				} else {
+					$args = array($value);
+				}
+			}
+
+			if (!method_exists($Media, $method)) {
+				$message = "GeneratorBehavior::makeVersion - Invalid instruction `{$method}`.";
+				trigger_error($message, E_USER_NOTICE);
+				return false;
+			}
+			$result = call_user_func_array(array($Media, $method), $args);
+
+			if ($result === false) {
+				$message  = "GeneratorBehavhior::makeVersion - Instruction `{$method}` failed.";
+				trigger_error($message, E_USER_NOTICE);
+				return false;
+			} elseif (is_a($result, 'Media')) {
+				$Media = $result;
+			}
 		}
-		return $Media->store($process['directory'] . basename($file), $overwrite);
+		return $Media->store(
+			$process['directory'] . basename($file),
+			$this->settings[$Model->alias]['overwrite']
+		);
 	}
 
 /**
