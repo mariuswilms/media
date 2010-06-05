@@ -406,19 +406,10 @@ class MediaHelper extends AppHelper {
 		// Most recent paths are probably searched more often
 		$bases = array_reverse(array_keys($this->_paths));
 
-		// 1st try
 		if (Folder::isAbsolute($path)) {
 			return file_exists($path) ? $path : $this->__compatFile($path);
 		}
 
-		// 2nd try
-		foreach ($bases as $base) {
-			if (file_exists($base . $path)) {
-				return $base . $path;
-			}
-		}
-
-		// 3rd try
 		$extension = null;
 		extract(pathinfo($path), EXTR_OVERWRITE);
 
@@ -426,21 +417,25 @@ class MediaHelper extends AppHelper {
 			$filename = substr($basename, 0, isset($extension) ? - (strlen($extension) + 1) : 0);
 		}
 
-		$pattern  = '{' . implode(',', $bases) . '}';
-		$pattern .= $dirname . DS . $filename . '*';
-		$files = glob($pattern, GLOB_BRACE | GLOB_NOSORT | GLOB_NOESCAPE);
+		foreach ($bases as $base) {
+			if (file_exists($base . $path)) {
+				return $base . $path;
+			}
+			$files = glob($base . $dirname . DS . $filename . '*', GLOB_NOSORT | GLOB_NOESCAPE);
 
-		if (!$files) {
-			return $this->__compatFile($path);
+			if (count($files) > 1) {
+				$message  = "MediaHelper::file - ";
+				$message .= "A relative path (`{$path}`) was given which triggered search for ";
+				$message .= "files with the same name but not the same extension.";
+				$message .= "This resulted in multiple files being found. ";
+				$message .= "However the first file being found has been picked.";
+				trigger_error($message, E_USER_NOTICE);
+			}
+			if ($files) {
+				return array_shift($files);
+			}
 		}
-		if (count($files) > 1) {
-			$message  = "MediaHelper::file - ";
-			$message .= "A relative path was given which triggered heuristic search. ";
-			$message .= "This resulted in multiple files being found. ";
-			$message .= "However the first file being found has been picked.";
-			trigger_error($message, E_USER_NOTICE);
-		}
-		return array_shift($files);
+		return $this->__compatFile($path);
 	}
 
 /**
