@@ -175,8 +175,7 @@ class GeneratorBehavior extends ModelBehavior {
 	function makeVersion(&$Model, $file, $process) {
 		extract($this->settings[$Model->alias]);
 
-		/* No media transforms */
-
+		/* Process clone instruction */
 		if (key($process['instructions']) == 'clone') {
 			$action = current($args);
 
