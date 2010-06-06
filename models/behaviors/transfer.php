@@ -747,7 +747,7 @@ class TransferBehavior extends ModelBehavior {
 		$names = $Folder->find($filename . '.*');
 
 		foreach ($names as &$name) { /* PHP < 5.2.0 */
-			$length =  strlen(pathinfo($name, PATHINFO_EXTENSION));
+			$length = strlen(pathinfo($name, PATHINFO_EXTENSION));
 			$name = substr(basename($name), 0, $length ? - ($length + 1) : 0);
 		}
 
