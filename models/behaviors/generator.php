@@ -42,9 +42,17 @@ class GeneratorBehavior extends ModelBehavior {
  * createDirectoryMode
  *   Octal mode value to use when creating directories
  *
+ * mode
+ *   Octal mode value to use for resulting files of `make()`.
+ *
  * overwrite
  *   false - Will fail if a version with the same already exists
  *   true - Overwrites existing versions with the same name
+ *
+ * guessExtension
+ *   false - When making media use extension of source file regardless of MIME
+ *           type of the destination file.
+ *   true - Try to guess extension by looking at the MIME type of the resulting file.
  *
  * @var array
  */
@@ -53,7 +61,9 @@ class GeneratorBehavior extends ModelBehavior {
 		'filterDirectory'     => MEDIA_FILTER,
 		'createDirectory'     => true,
 		'createDirectoryMode' => 0755,
-		'overwrite'           => false
+		'mode'                => 0644,
+		'overwrite'           => false,
+		'guessExtension'      => true
 	);
 
 /**
@@ -150,10 +160,10 @@ class GeneratorBehavior extends ModelBehavior {
  * below.
  *
  * $process an array with the following contents:
- *  directory - The destination directory (If this method was called
- *              by `make()` the directory is already created)
- *  version - The version requested to be processed (e.g. `l`)
- *  instructions - An array containing which names of methods to be called.
+ *  - `directory`:  The destination directory (If this method was called
+ *                  by `make()` the directory is already created)
+ *  - `version`:  The version requested to be processed (e.g. `'l'`)
+ *  - `instructions`: An array containing which names of methods to be called.
  *                 Possible instructions are:
  *                  - `array('name of method', 'name of other method')`
  *                  - `array('name of method' => array('arg1', 'arg2'))`
@@ -163,6 +173,27 @@ class GeneratorBehavior extends ModelBehavior {
  * @return boolean `true` if version for the file was successfully stored
  */
 	function makeVersion(&$Model, $file, $process) {
+		extract($this->settings[$Model->alias]);
+
+		/* No media transforms */
+
+		if (key($process['instructions']) == 'clone') {
+			$action = current($args);
+
+			if (!in_array($action, array('copy', 'link', 'symlink'))) {
+				return false;
+			}
+
+			$destination = $this->_destinationFile($file, $process['directory'], null, $overwrite);
+
+			if (!$destination) {
+				return false;
+			}
+			return call_user_func($action, $file, $destination) && chmod($destination, $mode);
+		}
+
+		/* Process media transforms */
+
 		$Media = Media::factory($file);
 
 		foreach ($process['instructions'] as $key => $value) {
@@ -171,32 +202,44 @@ class GeneratorBehavior extends ModelBehavior {
 				$args = null;
 			} else {
 				$method = $key;
-				if (is_array($value)) {
-					$args = $value;
-				} else {
-					$args = array($value);
-				}
+				$args = (array) $value;
 			}
-
 			if (!method_exists($Media, $method)) {
-				$message = "GeneratorBehavior::makeVersion - Invalid instruction `{$method}`.";
-				trigger_error($message, E_USER_NOTICE);
 				return false;
 			}
 			$result = call_user_func_array(array($Media, $method), $args);
 
 			if ($result === false) {
-				$message  = "GeneratorBehavhior::makeVersion - Instruction `{$method}` failed.";
-				trigger_error($message, E_USER_NOTICE);
 				return false;
 			} elseif (is_a($result, 'Media')) {
 				$Media = $result;
 			}
 		}
-		return $Media->store(
-			$process['directory'] . basename($file),
-			$this->settings[$Model->alias]['overwrite']
-		);
+
+		$extension = $guessExtension ? MimeType::guessExtension($Media->mimeType) : null;
+		$destination = $this->_destinationFile($file, $process['directory'], $extension, $overwrite);
+
+		if (!$destination) {
+			return false;
+		}
+		return $Media->store($destination) && chmod($destination, $mode);
+	}
+
+	function _destinationFile($source, $directory, $extension = null, $overwrite = false) {
+		$destination = $directory;
+
+		if ($extension) {
+			$destination .= pathinfo($source, PATHINFO_FILENAME) . '.' . $extension;
+		} else {
+			$destination .= basename($source);
+		}
+		if (file_exists($destination)) {
+			if (!$overwrite) {
+				return false;
+			}
+			unlink($destination);
+		}
+		return $destination;
 	}
 
 /**
