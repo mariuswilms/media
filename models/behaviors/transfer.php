@@ -16,8 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Lib', 'Media.MimeType');
-App::import('Lib', 'Media.Media');
+App::import('Lib', 'Mime_Type', array('file' => 'mm/src/Mime/Type.php'));
 App::import('Lib', 'Media.MediaValidation');
 App::import('Lib', 'Media.TransferValidation');
 
@@ -237,7 +236,7 @@ class TransferBehavior extends ModelBehavior {
 				array(
 					'file' => $resource,
 					'host' => 'localhost',
-					'mimeType' => MimeType::guessType($resource, array('paranoid' => !$trustClient))
+					'mimeType' => Mime_Type::guessType($resource, array('paranoid' => !$trustClient))
 			));
 
 			if (TransferValidation::uploadedFile($resource['file'])) {
@@ -293,9 +292,23 @@ class TransferBehavior extends ModelBehavior {
  */
 	function transferTo(&$Model, $via, $from) {
 		extract($from);
-		$path  = Media::short($file, $mimeType) . DS;
+
+		$irregular = array(
+			'image' => 'img',
+			'text' => 'txt'
+		);
+		$name = Mime_Type::guessName($mimeType ? $mimeType : $file);
+
+		if (isset($irregular[$name])) {
+			$short = $irregular[$name];
+		} else {
+			$short = substr($name, 0, 3);
+		}
+
+		$path  = $short . DS;
 		$path .= strtolower(Inflector::slug($filename));
 		$path .= !empty($extension) ? '.' . strtolower($extension) : null;
+
 		return $path;
 	}
 

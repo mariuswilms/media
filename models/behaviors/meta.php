@@ -16,8 +16,8 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Lib', 'Media.MimeType');
-App::import('Lib', 'Media.Media');
+App::import('Lib', 'Mime_Type', array('file' => 'mm/src/Mime/Type.php'));
+App::import('Lib', 'Media.Media'); // @deprecated
 
 /**
  * Coupler Behavior Class
@@ -157,14 +157,15 @@ class MetaBehavior extends ModelBehavior {
 		if ($level > 0 && !isset($data[1])) {
 			$data[1] = array(
 				'size'      => $File->size(),
-				'mime_type' => MimeType::guessType($File->pwd()),
+				'mime_type' => Mime_Type::guessType($File->pwd()),
 				'checksum'  => $checksum,
 			);
 		}
 		if ($level > 1 && !isset($data[2])) {
 			$Media = Media::factory($File->pwd());
+			$name = Mime_Type::guessName($File->pwd());
 
-			if ($Media->name === 'Audio') {
+			if ($name === 'audio') {
 				$data[2] = array(
 					'artist'        => $Media->artist(),
 					'album'         => $Media->album(),
@@ -176,12 +177,12 @@ class MetaBehavior extends ModelBehavior {
 					'sampling_rate' => $Media->samplingRate(),
 					'bit_rate'       => $Media->bitRate()
 				);
-			} elseif ($Media->name === 'Document') {
+			} elseif ($name === 'document') {
 				$data[2] = array(
 					'width'   => $Media->width(),
 					'height'  => $Media->height()
 				);
-			} elseif ($Media->name === 'Image') {
+			} elseif ($name === 'image') {
 				$data[2] = array(
 					'width'     => $Media->width(),
 					'height'    => $Media->height(),
@@ -189,7 +190,7 @@ class MetaBehavior extends ModelBehavior {
 					'quality'   => $Media->quality(),
 					'megapixel' => $Media->megapixel()
 				);
-			} elseif ($Media->name === 'Text') {
+			} elseif ($name === 'text') {
 				$data[2] = array(
 					'characters'      => $Media->characters(),
 					'syllables'       => $Media->syllables(),
@@ -198,7 +199,7 @@ class MetaBehavior extends ModelBehavior {
 					'flesch_score'    => $Media->fleschScore(),
 					'lexical_density' => $Media->lexicalDensity()
 				);
-			} elseif ($Media->name === 'Video') {
+			} elseif ($name === 'video') {
 				$data[2] = array(
 					'title'   => $Media->title(),
 					'year'    => $Media->year(),

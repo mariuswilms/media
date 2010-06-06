@@ -16,8 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Lib', 'Media.MimeType');
-App::import('Lib', 'Media.Media');
+App::import('Lib', 'Mime_Type', array('file' => 'mm/src/Mime/Type.php'));
 
 /**
  * Media Helper Class
@@ -189,13 +188,13 @@ class MediaHelper extends AppHelper {
 			$file = $this->file($path);
 		}
 
-		$mimeType = MimeType::guessType($file);
-		$Media = Media::factory($file, $mimeType);
+		$mimeType = Mime_Type::guessType($file);
+		$name = Mime_Type::guessName($mimeType);
 
 		extract($options, EXTR_SKIP);
 
-		if (!empty($restrict) && !in_array(strtolower($Media->name), (array) $restrict)) {
-			return null;
+		if ($restrict && !in_array($name, (array) $restrict)) {
+			return;
 		}
 
 		switch ($mimeType) {
@@ -203,10 +202,13 @@ class MediaHelper extends AppHelper {
 			case 'image/gif':
 			case 'image/jpeg':
 			case 'image/png':
+				if (!$width && !$height && function_exists('getimagesize')) {
+					list($width, $height) = getimagesize($file);
+				}
 				$attributes = array_merge($attributes, array(
 					'alt' => $alt,
-					'width' => $width ? $width : $Media->width(),
-					'height' => $height ? $height : $Media->height()
+					'width' => $width,
+					'height' => $height
 				));
 				if (strpos($path, 'ico/') !== false) {
 					$message  = "MediaHelper::embed - ";
@@ -372,7 +374,7 @@ class MediaHelper extends AppHelper {
  */
 	function mimeType($path) {
 		if ($file = $this->file($path)) {
-			return MimeType::guessType($file);
+			return Mime_Type::guessType($file);
 		}
 	}
 
@@ -703,12 +705,11 @@ class MediaHelper extends AppHelper {
 			$file = $this->file($path);
 		}
 
-		$mimeType = MimeType::guessType($file);
-		$Media = Media::factory($file, $mimeType);
+		$mimeType = Mime_Type::guessType($file);
+		$name = Mime_Type::guessName($mimeType);
 
-		if (!empty($options['restrict'])
-		&& !in_array(strtolower($Media->name), (array) $options['restrict'])) {
-			return null;
+		if ($options['restrict'] && !in_array($name, (array) $options['restrict'])) {
+			return;
 		}
 		unset($options['restrict']);
 
