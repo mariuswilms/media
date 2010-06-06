@@ -179,7 +179,7 @@ class MediaHelper extends AppHelper {
 		}
 
 		if (!$url = $this->url($path)) {
-			return null;
+			return;
 		}
 
 		if (strpos('://', $path) !== false) {
@@ -687,7 +687,7 @@ class MediaHelper extends AppHelper {
 				$out .= $this->link($i, $options);
 			}
 			if (empty($out)) {
-				return null;
+				return;
 			}
 			return $out;
 		}
@@ -696,7 +696,7 @@ class MediaHelper extends AppHelper {
 		unset($options['inline']);
 
 		if (!$url = $this->url($path)) {
-			return null;
+			return;
 		}
 
 		if (strpos('://', $path) !== false) {
