@@ -215,7 +215,16 @@ class GeneratorBehavior extends ModelBehavior {
 			}
 		}
 
-		$extension = $guessExtension ? MimeType::guessExtension($Media->mimeType) : null;
+		/* Determine destination file */
+		$extension = null;
+
+		if ($guessExtension) {
+			if (isset($process['instructions']['convert'])) {
+				$extension = Mime_Type::guessExtension($process['instructions']['convert']);
+			} else {
+				$extension = Mime_Type::guessExtension($file);
+			}
+		}
 		$destination = $this->_destinationFile($file, $process['directory'], $extension, $overwrite);
 
 		if (!$destination) {
