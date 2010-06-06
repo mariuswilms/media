@@ -68,25 +68,52 @@ if (!defined('MEDIA_TRANSFER_URL')) {
 	define('MEDIA_TRANSFER_URL', MEDIA_URL . 'transfer/');
 }
 
-/**
- * MIME type detection by file extension
- *
- * Options:
- * 	engine - `null` for autodetection or `'core'`
- * 	db     - Absolute path to a glob db file in freedesktop, apache, or php format
- * 	         (required for core engine)
+/*
+ * Bootstrap the `mm` library. We are putting the library into the include path which
+ * is expected (by the library) in order to be able to load classes.
  */
-// Configure::write('Mime.glob', array('engine' => null, 'db' => null));
+$mm = dirname(dirname(__FILE__)) . DS . 'libs' . DS . 'mm';
+ini_set('include_path',ini_get('include_path') . PATH_SEPARATOR . $mm . DS . 'src');
+
+require_once 'Mime/Type.php';
+require_once 'Media/Process.php';
 
 /**
- * MIME type detection by file content
+ * Configure the MIME type detection. The detection class is two headed which means it
+ * uses both a glob (for matching against file extensions) and a magic adapter (for
+ * detecting the type from the content of files). Available `Glob` adapters are `Apache`,
+ * `Freedesktop`, `Memory` and `Php`. These adapters are also available as a `Magic`
+ * variant with the addtion of a `Fileinfo` magic adapter. Not all adapters require
+ * a file to be passed along with the configuration.
  *
- * Options:
- * 	engine - `null` for autodetection or `'core'`, `'fileinfo'`, `'mime_magic'`
- * 	db     - Absolute path to a glob db file in freedesktop, apache, or php format
- * 	         (optional for the fileinfo and mime_magic engine, required for core engine)
+ * @see TransferBehavior
+ * @see MetaBehavior
+ * @see MediaHelper
  */
-// Configure::write('Mime.magic', array('engine' => null, 'db' => null));
+Mime_Type::config('Magic', array(
+	'adapter' => 'Fileinfo'
+));
+Mime_Type::config('Glob', array(
+	'adapter' => 'Freedesktop',
+	'file' => $mm . DS . 'data' . DS . 'glob.db'
+));
+
+
+/**
+ * Configure the adpters to be used by media process class. Adjust this
+ * mapping of media names to adapters according to your environment. For example:
+ * most PHP installations have GD enabled thus should choose the `Gd` adapter for
+ * image transformations. However the `Imagick` adapter may be more desirable
+ * in other cases and also supports transformations for documents.
+ *
+ * @see GeneratorBehavior
+ */
+Media_Process::config(array(
+	'image' => 'Imagick',
+	'audio' => 'SoxShell',
+	'document' => 'Imagick',
+	'video' => 'FfmpegShell'
+));
 
 /**
  * Filters and versions
