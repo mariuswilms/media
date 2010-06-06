@@ -98,7 +98,6 @@ class GeneratorBehavior extends ModelBehavior {
  * @return boolean
  */
 	function afterSave(&$Model, $created) {
-		extract($this->settings[$Model->alias]);
 		$item =& $Model->data[$Model->alias];
 
 		if (isset($item['dirname'], $item['basename'])) {
@@ -108,7 +107,7 @@ class GeneratorBehavior extends ModelBehavior {
 		} else {
 			return false;
 		}
-		return $this->make($Model, $file, $overwrite);
+		return $this->make($Model, $file);
 	}
 
 /**
