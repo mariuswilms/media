@@ -75,8 +75,6 @@ if (!defined('MEDIA_TRANSFER_URL')) {
 $mm = dirname(dirname(__FILE__)) . DS . 'libs' . DS . 'mm';
 ini_set('include_path',ini_get('include_path') . PATH_SEPARATOR . $mm . DS . 'src');
 
-require_once 'Mime/Type.php';
-require_once 'Media/Process.php';
 
 /**
  * Configure the MIME type detection. The detection class is two headed which means it
@@ -90,9 +88,18 @@ require_once 'Media/Process.php';
  * @see MetaBehavior
  * @see MediaHelper
  */
-Mime_Type::config('Magic', array(
-	'adapter' => 'Fileinfo'
-));
+require_once 'Mime/Type.php';
+
+if (extension_loaded('fileinfo')) {
+	Mime_Type::config('Magic', array(
+		'adapter' => 'Fileinfo'
+	));
+} else {
+	Mime_Type::config('Magic', array(
+		'adapter' => 'Freedesktop',
+		'file' => $mm . DS . 'data' . DS . 'magic.db'
+	));
+}
 Mime_Type::config('Glob', array(
 	'adapter' => 'Freedesktop',
 	'file' => $mm . DS . 'data' . DS . 'glob.db'
@@ -108,6 +115,8 @@ Mime_Type::config('Glob', array(
  *
  * @see GeneratorBehavior
  */
+require_once 'Media/Process.php';
+
 Media_Process::config(array(
 	'image' => 'Imagick',
 	'audio' => 'SoxShell',
