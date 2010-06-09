@@ -130,7 +130,7 @@ Media_Process::config(array(
  * For each media type a set of filters keyed by version name is configured.
  * A filter is a set of instructions which are processed by the Media class.
  */
-// $sRGB = dirname(dirname(__FILE__)) . DS . 'vendors' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
+// $sRGB = $mm . DS . 'resources' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
 
 $s = array('convert' => 'image/png', 'zoomCrop' => array(100, 100));
 $m = array('convert' => 'image/png', 'fitCrop' => array(300, 300));
