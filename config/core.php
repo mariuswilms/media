@@ -136,21 +136,20 @@ $s = array('convert' => 'image/png', 'zoomCrop' => array(100, 100));
 $m = array('convert' => 'image/png', 'fitCrop' => array(300, 300));
 $l = array('convert' => 'image/png', 'fit' => array(600, 440));
 
-Configure::write('Media.filter.audio', compact('s', 'm'));
-Configure::write('Media.filter.document', compact('s', 'm'));
-Configure::write('Media.filter.generic', array());
-Configure::write('Media.filter.image', compact('s', 'm', 'l'));
-Configure::write('Media.filter.text', array());
-Configure::write('Media.filter.video', compact('s', 'm'));
+Configure::write('Media.filter', array(
+	'audio' => compact('s', 'm'),
+	'document' => compact('s', 'm'),
+	'generic' => array(),
+	'document' => compact('s', 'm', 'l'),
+	'text' => array(),
+	'audio' => compact('s', 'm')
+));
 
 /**
  * @deprecated
  */
-Configure::write('Media.filter.css', array(
-	'c'   => array('compress')
-));
+Configure::write('Media.filter.css', array('c'   => array('compress')));
 Configure::write('Media.filter.icon', array());
-Configure::write('Media.filter.js', array(
-	'c'   => array('compress')
-));
+Configure::write('Media.filter.js', array('c'   => array('compress')));
+
 ?>
