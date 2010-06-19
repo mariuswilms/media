@@ -32,11 +32,13 @@ class Media_Info_Adapter_ImageBasic extends Media_Info_Adapter {
 
 		$result = array(
 			'width' => $data[0],
-			'height' => $data[1],
-			'bits' => $data['bits']
+			'height' => $data[1]
 		);
 		if (isset($data['channels'])) {
 			$result['channels'] = $data['channels'];
+		}
+		if (isset($data['bits'])) {
+			$result['bits'] = $data['bits'];
 		}
 		return $result;
 	}

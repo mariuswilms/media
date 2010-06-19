@@ -78,7 +78,7 @@ class Media_Info_Generic {
 	 */
 	public function __call($method, $args) {
 		foreach ($this->_adapters as $adapter) {
-			if ($result = $adapter->get($name)) {
+			if ($result = $adapter->get($method)) {
 				return $result;
 			}
 		}

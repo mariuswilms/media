@@ -40,7 +40,12 @@ class Media_Process_Adapter_Gd extends Media_Process_Adapter {
 	protected $_pngFilter;
 
 	public function __construct($handle) {
-		$this->_format = $this->_formatMap[Mime_Type::guessType($handle)];
+		$mimeType = Mime_Type::guessType($handle);
+
+		if (!isset($this->_formatMap[$mimeType])) {
+			throw new OutOfBoundsException("Could not map MIME-type `{$mimeType}` to format.");
+		}
+		$this->_format = $this->_formatMap[$mimeType];
 
 		$this->_object = imageCreateFromString(stream_get_contents($handle));
 
