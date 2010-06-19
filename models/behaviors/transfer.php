@@ -73,7 +73,7 @@ class TransferBehavior extends ModelBehavior {
 		'transferDirectory' => MEDIA_TRANSFER,
 		'createDirectory'   => true,
 		'alternativeFile'   => 100,
-		'overwrite'         => true
+		'overwrite'         => false
 	);
 
 /**
