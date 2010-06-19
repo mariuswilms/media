@@ -140,7 +140,7 @@ class TestData extends Object {
  * @param array $settings
  */
 	function __construct($settings = array()) {
-		$default = array('base' => TMP . 'test_suite' . DS);
+		$default = array('base' => TMP . 'tests' . DS);
 		$this->settings = $settings + $default;
 		new Folder($this->settings['base'], true);
 	}
