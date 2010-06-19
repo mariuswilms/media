@@ -135,7 +135,7 @@ require_once 'Media/Info.php';
 Media_Info::config(array(
 	// 'audio' => array('SoxShell', 'GetId3'),
 	// 'document' => array('Imagick'),
-	'image' => array('BasicImage'),
+	'image' => array('ImageBasic'),
 	// 'video' => array('FfmpegShell', 'GetId3')
 ));
 
