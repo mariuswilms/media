@@ -20,6 +20,9 @@ App::import('Core', array('Helper', 'AppHelper', 'ClassRegistry'));
 App::import('Helper', 'Media.Media');
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'fixtures' . DS . 'test_data.php';
 
+define('MEDIA', TMP . 'tests' . DS);
+require_once dirname(dirname(dirname(dirname(dirname(__FILE__))))) . DS . 'config' . DS . 'core.php';
+
 /**
  * Mock Media Helper
  *
@@ -93,24 +96,14 @@ class MediaHelperTestCase extends CakeTestCase {
 
 	function testConstruct() {
 		$settings = array(
-			'static' => array($this->TmpFolder->pwd() . 'static' . DS => 'media/static/'),
-			'theme' => array($this->TmpFolder->pwd() . 'theme' . DS  => 'media/theme/')
+			$this->TmpFolder->pwd() . 'static' . DS => 'media/static/',
+			$this->TmpFolder->pwd() . 'theme' . DS  => 'media/theme/'
 		);
 		Configure::write('Media.filter', array(
 			'image'	 => array('s' => array(), 'm' => array()),
 			'video' => array('s' => array(), 'xl' => array())
 		));
 		$Helper = new MockMediaHelper($settings);
-
-		$this->assertEqual($Helper->versions(), array('s', 'm', 'xl'));
-
-		$expected = array(
-			'static' => $this->TmpFolder->pwd() . 'static' . DS,
-			'transfer' => MEDIA_TRANSFER,
-			'filter' =>  MEDIA_FILTER,
-			'theme' => $this->TmpFolder->pwd() . 'theme' . DS
-		);
-		$this->assertEqual($Helper->directories(), $expected);
 	}
 
 	function testUrl() {
@@ -121,6 +114,9 @@ class MediaHelperTestCase extends CakeTestCase {
 		$this->assertEqual($result, 'media/filter/s/static/img/image-png.png');
 
 		$result = $this->Helper->url('transfer/img/image-png-x');
+		$this->assertEqual($result, 'media/transfer/img/image-png-x.png');
+
+		$result = $this->Helper->url('transfer/img/image-png-xyz');
 		$this->assertNull($result);
 
 		$result = $this->Helper->url('filter/s/transfer/img/image-png-x');
@@ -138,6 +134,9 @@ class MediaHelperTestCase extends CakeTestCase {
 		$this->assertEqual($result, 'media/filter/s/static/img/image-png.png');
 
 		$result = $this->Helper->webroot('transfer/img/image-png-x');
+		$this->assertEqual($result, 'media/transfer/img/image-png-x.png');
+
+		$result = $this->Helper->webroot('transfer/img/image-png-xyz');
 		$this->assertNull($result);
 
 		$result = $this->Helper->webroot('filter/s/transfer/img/image-png-x');
@@ -188,7 +187,29 @@ class MediaHelperTestCase extends CakeTestCase {
 		$this->assertEqual($result, $this->file5);
 	}
 
-	function testFileArraySyntax() {
+	function testDeprecatedConstruct() {
+		$settings = array(
+			'static' => array($this->TmpFolder->pwd() . 'static' . DS => 'media/static/'),
+			'theme' => array($this->TmpFolder->pwd() . 'theme' . DS  => 'media/theme/')
+		);
+		Configure::write('Media.filter', array(
+			'image'	 => array('s' => array(), 'm' => array()),
+			'video' => array('s' => array(), 'xl' => array())
+		));
+		$Helper = new MockMediaHelper($settings);
+
+		$this->assertEqual($Helper->versions(), array('s', 'm', 'xl'));
+
+		$expected = array(
+			'static' => $this->TmpFolder->pwd() . 'static' . DS,
+			'transfer' => MEDIA_TRANSFER,
+			'filter' =>  MEDIA_FILTER,
+			'theme' => $this->TmpFolder->pwd() . 'theme' . DS
+		);
+		$this->assertEqual($Helper->directories(), $expected);
+	}
+
+	function testDeprecatedFileArraySyntax() {
 		$result = $this->Helper->file(array(
 			'dirname' => 'static/img',
 			'basename' => 'not-existant.jpg'
@@ -208,7 +229,7 @@ class MediaHelperTestCase extends CakeTestCase {
 		$this->assertEqual($result, $this->file0);
 	}
 
-	function testFileMixedSyntax() {
+	function testDeprecatedFileMixedSyntax() {
 		$result = $this->Helper->file('static', array(
 			'dirname' => 'img',
 			'basename' => 'not-existant.jpg'
