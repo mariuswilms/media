@@ -1,0 +1,34 @@
+/* SVN FILE: $Id: cake.generic.css 7086 2008-06-02 03:36:20Z mark_story $ */
+/**
+ *
+ * PHP versions 4 and 5
+ *
+ * CakePHP(tm) :  Rapid Development Framework <http://www.cakephp.org/>
+ * Copyright 2005-2008, Cake Software Foundation, Inc.
+ *								1785 E. Sahara Avenue, Suite 490-204
+ *								Las Vegas, Nevada 89104
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @filesource
+ * @copyright		Copyright 2005-2008, Cake Software Foundation, Inc.
+ * @link				http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @package			cake
+ * @subpackage		cake.app.webroot.css
+ * @since			CakePHP(tm)
+ * @version			$Revision: 7086 $
+ * @modifiedby		$LastChangedBy: mark_story $
+ * @lastmodified	$Date: 2008-06-02 05:36:20 +0200 (Mo, 02 Jun 2008) $
+ * @license			http://www.opensource.org/licenses/mit-license.php The MIT License
+ */
+
+* {
+	margin:0;
+	padding:0;
+}
+
+/* General Style Info */
+body {
+	background: #003d4c;
+	color: #f

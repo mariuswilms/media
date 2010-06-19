@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE spec SYSTEM "xmlspec.dtd" [
+	<!ENTITY base.uri "http://www.w3.org/TR/2006/">
+	<!ENTITY maturity.level "REC">
+	<!ENTITY doc.shortname "xml11">
+	<!ENTITY draft.year "2006">
+	<!ENTITY draft.month.name "August">
+	<!ENTITY draft.month "08">
+	<!ENTITY draft.day "16">
+	<!ENTITY iso6.doc.date "&draft.year;&draft.month;&draft.day;">
+	<!ENTITY doc.ident "&maturity.level;-&doc.shortname;-&iso6.doc.date;">
+
+	<!ENTITY this.version "&base.uri;&doc.ident;">
+	<!ENTITY xml.version "&doc.ident;.xml">
+	<!ENTITY review.version "&doc.ident;-review.html">
+	<!ENTITY pdf.version "&doc.ident;.pdf">
+	<!ENTITY errataloc "http://www.w3.org/XML/xml-V11-2e-errata">
+	<!ENTITY preverrataloc "http://www.w3.org/XML/xml-V11-1e-errata">
+	<!ENTITY translationloc "http://www.w3.org/2003/03/Translations/byTechnology?technology=&doc.shortname;">
+	<!ENTITY impreploc "http://www.w3.org/XML/2006/06/xml11-2e-implementation.html">
+	<!ENTITY versionOfXML "1.1">
+
+	<!ENTITY WebSGML "W

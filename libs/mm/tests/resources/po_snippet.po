@@ -1,0 +1,37 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2008-09-10 18:46+0200\n"
+"PO-Revision-Date: 2008-09-10 19:07+0100\n"
+"Last-Translator: David Persson <davidpersson@gmx.net>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: /app_error.php:59
+#: /vendors/cake/cake/libs/error.php:155
+msgid "Not Found"
+msgstr "Nicht Gefunden"
+
+#: /app_error.php:85
+msgid "Service Temporarily Unavailable"
+msgstr "Dienst Zur Zeit Nicht Verfügbar"
+
+#: /controllers/administrativa_controller.php:44
+#: /plugins/users/views/users/backend_index.ctp:36
+msgid "n/a"
+msgstr "n. v."
+
+#: /controllers/administrativa_controller.php:56
+msgid "Flushed log."
+msgstr "Log geleert."
+
+#: /controllers/administrativa_controller.php:59
+msgid "Failed to flush log."
+msgstr "Leeren des Logs fehlgeschlagen."
+
+#: /controllers/administrativa_controller.php:77
+msgid "Cle

@@ -1,0 +1,50 @@
+# Magic data for mod_mime_magic Apache module (originally for file(1) command)
+# The module is described in /manual/mod/mod_mime_magic.html
+#
+# The format is 4-5 columns:
+#    Column #1: byte number to begin checking from, ">" indicates continuation
+#    Column #2: type of data to match
+#    Column #3: contents of data to match
+#    Column #4: MIME type of result
+#    Column #5: MIME encoding of result (optional)
+
+0	string		RIFF		audio/unknown
+>8	string		WAVE		audio/x-wav
+0   beshort&0xfff0  0xfff0  audio/mpeg
+0	string		/*\ XPM		image/x-xbm	7bit
+0	string		/*		text/plain
+0	string		//		text/plain
+0	string		\037\235	application/octet-stream	x-compress
+0       string          \037\213        application/octet-stream	x-gzip
+0	string		\037\036	application/octet-stream
+0	short		017437		application/octet-stream
+0	short		0x1fff		application/octet-stream
+0	string		\377\037	application/octet-stream
+0	short		0145405		application/octet-stream
+0   string      \<!DOCTYPE\ HTML    text/html
+0   string      \<!doctype\ html    text/html
+0   string      \<HEAD      text/html
+0   string      \<head      text/html
+0   string      \<TITLE     text/html
+0   string      \<title     text/html
+0   string      \<html      text/html
+0   string      \<HTML      text/html
+0   string      \<!--       text/html
+0   string      \<h1        text/html
+0   string      \<H1        text/html
+0   string      \<?xml      text/xml
+0	string		MM		image/tiff
+0	string		II		image/tiff
+0	string		GIF94z		image/unknown
+0	string		FGF95a		image/unknown
+0	string		PBF		image/unknown
+0	string		GIF		image/gif
+0	beshort		0xffd8		image/jpeg
+0	string		BM		image/bmp
+0	string		\376\067\0\043			application/msword
+0	string		\333\245-\0\0\0			application/msword
+0	string		%!		application/postscript
+0	string		\004%!		application/postscript
+0	string		%PDF-		application/pdf
+0	string		{\\rtf		application/rtf
+

@@ -1,0 +1,29 @@
+
+  xx xx  xx xx
+  x x x  x x x
+  x   x  x   x
+  The PHP media library
+
+  Authors
+  -------
+  See the AUTHORS file.
+
+  Copyright & License
+  -------------------
+  Mm, the PHP media library is Copyright (c) 2007-2010 David Persson
+  if not otherwise stated. The code is distributed under the terms
+  of the MIT License. For the full license text see the LICENSE file.
+
+  Download
+  --------
+  Tar: http://github.com/davidpersson/mm/tarball/master
+  Zip: http://github.com/davidpersson/mm/zipball/master
+
+  Installation
+  ------------
+  Extract the downloaded archive.
+  Add `/path/to/mm/src` to your include path.
+
+  For more information please visit the mm wiki at
+  http://github.com/davidpersson/mm/wikis
+
