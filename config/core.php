@@ -75,7 +75,6 @@ if (!defined('MEDIA_TRANSFER_URL')) {
 $mm = dirname(dirname(__FILE__)) . DS . 'libs' . DS . 'mm';
 ini_set('include_path',ini_get('include_path') . PATH_SEPARATOR . $mm . DS . 'src');
 
-
 /**
  * Configure the MIME type detection. The detection class is two headed which means it
  * uses both a glob (for matching against file extensions) and a magic adapter (for
@@ -104,7 +103,6 @@ Mime_Type::config('Glob', array(
 	'adapter' => 'Freedesktop',
 	'file' => $mm . DS . 'data' . DS . 'glob.db'
 ));
-
 
 /**
  * Configure the adpters to be used by media process class. Adjust this
