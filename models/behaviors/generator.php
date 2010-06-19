@@ -98,7 +98,7 @@ class GeneratorBehavior extends ModelBehavior {
  * @return boolean
  */
 	function afterSave(&$Model, $created) {
-		$item =& $Model->data[$Model->alias];
+		$item = $Model->data[$Model->alias];
 
 		if (isset($item['dirname'], $item['basename'])) {
 			$file = $item['dirname'] . DS . $item['basename'];
