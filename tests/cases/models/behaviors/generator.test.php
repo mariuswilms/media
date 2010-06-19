@@ -43,7 +43,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$Model->Behaviors->attach('Media.Generator');
 	}
 
-	function testBeforeMake() {
+	function testMakeVersion() {
 		Configure::write('Media.filter.image', array(
 			's' => array('convert' => 'image/png', 'fit' => array(5, 5)),
 			'm' => array('convert' => 'image/png', 'fit' => array(10, 10))
@@ -64,24 +64,19 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$expected[] = array(
 			$file,
 			array(
-				'overwrite' => false,
 				'directory' => $this->Folder->pwd() . 'filter' . DS . 's' . DS,
-				'name' => 'Image',
 				'version' => 's',
 				'instructions' => array('convert' => 'image/png', 'fit' => array(5, 5))
 		));
 		$expected[] = array(
 			$file,
 			array(
-				'overwrite' => false,
 				'directory' => $this->Folder->pwd() . 'filter' . DS . 'm' . DS,
-				'name' => 'Image',
 				'version' => 'm',
 				'instructions' => array('convert' => 'image/png', 'fit' => array(10, 10))
 		));
-
 		$Model->make($file);
-		$this->assertEqual($Model->beforeMakeArgs, $expected);
+		$this->assertEqual($Model->makeVersionArgs, $expected);
 	}
 }
 ?>
