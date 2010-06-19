@@ -157,9 +157,8 @@ Configure::write('Media.filter', array(
 	'audio' => compact('s', 'm'),
 	'document' => compact('s', 'm'),
 	'generic' => array(),
-	'document' => compact('s', 'm', 'l'),
-	'text' => array(),
-	'audio' => compact('s', 'm')
+	'image' => compact('s', 'm', 'l'),
+	'video' => compact('s', 'm')
 ));
 
 /**
