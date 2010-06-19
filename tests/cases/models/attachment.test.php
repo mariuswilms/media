@@ -19,6 +19,8 @@
 App::import('Model', 'Media.Attachment');
 require_once 'models.php';
 require_once dirname(dirname(dirname(__FILE__))) . DS . 'fixtures' . DS . 'test_data.php';
+
+define('MEDIA', TMP . 'tests' . DS);
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'config' . DS . 'core.php';
 
 /**
@@ -66,7 +68,7 @@ class AttachmentTestCase extends CakeTestCase {
 			'id' => 1,
 			'model' => 'Movie',
 			'foreign_key' => 4,
-			'dirname' => 'transfer/img',
+			'dirname' => 'img',
 			'basename' => 'ta.jpg',
 			'checksum' => '1920c29e7fbe4d1ad2f9173ef4591133',
 			'group' => null,
@@ -103,7 +105,7 @@ class AttachmentTestCase extends CakeTestCase {
 				'id' => 1,
 				'model' => 'Movie',
 				'foreign_key' => 4,
-				'dirname' => 'transfer/img',
+				'dirname' => 'img',
 				'basename' => 'ta.jpg',
 				'checksum' => '1920c29e7fbe4d1ad2f9173ef4591133',
 				'group' => null,
@@ -113,7 +115,7 @@ class AttachmentTestCase extends CakeTestCase {
 				'id' => 2,
 				'model' => 'Movie',
 				'foreign_key' => 4,
-				'dirname' => 'transfer/img',
+				'dirname' => 'img',
 				'basename' => 'tb.png',
 				'checksum' => '7f9af648b511f2c83b1744f42254983f',
 				'group' => null,
@@ -165,7 +167,7 @@ class AttachmentTestCase extends CakeTestCase {
 					'id' => 1,
 					'model' => 'Movie',
 					'foreign_key' => 4,
-					'dirname' => 'transfer/img',
+					'dirname' => 'img',
 					'basename' => 'ta.png',
 					'checksum' => '7f9af648b511f2c83b1744f42254983f',
 					'group' => 'photo',
@@ -175,7 +177,7 @@ class AttachmentTestCase extends CakeTestCase {
 					'id' => 2,
 					'model' => 'Movie',
 					'foreign_key' => 4,
-					'dirname' => 'transfer/img',
+					'dirname' => 'img',
 					'basename' => 'tb.png',
 					'checksum' => '7f9af648b511f2c83b1744f42254983f',
 					'group' => 'photo',
@@ -205,10 +207,10 @@ class AttachmentTestCase extends CakeTestCase {
 		$assocModelName = key($assoc);
 
 		$Model->{$assocModelName}->Behaviors->attach('Media.Transfer', array(
-			'baseDirectory' => $this->Folder->pwd() . 'transfer' . DS
+			'transferDirectory' => $this->Folder->pwd() . 'transfer' . DS
 		));
 		$Model->{$assocModelName}->Behaviors->attach('Media.Generator', array(
-			'baseDirectory' => $this->Folder->pwd(),
+			'baseDirectory' => $this->Folder->pwd() . 'transfer' . DS,
 			'filterDirectory' => $this->Folder->pwd() . 'filter' . DS
 		));
 		$Model->{$assocModelName}->Behaviors->attach('Media.Coupler');
