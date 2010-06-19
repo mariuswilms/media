@@ -99,10 +99,20 @@ if (extension_loaded('fileinfo')) {
 		'file' => $mm . DS . 'data' . DS . 'magic.db'
 	));
 }
-Mime_Type::config('Glob', array(
-	'adapter' => 'Freedesktop',
-	'file' => $mm . DS . 'data' . DS . 'glob.db'
-));
+if ($cached = Cache::read('mime_type_glob')) {
+	Mime_Type::config('Glob', array(
+		'adapter' => 'Memory'
+	));
+	foreach ($cached as $item) {
+		Mime_Type::$glob->register($item);
+	}
+} else {
+	Mime_Type::config('Glob', array(
+		'adapter' => 'Freedesktop',
+		'file' => $mm . DS . 'data' . DS . 'glob.db'
+	));
+	Cache::write('mime_type_glob', Mime_Type::$glob->to('array'));
+}
 
 /**
  * Configure the adpters to be used by media process class. Adjust this
