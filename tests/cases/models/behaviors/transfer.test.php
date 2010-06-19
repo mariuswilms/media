@@ -45,7 +45,7 @@ class TransferBehaviorTestCase extends BaseBehaviorTestCase {
 		parent::setUp();
 		$this->_transferDirectory = $this->Folder->pwd() . 'transfer' . DS;
 		$this->_behaviorSettings['Transfer'] = array(
-			'baseDirectory' => $this->_transferDirectory
+			'transferDirectory' => $this->_transferDirectory
 		);
 		$this->_remoteAvailable = @fsockopen('cakephp.org', 80);
 	}
