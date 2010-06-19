@@ -183,12 +183,4 @@ Configure::write('Media.filter', array(
 	'video' => compact('s', 'm')
 ));
 
-/**
- * @deprecated
- */
-Configure::write('Media.filter.css', array('c'   => array('compress')));
-Configure::write('Media.filter.icon', array());
-Configure::write('Media.filter.text', array());
-Configure::write('Media.filter.js', array('c'   => array('compress')));
-
 ?>
