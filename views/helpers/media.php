@@ -17,6 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Lib', 'Mime_Type', array('file' => 'mm/src/Mime/Type.php'));
+App::import('Lib', 'Media.Media'); // @deprecated
 
 /**
  * Media Helper Class
@@ -405,6 +406,11 @@ class MediaHelper extends AppHelper {
  *                        an absolute path to the file.
  */
 	function file($path) {
+		if (is_array($path) || func_num_args() > 1) {
+			$args = func_get_args();
+			return call_user_func_array(array($this, '__compatFile'), $args);
+		}
+
 		// Most recent paths are probably searched more often
 		$bases = array_reverse(array_keys($this->_paths));
 
