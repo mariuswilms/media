@@ -116,10 +116,27 @@ Mime_Type::config('Glob', array(
 require_once 'Media/Process.php';
 
 Media_Process::config(array(
-	'image' => 'Imagick',
-	'audio' => 'SoxShell',
-	'document' => 'Imagick',
-	'video' => 'FfmpegShell'
+	// 'audio' => 'SoxShell',
+	// 'document' => 'Imagick',
+	'image' => 'Gd',
+	// 'video' => 'FfmpegShell'
+));
+
+/**
+ * Configure the adpters to be used by media info class. Adjust this
+ * mapping of media names to adapters according to your environment. In contrast
+ * to `Media_Proces` which operates only with one adapter per media type
+ * `Media_Info` can use multiple adapter per media type.
+ *
+ * @see MetaBehavior
+ */
+require_once 'Media/Info.php';
+
+Media_Info::config(array(
+	// 'audio' => array('SoxShell', 'GetId3'),
+	// 'document' => array('Imagick'),
+	'image' => array('BasicImage'),
+	// 'video' => array('FfmpegShell', 'GetId3')
 ));
 
 /**
@@ -127,6 +144,8 @@ Media_Process::config(array(
  *
  * For each media type a set of filters keyed by version name is configured.
  * A filter is a set of instructions which are processed by the Media class.
+ *
+ * @see GeneratorBehavior
  */
 // $sRGB = $mm . DS . 'resources' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
 
