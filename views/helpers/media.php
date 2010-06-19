@@ -43,10 +43,7 @@ class MediaHelper extends AppHelper {
 		'video'          => '<video%s>%s%s</video>',
 		'source'         => '<source%s/>',
 		'object'         => '<object%s>%s%s</object>',
-		'param'          => '<param%s/>',
-		'csslink'        => '<link type="text/css" rel="stylesheet" href="%s" %s/>', // @deprecated
-		'javascriptlink' => '<script type="text/javascript" src="%s"></script>', // @deprecated
-		'rsslink'        => '<link type="application/rss+xml" rel="alternate" href="%s" title="%s"/>', /* v2 */ // @deprecated
+		'param'          => '<param%s/>'
 	);
 
 /**
