@@ -164,7 +164,7 @@ class MetaBehavior extends ModelBehavior {
 			);
 		}
 		if ($level > 1 && !isset($data[2])) {
-			$Info = Media_Info::factory($File->pwd());
+			$Info = Media_Info::factory(array('source' => $File->pwd()));
 			$data[2] = array();
 
 			foreach ($Info->all() as $key => $value) {

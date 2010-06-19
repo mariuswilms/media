@@ -192,7 +192,7 @@ class GeneratorBehavior extends ModelBehavior {
 		}
 
 		/* Process media transforms */
-		$Media = Media_Process::factory($file);
+		$Media = Media_Process::factory(array('source' => $file));
 
 		foreach ($process['instructions'] as $key => $value) {
 			if (is_int($key)) {
