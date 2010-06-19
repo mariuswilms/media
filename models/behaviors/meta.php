@@ -16,8 +16,10 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
+App::import('Core', 'Inflector');
+App::import('Core', 'Cache');
 App::import('Lib', 'Mime_Type', array('file' => 'mm/src/Mime/Type.php'));
-App::import('Lib', 'Media.Media'); // @deprecated
+App::import('Lib', 'Media_Info', array('file' => 'mm/src/Media/Info.php'));
 
 /**
  * Coupler Behavior Class
@@ -40,7 +42,7 @@ class MetaBehavior extends ModelBehavior {
  * metadataLevel
  *  0 - (disabled) No retrieval of additional metadata
  *  1 - (basic) Adds `mime_type` and `size` fields
- *  2 - (detailed) Adds Multiple fields dependent on the type of the file e.g. `artist`, `title`
+ *  2 - (detailed) Queries an `Media_Info` object for all available fields
  *
  * @var array
  */
@@ -162,56 +164,11 @@ class MetaBehavior extends ModelBehavior {
 			);
 		}
 		if ($level > 1 && !isset($data[2])) {
-			$Media = Media::factory($File->pwd());
-			$name = Mime_Type::guessName($File->pwd());
+			$Info = Media_Info::factory($File->pwd());
+			$data[2] = array();
 
-			if ($name === 'audio') {
-				$data[2] = array(
-					'artist'        => $Media->artist(),
-					'album'         => $Media->album(),
-					'title'         => $Media->title(),
-					'track'         => $Media->track(),
-					'year'          => $Media->year(),
-					'length'        => $Media->duration(),
-					'quality'       => $Media->quality(),
-					'sampling_rate' => $Media->samplingRate(),
-					'bit_rate'       => $Media->bitRate()
-				);
-			} elseif ($name === 'document') {
-				$data[2] = array(
-					'width'   => $Media->width(),
-					'height'  => $Media->height()
-				);
-			} elseif ($name === 'image') {
-				$data[2] = array(
-					'width'     => $Media->width(),
-					'height'    => $Media->height(),
-					'ratio'     => $Media->ratio(),
-					'quality'   => $Media->quality(),
-					'megapixel' => $Media->megapixel()
-				);
-			} elseif ($name === 'text') {
-				$data[2] = array(
-					'characters'      => $Media->characters(),
-					'syllables'       => $Media->syllables(),
-					'sentences'       => $Media->sentences(),
-					'words'           => $Media->words(),
-					'flesch_score'    => $Media->fleschScore(),
-					'lexical_density' => $Media->lexicalDensity()
-				);
-			} elseif ($name === 'video') {
-				$data[2] = array(
-					'title'   => $Media->title(),
-					'year'    => $Media->year(),
-					'length'  => $Media->duration(),
-					'width'   => $Media->width(),
-					'height'  => $Media->height(),
-					'ratio'   => $Media->ratio(),
-					'quality' => $Media->quality(),
-					'bit_rate' => $Media->bitRate()
-				);
-			} else {
-				$data[2] = array();
+			foreach ($Info->all() as $key => $value) {
+				$data[2][Inflector::underscore($key)] = $value;
 			}
 		}
 
@@ -219,7 +176,8 @@ class MetaBehavior extends ModelBehavior {
 			$result = array_merge($result, $data[$i]);
 		}
 		$this->__cached[$Model->alias][$checksum] = $data;
-		return Set::filter($result);
+		return $result;
 	}
 }
+
 ?>
