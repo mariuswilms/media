@@ -429,7 +429,7 @@ class MediaHelper extends AppHelper {
 			if (file_exists($base . $path)) {
 				return $base . $path;
 			}
-			$files = glob($base . $dirname . DS . $filename . '*', GLOB_NOSORT | GLOB_NOESCAPE);
+			$files = glob($base . $dirname . DS . $filename . '.*', GLOB_NOSORT | GLOB_NOESCAPE);
 
 			if (count($files) > 1) {
 				$message  = "MediaHelper::file - ";
