@@ -17,7 +17,6 @@
  * @link       http://github.com/davidpersson/media
  */
 require_once 'Mime/Type.php';
-App::import('Lib', 'Media.Media'); // @deprecated
 
 /**
  * Media Helper Class
@@ -74,10 +73,7 @@ class MediaHelper extends AppHelper {
  * @return void
  */
 	function __construct($settings = array()) {
-		if (!is_array(current($settings))) { // for BC
-			$this->_paths = array_merge($this->_paths, (array) $settings);
-		}
-		$this->__compatConstruct($settings);
+		$this->_paths = array_merge($this->_paths, (array) $settings);
 	}
 
 /**
@@ -451,16 +447,11 @@ class MediaHelper extends AppHelper {
  *                        an absolute path to the file.
  */
 	function file($path) {
-		if (is_array($path) || func_num_args() > 1) {
-			$args = func_get_args();
-			return call_user_func_array(array($this, '__compatFile'), $args);
-		}
-
 		// Most recent paths are probably searched more often
 		$bases = array_reverse(array_keys($this->_paths));
 
 		if (Folder::isAbsolute($path)) {
-			return file_exists($path) ? $path : $this->__compatFile($path);
+			return file_exists($path) ? $path : null;
 		}
 
 		$extension = null;
@@ -488,7 +479,6 @@ class MediaHelper extends AppHelper {
 				return array_shift($files);
 			}
 		}
-		return $this->__compatFile($path);
 	}
 
 /**
@@ -561,297 +551,6 @@ class MediaHelper extends AppHelper {
 			);
 		}
 		return implode("\n", $parameters);
-	}
-
-	/* Deprecated */
-
-/**
- * Maps basenames of directories to absoulte paths
- *
- * @var array
- * @deprecated
- */
-	var $_directories = array();
-
-/**
- * Holds an indexed array of version names
- *
- * @var array
- * @deprecated
- */
-	var $_versions = array();
-
-/**
- * Maps short media types to extensions
- *
- * @var array
- * @deprecated
- */
-	var $_extensions = array(
-		'aud' => array('mp3', 'ogg', 'aif', 'wma', 'wav'),
-		'css' => array('css'), // @deprecated
-		'doc' => array('odt', 'rtf', 'pdf', 'doc', 'png', 'jpg', 'jpeg'),
-		'gen' => array(),
-		'ico' => array('ico', 'png', 'gif', 'jpg', 'jpeg'), // @deprecated
-		'img' => array('png', 'jpg', 'jpeg' , 'gif', 'ico'),
-		'js'  => array('js'), // @deprecated
-		'txt' => array('txt'),
-		'vid' => array(
-			'avi', 'mpg', 'qt', 'mov', 'ogg', 'wmv',
-			'png', 'jpg', 'jpeg', 'gif', 'mp3', 'ogg',
-			'aif', 'wma', 'wav', 'flv'
-	));
-
-/**
- * Holds cached resolved paths
- *
- * @var array
- * @deprecated
- */
-	var $__cached;
-
-/**
- * Maps absolute paths to url paths
- *
- * @var array
- * @deprecated
- */
-	var $_map = array(
-		'static'   => array(MEDIA_STATIC => MEDIA_STATIC_URL),
-		'transfer' => array(MEDIA_TRANSFER => MEDIA_TRANSFER_URL),
-		'filter'   => array(MEDIA_FILTER => MEDIA_FILTER_URL)
-	);
-
-/**
- * Compat Constructor
- *
- * Sets up cache and merges user supplied map settings with default map
- *
- * @param array $settings The map settings to add
- * @return void
- * @deprecated
- */
-	function __compatConstruct($settings) {
-		if (is_array(current($settings))) {
-			$this->_map = array_merge($this->_map, (array)$settings);
-		}
-
-		foreach ($this->_map as $key => $value) {
-			$this->_directories[basename(key($value))] = key($value);
-		}
-		foreach (Configure::read('Media.filter') as $type) {
-			$this->_versions += $type;
-		}
-		$this->_versions = array_keys($this->_versions);
-
-		if (!$this->__cached = Cache::read('media_found', '_cake_core_')) {
-			$this->__cached = array();
-		}
-	}
-
-/**
- * Destructor
- *
- * Updates cache
- *
- * @return void
- * @deprecated
- */
-	function __destruct() {
-		Cache::write('media_found', $this->__cached, '_cake_core_');
-	}
-
-/**
- * Resolves partial path (compat)
- *
- * Examples:
- * img/cern                 >>> MEDIA_STATIC/img/cern.png
- * transfer/img/image.jpg   >>> MEDIA_TRANSFER/img/image.jpg
- * s/img/image.jpg          >>> MEDIA_FILTER/s/static/img/image.jpg
- *
- * @param string|array $path Either a string or an array with dirname and basename keys
- * @return string|boolean False on error or if path couldn't be resolbed otherwise
- *                        an absolute path to the file
- * @deprecated
- */
-	function __compatFile($path) {
-		$path = array();
-
-		foreach (func_get_args() as $arg) {
-			if (is_array($arg)) {
-				if (isset($arg['dirname'])) {
-					$path[] = rtrim($arg['dirname'], '/\\');
-				}
-				if (isset($arg['basename'])) {
-					$path[] = $arg['basename'];
-				}
-			} else {
-				$path[] = rtrim($arg, '/\\');
-			}
-		}
-		$path = implode(DS, $path);
-		$path = str_replace(array('/', '\\'), DS, $path);
-
-		if (isset($this->__cached[$path])) {
-			return $this->__cached[$path];
-		}
-		if (Folder::isAbsolute($path)) {
-			return file_exists($path) ? $path : false;
-		}
-
-		$parts = explode(DS, $path);
-
-		if (in_array($parts[0], $this->_versions)) {
-			array_unshift($parts, basename(key($this->_map['filter'])));
-		}
-		if (!in_array($parts[0], array_keys($this->_directories))) {
-			array_unshift($parts, basename(key($this->_map['static'])));
-		}
-		if (in_array($parts[1], $this->_versions)
-		&& !in_array($parts[2], array_keys($this->_directories))) {
-			array_splice($parts, 2, 0, basename(key($this->_map['static'])));
-		}
-
-		$path = implode(DS, $parts);
-
-		if (isset($this->__cached[$path])) {
-			return $this->__cached[$path];
-		}
-
-		$file = $this->_directories[array_shift($parts)] . implode(DS, $parts);
-
-		if (file_exists($file)) {
-			return $this->__cached[$path] = $file;
-		}
-
-		$short = current(array_intersect(Media::short(), $parts));
-
-		if (!$short) {
-			$message  = "MediaHelper::file - ";
-			$message .= "You've provided a partial path without a media directory (e.g. img) ";
-			$message .= "which is required to resolve the path.";
-			trigger_error($message, E_USER_NOTICE);
-			return false;
-		}
-
-		$extension = null;
-		extract(pathinfo($file), EXTR_OVERWRITE);
-
-		if (!isset($filename)) { /* PHP < 5.2.0 */
-			$filename = substr($basename, 0, isset($extension) ? - (strlen($extension) + 1) : 0);
-		}
-
-		for ($i = 0; $i < 2; $i++) {
-			$file = $i ? $dirname . DS . $filename : $dirname . DS . $basename;
-
-			foreach ($this->_extensions[$short] as $extension) {
-				$try = $file . '.' . $extension;
-				if (file_exists($try)) {
-					return $this->__cached[$path] = $try;
-				}
-			}
-		}
-		return false;
-	}
-
-/**
- * Generates markup to link to file
- *
- * @param string $path Absolute or partial path to a file
- * @param array $options
- * @return mixed
- * @deprecated
- */
-	function link($path, $options = array()) {
-		$message  = "MediaHelper::link - ";
-		$message .= "All functionality related to assets has been deprecated.";
-		trigger_error($message, E_USER_NOTICE);
-
-		$default = array(
-			'inline' => true,
-			'restrict' => array(),
-		);
-		$defaultRss = array(
-			'title' => 'RSS Feed',
-		);
-
-		if (is_bool($options)) {
-			$options = array('inline' => $options);
-		}
-		$options = array_merge($default, $options);
-
-		if (is_array($path) && !array_key_exists('controller', $path)) {
-			$out = null;
-			foreach ($path as $i) {
-				$out .= $this->link($i, $options);
-			}
-			if (empty($out)) {
-				return;
-			}
-			return $out;
-		}
-
-		$inline = $options['inline'];
-		unset($options['inline']);
-
-		if (!$url = $this->url($path)) {
-			return;
-		}
-
-		if (strpos('://', $path) !== false) {
-			$file = parse_url($url, PHP_URL_PATH);
-		} else {
-			$file = $this->file($path);
-		}
-
-		$mimeType = Mime_Type::guessType($file);
-		$name = Mime_Type::guessName($mimeType);
-
-		if ($options['restrict'] && !in_array($name, (array) $options['restrict'])) {
-			return;
-		}
-		unset($options['restrict']);
-
-		switch ($mimeType) {
-			case 'text/css':
-				$out = sprintf(
-					$this->tags['csslink'],
-					$url,
-					$this->_parseAttributes($options, null, '', ' ')
-				);
-				return $this->output($out, $inline);
-			case 'application/javascript':
-			case 'application/x-javascript':
-				$out = sprintf($this->tags['javascriptlink'], $url);
-				return $this->output($out, $inline);
-			case 'application/rss+xml':
-				$options = array_merge($defaultRss,$options);
-				$out = sprintf($this->tags['rsslink'], $url, $options['title']);
-				return $this->output($out, $inline);
-			default:
-				return $this->Html->link(basename($file), $url);
-		}
-	}
-
-/**
- * Output filtering
- *
- * @param string $content
- * @param boolean $inline True to return content, false to add content to `scripts_for_layout`
- * @return mixed String if inline is true or null
- * @deprecated
- */
-	function output($content, $inline = true) {
-		$message  = "MediaHelper::output - ";
-		$message .= "All functionality related to assets has been deprecated.";
-		trigger_error($message, E_USER_NOTICE);
-
-		if ($inline) {
-			return $content;
-		}
-
-		$View =& ClassRegistry::getObject('view');
-		$View->addScript($content);
 	}
 }
 
