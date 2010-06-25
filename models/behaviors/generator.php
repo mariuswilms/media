@@ -176,8 +176,8 @@ class GeneratorBehavior extends ModelBehavior {
 		extract($this->settings[$Model->alias]);
 
 		/* Process clone instruction */
-		if (key($process['instructions']) == 'clone') {
-			$action = current($args);
+		if (isset($process['instructions']['clone'])) {
+			$action = $process['instructions']['clone'];
 
 			if (!in_array($action, array('copy', 'link', 'symlink'))) {
 				return false;
