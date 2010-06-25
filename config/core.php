@@ -157,7 +157,7 @@ Media_Info::config(array(
  *
  * @see GeneratorBehavior
  */
-// $sRGB = $mm . DS . 'resources' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
+// $sRGB = $mm . DS . 'data' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
 
 $s = array('convert' => 'image/png', 'zoomCrop' => array(100, 100));
 $m = array('convert' => 'image/png', 'fitCrop' => array(300, 300));
