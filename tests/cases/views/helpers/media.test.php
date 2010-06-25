@@ -187,6 +187,21 @@ class MediaHelperTestCase extends CakeTestCase {
 		$this->assertEqual($result, $this->file5);
 	}
 
+	function testName() {
+		$this->assertEqual($this->Helper->name('img/image-png.png'), 'image');
+		$this->assertNull($this->Helper->name('static/img/not-existant.jpg'));
+	}
+
+	function testMimeType() {
+		$this->assertEqual($this->Helper->mimeType('img/image-png.png'), 'image/png');
+		$this->assertNull($this->Helper->mimeType('static/img/not-existant.jpg'));
+	}
+
+	function testSize() {
+		$this->assertEqual($this->Helper->size('img/image-png.png'), 10142);
+		$this->assertNull($this->Helper->size('static/img/not-existant.jpg'));
+	}
+
 	function testDeprecatedConstruct() {
 		$settings = array(
 			'static' => array($this->TmpFolder->pwd() . 'static' . DS => 'media/static/'),

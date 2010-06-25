@@ -368,6 +368,18 @@ class MediaHelper extends AppHelper {
 	}
 
 /**
+ * Get the name of a media for a path
+ *
+ * @param string $path Absolute or partial path to a file
+ * @return string|void i.e. `image` or `video`
+ */
+	function name($path) {
+		if ($file = $this->file($path)) {
+			return Mime_Type::guessName($file);
+		}
+	}
+
+/**
  * Get MIME type for a path
  *
  * @param string $path Absolute or partial path to a file
