@@ -35,7 +35,8 @@ class Media_Process {
 	 * and instantiates it.
 	 *
 	 * @param array $config Valid values are:
-	 *                      - `'source'`: An absolute path to a file or an open handle.
+	 *                      - `'source'`: An absolute path, a file or an open handle or
+	 *                                    a MIME type if `'adapter'` is an instance.
 	 *                      - `'adapter'`: A name or instance of a media adapter (i.e. `'Gd'`).
 	 * @return Media_Process_Generic An instance of a subclass of `Media_Process_Generic` or
 	 *                               if type could not be mapped an instance of the that class
@@ -60,7 +61,9 @@ class Media_Process {
 		$name = ucfirst($name);
 		$class = "Media_Process_{$name}";
 
-		require_once "Media/Process/{$name}.php";
+		if (!class_exists($class)) { // Allows for injecting arbitrary classes.
+			require_once "Media/Process/{$name}.php";
+		}
 
 		$media = new $class(compact('source', 'adapter'));
 		return $media;

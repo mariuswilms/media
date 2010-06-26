@@ -13,6 +13,7 @@
  */
 
 require_once 'Mime/Type.php';
+require_once 'Media/Process.php';
 
 /**
  * `Media_Process_Generic` is the base class for all media processing types. It provides
@@ -53,7 +54,10 @@ class Media_Process_Generic {
 			}
 			if ($adapter) {
 				$class = "Media_Process_Adapter_{$adapter}";
-				require_once dirname(__FILE__) . "/Adapter/{$adapter}.php";
+
+				if (!class_exists($class)) { // Allows for injecting arbitrary classes.
+					require_once dirname(__FILE__) . "/Adapter/{$adapter}.php";
+				}
 
 				$this->_adapter = new $class($source);
 			}
@@ -111,7 +115,10 @@ class Media_Process_Generic {
 			$config = Media_Process::config();
 
 			if ($config[$this->name()] == $config[Mime_Type::guessName($mimeType)]) {
-				$media = Media_Process::factory(array('adapter' => $this->_adapter));
+				$media = Media_Process::factory(array(
+					'source' => $mimeType,
+					'adapter' => $this->_adapter
+				));
 			} else {
 				$handle = fopen('php://temp', 'w+');
 

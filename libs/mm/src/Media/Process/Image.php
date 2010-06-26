@@ -235,7 +235,7 @@ class Media_Process_Image extends Media_Process_Generic {
 		$current = $this->_adapter->profile('icc');
 
 		if (!$current) {
-			$file = App::pluginPath('Media') . 'vendors' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
+			$file = dirname(dirname(dirname(dirname(__FILE__)))) . '/data/sRGB_IEC61966-2-1_black_scaled.icc';
 			$current = file_get_contents($file);
 
 			if (!$this->_adapter->profile('icc', $current)) {
