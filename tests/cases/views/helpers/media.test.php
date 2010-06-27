@@ -20,7 +20,11 @@ App::import('Core', array('Helper', 'AppHelper', 'ClassRegistry'));
 App::import('Helper', 'Media.Media');
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'fixtures' . DS . 'test_data.php';
 
-define('MEDIA', TMP . 'tests' . DS);
+if (!defined('MEDIA')) {
+	define('MEDIA', TMP . 'tests' . DS);
+} elseif (MEDIA != TMP . 'tests' . DS) {
+	trigger_error('MEDIA constant already defined and not pointing to tests directory.', E_USER_ERROR);
+}
 require_once dirname(dirname(dirname(dirname(dirname(__FILE__))))) . DS . 'config' . DS . 'core.php';
 
 /**
@@ -264,4 +268,5 @@ class MediaHelperTestCase extends CakeTestCase {
 		$this->assertEqual($result, $this->file0);
 	}
 }
+
 ?>
