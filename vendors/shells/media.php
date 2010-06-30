@@ -137,10 +137,12 @@ class MediaShell extends Shell {
 			return false;
 		}
 
+		$short = array('aud', 'doc', 'gen', 'img', 'vid');
+
 		$dirs = array(
 			MEDIA => array(),
-			MEDIA_STATIC => Media::short(),
-			MEDIA_TRANSFER => Media::short(),
+			MEDIA_STATIC => $short,
+			MEDIA_TRANSFER => $short,
 			MEDIA_FILTER => array(),
 		);
 
