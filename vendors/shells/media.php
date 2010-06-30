@@ -17,7 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Core', array('ConnectionManager', 'Folder'));
-require_once(dirname(dirname(dirname(__FILE__))) . DS . 'config' . DS . 'core.php');
+require_once App::pluginPath('media') . 'config' . DS . 'core.php';
 Configure::write('Cache.disable', true);
 
 /**
@@ -176,7 +176,7 @@ class MediaShell extends Shell {
 			}
 		}
 
-		$this->out('');
+		$this->out();
 		$this->protect();
 		$this->out('Remember to set the correct permissions on transfer and filter directory.');
 	}
