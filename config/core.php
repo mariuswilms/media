@@ -73,7 +73,10 @@ if (!defined('MEDIA_TRANSFER_URL')) {
  * is expected (by the library) in order to be able to load classes.
  */
 $mm = dirname(dirname(__FILE__)) . DS . 'libs' . DS . 'mm';
-ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $mm . DS . 'src');
+
+if (strpos(ini_get('include_path'), $mm) === false) {
+	ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $mm . DS . 'src');
+}
 
 /**
  * Configure the MIME type detection. The detection class is two headed which means it
