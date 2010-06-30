@@ -192,7 +192,11 @@ class GeneratorBehavior extends ModelBehavior {
 		}
 
 		/* Process media transforms */
-		$Media = Media_Process::factory(array('source' => $file));
+		try {
+			$Media = Media_Process::factory(array('source' => $file));
+		} catch (Exception $E) {
+			return false;
+		}
 
 		foreach ($process['instructions'] as $key => $value) {
 			if (is_int($key)) {

@@ -26,6 +26,8 @@ if (!defined('MEDIA')) {
 	trigger_error('MEDIA constant already defined and not pointing to tests directory.', E_USER_ERROR);
 }
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . DS . 'config' . DS . 'core.php';
+require_once 'Media/Process.php';
+require_once 'Media/Info.php';
 
 /**
  * Attachment Test Case Class
@@ -131,6 +133,50 @@ class AttachmentTestCase extends CakeTestCase {
 		$this->assertTrue($result);
 		$this->assertFalse(file_exists($this->Folder->pwd() . 'transfer' .  DS . 'ta.jpg'));
 		$this->assertFalse(file_exists($this->Folder->pwd() . 'transfer' .  DS . 'tb.jpg'));
+	}
+
+	function testHasManyWithMissingMediaAdapters() {
+		$_backupProcess = Media_Process::config();
+		$_backupInfo = Media_Info::config();
+
+		Media_Process::config(array('image' => null));
+		Media_Info::config(array('image' => null));
+
+		$Model = $this->_model('hasMany');
+
+		$file = $this->Data->getFile(array('image-jpg.jpg' => 'ta.jpg'));
+		$data = array(
+			'Movie' => array('title' => 'Weekend', 'director' => 'Jean-Luc Godard'),
+			'Attachment' => array(
+				array('file' => $file, 'model' => 'Movie'),
+		));
+
+		$this->expectError();
+		$this->expectError();
+		$this->expectError();
+
+		$Model->create();
+		$result = $Model->saveAll($data, array('validate' => 'first'));
+		$this->assertTrue($result);
+		$this->assertTrue(file_exists($this->Folder->pwd() . 'transfer' . DS . 'img' . DS . 'ta.jpg'));
+
+		$result = $Model->find('first', array('conditions' => array('title' => 'Weekend')));
+		$expected = array(
+			0 => array(
+				'id' => 1,
+				'model' => 'Movie',
+				'foreign_key' => 4,
+				'dirname' => 'img',
+				'basename' => 'ta.jpg',
+				'checksum' => '1920c29e7fbe4d1ad2f9173ef4591133',
+				'group' => null,
+				'alternative' => null,
+			)
+		);
+		$this->assertEqual($result['Attachment'], $expected);
+
+		Media_Process::config($_backupProcess);
+		Media_Info::config($_backupInfo);
 	}
 
 	function testGroupedHasMany() {
