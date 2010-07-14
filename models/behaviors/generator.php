@@ -213,7 +213,7 @@ class GeneratorBehavior extends ModelBehavior {
 
 			if ($result === false) {
 				return false;
-			} elseif (is_a($result, 'Media_Process')) {
+			} elseif (is_a($result, 'Media_Process_Generic')) {
 				$Media = $result;
 			}
 		}
