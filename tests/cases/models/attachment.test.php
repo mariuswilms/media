@@ -36,6 +36,7 @@ require_once 'Media/Info.php';
  * @subpackage media.tests.cases.models
  */
 class AttachmentTestCase extends CakeTestCase {
+
 	var $fixtures = array(
 		'plugin.media.movie', 'plugin.media.actor',
 		'plugin.media.attachment', 'plugin.media.pirate'

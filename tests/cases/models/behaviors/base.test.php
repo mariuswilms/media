@@ -44,6 +44,7 @@ class BaseBehaviorTestCase extends CakeTestCase {
 
 	function start() {
 		parent::start();
+
 		if (in_array('plugin.media.song', $this->fixtures)) {
 			$this->loadFixtures('Song');
 		}
@@ -78,4 +79,5 @@ class BaseBehaviorTestCase extends CakeTestCase {
 		Configure::write('Media', $this->_mediaConfig);
 	}
 }
+
 ?>
