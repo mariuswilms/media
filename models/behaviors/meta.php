@@ -18,8 +18,8 @@
  */
 App::import('Core', 'Inflector');
 App::import('Core', 'Cache');
-App::import('Lib', 'Mime_Type', array('file' => 'mm/src/Mime/Type.php'));
-App::import('Lib', 'Media_Info', array('file' => 'mm/src/Media/Info.php'));
+require_once 'Mime/Type.php';
+require_once 'Media/Info.php';
 
 /**
  * Coupler Behavior Class

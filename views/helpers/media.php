@@ -16,7 +16,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Lib', 'Mime_Type', array('file' => 'mm/src/Mime/Type.php'));
+require_once 'Mime/Type.php';
 App::import('Lib', 'Media.Media'); // @deprecated
 
 /**

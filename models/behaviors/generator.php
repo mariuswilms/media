@@ -16,8 +16,8 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Lib', 'Media_Process', array('file' => 'mm/src/Media/Process.php'));
-App::import('Lib', 'Mime_Type', array('file' => 'mm/src/Mime/Type.php'));
+require_once 'Media/Process.php';
+require_once 'Mime/Type.php';
 
 /**
  * Generator Behavior Class
