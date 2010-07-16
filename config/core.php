@@ -69,6 +69,12 @@ if (!defined('MEDIA_TRANSFER_URL')) {
 }
 
 /*
+ * Test for features on this system.
+ */
+$hasFileinfo = extension_loaded('fileinfo');
+$hasImagick = extension_loaded('imagick');
+
+/*
  * Bootstrap the `mm` library. We are putting the library into the include path which
  * is expected (by the library) in order to be able to load classes.
  */
@@ -92,7 +98,7 @@ if (strpos(ini_get('include_path'), $mm) === false) {
  */
 require_once 'Mime/Type.php';
 
-if (extension_loaded('fileinfo')) {
+if ($hasFileinfo) {
 	Mime_Type::config('Magic', array(
 		'adapter' => 'Fileinfo'
 	));
@@ -130,8 +136,8 @@ require_once 'Media/Process.php';
 
 Media_Process::config(array(
 	// 'audio' => 'SoxShell',
-	// 'document' => 'Imagick',
-	'image' => 'Gd',
+	'document' => $hasImagick ? 'Imagick' : null,
+	'image' => $hasImagick ? 'Imagick' : 'Gd',
 	// 'video' => 'FfmpegShell'
 ));
 
