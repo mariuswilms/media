@@ -137,8 +137,21 @@ class AttachmentTestCase extends CakeTestCase {
 	}
 
 	function testHasManyWithMissingMediaAdapters() {
+		$_backupConfig = Configure::read('Media');
 		$_backupProcess = Media_Process::config();
 		$_backupInfo = Media_Info::config();
+
+		$s = array('convert' => 'image/png', 'zoomCrop' => array(100, 100));
+		$m = array('convert' => 'image/png', 'fitCrop' => array(300, 300));
+		$l = array('convert' => 'image/png', 'fit' => array(600, 440));
+
+		Configure::write('Media.filter', array(
+			'audio' => compact('s', 'm'),
+			'document' => compact('s', 'm'),
+			'generic' => array(),
+			'image' => compact('s', 'm', 'l'),
+			'video' => compact('s', 'm')
+		));
 
 		Media_Process::config(array('image' => null));
 		Media_Info::config(array('image' => null));
@@ -178,6 +191,7 @@ class AttachmentTestCase extends CakeTestCase {
 
 		Media_Process::config($_backupProcess);
 		Media_Info::config($_backupInfo);
+		Configure::write('Media', $_backupConfig);
 	}
 
 	function testGroupedHasMany() {
