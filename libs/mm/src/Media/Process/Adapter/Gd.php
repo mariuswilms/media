@@ -147,6 +147,10 @@ class Media_Process_Adapter_Gd extends Media_Process_Adapter {
 		throw new Exception("The adapter doesn't support the `strip` action.");
 	}
 
+	public function depth($value) {
+		throw new Exception("The adapter doesn't support the `depth` action.");
+	}
+
 	public function crop($left, $top, $width, $height) {
 		$left   = (integer) $left;
 		$top    = (integer) $top;

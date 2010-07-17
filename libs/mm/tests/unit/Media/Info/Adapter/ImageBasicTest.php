@@ -25,7 +25,7 @@ class Media_Info_Adapter_ImageBasicTest extends PHPUnit_Framework_TestCase {
 			$this->markTestSkipped('The `getimagesize` function is not available.');
 		}
 
-		$this->_files = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/resources';
+		$this->_files = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/data';
 		$this->_data = dirname(dirname(dirname((dirname(dirname(dirname(__FILE__))))))) .'/data';
 	}
 

@@ -28,7 +28,7 @@ class Mime_Type_Magic_Adapter_FileinfoTest extends PHPUnit_Framework_TestCase {
 		} else {
 			$this->markTestSkipped('The `fileinfo` extension is not available.');
 		}
-		$this->_files = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . '/resources';
+		$this->_files = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . '/data';
 	}
 
 	public function testToArray() {

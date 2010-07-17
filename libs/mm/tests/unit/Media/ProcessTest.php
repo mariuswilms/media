@@ -23,7 +23,7 @@ class Media_ProcessTest extends PHPUnit_Framework_TestCase {
 	protected $_data;
 
 	protected function setUp() {
-		$this->_files = dirname(dirname(dirname(__FILE__))) . '/resources';
+		$this->_files = dirname(dirname(dirname(__FILE__))) . '/data';
 		$this->_data = dirname(dirname(dirname(dirname(__FILE__)))) .'/data';
 
 		Media_Process::config(array(
@@ -51,6 +51,9 @@ class Media_ProcessTest extends PHPUnit_Framework_TestCase {
 
 		$result = Media_Process::factory(array('source' => "{$this->_files}/application_pdf.pdf"));
 		$this->assertType('Media_Process_Document', $result);
+
+		$result = Media_Process::factory(array('source' => "{$this->_files}/audio_ogg_snippet.ogg"));
+		$this->assertType('Media_Process_Audio', $result);
 	}
 
 	public function testMediaFactorySourceStream() {

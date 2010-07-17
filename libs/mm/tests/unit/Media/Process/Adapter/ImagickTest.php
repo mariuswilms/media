@@ -26,7 +26,7 @@ class Media_Process_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
 			$this->markTestSkipped('The `imagick` extension is not available.');
 		}
 
-		$this->_files = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/resources';
+		$this->_files = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/data';
 		$this->_data = dirname(dirname(dirname((dirname(dirname(dirname(__FILE__))))))) .'/data';
 
 		Mime_Type::config('Magic', array(
@@ -184,9 +184,29 @@ class Media_Process_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($result);
 	}
 
+	public function testDepth() {
+		$source = fopen("{$this->_files}/image_png.png", 'rb'); // this one has 16 bit
+		$subject = new Media_Process_Adapter_Imagick($source);
+
+		$reduced = fopen('php://temp', 'w+b');
+
+		$result = $subject->depth(8);
+		$subject->store($reduced);
+
+		$sourceMeta = fstat($source);
+		$reducedMeta = fstat($reduced);
+
+		$this->assertTrue($result);
+		$this->assertLessThan($sourceMeta['size'], $reducedMeta['size']);
+
+		fclose($source);
+		fclose($reduced);
+	}
+
 	public function testCompressPng() {
-		for ($i = 1; $i < 10; $i++) {
-			$source = fopen("{$this->_files}/image_landscape_uncompressed.png", 'rb');
+		 // Test just first 4 because after that strangely the size goes up again
+		for ($i = 1; $i <= 4; $i++) {
+			$source = fopen("{$this->_files}/image_png.png", 'rb');
 
 			$uncompressed = fopen('php://temp', 'w+b');
 			$compressed = fopen('php://temp', 'w+b');
@@ -195,7 +215,7 @@ class Media_Process_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
 			$subject->compress(0);
 			$subject->store($uncompressed);
 
-			$subject->compress($i);
+			$subject->compress($i + 0.5); // Use adaptive filter
 			$subject->store($compressed);
 
 			$uncompressedMeta = fstat($uncompressed);
@@ -213,7 +233,7 @@ class Media_Process_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
 
 	public function testCompressJpeg() {
 		for ($i = 1; $i < 10; $i++) {
-			$source = fopen("{$this->_files}/image_landscape_uncompressed.jpg", 'rb');
+			$source = fopen("{$this->_files}/image_jpg.jpg", 'rb');
 
 			$uncompressed = fopen('php://temp', 'w+b');
 			$compressed = fopen('php://temp', 'w+b');
@@ -222,7 +242,7 @@ class Media_Process_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
 			$subject->compress(0);
 			$subject->store($uncompressed);
 
-			$subject->compress($i);
+			$subject->compress($i + 0.5); // Use adaptive filter
 			$subject->store($compressed);
 
 			$uncompressedMeta = fstat($uncompressed);

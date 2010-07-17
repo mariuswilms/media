@@ -23,7 +23,7 @@ class Media_Process_ConversionTest extends PHPUnit_Framework_TestCase {
 	protected $_data;
 
 	protected function setUp() {
-		$this->_files = dirname(dirname(dirname(dirname(__FILE__)))) . '/resources';
+		$this->_files = dirname(dirname(dirname(dirname(__FILE__)))) . '/data';
 		$this->_data = dirname(dirname(dirname(dirname(dirname(__FILE__))))) .'/data';
 	}
 

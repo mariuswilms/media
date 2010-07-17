@@ -26,7 +26,7 @@ class Media_Process_Adapter_GdTest extends PHPUnit_Framework_TestCase {
 			$this->markTestSkipped('The `gd` extension is not available.');
 		}
 
-		$this->_files = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/resources';
+		$this->_files = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/data';
 		$this->_data = dirname(dirname(dirname((dirname(dirname(dirname(__FILE__))))))) .'/data';
 
 		Mime_Type::config('Magic', array(

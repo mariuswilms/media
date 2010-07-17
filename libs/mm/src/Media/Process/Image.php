@@ -175,12 +175,21 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
-	 * Selects compression type and filters than compresses the media
-	 * according to provided value
+	 * Selects level of compression (and in for some format the filters) than
+	 * compresses the media according to provided value.
 	 *
-	 * Compressing may result in lossy quality for e.g. jpeg but
-	 * not for png images. The decimal place denotes the type of filter
-	 * used and the number as a whole the (rounded) compression value.
+	 * For png images the decimal place denotes the type of filter to be used this means
+	 * .0 is none, .1 is "sub", .2 is "up", .3 is "average", .4 is "paeth" and .5 is
+	 * "adaptive". The number itself controls the zlib compression level from 1 (fastest)
+	 * to 9 (best compression). Compression for png images is lossless.
+	 *
+	 * For jpeg images the provided value is multiplied with 10 and substracted from 100
+	 * (the best jpeg quality). This means i.e. a given value of 1.5 results in a jpeg
+	 * quality of 85. Compression for jpeg images is lossy.
+	 *
+	 * The tiff format with LZW compression (which is used by default) does not allow for
+	 * controlling the compression level. Therefore the given value is simply ignored.
+	 * Compression for tiff images is lossless.
 	 *
 	 * @param float $value Zero for no compression at all or a value between 0 and 9.9999999
 	 * 	(highest compression); defaults to 1.5
@@ -226,7 +235,7 @@ class Media_Process_Image extends Media_Process_Generic {
 	 * @return boolean
 	 * @link http://www.cambridgeincolour.com/tutorials/color-space-conversion.htm
 	 */
-	public function profileColor($file) {
+	public function colorProfile($file) {
 		if (!is_file($file)) {
 			return false;
 		}
@@ -246,6 +255,18 @@ class Media_Process_Image extends Media_Process_Generic {
 			return true;
 		}
 		return $this->_adapter->profile('icc', $target);
+	}
+
+	/**
+	 * Changes the color depths (of the channels).
+	 *
+	 * @param integer $value The number of bits in a color sample within a pixel. Usually `8`.
+	 *                       This is _not_ the total number of bits per pixel but the bits per
+	 *                       channel.
+	 * @return boolean
+	 */
+	public function colorDepth($value) {
+		return $this->_adapter->depth($value);
 	}
 
 	/**

@@ -42,7 +42,7 @@ class Media_Process_Adapter_Imagick extends Media_Process_Adapter {
 	public function __construct($handle) {
 		$this->_object = new Imagick();
 
-		// @fixme Workaaround for imagick failing to work with handles before module version 3.0.
+		// @fixme Workaround for imagick failing to work with handles before module version 3.0.
 		// See http://pecl.php.net/bugs/bug.php?id=16932 for more information.
 		// $this->_object->readImageFile($handle);
 		$this->_object->readImageBlob(stream_get_contents($handle, -1, 0));
@@ -63,7 +63,7 @@ class Media_Process_Adapter_Imagick extends Media_Process_Adapter {
 	}
 
 	public function store($handle) {
-		// @fixme Workaaround for imagick failing to work with handles before module version 3.0.
+		// @fixme Workaround for imagick failing to work with handles before module version 3.0.
 		// See http://pecl.php.net/bugs/bug.php?id=16932 for more information.
 		// return $this->_object->writeImageFile($handle);
 		return fwrite($handle, $this->_object->getImageBlob());
@@ -79,16 +79,20 @@ class Media_Process_Adapter_Imagick extends Media_Process_Adapter {
 		return $this->_object->setFormat($this->_formatMap[$mimeType]);
 	}
 
+	// @link http://studio.imagemagick.org/pipermail/magick-users/2002-August/004435.html
 	public function compress($value) {
 		switch ($this->_object->getFormat()) {
 			case 'tiff':
-				return $this->_object->setCompression(Imagick::COMPRESSION_LZW);
+				return $this->_object->setImageCompression(Imagick::COMPRESSION_LZW);
 			case 'png':
-				return $this->_object->setCompression(Imagick::COMPRESSION_ZIP)
-					&& $this->_object->setCompressionQuality((integer) $value);
+				$filter = ($value * 10) % 10;
+				$level = (integer) $value;
+
+				return $this->_object->setImageCompression(Imagick::COMPRESSION_ZIP)
+					&& $this->_object->setImageCompressionQuality($level * 10 + $filter);
 			case 'jpeg':
-				return $this->_object->setCompression(Imagick::COMPRESSION_JPEG)
-					&& $this->_object->setCompressionQuality((integer) (100 - ($value * 10)));
+				return $this->_object->setImageCompression(Imagick::COMPRESSION_JPEG)
+					&& $this->_object->setImageCompressionQuality((integer) (100 - ($value * 10)));
 			default:
 				throw new Exception("Cannot compress this format.");
 		}
@@ -119,6 +123,10 @@ class Media_Process_Adapter_Imagick extends Media_Process_Adapter {
 
 	public function strip($type) {
 		return $this->_object->profileImage($type, null);
+	}
+
+	public function depth($value) {
+		return $this->_object->setImageDepth($value);
 	}
 
 	public function crop($left, $top, $width, $height) {
