@@ -162,7 +162,10 @@ Media_Info::config(array(
  * Filters and versions
  *
  * For each media type a set of filters keyed by version name is configured.
- * A filter is a set of instructions which are processed by the Media class.
+ * A filter is a set of instructions which are processed by the Media_Process class.
+ *
+ * For more information on available methods see the classes
+ * located in `libs/mm/src/Media/Process`.
  *
  * @see GeneratorBehavior
  */
