@@ -205,6 +205,59 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertTrue($result);
 		$this->assertTrue(file_exists($directory . 'application-pdf.png'));
 	}
+
+	function testMakeVersionCloning() {
+		$Model = ClassRegistry::init('Unicorn', 'Model');
+		$Model->Behaviors->attach('Media.Generator', $this->_behaviorSettings);
+
+		$directory = $this->Folder->pwd() . 'filter' . DS . 's' . DS;
+		mkdir($directory);
+
+		$file = $this->Data->getFile(array(
+			'image-jpg.jpg' => $this->Folder->pwd() . 'copied.jpg'
+		));
+		$result = $Model->Behaviors->Generator->makeVersion($Model, $file, array(
+			'version' => 's',
+			'directory' => $directory,
+			'instructions' => array(
+				'clone' => 'copy'
+			)
+		));
+		$this->assertTrue($result);
+		$this->assertTrue(file_exists($directory . 'copied.jpg'));
+		$this->assertTrue(is_file($directory . 'copied.jpg'));
+
+		$file = $this->Data->getFile(array(
+			'image-jpg.jpg' => $this->Folder->pwd() . 'symlinked.jpg'
+		));
+		$result = $Model->Behaviors->Generator->makeVersion($Model, $file, array(
+			'version' => 's',
+			'directory' => $directory,
+			'instructions' => array(
+				'clone' => 'symlink'
+			)
+		));
+		$this->assertTrue($result);
+		$this->assertTrue(file_exists($directory . 'symlinked.jpg'));
+		$this->assertTrue(is_link($directory . 'symlinked.jpg'));
+		$this->assertEqual(readlink($directory . 'symlinked.jpg'), $file);
+		unlink($directory . 'symlinked.jpg');
+
+		$file = $this->Data->getFile(array(
+			'image-jpg.jpg' => $this->Folder->pwd() . 'hardlinked.jpg'
+		));
+		$result = $Model->Behaviors->Generator->makeVersion($Model, $file, array(
+			'version' => 's',
+			'directory' => $directory,
+			'instructions' => array(
+				'clone' => 'link'
+			)
+		));
+		$this->assertTrue($result);
+		$this->assertTrue(file_exists($directory . 'hardlinked.jpg'));
+		$this->assertTrue(is_file($directory . 'hardlinked.jpg'));
+		unlink($directory . 'hardlinked.jpg');
+	}
 }
 
 ?>
