@@ -198,7 +198,7 @@ class MediaShell extends Shell {
 			$this->err($this->shortPath($file) . ' is already present.');
 			return true;
 		}
-		if (strpos(WWW_ROOT, MEDIA_TRANSFER) === false) {
+		if (strpos(MEDIA_TRANSFER, WWW_ROOT) === false) {
 			$this->err($this->shortPath($file) . ' is not in your webroot.');
 			return;
 		}
