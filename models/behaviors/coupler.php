@@ -131,8 +131,8 @@ class CouplerBehavior extends ModelBehavior {
  *
  * Deletes file corresponding to record.
  *
- * If the file couldn't be deleted the callback won't stop the
- * delete operation to continue to delete the record.
+ * If the file couldn't be deleted the callback will stop the
+ * delete operation and not continue to delete the record.
  *
  * @param Model $Model
  * @param boolean $cascade
@@ -164,8 +164,7 @@ class CouplerBehavior extends ModelBehavior {
 		$file .= DS . $result[$Model->alias]['basename'];
 
 		$File = new File($file);
-		$File->delete();
-		return true;
+		return $File->delete();
 	}
 
 /**
