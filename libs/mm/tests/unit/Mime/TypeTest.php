@@ -149,7 +149,9 @@ class Mime_TypeTest extends PHPUnit_Framework_TestCase {
 		$map = array(
 			'test' => 'generic',
 			'test.jpg' => 'image',
-			'test.tif' => 'image'
+			'test.tif' => 'image',
+			'test.pdf' => 'document',
+			'path/to/test.pdf' => 'document'
 		);
 		foreach ($map as $mimeType => $name) {
 			$this->assertEquals($name, Mime_Type::guessName($mimeType), "MIME type `{$mimeType}`.");

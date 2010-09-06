@@ -19,7 +19,7 @@
  */
 class Mime_Type {
 
-	const REGEX = '^[-\w.\+]+\/[-\w.\+]+$';
+	const REGEX = '^[\-\w\.\+]+\/[\-\w\.\+]+$';
 
 	/**
 	 * Magic.

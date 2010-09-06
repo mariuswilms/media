@@ -52,7 +52,7 @@ class Media_Process_Image extends Media_Process_Generic {
 		$width = $this->_adapter->width() / $r;
 		$height = $this->_adapter->height() / $r;
 
-		list($widht, $height) = $this->_normalizeDimensions($width, $height, 'maximum'); /* maximum ?? */
+		list($width, $height) = $this->_normalizeDimensions($width, $height, 'maximum'); /* maximum ?? */
 		return $this->_adapter->resize($width, $height);
 	}
 
@@ -76,7 +76,7 @@ class Media_Process_Image extends Media_Process_Generic {
 		$width = $this->_adapter->width() / $r;
 		$height = $this->_adapter->height() / $r;
 
-		list($widht, $height) = $this->_normalizeDimensions($width, $height, 'ratio');
+		list($width, $height) = $this->_normalizeDimensions($width, $height, 'ratio');
 		return $this->_adapter->resize($width, $height);
 	}
 

@@ -242,7 +242,7 @@ class Media_Process_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
 			$subject->compress(0);
 			$subject->store($uncompressed);
 
-			$subject->compress($i + 0.5); // Use adaptive filter
+			$subject->compress($i);
 			$subject->store($compressed);
 
 			$uncompressedMeta = fstat($uncompressed);
