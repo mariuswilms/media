@@ -150,15 +150,6 @@ class CouplerBehavior extends ModelBehavior {
 			return false;
 		}
 
-		$count = $Model->find('count', array(
-			'conditions' => array(
-				'dirname' => $result[$Model->alias]['dirname'],
-				'basename' => $result[$Model->alias]['basename']
-		)));
-		if ($count > 1) {
-			return false;
-		}
-
 		$file  = $baseDirectory;
 		$file .= $result[$Model->alias]['dirname'];
 		$file .= DS . $result[$Model->alias]['basename'];
