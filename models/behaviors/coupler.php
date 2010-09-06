@@ -129,7 +129,7 @@ class CouplerBehavior extends ModelBehavior {
 /**
  * Callback
  *
- * Deletes file corresponding to record as well as generated versions of that file.
+ * Deletes file corresponding to record.
  *
  * If the file couldn't be deleted the callback won't stop the
  * delete operation to continue to delete the record.
