@@ -40,6 +40,9 @@ class MediaHelper extends AppHelper {
  * @var array
  */
 	var $tags = array(
+		'audio'          => '<audio%s>%s%s</audio>',
+		'video'          => '<video%s>%s%s</video>',
+		'source'         => '<source%s/>',
 		'object'         => '<object%s>%s%s</object>',
 		'param'          => '<param%s/>',
 		'csslink'        => '<link type="text/css" rel="stylesheet" href="%s" %s/>', // @deprecated
@@ -127,235 +130,246 @@ class MediaHelper extends AppHelper {
 	}
 
 /**
- * Generates markup to render a file inline
+ * Generates HTML5 markup for one ore more media files
  *
  * Determines correct dimensions for all images automatically. Dimensions for all
  * other media should be passed explictly within the options array in order to prevent
  * the browser refloating the layout.
  *
- * @param string $path Absolute or partial path to a file
- * @param array $options Following are valid options:
- *                       - restrict: an array of lowercase media names (i.e. image) to restrict to
- *                                   Causes markup for other media not to be generated.
- *                       - width
- *                       - height
- *                       - several HTML attributes: alt, title, class
- * @return string
+ * @param string|array $paths Absolute or partial path to a file (or an array thereof)
+ * @param array $options The following options control the output of this method:
+ *                       - autoplay: Start playback automatically on page load, defaults to `false`.
+ *                       - autobuffer: Start buffering when page is loaded, defaults to `false`.
+ *                       - controls: Show controls, defaults to `true`.
+ *                       - loop: Loop playback, defaults to `false`.
+ *                       - fallback: A string containing HTML to use when element is not supported.
+ *                       - poster: The path to a placeholder image for a video.
+ *                       - url: If given wraps the result with a link.
+ *
+ *                       The following HTML attributes may also be passed:
+ *                       - id
+ *                       - class
+ *                       - alt: This attribute is required for images.
+ *                       - title
+ *                       - width, height: For images the method will try to automatically determine
+ *                                        the correct dimensions if no value is given for either
+ *                                        one of these.
+ * @return string|void
  */
-	function embed($path, $options = array()) {
+	function embed($paths, $options = array()) {
 		$default = array(
-			'restrict' => array(),
-			'background' => '#000000',
-			'autoplay' => false, /* aka `autostart` */
-			'controls' => false, /* aka `controller` */
-			'branding' => false,
-			'alt' => null,
-			'width' => null,
-			'height' => null,
+			'autoplay' => false,
+			'autobuffer' => false,
+			'controls' => true,
+			'loop' => false,
+			'fallback' => null,
+			'poster' => null,
 		);
-		$additionalAttributes = array(
+		$optionalAttributes = array(
+			'alt' => null,
 			'id' => null,
 			'title' => null,
 			'class' => null,
-			'usemap' => null,
+			'width' => null,
+			'height' => null
 		);
-
-		$options = array_merge($default, $options);
-		$attributes = array_intersect_key($options, $additionalAttributes);
-
-		if (is_array($path)) {
-			$out = null;
-			foreach ($path as $pathItem) {
-				$out .= "\t" . $this->embed($pathItem, $options) . "\n";
-			}
-			return $out;
-		}
 
 		if (isset($options['url'])) {
 			$link = $options['url'];
 			unset($options['url']);
 
-			$out = $this->embed($path, $options);
-			return $this->Html->link($out, $link, array('escape' => false));
+			return $this->Html->link($this->embed($paths, $options), $link, array(
+				'escape' => false
+			));
 		}
-
-		if (!$url = $this->url($path)) {
+		if (!$sources = $this->_sources((array) $paths)) {
 			return;
 		}
-
-		if (strpos('://', $path) !== false) {
-			$file = parse_url($url, PHP_URL_PATH);
-		} else {
-			$file = $this->file($path);
-		}
-
-		$mimeType = Mime_Type::guessType($file);
-		$name = Mime_Type::guessName($mimeType);
-
+		$options = array_merge($default, $options);
+		$attributes = array_intersect_key($options, $optionalAttributes);
 		extract($options, EXTR_SKIP);
 
-		if ($restrict && !in_array($name, (array) $restrict)) {
-			return;
-		}
+		switch($sources[0]['name']) {
+			case 'audio':
+				$body = null;
 
-		switch ($mimeType) {
-			/* Images */
-			case 'image/gif':
-			case 'image/jpeg':
-			case 'image/png':
-				if (!$width && !$height && function_exists('getimagesize')) {
-					list($width, $height) = getimagesize($file);
+				foreach ($sources as $source) {
+					$body .= sprintf(
+						$this->tags['source'],
+						$this->_parseAttributes(array(
+							'src' => $source['url'],
+							'type' => $source['mimeType']
+					)));
 				}
-				$attributes = array_merge($attributes, array(
-					'alt' => $alt,
-					'width' => $width,
-					'height' => $height
-				));
-				if (strpos($path, 'ico/') !== false) {
-					$message  = "MediaHelper::embed - ";
-					$message .= "All functionality related to assets has been deprecated.";
-					trigger_error($message, E_USER_NOTICE);
-					$attributes = $this->addClass($attributes, 'icon');
+				$attributes += compact('autoplay', 'controls', 'autobuffer', 'loop', 'alt');
+				return sprintf(
+					$this->tags['audio'],
+					$this->_parseAttributes($attributes),
+					$body,
+					$fallback
+				);
+			case 'document':
+			case 'image':
+				if (!isset($attributes['width']) && !isset($attribues['height']) && function_exists('getimagesize')) {
+					list($attributes['width'], $attributes['height']) = getimagesize($sources[0]['file']);
 				}
 				return sprintf(
 					$this->Html->tags['image'],
-					$url,
+					$sources[0]['url'],
 					$this->_parseAttributes($attributes)
 				);
+			case 'video':
+				break;
+			default:
+				break;
+		}
+	}
+
+/**
+ * Generates markup for a single media file using the `object` tag similar to `embed()`.
+ *
+ * @param string|array $paths Absolute or partial path to a file. An array can be passed to be make
+ *                            this method compatible with `embed()`, in which case just the first file
+ *                            in that array is actually used.
+ * @param array $options The following options control the output of this method. Please note that
+ *                       support for these options differs from type to type.
+ *                       - autoplay: Start playback automatically on page load, defaults to `false`.
+ *                       - controls: Show controls, defaults to `true`.
+ *                       - loop: Loop playback, defaults to `false`.
+ *                       - fallback: A string containing HTML to use when element is not supported.
+ *                       - url: If given wraps the result with a link.
+ *
+ *                       The following HTML attributes may also be passed:
+ *                       - id
+ *                       - class
+ *                       - alt
+ *                       - title
+ *                       - width, height
+ * @return string
+ */
+	function embedAsObject($paths, $options = array()) {
+		$default = array(
+			'autoplay' => false,
+			'controls' => true,
+			'loop' => false,
+			'fallback' => null
+		);
+		$optionalAttributes = array(
+			'alt' => null,
+			'id' => null,
+			'title' => null,
+			'class' => null,
+			'width' => null,
+			'height' => null
+		);
+
+		if (isset($options['url'])) {
+			$link = $options['url'];
+			unset($options['url']);
+
+			return $this->Html->link($this->embed($paths, $options), $link, array(
+				'escape' => false
+			));
+		}
+		if (!$sources = $this->_sources((array) $paths)) {
+			return;
+		}
+		$options = array_merge($default, $options);
+		$attributes  = array('type' => $sources[0]['mimeType'], 'data' => $sources[0]['url']);
+		$attributes += array_intersect_key($options, $optionalAttributes);
+		extract($options + $default);
+
+		switch ($sources[0]['mimeType']) {
 			/* Windows Media */
 			case 'video/x-ms-wmv': /* official */
 			case 'video/x-ms-asx':
 			case 'video/x-msvideo':
-				$attributes = array_merge($attributes, array(
-					'type' => $mimeType,
-					'width' => $width,
-					'height' => $height,
-					'data' => $url,
-					'classid' => 'clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6',
-				));
+				$attributes += array(
+					'classid' => 'clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6'
+				);
 				$parameters = array(
 					'src' => $url,
 					'autostart' => $autoplay,
 					'controller' => $controls,
-					'pluginspage' => 'http://www.microsoft.com/Windows/MediaPlayer/',
+					'pluginspage' => 'http://www.microsoft.com/Windows/MediaPlayer/'
 				);
 				break;
 			/* RealVideo */
 			case 'application/vnd.rn-realmedia':
 			case 'video/vnd.rn-realvideo':
 			case 'audio/vnd.rn-realaudio':
-				$attributes = array_merge($attributes, array(
-					'type' => $mimeType,
-					'width' => $width,
-					'height' => $height,
-					'data' => $url,
+				$attributes += array(
 					'classid' => 'clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA',
-				));
+				);
 				$parameters = array(
-					'src' => $url,
+					'src' => $sources[0]['url'],
 					'autostart' => $autoplay,
 					'controls' => isset($controls) ? 'ControlPanel' : null,
 					'console' => 'video' . uniqid(),
 					'loop' => $loop,
-					'bgcolor' => $background,
-					'nologo' => $branding ? false : true,
+					'nologo' => true,
 					'nojava' => true,
 					'center' => true,
-					'backgroundcolor' => $background,
-					'pluginspage' => 'http://www.real.com/player/',
+					'pluginspage' => 'http://www.real.com/player/'
 				);
 				break;
 			/* QuickTime */
 			case 'video/quicktime':
-				$attributes = array_merge($attributes, array(
-					'type' => $mimeType,
-					'width' => $width,
-					'height' => $height,
-					'data' => $url,
+				$attributes += array(
 					'classid' => 'clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B',
-					'codebase' => 'http://www.apple.com/qtactivex/qtplugin.cab',
-				));
+					'codebase' => 'http://www.apple.com/qtactivex/qtplugin.cab'
+				);
 				$parameters = array(
-					'src' => $url,
+					'src' => $sources[0]['url'],
 					'autoplay' => $autoplay,
 					'controller' => $controls,
-					'bgcolor' => substr($background, 1),
-					'showlogo' => $branding,
-					'pluginspage' => 'http://www.apple.com/quicktime/download/',
+					'showlogo' => false,
+					'pluginspage' => 'http://www.apple.com/quicktime/download/'
 				);
 				break;
 			/* Mpeg */
 			case 'video/mpeg':
-				$attributes = array_merge($attributes, array(
-					'type' => $mimeType,
-					'width' => $width,
-					'height' => $height,
-					'data' => $url,
-				));
 				$parameters = array(
-					'src' => $url,
+					'src' => $sources[0]['url'],
 					'autostart' => $autoplay,
 				);
 				break;
 			/* Flashy Flash */
 			case 'application/x-shockwave-flash':
-				$attributes = array_merge($attributes, array(
-					'type' => $mimeType,
-					'width' => $width,
-					'height' => $height,
-					'data' => $url,
+				$attributes += array(
 					'classid' => 'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000',
-					'codebase' => 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab',
-				));
+					'codebase' => 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab'
+				);
 				$parameters = array(
-					'movie' => $url,
+					'movie' => $sources[0]['url'],
 					'wmode' => 'transparent',
-					'bgcolor' => $background,
 					'FlashVars' => 'playerMode=embedded',
 					'quality' => 'best',
 					'scale' => 'noScale',
 					'salign' => 'TL',
-					'pluginspage' => 'http://www.adobe.com/go/getflashplayer',
+					'pluginspage' => 'http://www.adobe.com/go/getflashplayer'
 				);
 				break;
 			case 'application/pdf':
-				$attributes = array_merge($attributes, array(
-					'type' => $mimeType,
-					'width' => $width,
-					'height' => $height,
-					'data' => $url,
-				));
 				$parameters = array(
-					'src' => $url,
+					'src' => $sources[0]['url'],
 					'toolbar' => $controls, /* 1 or 0 */
 					'scrollbar' => $controls, /* 1 or 0 */
-					'navpanes' => $controls,
+					'navpanes' => $controls
 				);
 				break;
 			case 'audio/x-wav':
 			case 'audio/mpeg':
-			case 'audio/ogg': /* must use application/ogg instead? */
+			case 'audio/ogg':
 			case 'audio/x-midi':
-				$attributes = array_merge($attributes, array(
-					'type' => $mimeType,
-					'width' => $width,
-					'height' => $height,
-					'data' => $url,
-				));
 				$parameters = array(
-					'src' => $url,
-					'autoplay' => $autoplay,
+					'src' => $sources[0]['url'],
+					'autoplay' => $autoplay
 				);
 				break;
 			default:
-				$attributes = array_merge($attributes, array(
-					'type' => $mimeType,
-					'width' => $width,
-					'height' => $height,
-					'data' => $url,
-				));
 				$parameters = array(
-					'src' => $url,
+					'src' => $sources[0]['url']
 				);
 				break;
 		}
@@ -363,7 +377,7 @@ class MediaHelper extends AppHelper {
 			$this->tags['object'],
 			$this->_parseAttributes($attributes),
 			$this->_parseParameters($parameters),
-			$alt
+			$fallback
 		);
 	}
 
@@ -456,6 +470,54 @@ class MediaHelper extends AppHelper {
 			}
 		}
 		return $this->__compatFile($path);
+	}
+
+/**
+ * Takes an array of paths and generates and array of source items.
+ *
+ * @param array $paths An array of  relative or absolute paths to files.
+ * @return array An array of sources each one with the keys `name`, `mimeType`, `url` and `file`.
+ */
+	function _sources($paths) {
+		$sources = array();
+
+		foreach ($paths as $path) {
+			if (!$url = $this->url($path)) {
+				return;
+			}
+			if (strpos('://', $path) !== false) {
+				$file = parse_url($url, PHP_URL_PATH);
+			} else {
+				$file = $this->file($path);
+			}
+			$mimeType = Mime_Type::guessType($file);
+			$name = Mime_Type::guessName($mimeType);
+
+			$sources[] = compact('name', 'mimeType', 'url', 'file');
+		}
+		return $sources;
+	}
+
+/**
+ * Generates attributes from options. Overwritten from Helper::_parseAttributes
+ * to take new minimized HTML5 attributes used here into account.
+ *
+ * @param array $options
+ * @return string
+ */
+	function _parseAttributes($options) {
+		$attributes = array();
+		$minimizedAttributes = array('autoplay', 'controls', 'autobuffer', 'loop');
+
+		foreach ($options as $key => $value) {
+			if (in_array($key, $minimizedAttributes)) {
+				if ($value === 1 || $value === true || $value === 'true' || $value == $key) {
+					$attributes[] = sprintf('%s="%s"', $key, $key);
+					unset($options[$key]);
+				}
+			}
+		}
+		return parent::_parseAttributes($options) . ' ' . implode(' ', $attributes);
 	}
 
 /**
