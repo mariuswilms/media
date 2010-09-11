@@ -37,6 +37,14 @@ class Media_Process_Audio extends Media_Process_Generic {
 		}
 		return $this->_adapter->compress(floatval($value));
 	}
+
+	public function channels($value) {
+		return $this->_adapter->channels((integer) $value);
+	}
+
+	public function sampleRate($value) {
+		return $this->_adapter->sampleRate((integer) $value);
+	}
 }
 
 ?>

@@ -22,6 +22,10 @@ require_once 'Mime/Type.php';
  */
 class Media_Process_Adapter_SoxShell extends Media_Process_Adapter {
 
+	protected $_sampleRate;
+
+	protected $_channels;
+
 	protected $_compress;
 
 	protected $_object;
@@ -47,28 +51,54 @@ class Media_Process_Adapter_SoxShell extends Media_Process_Adapter {
 		$sourceType = Mime_Type::guessExtension($this->_object);
 		$targetType = Mime_Type::guessExtension($mimeType);
 
-		if ($this->_compress) {
-			// do stuff...
+		$map = array('ogv' => 'ogg', 'oga' => 'ogg');
+
+		if (isset($map[$sourceType])) {
+			$sourceType = $map[$sourceType];
 		}
-		$command = "{$this->_command} -t {$sourceType} - -t {$targetType} -";
+		if (isset($map[$targetType])) {
+			$targetType = $map[$targetType];
+		}
+		$modify = null;
+
+		if ($this->_sampleRate) {
+			$modify .= " --rate {$this->_sampleRate}";
+		}
+		if ($this->_channels) {
+			$modify .= " --channels {$this->_channels}";
+		}
 
 		rewind($this->_object);
-		$temporary = fopen('php://temp', 'w');
+		$error = fopen('php://temp', 'wrb+');
+		$targetFile = tempnam(sys_get_temp_dir(), 'mm_');
+
+		$command = "{$this->_command} -q -t {$sourceType} -{$modify} -t {$targetType} {$targetFile}";
+
 		$descr = array(
 			0 => $this->_object,
-			1 => $temporary,
+			1 => array('pipe', 'a'),
 			2 => array('pipe', 'a')
 		);
-
 		$process = proc_open($command, $descr, $pipes);
+
+		fclose($pipes[1]);
 		fclose($pipes[2]);
 		$return = proc_close($process);
 
+		// Workaround for header based formats which require the output stream to be seekable.
+		$target = fopen($targetFile, 'rb');
+		$temporary = fopen('php://temp', 'wb+');
+		stream_copy_to_stream($target, $temporary);
+		fclose($target);
+		unlink($targetFile);
+
 		if ($return != 0) {
-//var_dump(stream_get_contents($temporary, -1, 0));
+			rewind($error);
+			//var_dump(stream_get_contents($temporary, -1, 0));
 			// throw new RuntimeException("Command `{$command}` returned `{$return}`.");
 			return false;
 		}
+		fclose($error);
 
 		$this->_object = $temporary;
 		return true;
@@ -79,6 +109,15 @@ class Media_Process_Adapter_SoxShell extends Media_Process_Adapter {
 		return true;
 	}
 
+	public function channels($value) {
+		$this->_channels = $value;
+		return true;
+	}
+
+	public function sampleRate($value) {
+		$this->_sampleRate = $value;
+		return true;
+	}
 }
 
 ?>

@@ -131,6 +131,19 @@ class Mime_TypeTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('wav', Mime_Type::guessExtension('audio/x-wav'));
 	}
 
+	public function testGuessExtensionResource() {
+		$handleA = fopen("{$this->_files}/application_pdf.pdf", 'rb');
+		$handleB = fopen('php://temp', 'rb+');
+
+		stream_copy_to_stream($handleA, $handleB);
+
+		$this->assertEquals('pdf', Mime_Type::guessExtension($handleA));
+		$this->assertEquals('pdf', Mime_Type::guessExtension($handleB));
+
+		fclose($handleA);
+		fclose($handleB);
+	}
+
 	public function testGuessNameMimeType() {
 		$map = array(
 			'video/webm' => 'video',
@@ -172,6 +185,19 @@ class Mime_TypeTest extends PHPUnit_Framework_TestCase {
 				"File `{$file}`."
 			);
 		}
+	}
+
+	public function testGuessNameResource() {
+		$handleA = fopen("{$this->_files}/application_pdf.pdf", 'rb');
+		$handleB = fopen('php://temp', 'rb+');
+
+		stream_copy_to_stream($handleA, $handleB);
+
+		$this->assertEquals('document', Mime_Type::guessExtension($handleA));
+		$this->assertEquals('document', Mime_Type::guessExtension($handleB));
+
+		fclose($handleA);
+		fclose($handleB);
 	}
 }
 

@@ -33,11 +33,11 @@ class Media_Info {
 
 	/**
 	 * This factory method takes a source or an instance of an adapter,
-	 * guesses the type of media maps it to a media processing class
+	 * guesses the type of media maps it to a media information class
 	 * and instantiates it.
 	 *
 	 * @param array $config Valid values are:
-	 *                      - `'source'`: An absolute path to a file or an open handle.
+	 *                      - `'source'`: An absolute path to a file.
 	 *                      - `'adapters'`: Names or instances of media adapters (i.e. `array('Gd')`).
 	 * @return Media_Process_Generic An instance of a subclass of `Media_Process_Generic` or
 	 *                               if type could not be mapped an instance of the that class

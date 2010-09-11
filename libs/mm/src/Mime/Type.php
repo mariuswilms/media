@@ -122,7 +122,7 @@ class Mime_Type {
 	/**
 	 * Guesses the extension (suffix) for an existing file or a MIME type.
 	 *
-	 * @param string $file Path to a file, an open handle to a file or a MIME type string.
+	 * @param string|resource $file Path to a file, an open handle to a file or a MIME type string.
 	 * @return string|void A string with the first matching extension (w/o leading dot).
 	 */
 	public static function guessExtension($file) {
@@ -146,7 +146,7 @@ class Mime_Type {
 	/**
 	 * Guesses the MIME type of the file.
 	 *
-	 * @param string $file Path to/name of a file or an open handle to a file.
+	 * @param string|resource $file Path to/name of a file or an open handle to a file.
 	 * @param options $options Valid options are:
 	 *                - `'paranoid'` If set to true only then content for the file is used for detection
 	 *                - `'properties'` Used for simplification, defaults to false

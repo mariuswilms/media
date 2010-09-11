@@ -44,7 +44,7 @@ class Media_Process_Adapter_FfmpegShell extends Media_Process_Adapter {
 		$sourceType = Mime_Type::guessExtension($this->_object);
 		$targetType = Mime_Type::guessExtension($mimeType);
 
-		$map = array('ogv' => 'ogg');
+		$map = array('ogv' => 'ogg', 'oga' => 'ogg');
 
 		if (isset($map[$sourceType])) {
 			$sourceType = $map[$sourceType];

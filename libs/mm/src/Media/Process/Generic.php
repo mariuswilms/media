@@ -46,11 +46,8 @@ class Media_Process_Generic {
 		if (is_object($adapter)) {
 			$this->_adapter = $adapter;
 		} else {
-			$openedHere = false;
-
 			if (!is_resource($source)) {
 				$source = fopen($source, 'rb');
-				$openedHere = true;
 			}
 			if ($adapter) {
 				$class = "Media_Process_Adapter_{$adapter}";
@@ -60,9 +57,6 @@ class Media_Process_Generic {
 				}
 
 				$this->_adapter = new $class($source);
-			}
-			if (is_resource($source) && $openedHere) {
-				fclose($source);
 			}
 		}
 	}
