@@ -139,7 +139,7 @@ class MediaHelper extends AppHelper {
  * @param string|array $paths Absolute or partial path to a file (or an array thereof)
  * @param array $options The following options control the output of this method:
  *                       - autoplay: Start playback automatically on page load, defaults to `false`.
- *                       - autobuffer: Start buffering when page is loaded, defaults to `false`.
+ *                       - preload: Start buffering when page is loaded, defaults to `false`.
  *                       - controls: Show controls, defaults to `true`.
  *                       - loop: Loop playback, defaults to `false`.
  *                       - fallback: A string containing HTML to use when element is not supported.
@@ -159,7 +159,7 @@ class MediaHelper extends AppHelper {
 	function embed($paths, $options = array()) {
 		$default = array(
 			'autoplay' => false,
-			'autobuffer' => false,
+			'preload' => false,
 			'controls' => true,
 			'loop' => false,
 			'fallback' => null,
