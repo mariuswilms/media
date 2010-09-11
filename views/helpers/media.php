@@ -220,7 +220,25 @@ class MediaHelper extends AppHelper {
 					$this->_parseAttributes($attributes)
 				);
 			case 'video':
-				break;
+				$body = null;
+
+				foreach ($sources as $source) {
+					$body .= sprintf(
+						$this->tags['source'],
+						$this->_parseAttributes(array(
+							'src' => $source['url'],
+							'type' => $source['mimeType']
+					)));
+				}
+				$poster = $this->url($poster);
+
+				$attributes += compact('autoplay', 'controls', 'preload', 'loop', 'poster');
+				return sprintf(
+					$this->tags['video'],
+					$this->_parseAttributes($attributes),
+					$body,
+					$fallback
+				);
 			default:
 				break;
 		}
