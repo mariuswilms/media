@@ -201,7 +201,7 @@ class MediaHelper extends AppHelper {
 							'type' => $source['mimeType']
 					)));
 				}
-				$attributes += compact('autoplay', 'controls', 'autobuffer', 'loop', 'alt');
+				$attributes += compact('autoplay', 'controls', 'preload', 'loop');
 				return sprintf(
 					$this->tags['audio'],
 					$this->_parseAttributes($attributes),
