@@ -209,6 +209,7 @@ class MediaHelper extends AppHelper {
 					$fallback
 				);
 			case 'document':
+				break;
 			case 'image':
 				if (!isset($attributes['width']) && !isset($attribues['height']) && function_exists('getimagesize')) {
 					list($attributes['width'], $attributes['height']) = getimagesize($sources[0]['file']);
