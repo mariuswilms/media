@@ -163,7 +163,7 @@ class MediaHelper extends AppHelper {
 			'controls' => true,
 			'loop' => false,
 			'fallback' => null,
-			'poster' => null,
+			'poster' => null
 		);
 		$optionalAttributes = array(
 			'alt' => null,
