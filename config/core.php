@@ -152,10 +152,10 @@ Media_Process::config(array(
 require_once 'Media/Info.php';
 
 Media_Info::config(array(
-	// 'audio' => array('SoxShell', 'GetId3'),
+	// 'audio' => array('NewWave'),
 	// 'document' => array('Imagick'),
-	'image' => array('ImageBasic'),
-	// 'video' => array('FfmpegShell', 'GetId3')
+	'image' => array('ImageBasic', 'Imagick'),
+	// 'video' => array()
 ));
 
 /**
