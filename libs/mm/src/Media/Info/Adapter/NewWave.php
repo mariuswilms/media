@@ -16,9 +16,11 @@ require_once 'Media/Info/Adapter.php';
 
 /**
  * This adapter contains a collection of methods which have no
- * external dependencies.
+ * external dependencies for analyzing WAVE files. Some of these
+ * methods can be very resource intensive and return tons of data
+ * (especially `samples()`).
  */
-class Media_Info_Adapter_AudioBasic extends Media_Info_Adapter {
+class Media_Info_Adapter_NewWave extends Media_Info_Adapter {
 
 	protected $_object;
 

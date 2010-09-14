@@ -27,8 +27,7 @@ class Media_Info_Adapter_Imagick extends Media_Info_Adapter {
 
 	protected $_map = array(
 		'width' => 'getImageWidth',
-		'height' => 'getImageHeight',
-
+		'height' => 'getImageHeight'
 	);
 
 	public function __construct($file) {

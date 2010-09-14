@@ -193,8 +193,8 @@ class Mime_TypeTest extends PHPUnit_Framework_TestCase {
 
 		stream_copy_to_stream($handleA, $handleB);
 
-		$this->assertEquals('document', Mime_Type::guessExtension($handleA));
-		$this->assertEquals('document', Mime_Type::guessExtension($handleB));
+		$this->assertEquals('document', Mime_Type::guessName($handleA));
+		$this->assertEquals('document', Mime_Type::guessName($handleB));
 
 		fclose($handleA);
 		fclose($handleB);

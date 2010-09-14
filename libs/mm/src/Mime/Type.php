@@ -99,10 +99,10 @@ class Mime_Type {
 	/**
 	 * Simplifies a MIME type string.
 	 *
-	 * @param string $mimeType
-	 * @param boolean If false removes properties.
-	 * @param boolean If false removes experimental indicators.
-	 * @return string
+	 * @param string $mimeType A valid MIME type string.
+	 * @param boolean If `false` removes properties, defaults to `false`.
+	 * @param boolean If `false` removes experimental indicators, defaults to `false`.
+	 * @return string The simplified MIME type string.
 	 */
 	public static function simplify($mimeType, $properties = false, $experimental = false) {
 		if (!$experimental) {
@@ -148,9 +148,10 @@ class Mime_Type {
 	 *
 	 * @param string|resource $file Path to/name of a file or an open handle to a file.
 	 * @param options $options Valid options are:
-	 *                - `'paranoid'` If set to true only then content for the file is used for detection
-	 *                - `'properties'` Used for simplification, defaults to false
-	 *                - `'experimental'` Used for simplification, defaults to false
+	 *                - `'paranoid'`: If set to `true` the file's MIME type is guessed by
+	 *                                looking at it's contents only.
+	 *                - `'properties'`: Leave properties intact, defaults to `false`.
+	 *                - `'experimental'`: Leave experimental indicators intact, defaults to `true`.
 	 * @return string|void String with MIME type on success.
 	 */
 	public static function guessType($file, $options = array()) {

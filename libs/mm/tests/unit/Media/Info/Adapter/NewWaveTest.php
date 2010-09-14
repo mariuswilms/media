@@ -13,9 +13,9 @@
  */
 
 require_once 'PHPUnit/Framework.php';
-require_once 'Media/Info/Adapter/AudioBasic.php';
+require_once 'Media/Info/Adapter/NewWave.php';
 
-class Media_Info_Adapter_AudioBasicTest extends PHPUnit_Framework_TestCase {
+class Media_Info_Adapter_NewWaveTest extends PHPUnit_Framework_TestCase {
 
 	protected $_files;
 	protected $_data;
@@ -27,7 +27,7 @@ class Media_Info_Adapter_AudioBasicTest extends PHPUnit_Framework_TestCase {
 
 	public function testAll() {
 		$source = "{$this->_files}/audio_wave.wav";
-		$subject = new Media_Info_Adapter_AudioBasic($source);
+		$subject = new Media_Info_Adapter_NewWave($source);
 
 		$result = $subject->all();
 		$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $result);
@@ -37,7 +37,7 @@ class Media_Info_Adapter_AudioBasicTest extends PHPUnit_Framework_TestCase {
 
 	public function testAllAndGetSymmetry() {
 		$source = "{$this->_files}/audio_wave.wav";
-		$subject = new Media_Info_Adapter_AudioBasic($source);
+		$subject = new Media_Info_Adapter_NewWave($source);
 
 		$results = $subject->all();
 
