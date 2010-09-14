@@ -693,6 +693,12 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Checks if resource has (not) one of given MIME types
  *
+ * This check is less strict in that it isn't sensitive to MIME types with or
+ * without properties or experimental indicators. This holds true for the type
+ * which is subject of the check as well as types provided for $deny and
+ * $allow. I.e. `audio/x-ogg` will be allowed if $allow contains `audio/ogg`
+ * and `video/ogg` works also if $allow contains the stricter `video/x-ogg`.
+ *
  * @param Model $Model
  * @param array $field
  * @param mixed $deny True or * blocks any MIME type,
@@ -725,9 +731,10 @@ class TransferBehavior extends ModelBehavior {
 			if (!isset(${$type}['mimeType']) && !$trustClient) {
 				continue;
 			}
-			if (!MediaValidation::mimeType(${$type}['mimeType'], $deny, $allow)) {
-				return false;
-			}
+			$result  = MediaValidation::mimeType(${$type}['mimeType'], $deny, $allow);
+			$result |= MediaValidation::mimeType(Mime_Type::simplify(${$type}['mimeType']), $deny, $allow);
+
+			return $result;
 		}
 		return true;
 	}
