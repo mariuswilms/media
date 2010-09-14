@@ -33,8 +33,8 @@ class MediaValidation extends Validation {
  * @param mixed $deny True or * blocks any MIME type,
  * 	an array containing MIME types selectively blocks,
  * 	false blocks no MIME type
- * @param mixed $allow True or * allows any extension,
- * 	an array containing extensions selectively allows,
+ * @param mixed $allow True or * allows any MIME type,
+ * 	an array containing MIME types selectively allows,
  * 	false allows no MIME type
  * @return boolean
  */
