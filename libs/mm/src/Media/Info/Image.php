@@ -34,7 +34,7 @@ class Media_Info_Image extends Media_Info_Generic {
 	 * @return string
 	 */
 	public function knownRatio() {
-		return $this->__knowRatio();
+		return $this->_knownRatio();
 	}
 
 	/**

@@ -32,14 +32,13 @@ class Media_Info_Document extends Media_Info_Generic {
 		return $this->get('width') / $this->get('height');
 	}
 
-
 	/**
 	 * Determines the known ratio.
 	 *
 	 * @return string
 	 */
 	public function knownRatio() {
-		return $this->__knowRatio();
+		return $this->_knownRatio();
 	}
 }
 
