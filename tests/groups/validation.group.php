@@ -5,11 +5,11 @@ class AllValidationGroupTest extends TestSuite {
 	function AllValidationGroupTest() {
 		TestManager::addTestFile(
 			$this,
-			dirname(dirname(__FILE__)) . DS . 'cases' . DS . 'vendors' . DS . 'media_validation'
+			dirname(dirname(__FILE__)) . DS . 'cases' . DS . 'libs' . DS . 'media_validation'
 		);
 		TestManager::addTestFile(
 			$this,
-			dirname(dirname(__FILE__)) . DS . 'cases' . DS . 'vendors' . DS . 'transfer_validation'
+			dirname(dirname(__FILE__)) . DS . 'cases' . DS . 'libs' . DS . 'transfer_validation'
 		);
 	}
 }

@@ -91,14 +91,6 @@ class GeneratorBehavior extends ModelBehavior {
 	function setup(&$Model, $settings = array()) {
 		$settings = (array)$settings;
 		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
-
-		if (method_exists($Model, 'beforeMake')) {
-			$message  = 'GeneratorBehavior::setup - ';
-			$message .= 'The `beforeMake` callback has been deprecated ';
-			$message .= 'in favor of the `makeVersion` method. ';
-			$message .=  "There is no workaround in place.";
-			trigger_error($message, E_USER_NOTICE);
-		}
 	}
 
 /**
