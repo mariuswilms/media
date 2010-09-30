@@ -22,6 +22,20 @@ require_once 'Mime/Type.php';
 /**
  * Generator Behavior Class
  *
+ * The generation of files is handled by the make method. It is either manually
+ * triggered or when a to-be-saved record contains a file field with an absolute
+ * path to a file. The model the behavior is attached to doesn’t necessarily need
+ * to be bound to a table.
+ *
+ * To connect TransferBehavior and GeneratorBehavior with each other it is important
+ * to specify TransferBehavior before GeneratorBehavior:
+ * {{{
+ *     var $actAs = array(
+ *         'Media.Transfer',
+ *         'Media.Generator'
+ *     );
+ * }}}
+ *
  * @package    media
  * @subpackage media.models.behaviors
  */
@@ -117,6 +131,17 @@ class GeneratorBehavior extends ModelBehavior {
  * If the `makeVersion()` method is implemented in the current model it'll be used
  * for generating a specifc version of the file (i.e. `s`, `m` or `l`) otherwise
  * the method within this behavior is going to be used.
+ *
+ * If you already have generated versions of files and change the filter
+ * configuration afterwards you may want to recreate those files with the new
+ * settings.
+ *
+ * You can achieve that by removing already generated files first (optional), than
+ * invoking the task from the shell:
+ * $ cake media make
+ *
+ * For more information on options and arguments for the task call:
+ * $ cake media help
  *
  * @param Model $Model
  * @param string $file Path to a file relative to `baseDirectory`  or an absolute path to a file

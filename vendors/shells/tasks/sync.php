@@ -20,6 +20,30 @@
 /**
  * Sync Task Class
  *
+ * By default the task starts in interactive mode. Below you’ll find an example
+ * for a cronjob for invoking the task on a regular basis to automate repairing
+ * files and records which are not in sync.
+ * {{{
+ *     #!/bin/bash
+ *
+ *     CAKE_CORE_INCLUDE_PATH=/usr/local/share/cake-1.2.x.x
+ *     CAKE_CONSOLE=${CAKE_CORE_INCLUDE_PATH}/cake/console/cake
+ *     APP="/path/to/your/app"
+ *     MODELS="example attachments" # Models separated by one space
+ *     AUTO="-auto" # Enables automatic (destructive) repair!
+ *
+ *     if [ ! -x $CAKE_CONSOLE ] || [ ! -x $APP ]; then
+ *     exit 1
+ *     fi
+ *
+ *     for MODEL in $MODELS; do
+ *         $CAKE_CONSOLE media sync -app $APP -quiet $AUTO $MODEL
+ *         test $? != 0 && exit 1
+ *     done
+ *
+ *     exit 0
+ * }}}
+ *
  * @package    media
  * @subpackage media.shells.tasks
  */

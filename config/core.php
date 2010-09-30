@@ -9,6 +9,15 @@
  * and overwrite other settings selectively with `Configure::write()`
  * calls after including it.
  *
+ * {{{
+ *     define('MEDIA', ROOT . DS . 'media' . DS);
+ *     require APP . 'plugins/media/config/core.php';
+ *
+ *     Configure::write('Media.filter.document.xs', array(
+ *         'convert' => 'image/png',  'compress' => 9.6, 'zoomCrop' => array(16,16)
+ *     ));
+ * }}}
+ *
  * Copyright (c) 2007-2010 David Persson
  *
  * Distributed under the terms of the MIT License.
@@ -28,11 +37,62 @@
 /**
  * Directory paths
  *
- * Each constant is defined with a value which is
- * an absolute (slash terminated) path to a directory holding media files.
+ * You can also customize the directory locations or the URLs their contents
+ * are served under. Each one of the basic three directory types can be
+ * configured by defining constants.
  *
  * Example:
  * 	`'/var/www/example.org/htdocs/app/webroot/media/'`
+ *
+ * Directory Structure
+ * -------------------
+ * The plugin's components are capable of adapting to custom directory
+ * structures by modifying the MEDIA_* path and URL constants. It's
+ * recommended (but not required) to use the following structure in combination
+ * with the plugin. Components of the plugin are by default expecting it to
+ * be organized this way.
+ *
+ * - webroot/media: The base directory.
+ * -- static: Files required by the application.
+ * --- doc: Documents i.e. PDF.
+ * --- gen: Everything else.
+ * --- img: Images.
+ * -- filter: Directory holding generated file versions from _static_ or _transfer_.
+ * --- xs
+ * --- ...other version names...
+ * -- transfer; User uploaded files.
+ * --- ...
+ *
+ * The _static_ directory and all it's content must be *readable* by the
+ * effective user.  The _filter_ and the _transfer_ directory must be
+ * *read/writable* by the effective user.
+ *
+ * You can initialize the directory structure from the command line with:
+ * $ cake media init
+ *
+ * Transfer Directory
+ * ------------------
+ * To protect transferred files from becoming a security issue (most exploits
+ * don't affect i.e. resized images) or for being able to password protect those
+ * files you can use the following methods.
+ *
+ * 1. Put a .htaccess file in the directory (in case you're using Apache).
+ *    {{{
+ *      # webroot/media/transfer/.htaccess
+ *      Order deny,allow
+ *      Deny from all
+ *    }}}
+ *
+ * 2. Create the .htaccess file from the shell with:
+ *    $ cake media protect
+ *
+ * 3. Relocate the transfer directory by defining the following constants.
+ *    The first definition points to the new location of the directory, the second
+ *    disables generation of URLs for files below the transfer directory.
+ *    {{{
+ *        define('MEDIA_TRANSFER', APP . 'transfer' . DS);
+ *        define('MEDIA_TRANSFER_URL', false);
+ *    }}}
  */
 if (!defined('MEDIA')) {
 	define('MEDIA', WWW_ROOT . 'media' . DS);

@@ -22,6 +22,25 @@ App::import('Lib', 'Media.Media'); // @deprecated
 /**
  * Media Helper Class
  *
+ * To load the helper just include it in the helpers property
+ * of a controller:
+ * {{{
+ *     var $helpers = array('Form', 'Html', 'Media.Medium');
+ * }}}
+ *
+ * If needed you can also pass additional path to URL mappings when
+ * loading the helper:
+ * {{{
+ *     var $helpers = array('Media.Medium' => array(MEDIA_FOO => 'foo/'));
+ * }}}
+ *
+ * Nearly all helper methods take so called partial paths. Partial paths are
+ * dynamically expanded path fragments for let you specify paths to files in a
+ * very short way.
+ *
+ * @see file()
+ * @see __construct()
+ * @link http://book.cakephp.org/view/99/Using-Helpers
  * @package    media
  * @subpackage media.views.helpers
  */

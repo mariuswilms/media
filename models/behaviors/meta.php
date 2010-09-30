@@ -24,6 +24,17 @@ require_once 'Media/Info.php';
 /**
  * Coupler Behavior Class
  *
+ * If you set metadataLevel to a value greater then zero, you’ll get additional
+ * metadata on each consecutive find operation.
+ *
+ * To manually get metadata or generate versions of a certain file just call the
+ * metadata or make method on the model which the behavior is attached to. This
+ * even works if you don’t use the above table schema.
+ *
+ * {{{
+ *      $result = $this->Document->metadata('/tmp/cern.jpg', 2);
+ * }}}
+ *
  * @package    media
  * @subpackage media.models.behaviors
  */

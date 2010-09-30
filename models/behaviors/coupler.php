@@ -20,6 +20,32 @@
 /**
  * Coupler Behavior Class
  *
+ * Your model needs to be bound to a table. The table must have at least the
+ * dirname, basename fields to make that work. Below you’ll find some example
+ * SQL to alter an existent table.
+ *
+ * {{{
+ *     ALTER TABLE `movies`
+ *     ADD COLUMN `dirname` varchar(255) NOT NULL,
+ *     ADD COLUMN `basename` varchar(255) NOT NULL,
+ * }}}
+ *
+ * If you now save a record with a field named file which must contain an absolute
+ * path to a file, is the path made relative (using the base path provided) and
+ * then split into the dirname and basename parts which end up in the
+ * corresponding fields. This way you won’t have any absolute paths in your
+ * table which is more flexible (e.g. when relocating the folder with the media
+ * files).
+ *
+ * Keeping files in sync with their records and vice versa can sometimes get
+ * cumbersome. The SyncTask makes ensuring integrity easy. Just invoke it with the
+ * following command from shell:
+ * $cake media sync
+ *
+ * For more information on options and arguments for the task call:
+ * $cake media help
+ *
+ * @see SyncTask
  * @package    media
  * @subpackage media.models.behaviors
  */
