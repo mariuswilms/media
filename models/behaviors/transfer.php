@@ -133,18 +133,6 @@ class TransferBehavior extends ModelBehavior {
 	function setup(&$Model, $settings = array()) {
 		$settings = (array)$settings;
 
-		if (isset($settings['destinationFile'])) {
-			$message  = "TransferBehavior::setup - The `destinationFile` settings has been ";
-			$message .= "removed in favor of the `transferTo()` callback. Implement the method ";
-			$message .= "in the `{$Model->alias}` model to get custom destination paths.";
-			trigger_error($message, E_USER_WARNING);
-		}
-		if (isset($settings['baseDirectory'])) {
-			$message  = "TransferBehavior::setup - The `baseDirectory` settings has been ";
-			$message .= "renamed to `transferDirectory`.";
-			trigger_error($message, E_USER_WARNING);
-		}
-
 		/* If present validation rules get some sane default values */
 		if (isset($Model->validate['file'])) {
 			$default = array('allowEmpty' => true, 'required' => false, 'last' => true);
