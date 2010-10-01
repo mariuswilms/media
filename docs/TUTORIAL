@@ -1,7 +1,6 @@
-
 TUTORIAL
 ========
-This is a very basic tutorial which walks you through the most of the 
+This is a very basic tutorial which walks you through most of the 
 components of the plugin. For more information see the documentation
 within the docs directory or read the API documentation of the classes.
 
@@ -20,7 +19,7 @@ Now we go and load the configuration that comes with the plugin. Edit
 your app's config/core.php and add the following code.
 
 {{{
-	require APP . '/plugins/media/config.core';
+    require APP . '/plugins/media/config/core.php';
 }}}
 
 In order to initialize the directories for storing i.e. uploaded files
@@ -42,7 +41,7 @@ Uploading
 ---------
 We now go and change a few things in order to allow for uploading
 files via the form. Modify the template in views/posts/add and change
-the form create statement by specifiyng type file as well as adding
+the form create statement by specifying type file as well as adding
 an input for the file to be uploaded.
 {{{
 echo $form->create('Post', array('type' => 'file));
@@ -53,7 +52,7 @@ echo $form->input('file', array('type' => 'file'));
 
 When you now go and inspect $this->data within in your Posts controller's
 add action, you should see something like this after you tried 
-uploading a file. The file get's submitted but will discarded as it's
+uploading a file. The file gets submitted but will discarded as it's
 currently not handled by any code.
 {{{
 Array 
@@ -105,13 +104,13 @@ var_dump($result);
 
 Array 
 ( 
-	[Post] => Array 
-	( 
-	[id] => 1
-	[title] => Demo 
-	[dirname] => img
-	[basename] => clipboard.jpg
-	) 
+    [Post] => Array 
+    ( 
+      [id] => 1
+      [title] => Demo 
+      [dirname] => img
+      [basename] => clipboard.jpg
+    ) 
 ) 
 }}}
 
@@ -119,7 +118,7 @@ If you want to get fancy, make use of the virtual fields feature
 in CakePHP 1.3 by adding the following field definition to you model.
 {{{
 var $virtualFields = array(
-	'path' => "CONCAT_WS('/', dirname, basename)"
+    'path' => "CONCAT_WS('/', dirname, basename)"
 );
 }}}
 
@@ -163,7 +162,7 @@ do so in your app's config/core.php right after the statement where you load
 the plugin's configuration.
 
 Repeat uploading the file as you did in prior steps. This time - assuming 
-you've been uplaoding an image file - you should see the following files 
+you've been uploading an image file - you should see the following files 
 being generated.
 
 webroot/media/transfer/img/test.jpg
@@ -228,7 +227,6 @@ steps:
 Validate incoming transfers
 ---------------------------
 You should always validate incoming transfers for following reasons.
-
 
  1. Check that there's actually been an upload.
  2. Avoid overwhelming your server (too many pixels, too many megabytes).
