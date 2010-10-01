@@ -111,8 +111,14 @@ class Attachment extends MediaAppModel {
 			'allowEmpty' => true,
 		));
 
+/**
+ * Uncomment to get fancy path field.
+ *
+ * @var array
+ * @access public
+ */
 	// var $virtualFields = array(
-	//	'path' => "CONCAT_WS('/', dirname, basename)",
+	//	'path' => "CONCAT_WS('/', dirname, basename)"
 	// );
 
 /**
