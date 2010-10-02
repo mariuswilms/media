@@ -7,17 +7,14 @@ within the docs directory or read the API documentation of the classes.
 Preparation Work
 ----------------
 First switch to your application directory. 
-
 $ cd /path/to/app
 
 Now let's get us a fresh copy of the plugin and directly clone it into the
 application's plugins directory.
-
 $ git clone git://github.com/davidpersson/media.git plugins/media
 
 Now we go and load the configuration that comes with the plugin. Edit
 your app's config/core.php and add the following code.
-
 {{{
     require APP . '/plugins/media/config/core.php';
 }}}
@@ -25,12 +22,10 @@ your app's config/core.php and add the following code.
 In order to initialize the directories for storing i.e. uploaded files
 we use the shell which comes with the plugin. You can also do this 
 manually of course.
-
 $ cake/console/cake media init
 
 Some directories must be writable so that the webserver (assuming it
 runs under a different user) can store files in there.
-
 $ chmod −R a+rwX webroot/media/{transfer,filter} 
 
 Expanding on the blog tutorial we add the following fields to our 
@@ -97,7 +92,7 @@ class Post extends AppModel {
  
 Repeating the upload now will not only store the file in the transfer 
 directory but additionally store it's dirname and basename within
-the new record which should look something like this now.
+the new record which should look something like this.
 {{{
 $result = $this->Post->findById($this->Post->getLastInsertID()); 
 var_dump($result);
@@ -127,7 +122,7 @@ Filtering Uploaded Files
 Most of this should Just Work(TM) as it is expected that you have a pretty
 default setup. Have a look at the plugin's config/core.php file on more options
 to configure the Media_Process class which is used by the following behavior
-class something doesn't work the way expected here.
+class if something doesn't work the way expected here.
 
 In order to generated versions from the uploaded file we add the generator 
 behavior to the mix.
@@ -140,7 +135,6 @@ class Post extends AppModel {
 As the generator behavior will make versions of the uploaded file according to
 configuration, we open up the plugin's config/core.php to have a look on the
 defaults.
-
 {{{
 ...
 $s = array('convert' => 'image/png', 'zoomCrop' => array(100, 100));
