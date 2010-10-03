@@ -24,13 +24,13 @@ require_once 'Mime/Type.php';
  * To load the helper just include it in the helpers property
  * of a controller:
  * {{{
- *     var $helpers = array('Form', 'Html', 'Media.Medium');
+ *     var $helpers = array('Form', 'Html', 'Media.Media');
  * }}}
  *
  * If needed you can also pass additional path to URL mappings when
  * loading the helper:
  * {{{
- *     var $helpers = array('Media.Medium' => array(MEDIA_FOO => 'foo/'));
+ *     var $helpers = array('Media.Media' => array(MEDIA_FOO => 'foo/'));
  * }}}
  *
  * Nearly all helper methods take so called partial paths. Partial paths are
