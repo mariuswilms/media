@@ -34,21 +34,6 @@
 
   http://amzn.com/w/1YHE04BY8UDI - Your donation is much appreciated.
 
-  Download
-  --------
-  http://github.com/davidpersson/media/downloads
-
-  Installation
-  ------------
-  1. Extract the downloaded archive.
-  2. Move or copy the extracted directory davidpersson-media-[hash]
-     to /path/to/your/app/plugins/media.
-  3. Load the plugin's configuration.
-     {{{
-         // Within your app's core.php
-         require APP . 'plugins/media/config/core.php';
-     }}}
-
   Versions & Requirements
   -----------------------
   1.3.x, CakePHP 1.3.x, PHP >=5.2.1 (in progress)
@@ -63,6 +48,21 @@
   classes related to media processing, metadata and MIME-types. Please see
   the documentation of the mm library (http://github.com/davidpersson/mm)
   for additonal requirements and information.
+
+  Download
+  --------
+  http://github.com/davidpersson/media/downloads
+
+  Installation
+  ------------
+  1. Extract the downloaded archive.
+  2. Move or copy the extracted directory davidpersson-media-[hash]
+     to /path/to/your/app/plugins/media.
+  3. Load the plugin's configuration.
+     {{{
+         // Within your app's core.php
+         require APP . 'plugins/media/config/core.php';
+     }}}
 
   Getting Help
   ------------
