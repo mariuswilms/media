@@ -90,7 +90,7 @@ if (!isset($title)) {
 	<!-- Existing Attachments -->
 	<div class="existing">
 	<?php if (isset($this->data[$assocAlias])): ?>
-		<?php for($i = 1; $i < count($this->data[$assocAlias]); $i++): ?>
+		<?php for ($i = 1; $i < count($this->data[$assocAlias]); $i++): ?>
 		<div>
 		<?php
 			$item = $this->data[$assocAlias][$i];
