@@ -102,10 +102,10 @@ if (!isset($title)) {
 			echo $this->Form->hidden($assocAlias . '.' . $i . '.basename', array('value' => $item['basename']));
 			echo $this->Form->hidden($assocAlias . '.' . $i . '.alternative', array('value' => $item['alternative']));
 
-			if ($file = $this->Media->file($item)) {
+			if ($file = $this->Media->file("{$item['dirname']}/{$item['basename']}")) {
 				$url = $this->Media->url($file);
 
-				echo $this->Media->embed($this->Media->file($previewVersion . '/', $item), array(
+				echo $this->Media->embed($this->Media->file("{$previewVersion}/{$item['dirname']}/{$item['basename']}"), array(
 					'restrict' => array('image')
 				));
 
