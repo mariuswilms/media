@@ -124,7 +124,7 @@ default setup. Have a look at the plugin's config/core.php file on more options
 to configure the Media_Process class which is used by the following behavior
 class if something doesn't work the way expected here.
 
-In order to generated versions from the uploaded file we add the generator 
+In order to generate versions from the uploaded file we add the generator 
 behavior to the mix.
 {{{
 class Post extends AppModel {
@@ -160,9 +160,9 @@ you've been uploading an image file - you should see the following files
 being generated.
 
 webroot/media/transfer/img/test.jpg
-webroot/media/filter/s/transfer/img/test.jpg
-webroot/media/filter/m/transfer/img/test.jpg
-webroot/media/filter/l/transfer/img/test.jpg
+webroot/media/filter/s/img/test.jpg
+webroot/media/filter/m/img/test.jpg
+webroot/media/filter/l/img/test.jpg
 
 Protecting the transfer directory
 ---------------------------------
