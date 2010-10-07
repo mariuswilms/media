@@ -104,12 +104,12 @@ if (!isset($title)) {
 
 			if ($file = $this->Media->file("{$item['dirname']}/{$item['basename']}")) {
 				$url = $this->Media->url($file);
+				$size = $this->Media->size($file);
+				$name = $this->Media->name($file);
 
 				echo $this->Media->embed($this->Media->file("{$previewVersion}/{$item['dirname']}/{$item['basename']}"), array(
 					'restrict' => array('image')
 				));
-
-				$size = $this->Media->size($file);
 
 				if (isset($this->Number)) {
 					$size = $this->Number->toReadableSize($size);
@@ -117,9 +117,13 @@ if (!isset($title)) {
 					$size .= ' Bytes';
 				}
 
-				printf('<span class="description">%s&nbsp;(%s/%s) <em>%s</em></span>',
+				printf(
+					'<span class="description">%s&nbsp;(%s/%s) <em>%s</em></span>',
 					$url ? $this->Html->link($item['basename'], $url) : $item['basename'],
-					$this->Media->name($file), $size, $item['alternative']);
+					$name,
+					$size,
+					$item['alternative']
+				);
 			}
 			echo $this->Form->input($assocAlias . '.' . $i . '.delete', array(
 				'label' => __('Release', true),
