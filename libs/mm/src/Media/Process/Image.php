@@ -270,6 +270,17 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
+	 * Enables or disables interlacing. Formats like PNG, GIF and JPEG support interlacing.
+	 *
+	 * @param boolean $value `true` to enable interlacing (progressive rendering), or
+	 *                       `false` to disable it.
+	 * @return boolean
+	 */
+	public function interlace($value) {
+		return $this->_adapter->interlace($value);
+	}
+
+	/**
 	 * Normalizes dimensions ensuring they don't exceed actual dimensions of the image. This forces
 	 * all operations on the image to never scale up.
 	 *

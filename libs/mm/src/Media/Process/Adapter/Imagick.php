@@ -129,6 +129,18 @@ class Media_Process_Adapter_Imagick extends Media_Process_Adapter {
 		return $this->_object->setImageDepth($value);
 	}
 
+	public function interlace($value) {
+		if (!$value) {
+			return $this->_object->setImageInterlaceScheme(Imagick::INTERLACE_NO);
+		}
+		$constant = 'Imagick::INTERLACE_' . strtoupper($this->_object->getFormat());
+
+		if (!is_defined($constant)) {
+			return false;
+		}
+		return $this->_object->setImageInterlaceScheme(constant($constant));
+	}
+
 	public function crop($left, $top, $width, $height) {
 		$left   = (integer) $left;
 		$top    = (integer) $top;

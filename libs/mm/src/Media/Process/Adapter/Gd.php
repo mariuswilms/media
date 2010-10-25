@@ -151,6 +151,14 @@ class Media_Process_Adapter_Gd extends Media_Process_Adapter {
 		throw new Exception("The adapter doesn't support the `depth` action.");
 	}
 
+	public function interlace($value) {
+		if (in_array($this->_format, array('jpeg', 'png', 'gif'))) {
+			imageInterlace($this->_object, $value ? 1 : 0);
+			return true;
+		}
+		return false;
+	}
+
 	public function crop($left, $top, $width, $height) {
 		$left   = (integer) $left;
 		$top    = (integer) $top;

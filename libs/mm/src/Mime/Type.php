@@ -60,6 +60,15 @@ class Mime_Type {
 	);
 
 	/**
+	 * Preferred types to use if yielding multiple results.
+	 *
+	 * @see guessType()
+	 */
+	public static $preferredTypes = array(
+		'application/ogg'
+	);
+
+	/**
 	 * Preferred extensions to use if yielding multiple results.
 	 *
 	 * @see guessExtension()
@@ -176,6 +185,11 @@ class Mime_Type {
 
 			if (count($globMatch) === 1) {
 				 return self::simplify(array_shift($globMatch), $properties, $experimental);
+			}
+			$preferMatch = array_intersect($globMatch, self::$preferredTypes);
+
+			if (count($preferMatch) === 1) {
+				return array_shift($preferMatch);
 			}
 		}
 

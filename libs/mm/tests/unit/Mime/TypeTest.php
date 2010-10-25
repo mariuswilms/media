@@ -115,6 +115,11 @@ class Mime_TypeTest extends PHPUnit_Framework_TestCase {
 		}
 	}
 
+	public function testGuessTypePreferredTypes() {
+		$result = Mime_Type::guessType('test.ogg');
+		$this->assertEquals('application/ogg', $result);
+	}
+
 	public function testGuessExtensionFail() {
 		$this->assertNull(Mime_Type::guessExtension('i-m-not-a-mime-type'));
 		$this->assertNull(Mime_Type::guessExtension('/tmp/i-do-not-exist'));
