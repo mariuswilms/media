@@ -7,7 +7,7 @@ Introduction
 Different applications sometimes require different approaches to how media is
 handled. Some applications may only need a way of uploading files others may
 additionally want to couple files to records in one way or the other. The
-plugin and it's components are flexible enough to fit for the different
+plugin and its components are flexible enough to fit for the different
 scenarios. 
 
 The most common use cases or those which are especially tricky are documented
@@ -23,21 +23,21 @@ the Transfer Behavior.
   associating media files. It can be bound to any model of your application. 
   
   Since this approach demonstrates all components the plugin includes a
-  blueprint of the model[1] which is already prepared. You can link to it
+  blueprint of the model[1] which is already prepared. You can link to this
   model directly without modifying it or use it as a blueprint by copying it 
   over to your app's model directory and link this then instead. 
   
-  But before you proceed you must create a table for the it. Just call the schema
-  shell from pointing it to the sql directory of the plugin:
+  But before you proceed you must create a table for it. Just call the schema
+  shell and point it to the sql directory of the plugin:
   
   $ cake schema run create -path plugins/media/config/sql -name Media
   
-  After you've setup the associations in your app's model (here: _Movie_), files
+  After you've set up the associations in your app's model (here: _Movie_), files
   can be uploaded and associated with one call to _saveAll()_.
   
   In order to be able to save a record along with an attachment, the associations
-  from the original model *to* the _Attachment_ model must be setup correctly. As
-  the _Attachment_ model is a so called polymorphic model it is very flexible in
+  from the original model *to* the _Attachment_ model must be set up correctly. As
+  the _Attachment_ model is a so-called polymorphic model it is very flexible in
   regards to associating to/from it. 
   
   [1] http://github.com/davidpersson/media/blob/master/models/attachment.php

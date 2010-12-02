@@ -34,7 +34,7 @@ The convention for the naming of the databases has been changed:
   before: glob.{php,db}
   after:  mime_glob.{php,db}
 
-Files are now searched in this order and locations:
+Files are now searched in this order and in these locations:
   1. app/configs/mime_magic.php
   2. all app vendors/mime_magic.db
   3. plugin vendors/mime_magic.db
@@ -53,8 +53,8 @@ Media Behavior
 The _base_ option of the Media Behavior has been renamed to _baseDirectory_
 
 Media Behavior now interacts with the Transfer Behavior (in case it's also
-attached to the model). Media Behavior will overwrite it's settings for
-_createDirectory_ and use the  @dirname()@ of _baseDirectory_ for it's
+attached to the model). Media Behavior will overwrite its settings for
+_createDirectory_ and use the  @dirname()@ of _baseDirectory_ for its
 _baseDirectory_ setting.
 
 Transfer Behavior

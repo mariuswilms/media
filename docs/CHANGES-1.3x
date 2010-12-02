@@ -37,7 +37,7 @@ Several methods have been renamed to not clash with other model methods and to
 communicate their purpose better. The transfer method has been revamped to also
 handle preparation of transfers. 
 
-@perform()@ has been deprecated. It's successor is @transfer()@ which takes a
+@perform()@ has been deprecated. Its successor is @transfer()@ which takes a
 second parameter to handle preparation and returns the destination of the
 transfer on success.
 
@@ -50,20 +50,20 @@ the new @transferTo()@ method. Implement the method in your model to control
 path generation.
 
 The @baseDirectory@ setting has been renamed to @transferDirectory@ to provide
-consistency and less confusion see http://github.com/davidpersson/media/issues#issue/28.
+consistency and less confusion; see http://github.com/davidpersson/media/issues#issue/28.
 
 Media Helper
 ------------
-The helper learned HTML5 and now support audio and video elements.
+The helper learned HTML5 and now supports audio and video elements.
 
 With the introduction of HTML5 support the @embed()@ method has largely been
-rewritten from scratch. The method now produces object tag free markup, for
+rewritten from scratch. The method now produces object tag free markup; for
 embeding media using the object syntax use the @embedAsObject()@ method.
  
 While removing support for assets the @link()@ method has been removed. Use the
-builtin one from the html helper.
+built-in one from the html helper.
 
-The @file()@ method has been totally simplified and it's path expanding magic
+The @file()@ method has been totally simplified and its path-expanding magic
 mostly removed. The new docblock reads as follows.
 
   >> Resolves partial path to an absolute path by trying to find an existing file matching the
@@ -87,9 +87,9 @@ New Media Processing Library
 The processing library has been renamed, entirely overhauled and is packaged
 separately with the release of 1.3. It will by default be included in the
 plugin distribution. The classes now part of the *mm* library have always been
-coupled loosely to CakePHP and it is a logical step to provide them in it's own
+coupled loosely to CakePHP and it is a logical step to provide them in their own
 package. This way other frameworks or apps which don't utilize Cake can make
-use of the provided functionality a whole lot easier.
+use of the provided functionality more easily.
 
 @Media@ has been split into @Media_Process@ and @Media_Info@. Load them via
 @App::import('Lib', 'Media_Process', array('file' =>
@@ -113,6 +113,6 @@ configuration (i.e. the filters) you need to check if the changes affect you.
 Asset support removed
 ---------------------
 As I've learned about the difference between assets and media, support for the
-first one has been removed. This means the helper and generator won't i.e.
+former has been removed. This means the helper and generator won't i.e.
 process icons anymore.
 
