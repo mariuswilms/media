@@ -157,6 +157,7 @@ class MediaHelper extends AppHelper {
  *                       - fallback: A string containing HTML to use when element is not supported.
  *                       - poster: The path to a placeholder image for a video.
  *                       - url: If given wraps the result with a link.
+ *                       - full: Will generate absolute URLs when `true`, defaults to `false`.
  *
  *                       The following HTML attributes may also be passed:
  *                       - id
@@ -175,7 +176,8 @@ class MediaHelper extends AppHelper {
 			'controls' => true,
 			'loop' => false,
 			'fallback' => null,
-			'poster' => null
+			'poster' => null,
+			'full' => false
 		);
 		$optionalAttributes = array(
 			'alt' => null,
@@ -194,12 +196,13 @@ class MediaHelper extends AppHelper {
 				'escape' => false
 			));
 		}
-		if (!$sources = $this->_sources((array) $paths)) {
+		$options = array_merge($default, $options);
+		extract($options, EXTR_SKIP);
+
+		if (!$sources = $this->_sources((array) $paths, $full)) {
 			return;
 		}
-		$options = array_merge($default, $options);
 		$attributes = array_intersect_key($options, $optionalAttributes);
-		extract($options, EXTR_SKIP);
 
 		switch($sources[0]['name']) {
 			case 'audio':
@@ -242,7 +245,7 @@ class MediaHelper extends AppHelper {
 							'type' => $source['mimeType']
 					)));
 				}
-				$poster = $this->url($poster);
+				$poster = $this->url($poster, $full);
 
 				$attributes += compact('autoplay', 'controls', 'preload', 'loop', 'poster');
 				return sprintf(
@@ -269,6 +272,7 @@ class MediaHelper extends AppHelper {
  *                       - loop: Loop playback, defaults to `false`.
  *                       - fallback: A string containing HTML to use when element is not supported.
  *                       - url: If given wraps the result with a link.
+ *                       - full: Will generate absolute URLs when `true`, defaults to `false`.
  *
  *                       The following HTML attributes may also be passed:
  *                       - id
@@ -283,7 +287,8 @@ class MediaHelper extends AppHelper {
 			'autoplay' => false,
 			'controls' => true,
 			'loop' => false,
-			'fallback' => null
+			'fallback' => null,
+			'full' => false
 		);
 		$optionalAttributes = array(
 			'alt' => null,
@@ -302,13 +307,14 @@ class MediaHelper extends AppHelper {
 				'escape' => false
 			));
 		}
-		if (!$sources = $this->_sources((array) $paths)) {
+		$options = array_merge($default, $options);
+		extract($options + $default);
+
+		if (!$sources = $this->_sources((array) $paths, $full)) {
 			return;
 		}
-		$options = array_merge($default, $options);
 		$attributes  = array('type' => $sources[0]['mimeType'], 'data' => $sources[0]['url']);
 		$attributes += array_intersect_key($options, $optionalAttributes);
-		extract($options + $default);
 
 		switch ($sources[0]['mimeType']) {
 			/* Windows Media */
@@ -501,13 +507,14 @@ class MediaHelper extends AppHelper {
  * Takes an array of paths and generates and array of source items.
  *
  * @param array $paths An array of  relative or absolute paths to files.
+ * @param boolean $full When `true` will generate absolute URLs.
  * @return array An array of sources each one with the keys `name`, `mimeType`, `url` and `file`.
  */
-	function _sources($paths) {
+	function _sources($paths, $full = false) {
 		$sources = array();
 
 		foreach ($paths as $path) {
-			if (!$url = $this->url($path)) {
+			if (!$url = $this->url($path, $full)) {
 				return;
 			}
 			if (strpos('://', $path) !== false) {
