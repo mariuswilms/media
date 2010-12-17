@@ -224,7 +224,8 @@ class GeneratorBehavior extends ModelBehavior {
 				$args = (array) $value;
 			}
 			if (!method_exists($Media, $method)) {
-				return false;
+				array_unshift($args, $method);
+				$method = 'passthru';
 			}
 			$result = call_user_func_array(array($Media, $method), $args);
 
