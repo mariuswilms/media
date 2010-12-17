@@ -161,9 +161,18 @@ class GeneratorBehavior extends ModelBehavior {
 				continue;
 			}
 
-			if (!$Model->makeVersion($file, compact('version', 'directory', 'instructions'))) {
-				$message  = "GeneratorBehavior::make - Failed to make version `{$version}` ";
-				$message .= "of file `{$file}`. ";
+			try {
+				$result = $Model->makeVersion($file, compact('version', 'directory', 'instructions'));
+			} catch (Exception $E) {
+				$message  = "GeneratorBehavior::make - While making version `{$version}` ";
+				$message .= "of file `{$file}` an exception was thrown, the message provided ";
+				$message .= 'was `' . $E->getMessage() . '`. Skipping version.';
+				trigger_error($message, E_USER_WARNING);
+				$result = false;
+			}
+			if (!$result) {
+				$message  = "GeneratorBehavior::make - The method responsible for making version ";
+				$message .= "`{$version}` of file `{$file}` returned `false`. Skipping version.";
 				trigger_error($message, E_USER_WARNING);
 				$result = false;
 			}
@@ -240,11 +249,7 @@ class GeneratorBehavior extends ModelBehavior {
 		}
 
 		/* Process `Media_Process_*` instructions */
-		try {
-			$Media = Media_Process::factory(array('source' => $file));
-		} catch (Exception $E) {
-			return false;
-		}
+		$Media = Media_Process::factory(array('source' => $file));
 
 		foreach ($process['instructions'] as $key => $value) {
 			if (is_int($key)) {
