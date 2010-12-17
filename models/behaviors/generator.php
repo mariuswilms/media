@@ -180,10 +180,41 @@ class GeneratorBehavior extends ModelBehavior {
  *  - `directory`:  The destination directory (If this method was called
  *                  by `make()` the directory is already created)
  *  - `version`:  The version requested to be processed (e.g. `'l'`)
- *  - `instructions`: An array containing which names of methods to be called.
- *                 Possible instructions are:
- *                  - `array('name of method', 'name of other method')`
- *                  - `array('name of method' => array('arg1', 'arg2'))`
+ *  - `instructions`: An array specifying processing steps to execute on $file
+ *                    in order to get to the desired transformed file.
+ *
+ *                    Each instruction is either a key/value pair where the key
+ *                    can be thought of the method and the value the arguments
+ *                    passed to that method. Whenever a value appears without a
+ *                    corresponding string key it is used as the method instead.
+ *
+ *                    `array('name of method', 'name of other method')`
+ *                    `array('name of method' => array('arg1', 'arg2'))`
+ *
+ *                    Most methods are made available through the `Media_Process_*`
+ *                    classes. The class is chosen depending on the type of media
+ *                    being processed. Since each one of those classes exposes
+ *                    different methods the availaibility of those depends on the
+ *                    type of media being processed.
+ *
+ *                    Please see the documentation for the mm library for further
+ *                    information on the `Media_Process_*` classes mentioned above.
+ *
+ *                    However some methods are builtin and made available directly
+ *                    through this method here. One of them being the `clone` method.
+ *                    Cloning allows instructions which don't actually modify a file
+ *                    but represent just a copy of it. Available clone types are `copy`,
+ *                    `link` and `symlink`.
+ *
+ *                    `array('clone' => <type>)`
+ *
+ *                    In case an instruction method is neither builtin nor available
+ *                    through one of the `Media_Proces_*` classes, the `passthru()`
+ *                    method is invoked on that media object. The concrete implementation
+ *                    of `passthru()` and therefore how it deals with the data passed
+ *                    to it *highly* depends on the adapter in use.
+ *
+ * @link https://github.com/davidpersson/mm The PHP media library.
  * @param Model $Model
  * @param string $file Absolute path to the source file
  * @param array $process directory, version, instructions
@@ -192,7 +223,7 @@ class GeneratorBehavior extends ModelBehavior {
 	function makeVersion(&$Model, $file, $process) {
 		extract($this->settings[$Model->alias]);
 
-		/* Process clone instruction */
+		/* Process builtin instructions */
 		if (isset($process['instructions']['clone'])) {
 			$action = $process['instructions']['clone'];
 
@@ -208,7 +239,7 @@ class GeneratorBehavior extends ModelBehavior {
 			return call_user_func($action, $file, $destination) && chmod($destination, $mode);
 		}
 
-		/* Process media transforms */
+		/* Process `Media_Process_*` instructions */
 		try {
 			$Media = Media_Process::factory(array('source' => $file));
 		} catch (Exception $E) {
