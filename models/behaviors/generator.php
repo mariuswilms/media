@@ -153,7 +153,7 @@ class GeneratorBehavior extends ModelBehavior {
 
 			$Folder = new Folder($directory, $createDirectory, $createDirectoryMode);
 			if (!$Folder->pwd()) {
-				$message  = "GeneratorBehavior::generateVersion - Directory `{$directory}` ";
+				$message  = "GeneratorBehavior::make - Directory `{$directory}` ";
 				$message .= "could not be created or is not writable. ";
 				$message .= "Please check the permissions.";
 				trigger_error($message, E_USER_WARNING);
