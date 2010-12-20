@@ -12,7 +12,6 @@
  * @link       http://github.com/davidpersson/mm
  */
 
-require_once 'PHPUnit/Framework.php';
 require_once 'Mime/Type.php';
 
 class Mime_TypeTest extends PHPUnit_Framework_TestCase {

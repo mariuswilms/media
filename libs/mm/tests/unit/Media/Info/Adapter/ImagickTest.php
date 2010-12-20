@@ -12,7 +12,6 @@
  * @link       http://github.com/davidpersson/mm
  */
 
-require_once 'PHPUnit/Framework.php';
 require_once 'Media/Info/Adapter/Imagick.php';
 
 class Media_Infos_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {

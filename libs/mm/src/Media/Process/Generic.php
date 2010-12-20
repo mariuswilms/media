@@ -62,6 +62,21 @@ class Media_Process_Generic {
 	}
 
 	/**
+	 * Allows for more-or-less direct access to the adapter
+	 * currently in use. Adapters are allowed to react
+	 * differently to the arguments passed. This method may
+	 * be used for cases where abstraction for i.e. a certain
+	 * command is incomplete or doesn't make sense.
+	 *
+	 * @param string|integer $key
+	 * @param mixed $value Optional.
+	 * @return boolean `true` on success, `false` if something went wrong.
+	 */
+	public function passthru($key, $value = null) {
+		return $this->_adapter->passthru($key, $value);
+	}
+
+	/**
 	 * Returns the lowercase name of the media type.
 	 *
 	 * @return string I.e. `'generic'` or `'image'`.

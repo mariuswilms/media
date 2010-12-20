@@ -12,7 +12,6 @@
  * @link       http://github.com/davidpersson/mm
  */
 
-require_once 'PHPUnit/Framework.php';
 require_once 'Media/Info/Audio.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/mocks/Media/Info/Adapter/GenericMock.php';
 

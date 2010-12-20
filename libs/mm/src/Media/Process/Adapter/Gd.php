@@ -66,16 +66,22 @@ class Media_Process_Adapter_Gd extends Media_Process_Adapter {
 	}
 
 	public function store($handle) {
-		$args = array($this->_object, null);
+		$args = array($this->_object);
 
 		switch ($this->_format) {
 			case 'jpeg':
 				if (isset($this->_compression)) {
+					if (count($args) == 1) {
+						$args[] = null;
+					}
 					$args[] = $this->_compression;
 				}
 				break;
 			case 'png':
 				if (isset($this->_compression)) {
+					if (count($args) == 1) {
+						$args[] = null;
+					}
 					$args[] = $this->_compression;
 
 					if (isset($this->_pngFilter)) {
@@ -101,6 +107,10 @@ class Media_Process_Adapter_Gd extends Media_Process_Adapter {
 			return $this->_format = $this->_formatMap[$mimeType];
 		}
 		return false;
+	}
+
+	public function passthru($key, $value) {
+		throw new Exception("The adapter has no passthru support.");
 	}
 
 	public function compress($value) {

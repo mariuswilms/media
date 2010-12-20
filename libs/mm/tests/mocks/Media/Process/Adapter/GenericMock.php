@@ -26,6 +26,9 @@ class Media_Process_Adapter_GenericMock extends Media_Process_Adapter {
 		return true;
 	}
 
+	public function passthru($key, $value) {
+		return true;
+	}
 }
 
 ?>

@@ -12,7 +12,6 @@
  * @link       http://github.com/davidpersson/mm
  */
 
-require_once 'PHPUnit/Framework.php';
 require_once 'Mime/Type/Glob/Adapter/Freedesktop.php';
 
 class Mime_Type_Glob_Adapter_FreedesktopTest extends PHPUnit_Framework_TestCase {

@@ -12,7 +12,6 @@
  * @link       http://github.com/davidpersson/mm
  */
 
-require_once 'PHPUnit/Framework.php';
 require_once 'Mime/Type/Magic/Adapter/Freedesktop.php';
 
 class Mime_Type_Magic_Adapter_FreedesktopTest extends PHPUnit_Framework_TestCase {

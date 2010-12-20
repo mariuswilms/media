@@ -41,6 +41,15 @@ abstract class Media_Process_Adapter {
 	 * @return boolean
 	 */
 	abstract public function convert($mimeType);
+
+	/**
+	 * Allows for direct manipulation.
+	 *
+	 * @param string|integer $key
+	 * @param mixed $value
+	 * @return boolean `true` on success, `false` if something went wrong.
+	 */
+	abstract public function passthru($key, $value);
 }
 
 ?>

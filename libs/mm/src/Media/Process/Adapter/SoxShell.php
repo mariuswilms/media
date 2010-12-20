@@ -104,6 +104,10 @@ class Media_Process_Adapter_SoxShell extends Media_Process_Adapter {
 		return true;
 	}
 
+	public function passthru($key, $value) {
+		throw new Exception("The adapter has no passthru support.");
+	}
+
 	public function compress($value) {
 		$this->_compress = $value;
 		return true;

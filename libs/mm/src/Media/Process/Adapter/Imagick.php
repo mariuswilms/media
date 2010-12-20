@@ -79,6 +79,17 @@ class Media_Process_Adapter_Imagick extends Media_Process_Adapter {
 		return $this->_object->setFormat($this->_formatMap[$mimeType]);
 	}
 
+	public function passthru($key, $value) {
+		$method = $key;
+		$args = (array) $value;
+
+		if (!method_exists($this->_object, $method)) {
+			$message = "Cannot passthru to nonexistent method `{$method}` on internal object";
+			throw new Exception($message);
+		}
+		return (boolean) call_user_func_array(array($this->_object, $method), $args);
+	}
+
 	// @link http://studio.imagemagick.org/pipermail/magick-users/2002-August/004435.html
 	public function compress($value) {
 		switch ($this->_object->getFormat()) {

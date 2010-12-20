@@ -12,7 +12,6 @@
  * @link       http://github.com/davidpersson/mm
  */
 
-require_once 'PHPUnit/Framework.php';
 require_once 'Media/Process/Generic.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/mocks/Media/Process/Adapter/GenericMock.php';
 
@@ -93,6 +92,14 @@ class Media_Process_GenericTest extends PHPUnit_Framework_TestCase {
 		$this->assertFileExists($result);
 
 		unlink($target);
+	}
+
+	public function testPassthru() {
+		$result = new Media_Process_Generic(array(
+			'source' => "{$this->_files}/image_jpg.jpg",
+			'adapter' => new Media_Process_Adapter_GenericMock(null)
+		));
+		$this->assertEquals($result->passthru('depth', 8), true);
 	}
 }
 

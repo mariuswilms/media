@@ -12,7 +12,6 @@
  * @link       http://github.com/davidpersson/mm
  */
 
-require_once 'PHPUnit/Framework.php';
 require_once 'Media/Info.php';
 require_once 'Mime/Type.php';
 require_once dirname(dirname(dirname(__FILE__))) . '/mocks/Media/Info/Adapter/GenericMock.php';

@@ -12,7 +12,6 @@
  * @link       http://github.com/davidpersson/mm
  */
 
-require_once 'PHPUnit/Framework.php';
 require_once 'Mime/Type/Glob/Adapter/Apache.php';
 
 class Mime_Type_Glob_Adapter_ApacheTest extends PHPUnit_Framework_TestCase {

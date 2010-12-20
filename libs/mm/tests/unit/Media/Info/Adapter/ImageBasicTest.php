@@ -12,7 +12,6 @@
  * @link       http://github.com/davidpersson/mm
  */
 
-require_once 'PHPUnit/Framework.php';
 require_once 'Media/Info/Adapter/ImageBasic.php';
 
 class Media_Info_Adapter_ImageBasicTest extends PHPUnit_Framework_TestCase {
