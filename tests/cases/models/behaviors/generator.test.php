@@ -258,6 +258,40 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertTrue(is_file($directory . 'hardlinked.jpg'));
 		unlink($directory . 'hardlinked.jpg');
 	}
+
+	function testMakeVersionUnkownMethodArePassedthru() {
+		$config = Media_Process::config();
+
+		$message = '%s Need imagick media processing adapters configured for both image.';
+		$skipped = $this->skipIf(!isset($config['image']) || $config['image'] != 'Imagick', $message);
+
+		if ($skipped) {
+			return;
+		}
+
+		$Model = ClassRegistry::init('Unicorn', 'Model');
+		$Model->Behaviors->attach('Media.Generator', $this->_behaviorSettings);
+
+		$directory = $this->Folder->pwd() . 'filter' . DS . 's' . DS;
+		mkdir($directory);
+
+		$file = $this->Data->getFile(array(
+			'image-jpg.jpg' => $this->Folder->pwd() . 'image.jpg'
+		));
+		$result = $Model->Behaviors->Generator->makeVersion($Model, $file, array(
+			'version' => 's',
+			'directory' => $directory,
+			'instructions' => array(
+				'setFormat' => 'png' // setFormat is an Imagick method.
+			)
+		));
+		$this->assertTrue($result);
+
+		$mimeType = Mime_Type::guessType($directory . 'image.jpg', array(
+			'paranoid' => true
+		));
+		$this->assertEqual('image/png', $mimeType);
+	}
 }
 
 ?>
