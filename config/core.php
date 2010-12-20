@@ -214,7 +214,7 @@ require_once 'Media/Info.php';
 Media_Info::config(array(
 	// 'audio' => array('NewWave'),
 	// 'document' => array('Imagick'),
-	'image' => array('ImageBasic', 'Imagick'),
+	'image' => $hasImagick ? array('ImageBasic', 'Imagick') : array('ImageBasic'),
 	// 'video' => array()
 ));
 
