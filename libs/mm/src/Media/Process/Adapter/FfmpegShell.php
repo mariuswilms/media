@@ -38,7 +38,7 @@ class Media_Process_Adapter_FfmpegShell extends Media_Process_Adapter {
 
 	public function __construct($handle) {
 		$this->_object = $handle;
-		$this->_command = strtoupper(substr(PHP_OS, 0, 3)) == 'WIN' ? 'ffmpeg.exe' : '/usr/local/bin/ffmpeg';
+		$this->_command = strtoupper(substr(PHP_OS, 0, 3)) == 'WIN' ? 'ffmpeg.exe' : 'ffmpeg';
 
 		$this->_source = $this->_target = $this->_type(Mime_Type::guessType($this->_object));
 	}
