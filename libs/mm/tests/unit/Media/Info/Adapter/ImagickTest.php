@@ -14,7 +14,7 @@
 
 require_once 'Media/Info/Adapter/Imagick.php';
 
-class Media_Infos_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
+class Media_Info_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
 
 	protected $_files;
 	protected $_data;
@@ -49,6 +49,12 @@ class Media_Infos_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertArrayHasKey('width', $result);
 		$this->assertArrayHasKey('height', $result);
+	}
+
+	public function testAllPdf() {
+		if (!$this->_hasGhostscript()) {
+			$this->markTestSkipped('The `imagick` extension lacks ghostscript support.');
+		}
 
 		$source = "{$this->_files}/application_pdf.pdf";
 		$subject = new Media_Info_Adapter_Imagick($source);
@@ -70,6 +76,15 @@ class Media_Infos_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
 			$result = $subject->get($name);
 			$this->assertEquals($value, $result, "Result for name `{$name}`.");
 		}
+	}
+
+	protected function _hasGhostscript() {
+		if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+			exec("gswin32c.exe -v>> nul 2>&1", $out, $return);
+		} else {
+			exec("gs -v &> /dev/null", $out, $return);
+		}
+		return $return == 0;
 	}
 }
 

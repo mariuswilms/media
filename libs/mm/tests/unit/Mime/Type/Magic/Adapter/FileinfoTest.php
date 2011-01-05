@@ -47,7 +47,9 @@ class Mime_Type_Magic_Adapter_FileinfoTest extends PHPUnit_Framework_TestCase {
 			'image_gif.gif' => 'image/gif; charset=binary',
 			'application_pdf.pdf' => 'application/pdf; charset=binary',
 			'text_html_snippet.html' => 'text/html; charset=us-ascii',
-			'image_jpeg_snippet.jpg' => 'image/jpeg; charset=binary'
+			'image_jpeg_snippet.jpg' => 'image/jpeg; charset=binary',
+			'video_theora_notag.ogv' => 'video/ogg; charset=binary',
+			'audio_vorbis_notag.ogg' => 'audio/ogg; charset=binary'
 		);
 
 		foreach ($files as $file => $mimeTypes) {
@@ -55,6 +57,22 @@ class Mime_Type_Magic_Adapter_FileinfoTest extends PHPUnit_Framework_TestCase {
 			$this->assertContains($this->subject->analyze($handle), (array) $mimeTypes, "File `{$file}`.");
 			fclose($handle);
 		}
+	}
+
+	public function testAnalyzeSeekedAnonymous() {
+		$source = fopen($this->_files . '/image_png.png', 'rb');
+		$handle = fopen('php://temp', 'r+b');
+		stream_copy_to_stream($source, $handle);
+
+		fclose($source);
+		fseek($handle, -1, SEEK_END);
+
+		$expected  = 'image/png; charset=binary';
+
+		$result = $this->subject->analyze($handle);
+		$this->assertEquals($expected, $result);
+
+		fclose($handle);
 	}
 }
 

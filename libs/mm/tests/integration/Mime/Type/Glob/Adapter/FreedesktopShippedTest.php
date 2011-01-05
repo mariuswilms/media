@@ -83,7 +83,7 @@ class Mime_Type_Glob_Adapter_FreedesktopShippedTest extends PHPUnit_Framework_Te
 	public function testAnalyzeReverse() {
 		$files = array(
 			'application/x-bzip' => array('bz2', 'bz'),
-			'text/css' => array('CSSL', 'css'),
+			'text/css' => array('css', 'CSSL'),
 			'image/gif' => array('gif'),
 			'application/x-gzip' => array('gz'),
 			'application/x-java' => array('class'),
@@ -92,13 +92,13 @@ class Mime_Type_Glob_Adapter_FreedesktopShippedTest extends PHPUnit_Framework_Te
 			'text/x-gettext-translation' => array('po'),
 			'application/vnd.ms-powerpoint' => array('pot', 'pps', 'ppt', 'ppz'),
 			'text/x-gettext-translation-template' => array('pot'),
-			'application/x-gettext-translation' => array('gmo', 'mo'),
+			'application/x-gettext-translation' => array('mo', 'gmo'),
 			'text/plain' => array('asc', 'txt'),
 			'application/msword' => array('doc'),
 			'application/vnd.oasis.opendocument.text' => array('odt'),
 			'application/x-tar' => array('tar', 'gtar'),
 			'application/xhtml+xml' => array('xhtml'),
-			'application/xml' => array('xsl', 'xslt', 'xbl', 'xml'),
+			'application/xml' => array('xslt', 'xbl', 'xml', 'xsl'),
 			'audio/x-wav' => array('wav'),
 			'video/ogg' => array('ogv'),
 			'video/x-theora+ogg' => array('ogg')

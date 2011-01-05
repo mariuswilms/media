@@ -25,9 +25,9 @@ class Mime_Type_Magic_Adapter_Fileinfo extends Mime_Type_Magic_Adapter {
 
 	public function __construct(array $config = array()) {
 		if (isset($config['file'])) {
-			$this->_resource = finfo_open(FILEINFO_MIME, $config['file']);
+			$this->_resource = finfo_open(FILEINFO_NONE, $config['file']);
 		} else {
-			$this->_resource = finfo_open(FILEINFO_MIME);
+			$this->_resource = finfo_open(FILEINFO_NONE);
 		}
 	}
 
@@ -39,9 +39,25 @@ class Mime_Type_Magic_Adapter_Fileinfo extends Mime_Type_Magic_Adapter {
 		$meta = stream_get_meta_data($handle);
 
 		if (file_exists($meta['uri'])) {
-			$result = finfo_file($this->_resource, $meta['uri']);
+			$type = 'file';
+			$source = $meta['uri'];
 		} else {
-			$result = finfo_buffer($this->_resource, fread($handle, 1000000));
+			$type = 'buffer';
+			rewind($handle);
+			$source = fread($handle, 1000000);
+		}
+		$result = call_user_func("finfo_{$type}", $this->_resource, $source, FILEINFO_MIME);
+
+		if (strpos($result, 'application/ogg') === 0) {
+			$full = call_user_func("finfo_{$type}", $this->_resource, $source);
+			list($type, $attributes) = explode(';', $result, 2);
+
+			if (strpos($full, 'video') !== false) {
+				$type = 'video/ogg';
+			} elseif (strpos($full, 'audio') !== false) {
+				$type = 'audio/ogg';
+			}
+			return "{$type};{$attributes}";
 		}
 		if ($result != 'application/x-empty') {
 			return $result;

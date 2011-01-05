@@ -71,20 +71,50 @@ class Mime_TypeTest extends PHPUnit_Framework_TestCase {
 			'postscript_snippet.ps' => 'application/postscript',
 			'tar_snippet.tar' => 'application/x-tar',
 			'wave_snippet.wav' => 'audio/x-wav',
-			'video_snippet.mp4' => 'video/mp4',
 			'text_html_snippet.html' => 'text/html',
 			'code_php.php' => 'application/x-php',
 			'image_png.png' => 'image/png',
 			'video_flash_snippet.flv' => 'video/x-flv',
 			'audio_apple_snippet.aiff' => 'audio/x-aiff',
 			'flash_snippet.swf' => 'application/x-shockwave-flash',
+			'video_snippet.mp4' => 'video/mp4',
 			'audio_mpeg_snippet.m4a' => 'audio/mp4',
+			'video_quicktime_snippet.mov' => 'video/quicktime'
 		);
 		foreach ($files as $file => $mimeType) {
 			$this->assertEquals(
 				$mimeType,
 				Mime_Type::guessType("{$this->_files}/{$file}"),
 				"File `{$file}`."
+			);
+		}
+	}
+
+	public function testGuessTypeFilename() {
+		$files = array(
+			'test.gif' => 'image/gif',
+			'test.pdf' => 'application/pdf',
+			'test.ps' => 'application/postscript',
+			'test.tar' => 'application/x-tar',
+			'test.wav' => 'audio/x-wav',
+			'test.html' => 'text/html',
+			'test.php' => 'application/x-php',
+			'test.png' => 'image/png',
+			'test.flv' => 'video/x-flv',
+			'test.aiff' => 'audio/x-aiff',
+			'test.swf' => 'application/x-shockwave-flash',
+			'test.mp4' => 'video/mp4',
+			'test.m4v' => 'video/mp4',
+			'test.m4a' => 'audio/mp4',
+			'test.ogg' => 'audio/ogg',
+			'test.oga' => 'audio/ogg',
+			'test.ogv' => 'video/ogg'
+		);
+		foreach ($files as $file => $mimeType) {
+			$this->assertEquals(
+				$mimeType,
+				Mime_Type::guessType($file),
+				"Filename `{$file}`."
 			);
 		}
 	}
@@ -116,7 +146,7 @@ class Mime_TypeTest extends PHPUnit_Framework_TestCase {
 
 	public function testGuessTypePreferredTypes() {
 		$result = Mime_Type::guessType('test.ogg');
-		$this->assertEquals('application/ogg', $result);
+		$this->assertEquals('audio/ogg', $result);
 	}
 
 	public function testGuessExtensionFail() {
@@ -133,6 +163,10 @@ class Mime_TypeTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('xhtml', Mime_Type::guessExtension('application/xhtml+xml'));
 		$this->assertEquals('bin', Mime_Type::guessExtension('application/octet-stream'));
 		$this->assertEquals('wav', Mime_Type::guessExtension('audio/x-wav'));
+		$this->assertEquals('oga', Mime_Type::guessExtension('audio/ogg'));
+		$this->assertEquals('ogv', Mime_Type::guessExtension('video/ogg'));
+		$this->assertEquals('mp4', Mime_Type::guessExtension('video/mp4'));
+		$this->assertEquals('mov', Mime_Type::guessExtension('video/quicktime'));
 	}
 
 	public function testGuessExtensionResource() {
@@ -152,6 +186,7 @@ class Mime_TypeTest extends PHPUnit_Framework_TestCase {
 		$map = array(
 			'video/webm' => 'video',
 			'video/x-msvideo' => 'video',
+			'application/ogg' => 'audio',
 			'application/octet-stream' => 'generic',
 			'text/unknown' => 'generic',
 			'image/jpeg' => 'image',

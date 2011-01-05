@@ -22,7 +22,7 @@ require_once 'Media/Process/Generic.php';
 class Media_Process_Image extends Media_Process_Generic {
 
 	/**
-	 * Alias for fitInside
+	 * Alias for fitInside.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -33,7 +33,7 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
-	 * Resizes media proportionally keeping both sides within given dimensions
+	 * Resizes media proportionally keeping both sides within given dimensions.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -43,16 +43,12 @@ class Media_Process_Image extends Media_Process_Generic {
 		$rx = $this->_adapter->width() / $width;
 		$ry = $this->_adapter->height() / $height;
 
-		if ($rx > $ry) {
-			$r = $rx;
-		} else {
-			$r = $ry;
-		}
+		$r = $rx > $ry ? $rx : $ry;
 
 		$width = $this->_adapter->width() / $r;
 		$height = $this->_adapter->height() / $r;
 
-		list($width, $height) = $this->_normalizeDimensions($width, $height, 'maximum'); /* maximum ?? */
+		list($width, $height) = $this->_normalizeDimensions($width, $height, 'maximum');
 		return $this->_adapter->resize($width, $height);
 	}
 
@@ -67,11 +63,7 @@ class Media_Process_Image extends Media_Process_Generic {
 		$rx = $this->_adapter->width() / $width;
 		$ry = $this->_adapter->height() / $height;
 
-		if ($rx < $ry) {
-			$r = $rx;
-		} else {
-			$r = $ry;
-		}
+		$r = $rx < $ry ? $rx : $ry;
 
 		$width = $this->_adapter->width() / $r;
 		$height = $this->_adapter->height() / $r;
@@ -81,7 +73,7 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
-	 * Crops media to provided dimensions
+	 * Crops media to provided dimensions.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -95,7 +87,7 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
-	 * Alias for zoomFit
+	 * Alias for zoomFit.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -106,7 +98,7 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
-	 * Enlarges media proportionally by factor 2
+	 * Enlarges media proportionally by factor 2.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -147,7 +139,7 @@ class Media_Process_Image extends Media_Process_Generic {
 
 	/**
 	 * First resizes media so that it fills out the given dimensions,
-	 * then cuts off overlapping parts
+	 * then cuts off overlapping parts.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -159,11 +151,7 @@ class Media_Process_Image extends Media_Process_Generic {
 		$rx = $this->_adapter->width() / $width;
 		$ry = $this->_adapter->height() / $height;
 
-		if ($rx < $ry) {
-			$r = $rx;
-		} else {
-			$r = $ry;
-		}
+		$r = $rx < $ry ? $rx : $ry;
 
 		$resizeWidth = $this->_adapter->width() / $r;
 		$resizeHeight = $this->_adapter->height() / $r;
@@ -284,8 +272,6 @@ class Media_Process_Image extends Media_Process_Generic {
 	 * Normalizes dimensions ensuring they don't exceed actual dimensions of the image. This forces
 	 * all operations on the image to never scale up.
 	 *
-	 *
-	 *
 	 * @param integer $width
 	 * @param integer $height
 	 * @param string $recalculateBy Recalculate missing values or ones exceeding maximums
@@ -326,7 +312,7 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
-	 * Calculates a box coordinates
+	 * Calculates a box' coordinates.
 	 *
 	 * @param integer $width
 	 * @param integer $height

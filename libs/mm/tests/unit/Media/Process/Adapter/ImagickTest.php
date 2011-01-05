@@ -46,6 +46,12 @@ class Media_Process_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(54, $subject->height());
 
 		fclose($source);
+	}
+
+	public function testDimensionsPdf() {
+		if (!$this->_hasGhostscript()) {
+			$this->markTestSkipped('The `imagick` extension lacks ghostscript support.');
+		}
 
 		$source = fopen("{$this->_files}/application_pdf.pdf", 'rb');
 		$subject = new Media_Process_Adapter_Imagick($source);
@@ -274,9 +280,9 @@ class Media_Process_Adapter_ImagickTest extends PHPUnit_Framework_TestCase {
 
 	protected function _hasGhostscript() {
 		if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-			exec("gswin32c.exe -v", $out, $return);
+			exec("gswin32c.exe -v>> nul 2>&1", $out, $return);
 		} else {
-			exec("gs -v", $out, $return);
+			exec("gs -v &> /dev/null", $out, $return);
 		}
 		return $return == 0;
 	}

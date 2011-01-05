@@ -47,6 +47,11 @@ class Media_Process_Adapter_Imagick extends Media_Process_Adapter {
 		// $this->_object->readImageFile($handle);
 		$this->_object->readImageBlob(stream_get_contents($handle, -1, 0));
 
+		// Reset iterator to get just the first image from i.e. multipage PDFs.
+		if ($this->_object->getNumberImages() > 1) {
+			$this->_object->setFirstIterator();
+		}
+
 		$mimeType = Mime_Type::guessType($handle);
 
 		if (!isset($this->_formatMap[$mimeType])) {

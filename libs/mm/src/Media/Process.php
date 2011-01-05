@@ -69,3 +69,5 @@ class Media_Process {
 		return $media;
 	}
 }
+
+?>

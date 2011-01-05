@@ -22,60 +22,68 @@ require_once 'Mime/Type.php';
  */
 class Media_Process_Adapter_FfmpegShell extends Media_Process_Adapter {
 
-	protected $_compress;
-
 	protected $_object;
 
 	protected $_command;
 
-	protected $_queued = array();
-	protected $_queuedWidth;
-	protected $_queuedHeight;
+	protected $_options = array();
+
+	protected $_width;
+	protected $_height;
+
+	protected $_source;
+	protected $_target;
+
+	protected $_cachedInfo;
 
 	public function __construct($handle) {
 		$this->_object = $handle;
-		$this->_command = strtoupper(substr(PHP_OS, 0, 3)) == 'WIN' ? 'ffmpeg.exe' : 'ffmpeg';
+		$this->_command = strtoupper(substr(PHP_OS, 0, 3)) == 'WIN' ? 'ffmpeg.exe' : '/usr/local/bin/ffmpeg';
+
+		$this->_source = $this->_target = $this->_type(Mime_Type::guessType($this->_object));
 	}
 
-	public function passthru($key, $value) {
-		if (!$value || !is_scalar($value)) {
-			throw new InvalidArgumentException("Value must be given and of type scalar");
+	public function passthru($key, $value = null) {
+		if ($value === null) {
+			$this->_options[$key] = "-{$key}";
+		} elseif (is_array($value)) {
+			$this->_options[$key] = "-{$key} " . implode(" -{$key} ", (array) $value);
+		} else {
+			$this->_options[$key] = "-{$key} {$value}";
 		}
-		$this->_queued[$key] = "-{$key} {$value}";
 		return true;
 	}
 
 	public function store($handle) {
+		if ($this->_target != $this->_source || $this->_options) {
+			if (!$this->_process()) {
+				return false;
+			}
+		}
 		rewind($handle);
 		rewind($this->_object);
 
-		if ($this->_queued && !$this->_process()) {
-			return false;
-		}
 		return stream_copy_to_stream($this->_object, $handle);
 	}
 
 	public function convert($mimeType) {
-		$targetType = Mime_Type::guessExtension($mimeType);
-		$targetType = $this->_mapType($targetType);
-
 		switch (Mime_Type::guessName($mimeType)) {
 			case 'image':
-				$command = "-vcodec {$targetType} -vframes 1 -an -f rawvideo -";
+				$this->_options = array(
+					'vcodec' => '-vcodec ' . $this->_type($mimeType),
+					'vframes' => '-vframes 1',
+					'seek' => '-ss 1',
+					'noAudio' => '-an',
+				) + $this->_options;
+
+				$this->_target = 'rawvideo';
 				break;
 			case 'video':
-				$command = "-f {$targetType} -";
+				$this->_target = $this->_type($mimeType);
 				break;
 			default:
 				return true;
 		}
-
-		$this->_queued['target'] = $command;
-		return true;
-	}
-
-	public function compress($value) {
-		$this->_compress = $value;
 		return true;
 	}
 
@@ -83,15 +91,15 @@ class Media_Process_Adapter_FfmpegShell extends Media_Process_Adapter {
 		$width  = (integer) $width;
 		$height = (integer) $height;
 
-		$this->_queued['resize'] = "-s {$width}x{$height}";
-		$this->_queuedWidth = $width;
-		$this->_queuedHeight = $height;
+		$this->_options['resize'] = "-s {$width}x{$height}";
+		$this->_width = $width;
+		$this->_height = $height;
 		return true;
 	}
 
 	public function width() {
-		if ($this->_queuedWidth) {
-			return $this->_queuedWidth;
+		if ($this->_width) {
+			return $this->_width;
 		}
 		preg_match('/Video\:.*,\s([0-9]+)x/', $i = $this->_info(), $matches);
 
@@ -102,8 +110,8 @@ class Media_Process_Adapter_FfmpegShell extends Media_Process_Adapter {
 	}
 
 	public function height() {
-		if ($this->_queuedHeight) {
-			return $this->_queuedHeight;
+		if ($this->_height) {
+			return $this->_height;
 		}
 		preg_match('/Video\:.*,\s[0-9]+x([0-9]+)/', $this->_info(), $matches);
 
@@ -114,6 +122,9 @@ class Media_Process_Adapter_FfmpegShell extends Media_Process_Adapter {
 	}
 
 	protected function _info() {
+		if ($this->_cachedInfo) {
+			return $this->_cachedInfo;
+		}
 		$command = "{$this->_command} -i -";
 
 		rewind($this->_object);
@@ -137,60 +148,79 @@ class Media_Process_Adapter_FfmpegShell extends Media_Process_Adapter {
 		proc_close($process);
 
 		/* Intentionally not checking for return value. */
-		return $result;
+		return $this->_cachedInfo = $result;
 	}
 
 	protected function _process() {
-		if (!isset($this->_queued['source'])) {
-			$sourceType = Mime_Type::guessExtension($this->_object);
-			$sourceType = $this->_mapType($sourceType);
+		$source = "-f {$this->_source} -i -";
+		$target = "-f {$this->_target}";
 
-			$this->_queued['source'] = "-f {$sourceType} -i -";
+		$temporaryFile = null;
+		$targetHandle = fopen('php://temp', 'w+b');
+
+		if ($this->_requiresFile($this->_target)) {
+			/* Some formats require the target to be seekable.
+			   We workaround that by creating a file and deleting it later. */
+
+			$temporaryFile = realpath(sys_get_temp_dir()) . '/' . uniqid('mm_');
+
+			$target .= " {$temporaryFile}";
+			$targetDescr = array('pipe', 'w');
+		} else {
+			$target .= " -";
+			$targetDescr = $targetHandle;
 		}
-		if (!isset($this->_queued['target'])) {
-			$targetType = Mime_Type::guessExtension($this->_object);
-			$targetType = $this->_mapType($targetType);
 
-			$this->_queued['target'] = "-f {$targetType} -";
-		}
-		$queued = $this->_queued;
-
-		$source = $queued['source'];
-		$target = $queued['target'];
-		unset($queued['source'], $queued['target']);
-		$targetOptions = $queued ? implode(' ', $queued) . ' ' : null;
-
-		$command  = "{$this->_command} {$source} {$targetOptions}{$target}";
+		$options = $this->_options ? implode(' ', $this->_options) . ' ' : null;
+		$command  = "{$this->_command} {$source} {$options}{$target}";
 
 		rewind($this->_object);
-		$temporary = fopen('php://temp', 'w+b');
 		$descr = array(
 			0 => $this->_object,
-			1 => $temporary,
+			1 => $targetDescr,
 			2 => array('pipe', 'a')
 		);
-
 		$process = proc_open($command, $descr, $pipes);
 		fclose($pipes[2]);
 		$return = proc_close($process);
 
+		if ($temporaryFile) {
+			/* This is the continuation of the above workaround. */
+			$temporaryHandle = fopen($temporaryFile, 'r+b');
+
+			stream_copy_to_stream($temporaryHandle, $targetHandle);
+
+			fclose($temporaryHandle);
+			unlink($temporaryFile);
+		}
+
 		if ($return != 0) {
-			// throw new RuntimeException("Command `{$command}` returned `{$return}`.");
+			throw new RuntimeException("Command `{$command}` returned `{$return}`.");
 			return false;
 		}
 
-		$this->_object = $temporary;
-		$this->_queued = array();
-		$this->_queuedWidth = $this->_queuedHeight = null;
+		$this->_options = array();
+		$this->_width = $this->_height = null;
+
+		$this->_object = $targetHandle;
 		return true;
 	}
 
-	protected function _mapType($type) {
+	protected function _type($object) {
+		$type = Mime_Type::guessExtension($object);
+
 		$map = array(
 			'ogv' => 'ogg',
 			'oga' => 'ogg'
 		);
 		return isset($map[$type]) ? $map[$type] : $type;
+	}
+
+	protected function _requiresFile($type) {
+		$types = array(
+			'mp4', 'ogg'
+		);
+		return in_array($type, $types);
 	}
 }
 

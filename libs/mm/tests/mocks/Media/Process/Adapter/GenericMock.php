@@ -16,9 +16,14 @@ require_once 'Media/Process/Adapter.php';
 
 class Media_Process_Adapter_GenericMock extends Media_Process_Adapter {
 
+	public $storeCopyFromStream;
+
 	public function __construct($handle) {}
 
 	public function store($handle) {
+		if ($this->storeCopyFromStream) {
+			stream_copy_to_stream($this->storeCopyFromStream, $handle);
+		}
 		return true;
 	}
 
