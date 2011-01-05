@@ -226,9 +226,8 @@ class MediaHelper extends AppHelper {
 			case 'document':
 				break;
 			case 'image':
-				if (!isset($attributes['width']) && !isset($attribues['height']) && function_exists('getimagesize')) {
-					list($attributes['width'], $attributes['height']) = getimagesize($sources[0]['file']);
-				}
+				$attributes = $this->_addDimensions($sources[0]['file'], $attributes);
+
 				return sprintf(
 					$this->Html->tags['image'],
 					$sources[0]['url'],
@@ -528,6 +527,23 @@ class MediaHelper extends AppHelper {
 			$sources[] = compact('name', 'mimeType', 'url', 'file');
 		}
 		return $sources;
+	}
+
+/**
+ * Adds dimensions to an attributes array if possible.
+ *
+ * @param string $file An absolute path to a file.
+ * @param array $attributes
+ * @return array The modified attributes array.
+ */
+	protected function _addDimensions($file, $attributes) {
+		if (isset($attributes['width']) || isset($attribues['height'])) {
+			return $attributes;
+		}
+		if (function_exists('getimagesize')) {
+			list($attributes['width'], $attributes['height']) = getimagesize($file);
+		}
+		return $attributes;
 	}
 
 /**
