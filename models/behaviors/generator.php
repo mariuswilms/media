@@ -253,21 +253,16 @@ class GeneratorBehavior extends ModelBehavior {
 
 		/* Process `Media_Process_*` instructions */
 		$Media = Media_Process::factory(array('source' => $file));
-
-		foreach ($process['instructions'] as $key => $value) {
-			if (is_int($key)) {
-				$method = $value;
+		foreach ($process['instructions'] as $method => $args) {
+			if (is_int($method)) {
+				$method = $args;
 				$args = null;
+			}
+			if (method_exists($Media, $method)) {
+				$result = call_user_func_array(array($Media, $method), (array) $args);
 			} else {
-				$method = $key;
-				$args = (array) $value;
+				$result = $Media->passthru($method, $args);
 			}
-			if (!method_exists($Media, $method)) {
-				array_unshift($args, $method);
-				$method = 'passthru';
-			}
-			$result = call_user_func_array(array($Media, $method), $args);
-
 			if ($result === false) {
 				return false;
 			} elseif (is_a($result, 'Media_Process_Generic')) {
