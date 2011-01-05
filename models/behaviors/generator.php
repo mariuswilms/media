@@ -288,6 +288,16 @@ class GeneratorBehavior extends ModelBehavior {
 		return $Media->store($destination) && chmod($destination, $mode);
 	}
 
+/**
+ * Helper method to determine path to destination file and delete
+ * it if necessary.
+ *
+ * @param string $source Path to or name of source file.
+ * @param string $directory Path to directory.
+ * @param string $extension Optionally an extension to append to the final path.
+ * @param boolean $overwrite If true will unlink destination if it exists, defaults to false.
+ * @return string Path to destination file.
+ */
 	function _destinationFile($source, $directory, $extension = null, $overwrite = false) {
 		$destination = $directory;
 
