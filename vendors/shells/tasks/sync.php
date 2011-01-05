@@ -312,8 +312,8 @@ class SyncTask extends MediaShell {
 		if ($this->__File->exists()) {
 			return;
 		}
-		$message  = 'File `' . $this->shortPath($this->__File->pwd()) . '`';
-		$message .= ' is orphaned.';
+		$message  = "Record is orphaned. It's pointing to non-existent ";
+		$message .= 'file `' . $this->shortPath($this->__File->pwd()) . '`.';
 		$this->out($message);
 
 		if ($this->_fixWithAlternative()) {
