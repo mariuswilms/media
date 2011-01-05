@@ -244,7 +244,10 @@ class MediaHelper extends AppHelper {
 							'type' => $source['mimeType']
 					)));
 				}
-				$poster = $this->url($poster, $full);
+				if ($poster) {
+					$attributes = $this->_addDimensions($this->file($poster), $attributes);
+					$poster = $this->url($poster, $full);
+				}
 
 				$attributes += compact('autoplay', 'controls', 'preload', 'loop', 'poster');
 				return sprintf(
