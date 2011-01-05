@@ -245,7 +245,10 @@ class GeneratorBehavior extends ModelBehavior {
 			if (!$destination) {
 				return false;
 			}
-			return call_user_func($action, $file, $destination) && chmod($destination, $mode);
+			if (!call_user_func($action, $file, $destination)) {
+				return false;
+			}
+			return $action == 'copy' ? chmod($destination, $mode) : true;
 		}
 
 		/* Process `Media_Process_*` instructions */
