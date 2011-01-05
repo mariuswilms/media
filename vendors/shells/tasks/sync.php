@@ -379,7 +379,7 @@ class SyncTask extends MediaShell {
 		$input = $this->in('Delete file?', 'y,n', $this->_answer);
 
 		if ($input == 'y') {
-			$File->delete();
+			$this->__File->delete();
 			$this->out('File deleted');
 			return true;
 		}
