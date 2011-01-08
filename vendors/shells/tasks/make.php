@@ -53,10 +53,12 @@ class MakeTask extends MediaShell {
 		if (!$this->source = array_shift($this->args)) {
 			$this->source = $this->in('Source directory', null, $settings['baseDirectory']);
 		}
+		$message = 'Regex (matches against the basenames of the files) for source inclusion:';
+		$pattern = $this->in($message, null, '.*');
 
 		$this->out();
 		$this->out(sprintf('%-25s: %s', 'Base', $this->shortPath($settings['baseDirectory'])));
-		$this->out(sprintf('%-25s: %s', 'Source', $this->shortPath($this->source)));
+		$this->out(sprintf('%-25s: %s (%s)', 'Source', $this->shortPath($this->source), $pattern));
 		$this->out(sprintf('%-25s: %s', 'Destination', $this->shortPath($settings['filterDirectory'])));
 		$this->out(sprintf('%-25s: %s', 'Overwrite existing', $settings['overwrite'] ? 'yes' : 'no'));
 		$this->out(sprintf('%-25s: %s', 'Create directories', $settings['createDirectory'] ? 'yes' : 'no'));
@@ -69,7 +71,7 @@ class MakeTask extends MediaShell {
 		$this->hr();
 
 		$Folder = new Folder($this->source);
-		$files = $Folder->findRecursive();
+		$files = $Folder->findRecursive($pattern);
 
 		$this->progress(count($files));
 
