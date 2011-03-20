@@ -36,18 +36,22 @@
 
   Versions & Requirements
   -----------------------
-  1.3.x, CakePHP 1.3.x, PHP >=5.2.1 (in progress)
-  0.6x, CakePHP 1.2.x, PHP >=5.1.0
-  0.5x, CakePHP 1.2.x, PHP >=5.1.0
+  1.3.0, CakePHP 1.3.x, PHP >=5.2.1 (in progress)
+  0.6.x, CakePHP 1.2.x, PHP >=5.1.0
+  0.5.x, CakePHP 1.2.x, PHP >=5.1.0
 
   The plugin is known to run fine under linux and darwin. There exist some
   issues on windows (http://github.com/davidpersson/media/issues#issue/8),
   though.
 
-  With version 1.3, the plugin comes bundled with the mm library replacing
+  With version 1.3.0, the plugin comes bundled with the mm library replacing
   classes related to media processing, metadata and MIME-types. Please see
   the documentation of the mm library (http://github.com/davidpersson/mm)
   for additonal requirements and information.
+
+  Versions prior to 1.3.0 used to follow a different naming scheme. This has
+  been changed in retrospect (i.e. 0.6x is now known as 0.6.x) in order to
+  make a clean and comprehensible chronology.
 
   Download
   --------

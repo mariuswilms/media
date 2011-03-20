@@ -1,6 +1,6 @@
 
-Changes & Migration Instructions for 0.6x
-=========================================
+Changes & Migration Instructions for 0.6.x
+==========================================
 
 This page lists all changes necessary for migrating to a new version of the
 plugin. Please note that instructions for migrations to non-stable versions are
