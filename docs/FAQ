@@ -25,8 +25,8 @@ Frequently Asked Questions
 
 -- 
 
-   Q: Why aren't generated versions of files not automatically deleted?
-   A: The directory structure and versions you create from files is very
+   Q: Why aren't generated versions of files automatically deleted?
+   A: The directory structure and versions you create from files are very
       specific to your application. Also deleting multiple files by globbing is
       potentially critical.
 
