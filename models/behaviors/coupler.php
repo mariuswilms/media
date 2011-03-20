@@ -153,12 +153,9 @@ class CouplerBehavior extends ModelBehavior {
 	}
 
 /**
- * Callback
- *
- * Deletes file corresponding to record.
- *
- * If the file couldn't be deleted the callback will stop the
- * delete operation and not continue to delete the record.
+ * Callback, deletes file (if there's one coupled) corresponding to record. If
+ * the file couldn't be deleted the callback will stop the delete operation and
+ * not continue to delete the record.
  *
  * @param Model $Model
  * @param boolean $cascade
@@ -172,8 +169,8 @@ class CouplerBehavior extends ModelBehavior {
 			'fields'     => array('dirname', 'basename'),
 			'recursive'  => -1,
 		));
-		if (empty($result)) {
-			return false;
+		if (!$result[$Model->alias]['dirname'] || !$result[$Model->alias]['basename']) {
+			return true;
 		}
 
 		$file  = $baseDirectory;
@@ -185,13 +182,7 @@ class CouplerBehavior extends ModelBehavior {
 	}
 
 /**
- * Callback
- *
- * Adds the `file` field to each result.
- *
- * If the corresponding file of a result is not readable it is removed
- * from the results array, as it is inconsistent. This can be fixed
- * by calling `cake media sync` from the command line.
+ * Callback, adds the `file` field to each result.
  *
  * @param Model $Model
  * @param array $results
@@ -213,10 +204,6 @@ class CouplerBehavior extends ModelBehavior {
 			$file .= DS . $result[$Model->alias]['basename'];
 			$file = str_replace(array('\\', '/'), DS, $file);
 
-			if (!is_file($file)) {
-				unset($results[$key]);
-				continue;
-			}
 			$result[$Model->alias]['file'] = $file;
 		}
 		return $results;

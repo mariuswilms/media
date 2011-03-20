@@ -45,7 +45,7 @@ class CouplerBehaviorTestCase extends BaseBehaviorTestCase {
 		$Model =& ClassRegistry::init('Song');
 		$Model->Behaviors->attach('Media.Coupler', $this->_behaviorSettings);
 		$result = $Model->find('all');
-		$this->assertEqual(count($result), 3);
+		$this->assertEqual(count($result), 4);
 
 		/* Virtual */
 		$result = $Model->findById(1);
