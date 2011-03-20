@@ -25,6 +25,19 @@ Frequently Asked Questions
 
 -- 
 
+   Q: Why aren't generated versions of files not automatically deleted?
+   A: The directory structure and versions you create from files is very
+      specific to your application. Also deleting multiple files by globbing is
+      potentially critical.
+
+      From an architectural point of view there is no correct place for
+      deleting versions except in the model (the specific implementation) itself.
+      The Generator behavior - otherwise best candidate for containing this
+      functionality - doesn't "know" about the record and therefore about any
+      relationship between the file and record which is about to be deleted.
+
+--
+
    Q: What is the purpose of storing the file's hash in the table?
    A: This way it's possible to check if a file has in some way been modified since a
       link to it has been stored in the table. E.g. the SyncTask checks the consistency 

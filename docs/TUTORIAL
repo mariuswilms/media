@@ -254,4 +254,58 @@ the transfer behavior's documentation for information about the rules.
 Be advised that some of these rules may be to strict or cause other trouble so that
 in the end you won't be able to upload files.
 
+Deleting Corresponding Files
+----------------------------
+Deleting works as you'd expect it with just one exception. It is assumed that
+there is a 1:1 relationship between files and records. When deleting a record,
+coupled to a file it'll also delete that file. When there are also generated
+versions for that file those *will not* get deleted. You'll need to implement
+the logic own your own.
 
+Put the following snippet into the model you've attached 
+the Generator and Coupler behaviors to:
+
+{{{
+...
+	public function beforeDelete($cascade = true) {
+		if (!$cascade) {
+			return true;
+		}
+
+		$result = $this->find('first', array(
+			'conditions' => array($this->primaryKey => $this->id),
+			'fields'	 => array('dirname', 'basename'),
+			'recursive'  => -1
+		));
+		if (empty($result)) {
+			return false;
+		}
+
+		$pattern  = MEDIA_FILTER . "*/";
+		$pattern .= $result[$this->alias]['dirname'] . '/';
+		$pattern .= pathinfo($result[$this->alias]['basename'], PATHINFO_FILENAME);
+
+		$files = glob("{$pattern}.*");
+
+		$name = Mime_Type::guessName($result[$this->alias]['basename']);
+		$versions = array_keys(Configure::read('Media.filter.' . $name));
+
+		if (count($files) > count($versions)) {
+			$message  = 'MediaFile::beforeDelete - ';
+			$message .= "Pattern `{$pattern}` matched more than number of versions. ";
+			$message .= "Failing deletion of versions and record for `Media@{$this->id}`.";
+			CakeLog::write('warning', $message);
+			return false;
+		}
+
+		foreach ($files as $file) {
+			$File = new File($file);
+
+			if (!$File->delete()) {
+				return false;
+			}
+		}
+		return true;
+	}
+...
+}}}

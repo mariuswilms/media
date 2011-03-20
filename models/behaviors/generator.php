@@ -36,6 +36,10 @@ require_once 'Mime/Type.php';
  *     );
  * }}}
  *
+ * Please note that this behavior *will not* delete generated versions
+ * automatically. See docs/FAQ for an in depth explanation and docs/TUTORIAL
+ * for a snippet you can use to implement this functionality.
+ *
  * @package    media
  * @subpackage media.models.behaviors
  */
