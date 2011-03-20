@@ -238,9 +238,6 @@ class MediaShell extends Shell {
 		$this->out("\tprotect");
 		$this->out("\t\tCreates a htaccess file to protect the transfer dir.");
 		$this->out('');
-		$this->out("\t\t-link Use symlinks instead of copying.");
-		$this->out("\t\t-exclude Comma separated list of names to exclude.");
-		$this->out('');
 		$this->out("\tsync [-auto] [model] [searchdir]");
 		$this->out("\t\tChecks if records are in sync with files and vice versa.");
 		$this->out('');
