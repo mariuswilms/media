@@ -19,25 +19,6 @@ require_once 'Media/Process/Generic.php';
  */
 class Media_Process_Audio extends Media_Process_Generic {
 
-	/**
-	 * Selects compression type and filters than compresses the media
-	 * according to provided value
-	 *
-	 * Compressing may result in lossy quality for e.g. jpeg but
-	 * not for png images. The decimal place denotes the type of filter
-	 * used and the number as a whole the (rounded) compression value.
-	 *
-	 * @param float $value Zero for no compression at all or a value between 0 and 9.9999999
-	 * 	(highest compression); defaults to 1.5
-	 * @return boolean
-	 */
-	public function compress($value = 1.5) {
-		if ($value < 0 || $value >= 10) {
-			throw new InvalidArgumentException("Compression value is not within the 0..10 range.");
-		}
-		return $this->_adapter->compress(floatval($value));
-	}
-
 	public function channels($value) {
 		return $this->_adapter->channels((integer) $value);
 	}

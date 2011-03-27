@@ -54,7 +54,7 @@
 
   Versions & Requirements
   -----------------------
-  1.0, PHP >=5.2.1 (in progress)
+  1.0.0, PHP >=5.2.1 (in progress)
 
   The library is known to run fine under linux and darwin. Depending on
   the adapters you are using you may need (this is a selection):

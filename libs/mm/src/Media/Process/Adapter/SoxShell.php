@@ -26,8 +26,6 @@ class Media_Process_Adapter_SoxShell extends Media_Process_Adapter {
 
 	protected $_channels;
 
-	protected $_compress;
-
 	protected $_object;
 
 	protected $_command;
@@ -106,11 +104,6 @@ class Media_Process_Adapter_SoxShell extends Media_Process_Adapter {
 
 	public function passthru($key, $value) {
 		throw new Exception("The adapter has no passthru support.");
-	}
-
-	public function compress($value) {
-		$this->_compress = $value;
-		return true;
 	}
 
 	public function channels($value) {
