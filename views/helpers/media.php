@@ -138,7 +138,7 @@ class MediaHelper extends AppHelper {
 		if (strpos($path, '://') !== false) {
 			return $path;
 		}
-		return $this->webroot . $path;
+		return '/' . $path;
 	}
 
 /**
@@ -212,7 +212,7 @@ class MediaHelper extends AppHelper {
 					$body .= sprintf(
 						$this->tags['source'],
 						$this->_parseAttributes(array(
-							'src' => $source['url'],
+							'src' => Router::url($source['url']),
 							'type' => $source['mimeType']
 					)));
 				}
@@ -230,7 +230,7 @@ class MediaHelper extends AppHelper {
 
 				return sprintf(
 					$this->Html->tags['image'],
-					$sources[0]['url'],
+					Router::url($sources[0]['url']),
 					$this->_parseAttributes($attributes)
 				);
 			case 'video':
@@ -240,7 +240,7 @@ class MediaHelper extends AppHelper {
 					$body .= sprintf(
 						$this->tags['source'],
 						$this->_parseAttributes(array(
-							'src' => $source['url'],
+							'src' => Router::url($source['url']),
 							'type' => $source['mimeType']
 					)));
 				}
