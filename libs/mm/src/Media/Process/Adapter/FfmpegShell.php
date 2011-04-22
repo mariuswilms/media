@@ -229,7 +229,7 @@ class Media_Process_Adapter_FfmpegShell extends Media_Process_Adapter {
 		/* Clean/finish above workarounds. */
 
 		if ($tempSourceFile) {
-			unlink($tempSourcefile);
+			unlink($tempSourceFile);
 		}
 		if ($tempTargetFile) {
 			$tempTargetHandle = fopen($tempTargetFile, 'r+b');
