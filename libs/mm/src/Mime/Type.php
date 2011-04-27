@@ -38,7 +38,7 @@ class Mime_Type {
 	public static $glob;
 
 	/**
-	 * Mapping MIME type (part) to media name.
+	 * Mapping MIME type (part/needle) to media name.
 	 *
 	 * @see guessName()
 	 * @var array
@@ -47,6 +47,7 @@ class Mime_Type {
 		'application/ogg'       => 'audio',
 		'application/pdf'       => 'document',
 		'application/msword'    => 'document',
+		'officedocument'        => 'document',
 		'image/icon'            => 'icon',
 		'text/css'              => 'css',
 		'text/javascript'       => 'javascript',

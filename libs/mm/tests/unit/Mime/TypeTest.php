@@ -190,7 +190,8 @@ class Mime_TypeTest extends PHPUnit_Framework_TestCase {
 			'application/octet-stream' => 'generic',
 			'text/unknown' => 'generic',
 			'image/jpeg' => 'image',
-			'image/tiff' => 'image'
+			'image/tiff' => 'image',
+			'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'document'
 		);
 		foreach ($map as $mimeType => $name) {
 			$this->assertEquals($name, Mime_Type::guessName($mimeType), "MIME type `{$mimeType}`.");
