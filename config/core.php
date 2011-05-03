@@ -93,6 +93,8 @@
  *        define('MEDIA_TRANSFER', APP . 'transfer' . DS);
  *        define('MEDIA_TRANSFER_URL', false);
  *    }}}
+ *
+ * @see MediaHelper::webroot()
  */
 if (!defined('MEDIA')) {
 	define('MEDIA', WWW_ROOT . 'media' . DS);
