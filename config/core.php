@@ -110,10 +110,15 @@ if (!defined('MEDIA_TRANSFER')) {
 /**
  * URL paths
  *
- * Each constant is defined with a value which is
- * an (slash terminated) URL path fragment relative to your webroot.
+ * Each constant is defined with a value which is an (slash terminated) URL
+ * path fragment relative to your webroot. In case the corresponding directory
+ * isn't served use `false` as a value.
  *
- * In case the corresponding directory isn't served use `false` as a value.
+ * To get arround limited browser pipelining of media you can use the special
+ * placeholder `%d` in the definition of the URL. The placeholder gets replaced
+ * within the media helper.
+ *
+ * @see MediaHelper::webroot()
  */
 if (!defined('MEDIA_URL')) {
 	define('MEDIA_URL', 'media/');

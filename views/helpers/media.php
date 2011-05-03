@@ -129,6 +129,10 @@ class MediaHelper extends AppHelper {
 				if ($url === false) {
 					return null;
 				}
+				if (strpos($url, '%d') !== false) {
+					$url = sprintf($url, $this->_id($path));
+				}
+
 				$path = str_replace($directory, $url, $file);
 				break;
 			}
@@ -594,6 +598,17 @@ class MediaHelper extends AppHelper {
 			);
 		}
 		return implode("\n", $parameters);
+	}
+
+	/**
+	 * Calculates the host id for a file
+	 *
+	 * @link http://yuiblog.com/blog/2007/04/11/performance-research-part-4/
+	 * @param string $file
+	 * @return integer
+	 */
+	protected function _id($path) {
+		return abs(crc32($path)) % 2;
 	}
 }
 
