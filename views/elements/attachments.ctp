@@ -34,7 +34,7 @@ if (!isset($this->Media) || !is_a($this->Media, 'MediaHelper')) {
 }
 
 if (!isset($previewVersion)) {
-	$previewVersion = 'xxs';
+	$previewVersion = 's';
 }
 
 /* Set $assocAlias and $model if you're using this element multiple times in one form */
