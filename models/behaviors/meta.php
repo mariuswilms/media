@@ -172,6 +172,7 @@ class MetaBehavior extends ModelBehavior {
 				'size'      => $File->size(),
 				'mime_type' => Mime_Type::guessType($File->pwd()),
 				'checksum'  => $checksum,
+				'extension' => $File->ext()
 			);
 		}
 		if ($level > 1 && !isset($data[2])) {
