@@ -70,7 +70,10 @@ class Media_Process_Adapter_SoxShell extends Media_Process_Adapter {
 		$error = fopen('php://temp', 'wrb+');
 		$targetFile = tempnam(sys_get_temp_dir(), 'mm_');
 
-		$command = "{$this->_command} -q -t {$sourceType} -{$modify} -t {$targetType} {$targetFile}";
+		// Since SoX 14.3.0 multi threading is enabled which
+		// paradoxically can cause huge slowdowns.
+		$command  = "{$this->_command} -q --single-threaded";
+		$command .= " -t {$sourceType} -{$modify} -t {$targetType} {$targetFile}";
 
 		$descr = array(
 			0 => $this->_object,
