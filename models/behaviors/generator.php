@@ -141,7 +141,7 @@ class GeneratorBehavior extends ModelBehavior {
  *
  * @param Model $Model
  * @param string $file Path to a file relative to `baseDirectory`  or an absolute path to a file
- * @return boolean
+ * @return array An array of absolute paths to version files which successfully have been made
  */
 	function make(&$Model, $file) {
 		extract($this->settings[$Model->alias]);
@@ -150,7 +150,7 @@ class GeneratorBehavior extends ModelBehavior {
 		$relativeDirectory = DS . rtrim(dirname($relativeFile), '.');
 
 		$filter = Configure::read('Media.filter.' . Mime_Type::guessName($file));
-		$result = true;
+		$results = array();
 
 		foreach ($filter as $version => $instructions) {
 			$directory = Folder::slashTerm($filterDirectory . $version . $relativeDirectory);
@@ -161,27 +161,28 @@ class GeneratorBehavior extends ModelBehavior {
 				$message .= "could not be created or is not writable. ";
 				$message .= "Please check the permissions.";
 				trigger_error($message, E_USER_WARNING);
-				$result = false;
 				continue;
 			}
 
 			try {
 				$result = $Model->makeVersion($file, compact('version', 'directory', 'instructions'));
 			} catch (Exception $E) {
+				$result = false;
+
 				$message  = "GeneratorBehavior::make - While making version `{$version}` ";
 				$message .= "of file `{$file}` an exception was thrown, the message provided ";
 				$message .= 'was `' . $E->getMessage() . '`. Skipping version.';
 				trigger_error($message, E_USER_WARNING);
-				$result = false;
 			}
-			if (!$result) {
+			if ($result) {
+				$results[] = $result;
+			} else {
 				$message  = "GeneratorBehavior::make - The method responsible for making version ";
 				$message .= "`{$version}` of file `{$file}` returned `false`. Skipping version.";
 				trigger_error($message, E_USER_WARNING);
-				$result = false;
 			}
 		}
-		return $result;
+		return $results;
 	}
 
 /**
@@ -231,7 +232,7 @@ class GeneratorBehavior extends ModelBehavior {
  * @param Model $Model
  * @param string $file Absolute path to the source file
  * @param array $process directory, version, instructions
- * @return boolean `true` if version for the file was successfully stored
+ * @return string|boolean Absolute path to the version file, `false` on error
  */
 	function makeVersion(&$Model, $file, $process) {
 		extract($this->settings[$Model->alias]);
@@ -243,16 +244,16 @@ class GeneratorBehavior extends ModelBehavior {
 			if (!in_array($action, array('copy', 'link', 'symlink'))) {
 				return false;
 			}
-
-			$destination = $this->_destinationFile($file, $process['directory'], null, $overwrite);
-
+			$destination = $this->_destinationFile(
+				$file, $process['directory'], null, $overwrite
+			);
 			if (!$destination) {
 				return false;
 			}
 			if (!call_user_func($action, $file, $destination)) {
 				return false;
 			}
-			return $action == 'copy' ? chmod($destination, $mode) : true;
+			return $action != 'copy' || chmod($destination, $mode) ? $destination : false;
 		}
 
 		/* Process `Media_Process_*` instructions */
@@ -284,12 +285,13 @@ class GeneratorBehavior extends ModelBehavior {
 				$extension = Mime_Type::guessExtension($file);
 			}
 		}
-		$destination = $this->_destinationFile($file, $process['directory'], $extension, $overwrite);
-
+		$destination = $this->_destinationFile(
+			$file, $process['directory'], $extension, $overwrite
+		);
 		if (!$destination) {
 			return false;
 		}
-		return $Media->store($destination) && chmod($destination, $mode);
+		return $Media->store($destination) && chmod($destination, $mode) ? $destination : false;
 	}
 
 /**

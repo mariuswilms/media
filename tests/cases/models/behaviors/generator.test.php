@@ -172,7 +172,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 				'convert' => 'image/png'
 			)
 		));
-		$this->assertTrue($result);
+		$this->assertEqual($result, $directory . 'image-jpg.png');
 		$this->assertTrue(file_exists($directory . 'image-jpg.png'));
 	}
 
@@ -202,7 +202,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 				'convert' => 'image/png'
 			)
 		));
-		$this->assertTrue($result);
+		$this->assertEqual($result, $directory . 'application-pdf.png');
 		$this->assertTrue(file_exists($directory . 'application-pdf.png'));
 	}
 
@@ -223,7 +223,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 				'clone' => 'copy'
 			)
 		));
-		$this->assertTrue($result);
+		$this->assertEqual($result, $directory . 'copied.jpg');
 		$this->assertTrue(file_exists($directory . 'copied.jpg'));
 		$this->assertTrue(is_file($directory . 'copied.jpg'));
 
@@ -237,7 +237,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 				'clone' => 'symlink'
 			)
 		));
-		$this->assertTrue($result);
+		$this->assertEqual($result, $directory . 'symlinked.jpg');
 		$this->assertTrue(file_exists($directory . 'symlinked.jpg'));
 		$this->assertTrue(is_link($directory . 'symlinked.jpg'));
 		$this->assertEqual(readlink($directory . 'symlinked.jpg'), $file);
@@ -253,7 +253,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 				'clone' => 'link'
 			)
 		));
-		$this->assertTrue($result);
+		$this->assertTrue($directory . 'hardlinked.jpg');
 		$this->assertTrue(file_exists($directory . 'hardlinked.jpg'));
 		$this->assertTrue(is_file($directory . 'hardlinked.jpg'));
 		unlink($directory . 'hardlinked.jpg');
@@ -285,7 +285,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 				'setFormat' => 'png' // setFormat is an Imagick method.
 			)
 		));
-		$this->assertTrue($result);
+		$this->assertEqual($result, $directory . 'image.jpg');
 
 		$mimeType = Mime_Type::guessType($directory . 'image.jpg', array(
 			'paranoid' => true
