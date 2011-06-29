@@ -71,7 +71,7 @@ class TestData extends Object {
  *
  * @param array $settings
  */
-	function __construct($settings = array()) {
+	public function __construct($settings = array()) {
 		$default = array('base' => TMP . 'tests' . DS);
 		$this->settings = $settings + $default;
 		new Folder($this->settings['base'], true);
@@ -81,7 +81,7 @@ class TestData extends Object {
  * Destructor
  *
  */
-	function __destruct() {
+	public function __destruct() {
 		$this->flushFiles();
 	}
 

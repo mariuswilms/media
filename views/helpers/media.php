@@ -88,7 +88,7 @@ class MediaHelper extends AppHelper {
  *                        trailing slash.
  * @return void
  */
-	function __construct($settings = array()) {
+	public function __construct($settings = array()) {
 		$this->_paths = array_merge($this->_paths, (array) $settings);
 	}
 

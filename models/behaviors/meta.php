@@ -86,7 +86,7 @@ class MetaBehavior extends ModelBehavior {
  *
  * @return void
  */
-	function __destruct() {
+	public function __destruct() {
 		foreach ($this->__cached as $alias => $data) {
 			if ($data) {
 				Cache::write('media_metadata_' . $alias, $data);
