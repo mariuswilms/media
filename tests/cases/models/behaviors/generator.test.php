@@ -28,7 +28,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 
 	protected $_backup;
 
-	function setUp() {
+	public function setUp() {
 		parent::setUp();
 		$this->_behaviorSettings = array(
 			'baseDirectory' => $this->Folder->pwd(),
@@ -37,12 +37,12 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->_backup['configMedia'] = Configure::read('Media');
 	}
 
-	function tearDown() {
+	public function tearDown() {
 		parent::tearDown();
 		Configure::write('Media', $this->_backup['configMedia']);
 	}
 
-	function testSetup() {
+	public function testSetup() {
 		$Model = ClassRegistry::init('TheVoid');
 		$Model->Behaviors->attach('Media.Generator');
 
@@ -50,7 +50,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$Model->Behaviors->attach('Media.Generator');
 	}
 
-	function testMakeThroughModel() {
+	public function testMakeThroughModel() {
 		Configure::write('Media.filter.image', array(
 			's' => array('convert' => 'image/png', 'fit' => array(5, 5)),
 			'm' => array('convert' => 'image/png', 'fit' => array(10, 10))
@@ -83,7 +83,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertEqual($Model->makeVersionArgs, $expected);
 	}
 
-	function testCreateDirectory() {
+	public function testCreateDirectory() {
 		Configure::write('Media.filter.image', array(
 			's' => array('convert' => 'image/png'),
 			'm' => array('convert' => 'image/png')
@@ -116,7 +116,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertTrue(is_dir($this->Folder->pwd() . 'filter' . DS . 'm'));
 	}
 
-	function testCreateDirectoryMode() {
+	public function testCreateDirectoryMode() {
 		Configure::write('Media.filter.image', array(
 			's' => array('convert' => 'image/png'),
 		));
@@ -146,7 +146,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertEqual(decoct(fileperms($this->Folder->pwd() . 'filter' . DS . 's')), 40777);
 	}
 
-	function testMakeVersion() {
+	public function testMakeVersion() {
 		$config = Media_Process::config();
 
 		$message = '%s Need media processing adapter for image.';
@@ -176,7 +176,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertTrue(file_exists($directory . 'image-jpg.png'));
 	}
 
-	function testMakeVersionAccrossMedia() {
+	public function testMakeVersionAccrossMedia() {
 		$config = Media_Process::config();
 
 		$message = '%s Need media processing adapters configured for both image and document.';
@@ -206,7 +206,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertTrue(file_exists($directory . 'application-pdf.png'));
 	}
 
-	function testMakeVersionCloning() {
+	public function testMakeVersionCloning() {
 		$Model = ClassRegistry::init('Unicorn', 'Model');
 		$Model->Behaviors->attach('Media.Generator', $this->_behaviorSettings);
 
@@ -259,7 +259,7 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		unlink($directory . 'hardlinked.jpg');
 	}
 
-	function testMakeVersionUnkownMethodArePassedthru() {
+	public function testMakeVersionUnkownMethodArePassedthru() {
 		$config = Media_Process::config();
 
 		$message = '%s Need imagick media processing adapters configured for both image.';

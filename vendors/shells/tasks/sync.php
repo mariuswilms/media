@@ -159,7 +159,7 @@ class SyncTask extends MediaShell {
  * @access public
  * @return boolean
  */
-	function execute() {
+	public function execute() {
 		$this->_answer = isset($this->params['auto']) ? 'y' : 'n';
 		$this->model = array_shift($this->args);
 		$this->directory = array_shift($this->args);

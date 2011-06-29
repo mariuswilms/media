@@ -26,7 +26,7 @@ require_once dirname(__FILE__) . DS . 'base.test.php';
  */
 class MetaBehaviorTestCase extends BaseBehaviorTestCase {
 
-	function setUp() {
+	public function setUp() {
 		parent::setUp();
 		$this->_behaviorSettings['Coupler'] = array(
 			'baseDirectory' => $this->Folder->pwd()
@@ -36,7 +36,7 @@ class MetaBehaviorTestCase extends BaseBehaviorTestCase {
 		);
 	}
 
-	function testSetup() {
+	public function testSetup() {
 		$Model =& ClassRegistry::init('TheVoid');
 		$Model->Behaviors->attach('Media.Meta');
 
@@ -44,7 +44,7 @@ class MetaBehaviorTestCase extends BaseBehaviorTestCase {
 		$Model->Behaviors->attach('Media.Meta');
 	}
 
-	function testSave() {
+	public function testSave() {
 		$Model =& ClassRegistry::init('Song');
 		$Model->Behaviors->attach('Media.Meta', $this->_behaviorSettings['Meta']);
 
@@ -58,7 +58,7 @@ class MetaBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertEqual($result['Song']['checksum'], md5_file($this->file0));
 	}
 
-	function testFind() {
+	public function testFind() {
 		$Model =& ClassRegistry::init('Song');
 		$Model->Behaviors->attach('Media.Coupler', $this->_behaviorSettings['Coupler']);
 		$Model->Behaviors->attach('Media.Meta', $this->_behaviorSettings['Meta']);

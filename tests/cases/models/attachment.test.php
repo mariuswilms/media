@@ -42,7 +42,7 @@ class AttachmentTestCase extends CakeTestCase {
 		'plugin.media.attachment', 'plugin.media.pirate'
 	);
 
-	function setUp() {
+	public function setUp() {
 		$this->Data = new TestData();
 		$this->Folder = new Folder(TMP . 'tests' . DS, true);
 		new Folder($this->Folder->pwd() . 'transfer' . DS, true);
@@ -50,13 +50,13 @@ class AttachmentTestCase extends CakeTestCase {
 		new Folder($this->Folder->pwd() . 'filter' . DS, true);
 	}
 
-	function tearDown() {
+	public function tearDown() {
 		$this->Data->flushFiles();
 		$this->Folder->delete();
 		ClassRegistry::flush();
 	}
 
-	function testHasOne() {
+	public function testHasOne() {
 		$Model = $this->_model('hasOne');
 
 		$file = $this->Data->getFile(array('image-jpg.jpg' => 'ta.jpg'));
@@ -88,7 +88,7 @@ class AttachmentTestCase extends CakeTestCase {
 		$this->assertFalse(file_exists($this->Folder->pwd() . 'transfer' .  DS . 'ta.jpg'));
 	}
 
-	function testHasMany() {
+	public function testHasMany() {
 		$Model = $this->_model('hasMany');
 
 		$fileA = $this->Data->getFile(array('image-jpg.jpg' => 'ta.jpg'));
@@ -136,7 +136,7 @@ class AttachmentTestCase extends CakeTestCase {
 		$this->assertFalse(file_exists($this->Folder->pwd() . 'transfer' .  DS . 'tb.jpg'));
 	}
 
-	function testHasManyWithMissingMediaAdapters() {
+	public function testHasManyWithMissingMediaAdapters() {
 		$_backupConfig = Configure::read('Media');
 		$_backupProcess = Media_Process::config();
 		$_backupInfo = Media_Info::config();
@@ -194,7 +194,7 @@ class AttachmentTestCase extends CakeTestCase {
 		Configure::write('Media', $_backupConfig);
 	}
 
-	function testGroupedHasMany() {
+	public function testGroupedHasMany() {
 		$assoc = array(
 			'Photo' => array(
 				'className' => 'Media.Attachment',

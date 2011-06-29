@@ -140,7 +140,7 @@ class Attachment extends MediaAppModel {
  * @param array $process version, directory, instructions
  * @return boolean `true` if version for the file was successfully stored
  */
-	// function makeVersion($file, $process) {
+	// public function makeVersion($file, $process) {
 	// }
 
 /**
@@ -153,7 +153,7 @@ class Attachment extends MediaAppModel {
  * @param array $from Information about the source file
  * @return string The path to the destination file or false
  */
-	// function transferTo($via, $from) {
+	// public function transferTo($via, $from) {
 	// }
 }
 ?>

@@ -42,7 +42,7 @@ class BaseBehaviorTestCase extends CakeTestCase {
 
 	protected $_behaviorSettings = array();
 
-	function start() {
+	public function start() {
 		parent::start();
 
 		if (in_array('plugin.media.song', $this->fixtures)) {
@@ -50,7 +50,7 @@ class BaseBehaviorTestCase extends CakeTestCase {
 		}
 	}
 
-	function setUp() {
+	public function setUp() {
 		$this->Folder = new Folder(TMP . 'tests' . DS, true);
 		$this->Folder->create($this->Folder->pwd() . 'static/img');
 		$this->Folder->create($this->Folder->pwd() . 'static/doc');
@@ -72,7 +72,7 @@ class BaseBehaviorTestCase extends CakeTestCase {
 		$this->_mediaConfig = Configure::read('Media');
 	}
 
-	function tearDown() {
+	public function tearDown() {
 		$this->Data->flushFiles();
 		$this->Folder->delete();
 		ClassRegistry::flush();

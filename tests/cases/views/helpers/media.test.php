@@ -37,11 +37,11 @@ App::import('Helper', 'Media.Media');
  */
 class MockMediaHelper extends MediaHelper {
 
-	function versions() {
+	public function versions() {
 		return $this->_versions;
 	}
 
-	function directories() {
+	public function directories() {
 		return $this->_directories;
 	}
 }
@@ -54,7 +54,7 @@ class MockMediaHelper extends MediaHelper {
  */
 class MediaHelperTestCase extends CakeTestCase {
 
-	function setUp() {
+	public function setUp() {
 		$this->_config = Configure::read('Media');
 
 		$this->TmpFolder = new Folder(TMP . 'tests' . DS, true);
@@ -93,14 +93,14 @@ class MediaHelperTestCase extends CakeTestCase {
 		$this->Helper = new MediaHelper($settings);
 	}
 
-	function tearDown() {
+	public function tearDown() {
 		Configure::write('Media', $this->_config);
 		$this->TestData->flushFiles();
 		$this->TmpFolder->delete();
 		ClassRegistry::flush();
 	}
 
-	function testConstruct() {
+	public function testConstruct() {
 		$settings = array(
 			$this->TmpFolder->pwd() . 'static' . DS => 'media/static/',
 			$this->TmpFolder->pwd() . 'theme' . DS  => 'media/theme/'
@@ -112,7 +112,7 @@ class MediaHelperTestCase extends CakeTestCase {
 		$Helper = new MockMediaHelper($settings);
 	}
 
-	function testUrl() {
+	public function testUrl() {
 		$result = $this->Helper->url('img/image-png');
 		$this->assertEqual($result, 'media/static/img/image-png.png');
 
@@ -132,7 +132,7 @@ class MediaHelperTestCase extends CakeTestCase {
 		$this->assertEqual($result, 'media/filter/s/transfer/img/image-png-x.png');
 	}
 
-	function testWebroot() {
+	public function testWebroot() {
 		$result = $this->Helper->webroot('img/image-png');
 		$this->assertEqual($result, 'media/static/img/image-png.png');
 
@@ -152,7 +152,7 @@ class MediaHelperTestCase extends CakeTestCase {
 		$this->assertEqual($result, 'media/filter/s/transfer/img/image-png-x.png');
 	}
 
-	function testFile() {
+	public function testFile() {
 		$result = $this->Helper->file('static/img/not-existant.jpg');
 		$this->assertFalse($result);
 
@@ -178,17 +178,17 @@ class MediaHelperTestCase extends CakeTestCase {
 		$this->assertEqual($result, $this->file5);
 	}
 
-	function testName() {
+	public function testName() {
 		$this->assertEqual($this->Helper->name('img/image-png.png'), 'image');
 		$this->assertNull($this->Helper->name('static/img/not-existant.jpg'));
 	}
 
-	function testMimeType() {
+	public function testMimeType() {
 		$this->assertEqual($this->Helper->mimeType('img/image-png.png'), 'image/png');
 		$this->assertNull($this->Helper->mimeType('static/img/not-existant.jpg'));
 	}
 
-	function testSize() {
+	public function testSize() {
 		$this->assertEqual($this->Helper->size('img/image-png.png'), 10142);
 		$this->assertNull($this->Helper->size('static/img/not-existant.jpg'));
 	}

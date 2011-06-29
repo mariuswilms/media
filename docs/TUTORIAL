@@ -195,7 +195,7 @@ steps:
  - Reimplement a special method in models/post.php used by the transfer 
    behavior in order to make it use non-guessable file names.
    {{{
-	function transferTo($via, $from) {
+	public function transferTo($via, $from) {
 		extract($from);
 
 		$irregular = array(

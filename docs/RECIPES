@@ -62,7 +62,7 @@ the Transfer Behavior.
   }
   
   class MoviesController extends AppController {
-      function edit($id = null) {
+      public function edit($id = null) {
           // ...
           // $this->data = array(
           // 'Movie' => array('id' => $id, 'title' => 'Vicky Cristina Barcelona'),

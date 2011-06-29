@@ -37,7 +37,7 @@ class MakeTask extends MediaShell {
  * @access public
  * @return void
  */
-	function execute() {
+	public function execute() {
 		if (isset($this->params['model'])) {
 			$this->model = $this->params['model'];
 		 } else {

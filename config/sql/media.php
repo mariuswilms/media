@@ -31,7 +31,7 @@ class MediaSchema extends CakeSchema {
  * @param array $event
  * @access public
  */
-	function before($event = array()) {
+	public function before($event = array()) {
 		return true;
 	}
 
@@ -41,7 +41,7 @@ class MediaSchema extends CakeSchema {
  * @param array $event
  * @access public
  */
-	function after($event = array()) {
+	public function after($event = array()) {
 	}
 
 /**

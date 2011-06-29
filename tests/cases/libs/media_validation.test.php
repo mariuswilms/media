@@ -26,15 +26,15 @@ require_once dirname(dirname(dirname(__FILE__))) . DS . 'fixtures' . DS . 'test_
  * @subpackage media.tests.cases.libs
  */
 class MediaValidationTest extends CakeTestCase {
-	function setUp() {
+	public function setUp() {
 		$this->TestData = new TestData();
 	}
 
-	function tearDown() {
+	public function tearDown() {
 		$this->TestData->flushFiles();
 	}
 
-	function testMimeType() {
+	public function testMimeType() {
 		$check = 'image/png';
 		$result = MediaValidation::mimeType($check);
 		$this->assertTrue($result);
@@ -56,7 +56,7 @@ class MediaValidationTest extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 
-	function testExtension() {
+	public function testExtension() {
 		$check = 'png';
 		$result = MediaValidation::extension($check);
 		$this->assertTrue($result);
@@ -124,7 +124,7 @@ class MediaValidationTest extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
-	function testSize() {
+	public function testSize() {
 		$result = MediaValidation::size('1M','2M');
 		$this->assertTrue($result);
 
@@ -154,7 +154,7 @@ class MediaValidationTest extends CakeTestCase {
 
 	}
 
-	function testLocation() {
+	public function testLocation() {
 		$result = MediaValidation::location(TMP);
 		$this->assertFalse($result);
 
@@ -201,7 +201,7 @@ class MediaValidationTest extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
-	function testAccess() {
+	public function testAccess() {
 		$result = MediaValidation::access('0444', 'r');
 		$this->assertTrue($result);
 
@@ -224,7 +224,7 @@ class MediaValidationTest extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 
-	function testPermission() {
+	public function testPermission() {
 		$result = MediaValidation::permission('0111');
 		$this->assertFalse($result);
 
@@ -244,7 +244,7 @@ class MediaValidationTest extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
-	function testFile() {
+	public function testFile() {
 		$file = __FILE__;
 		$result = MediaValidation::file($file);
 		$this->assertTrue($result);
@@ -266,7 +266,7 @@ class MediaValidationTest extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 
-	function testFolder() {
+	public function testFolder() {
 		$file = dirname(__FILE__);
 		$result = MediaValidation::folder($file);
 		$this->assertTrue($result);

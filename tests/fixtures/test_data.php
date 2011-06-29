@@ -91,7 +91,7 @@ class TestData extends Object {
  * @param string $key
  * @access public
  **/
-	function getString($key) {
+	public function getString($key) {
 		$result = '';
 
 		if (isset($this->decoded[$key])) {
@@ -121,7 +121,7 @@ class TestData extends Object {
  * @param string $string
  * @return string Absolute path to the created file
  */
-	function getFile($key = null, $string = '') {
+	public function getFile($key = null, $string = '') {
 		if (is_array($key)) {
 			$file = current($key);
 			$key = key($key);
@@ -160,7 +160,7 @@ class TestData extends Object {
  *
  * @return void
  */
-	function flushFiles() {
+	public function flushFiles() {
 		foreach ($this->Files as $File) {
 			if ($File->exists()) {
 				$File->delete();

@@ -58,7 +58,7 @@ class MediaShell extends Shell {
  * @access public
  * @return void
  */
-	 function startup() {
+	 public function startup() {
 		$this->verbose = isset($this->params['verbose']);
 		$this->quiet = isset($this->params['quiet']);
 		parent::startup();
@@ -82,7 +82,7 @@ class MediaShell extends Shell {
  * @access public
  * @return void
  */
-	 function main() {
+	 public function main() {
 		$this->out('[I]nitialize Media Directory');
 		$this->out('[P]rotect Transfer Directory');
 		$this->out('[S]ynchronize');
@@ -129,7 +129,7 @@ class MediaShell extends Shell {
  * @access public
  * @return void
  */
-	function init() {
+	public function init() {
 		$message = 'Do you want to create missing media directories now?';
 
 		if ($this->in($message, 'y,n', 'n') == 'n') {
@@ -186,7 +186,7 @@ class MediaShell extends Shell {
  * @access public
  * @return void
  */
-	function protect() {
+	public function protect() {
 		if (MEDIA_TRANSFER_URL === false) {
 			$this->out('The content of the transfer directory is not served.');
 			return true;
@@ -223,7 +223,7 @@ class MediaShell extends Shell {
  *
  * @access public
  */
-	function help() {
+	public function help() {
 		// 63 chars ===============================================================
 		$this->out("NAME");
 		$this->out("\tmedia -- the 23rd shell");
@@ -269,7 +269,7 @@ class MediaShell extends Shell {
  * @access public
  * @return void
  */
-	function progress($value, $text = null) {
+	public function progress($value, $text = null) {
 		static $target = 0;
 
 		if ($this->quiet) {

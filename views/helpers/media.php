@@ -101,7 +101,7 @@ class MediaHelper extends AppHelper {
  * @param boolean $full Forces the URL to be fully qualified
  * @return string|void An URL to the file
  */
-	function url($path = null, $full = false) {
+	public function url($path = null, $full = false) {
 		if (!$path = $this->webroot($path)) {
 			return null;
 		}
@@ -119,7 +119,7 @@ class MediaHelper extends AppHelper {
  * @param string $path Absolute or partial path to a file
  * @return string|void An URL to the file
  */
-	function webroot($path) {
+	public function webroot($path) {
 		if (!$file = $this->file($path)) {
 			return null;
 		}
@@ -173,7 +173,7 @@ class MediaHelper extends AppHelper {
  *                                        one of these.
  * @return string|void
  */
-	function embed($paths, $options = array()) {
+	public function embed($paths, $options = array()) {
 		$default = array(
 			'autoplay' => false,
 			'preload' => false,
@@ -289,7 +289,7 @@ class MediaHelper extends AppHelper {
  *                       - width, height
  * @return string
  */
-	function embedAsObject($paths, $options = array()) {
+	public function embedAsObject($paths, $options = array()) {
 		$default = array(
 			'autoplay' => false,
 			'controls' => true,
@@ -431,7 +431,7 @@ class MediaHelper extends AppHelper {
  * @param string $path Absolute or partial path to a file
  * @return string|void i.e. `image` or `video`
  */
-	function name($path) {
+	public function name($path) {
 		if ($file = $this->file($path)) {
 			return Mime_Type::guessName($file);
 		}
@@ -443,7 +443,7 @@ class MediaHelper extends AppHelper {
  * @param string $path Absolute or partial path to a file
  * @return string|void
  */
-	function mimeType($path) {
+	public function mimeType($path) {
 		if ($file = $this->file($path)) {
 			return Mime_Type::guessType($file);
 		}
@@ -455,7 +455,7 @@ class MediaHelper extends AppHelper {
  * @param string $path Absolute or partial path to a file
  * @return integer|void
  */
-	function size($path)	{
+	public function size($path)	{
 		if ($file = $this->file($path)) {
 			return filesize($file);
 		}
@@ -475,7 +475,7 @@ class MediaHelper extends AppHelper {
  * @return string|boolean False on error or if path couldn't be resolved otherwise
  *                        an absolute path to the file.
  */
-	function file($path) {
+	public function file($path) {
 		// Most recent paths are probably searched more often
 		$bases = array_reverse(array_keys($this->_paths));
 

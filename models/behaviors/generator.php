@@ -92,7 +92,7 @@ class GeneratorBehavior extends ModelBehavior {
  * @param array $settings See defaultSettings for configuration options
  * @return void
  */
-	function setup(&$Model, $settings = array()) {
+	public function setup(&$Model, $settings = array()) {
 		$settings = (array)$settings;
 		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
 	}
@@ -107,7 +107,7 @@ class GeneratorBehavior extends ModelBehavior {
  * @param boolean $created
  * @return boolean
  */
-	function afterSave(&$Model, $created) {
+	public function afterSave(&$Model, $created) {
 		$item = $Model->data[$Model->alias];
 
 		if (isset($item['dirname'], $item['basename'])) {
@@ -143,7 +143,7 @@ class GeneratorBehavior extends ModelBehavior {
  * @param string $file Path to a file relative to `baseDirectory`  or an absolute path to a file
  * @return array An array of absolute paths to version files which successfully have been made
  */
-	function make(&$Model, $file) {
+	public function make(&$Model, $file) {
 		extract($this->settings[$Model->alias]);
 
 		list($file, $relativeFile) = $this->_file($Model, $file);
@@ -234,7 +234,7 @@ class GeneratorBehavior extends ModelBehavior {
  * @param array $process directory, version, instructions
  * @return string|boolean Absolute path to the version file, `false` on error
  */
-	function makeVersion(&$Model, $file, $process) {
+	public function makeVersion(&$Model, $file, $process) {
 		extract($this->settings[$Model->alias]);
 
 		/* Process builtin instructions */

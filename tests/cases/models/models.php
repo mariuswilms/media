@@ -17,7 +17,7 @@ class Unicorn extends CakeTestModel {
 	public $makeVersionArgs = array();
 	public $returnMakeVersion = true;
 
-	function makeVersion() {
+	public function makeVersion() {
 		$this->makeVersionArgs[] = func_get_args();
 		return $this->returnMakeVersion;
 	}

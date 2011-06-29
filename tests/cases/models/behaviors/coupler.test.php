@@ -26,14 +26,14 @@ require_once dirname(__FILE__) . DS . 'base.test.php';
  */
 class CouplerBehaviorTestCase extends BaseBehaviorTestCase {
 
-	function setUp() {
+	public function setUp() {
 		parent::setUp();
 		$this->_behaviorSettings = array(
 			'baseDirectory' => $this->Folder->pwd()
 		);
 	}
 
-	function testSetup() {
+	public function testSetup() {
 		$Model =& ClassRegistry::init('TheVoid');
 		$Model->Behaviors->attach('Media.Coupler');
 
@@ -41,7 +41,7 @@ class CouplerBehaviorTestCase extends BaseBehaviorTestCase {
 		$Model->Behaviors->attach('Media.Coupler');
 	}
 
-	function testFind() {
+	public function testFind() {
 		$Model =& ClassRegistry::init('Song');
 		$Model->Behaviors->attach('Media.Coupler', $this->_behaviorSettings);
 		$result = $Model->find('all');
@@ -53,7 +53,7 @@ class CouplerBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertEqual($result['Song']['file'], $this->file0);
 	}
 
-	function testSave() {
+	public function testSave() {
 		$Model =& ClassRegistry::init('Song');
 		$Model->Behaviors->attach('Media.Coupler', $this->_behaviorSettings);
 

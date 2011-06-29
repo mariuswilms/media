@@ -33,7 +33,7 @@ class TransferValidation extends MediaValidation {
  * @param mixed $check Path to file in local FS, URL or file-upload array
  * @return boolean
  */
-	function resource($check) {
+	public function resource($check) {
 		if (TransferValidation::fileUpload($check)
 		 || TransferValidation::uploadedFile($check) /* This must appear above file */
 		 || MediaValidation::file($check)
@@ -49,7 +49,7 @@ class TransferValidation extends MediaValidation {
  * @param mixed $check Array or string
  * @return boolean
  */
-	function blank($check) {
+	public function blank($check) {
 		if (empty($check)) {
 			return true;
 		}
@@ -68,7 +68,7 @@ class TransferValidation extends MediaValidation {
  * @param mixed $check
  * @return boolean
  */
-	function fileUpload($check) {
+	public function fileUpload($check) {
 		if (!is_array($check)) {
 			return false;
 		}
@@ -87,7 +87,7 @@ class TransferValidation extends MediaValidation {
  *
  * @param mixed $check
  */
-	function uploadedFile($check) {
+	public function uploadedFile($check) {
 		return MediaValidation::file($check) && is_uploaded_file($check);
 	}
 
@@ -97,7 +97,7 @@ class TransferValidation extends MediaValidation {
  * @param string string to check
  * @param array options for allowing different url parts currently only scheme is supported
  */
-	function url($check, $options = array()) {
+	public function url($check, $options = array()) {
 		if (!is_string($check)) {
 			return false;
 		}
