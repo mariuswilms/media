@@ -77,4 +77,3 @@ class CouplerBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertEqual($expected, $result);
 	}
 }
-?>

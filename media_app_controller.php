@@ -25,4 +25,3 @@
  */
 class MediaAppController extends AppController {
 }
-?>

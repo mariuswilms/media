@@ -503,4 +503,3 @@ class SyncTask extends MediaShell {
 		return false;
 	}
 }
-?>

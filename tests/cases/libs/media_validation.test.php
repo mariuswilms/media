@@ -292,4 +292,3 @@ class MediaValidationTest extends CakeTestCase {
 		$this->assertTrue($result);
 	}
 }
-?>

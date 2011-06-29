@@ -9,4 +9,3 @@ class AllCompatibleGroupTest extends TestSuite {
 		TestManager::addTestCasesFromDirectory($this, $cases . DS . 'views' . DS . 'helpers');
 	}
 }
-?>

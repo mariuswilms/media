@@ -79,5 +79,3 @@ class BaseBehaviorTestCase extends CakeTestCase {
 		Configure::write('Media', $this->_mediaConfig);
 	}
 }
-
-?>

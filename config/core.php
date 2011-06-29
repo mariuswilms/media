@@ -249,5 +249,3 @@ Configure::write('Media.filter', array(
 	'image' => compact('s', 'm', 'l'),
 	'video' => compact('s', 'm')
 ));
-
-?>

@@ -27,4 +27,3 @@ class MovieFixture extends CakeTestFixture {
 						),
 					);
 }
-?>

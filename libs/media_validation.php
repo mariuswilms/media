@@ -347,4 +347,3 @@ class MediaValidation extends Validation {
 	    return $size;
 	}
 }
-?>

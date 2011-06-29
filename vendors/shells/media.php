@@ -284,4 +284,3 @@ class MediaShell extends Shell {
 		}
 	}
 }
-?>

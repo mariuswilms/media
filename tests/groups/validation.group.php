@@ -13,4 +13,3 @@ class AllValidationGroupTest extends TestSuite {
 		);
 	}
 }
-?>

@@ -194,5 +194,3 @@ class MetaBehavior extends ModelBehavior {
 		return $result;
 	}
 }
-
-?>

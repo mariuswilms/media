@@ -169,4 +169,3 @@ class TestData extends Object {
 		$this->Files = array();
 	}
 }
-?>

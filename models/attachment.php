@@ -156,4 +156,3 @@ class Attachment extends MediaAppModel {
 	// public function transferTo($via, $from) {
 	// }
 }
-?>

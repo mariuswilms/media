@@ -109,4 +109,3 @@ class TransferValidation extends MediaValidation {
 		return Validation::url($check);
 	}
 }
-?>

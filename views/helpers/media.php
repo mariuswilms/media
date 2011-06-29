@@ -611,5 +611,3 @@ class MediaHelper extends AppHelper {
 		return abs(crc32($path)) % 2;
 	}
 }
-
-?>

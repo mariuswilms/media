@@ -140,4 +140,3 @@ class PolymorphicBehavior extends ModelBehavior {
 		return current($Model->find('list', array('conditions' => array($Model->alias . '.' . $Model->primaryKey => $id))));
 	}
 }
-?>

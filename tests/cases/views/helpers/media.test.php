@@ -193,5 +193,3 @@ class MediaHelperTestCase extends CakeTestCase {
 		$this->assertNull($this->Helper->size('static/img/not-existant.jpg'));
 	}
 }
-
-?>

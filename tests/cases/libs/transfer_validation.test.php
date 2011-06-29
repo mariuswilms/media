@@ -34,4 +34,3 @@ class TransferValidationTest extends CakeTestCase {
 		$this->TestData->flushFiles();
 	}
 }
-?>

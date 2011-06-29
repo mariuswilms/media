@@ -342,5 +342,3 @@ class GeneratorBehavior extends ModelBehavior {
 		return array($file, $relativeFile);
 	}
 }
-
-?>

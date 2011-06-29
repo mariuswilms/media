@@ -293,5 +293,3 @@ class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertEqual('image/png', $mimeType);
 	}
 }
-
-?>

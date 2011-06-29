@@ -71,4 +71,3 @@ class MetaBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertTrue(Set::matches('/Song/mime_type',$result));
 	}
 }
-?>

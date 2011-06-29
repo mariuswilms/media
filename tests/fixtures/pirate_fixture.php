@@ -17,4 +17,3 @@ class PirateFixture extends CakeTestFixture {
 			'model' => 'unknown'
 	));
 }
-?>

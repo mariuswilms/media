@@ -291,4 +291,3 @@ class TransferBehaviorTestCase extends BaseBehaviorTestCase {
 		$this->assertFalse($result);
 	}
 }
-?>

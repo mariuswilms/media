@@ -27,4 +27,3 @@ class Pirate extends CakeTestModel {
 	public $name = 'Pirate';
 	public $useTable = 'pirates';
 }
-?>

@@ -82,5 +82,3 @@ class MakeTask extends MediaShell {
 		$this->out();
 	}
 }
-
-?>

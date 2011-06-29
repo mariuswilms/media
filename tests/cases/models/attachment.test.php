@@ -286,4 +286,3 @@ class AttachmentTestCase extends CakeTestCase {
 		return $Model;
 	}
 }
-?>
