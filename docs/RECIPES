@@ -51,7 +51,7 @@ the Transfer Behavior.
   {{{ 
   class Movie extends AppModel {
       // ...
-      var $hasMany = array(
+      public $hasMany = array(
           'Attachment' => array(
               'className' => 'Media.Attachment',
               'foreignKey' => 'foreign_key',
@@ -83,7 +83,7 @@ the Transfer Behavior.
   {{{ 
   class Movie extends AppModel {
       // ...
-       var $hasOne = array(
+       public $hasOne = array(
           'Attachment' => array(
               'className' => 'Media.Attachment',
               'foreignKey' => 'foreign_key',
@@ -102,7 +102,7 @@ the Transfer Behavior.
   {{{ 
   class Movie extends AppModel {
       // ...
-      var $hasMany = array(
+      public $hasMany = array(
           'Poster' => array(
               'className' => 'Media.Attachment',
               'foreignKey' => 'foreign_key',

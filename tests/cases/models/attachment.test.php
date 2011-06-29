@@ -37,7 +37,7 @@ require_once 'Media/Info.php';
  */
 class AttachmentTestCase extends CakeTestCase {
 
-	var $fixtures = array(
+	public $fixtures = array(
 		'plugin.media.movie', 'plugin.media.actor',
 		'plugin.media.attachment', 'plugin.media.pirate'
 	);

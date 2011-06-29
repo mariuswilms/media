@@ -72,7 +72,7 @@ the plugin. We'll change that now by editing the post model in
 models/posts.php by adding the transfer behavior to the actsAs property.
 {{{
 class Post extends AppModel {
-	var $actsAs = array('Media.Transfer');
+	public $actsAs = array('Media.Transfer');
 }
 }}}
 
@@ -86,7 +86,7 @@ In order associate the file with the new post record (in this case titled Demo)
 we add another behavior from the plugin to the mix.
 {{{
 class Post extends AppModel {
-	var $actsAs = array('Media.Transfer', 'Media.Coupler');
+	public $actsAs = array('Media.Transfer', 'Media.Coupler');
 }
 }}}
  
@@ -112,7 +112,7 @@ Array
 If you want to get fancy, make use of the virtual fields feature
 in CakePHP 1.3 by adding the following field definition to you model.
 {{{
-var $virtualFields = array(
+public $virtualFields = array(
     'path' => "CONCAT_WS('/', dirname, basename)"
 );
 }}}
@@ -128,7 +128,7 @@ In order to generate versions from the uploaded file we add the generator
 behavior to the mix.
 {{{
 class Post extends AppModel {
-	var $actsAs = array('Media.Transfer', 'Media.Generator', 'Media.Coupler');
+	public $actsAs = array('Media.Transfer', 'Media.Generator', 'Media.Coupler');
 }
 }}}
 
@@ -232,7 +232,7 @@ the transfer behavior's documentation for information about the rules.
 
 {{{
 ...
-	var $validate = array(
+	public $validate = array(
 		'file' => array(
 			'resource'   => array('rule' => 'checkResource'),
 			'access'     => array('rule' => 'checkAccess'),

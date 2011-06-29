@@ -55,7 +55,7 @@ class SyncTask extends MediaShell {
  * @var string
  * @access public
  */
-	var $model;
+	public $model;
 
 /**
  * Directory
@@ -63,7 +63,7 @@ class SyncTask extends MediaShell {
  * @var string
  * @access public
  */
-	var $directory;
+	public $directory;
 
 /**
  * Default answer to use if prompted for input

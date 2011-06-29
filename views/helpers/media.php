@@ -24,13 +24,13 @@ require_once 'Mime/Type.php';
  * To load the helper just include it in the helpers property
  * of a controller:
  * {{{
- *     var $helpers = array('Form', 'Html', 'Media.Media');
+ *     public $helpers = array('Form', 'Html', 'Media.Media');
  * }}}
  *
  * If needed you can also pass additional path to URL mappings when
  * loading the helper:
  * {{{
- *     var $helpers = array('Media.Media' => array(MEDIA_FOO => 'foo/'));
+ *     public $helpers = array('Media.Media' => array(MEDIA_FOO => 'foo/'));
  * }}}
  *
  * Nearly all helper methods take so called partial paths. Partial paths are
@@ -50,14 +50,14 @@ class MediaHelper extends AppHelper {
  *
  * @var array
  */
-	var $helpers = array('Html');
+	public $helpers = array('Html');
 
 /**
  * Tags
  *
  * @var array
  */
-	var $tags = array(
+	public $tags = array(
 		'audio'          => '<audio%s>%s%s</audio>',
 		'video'          => '<video%s>%s%s</video>',
 		'source'         => '<source%s/>',

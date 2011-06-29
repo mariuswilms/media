@@ -34,7 +34,7 @@ class MediaShell extends Shell {
  * @var string
  * @access public
  */
-	var $tasks = array('Sync', 'Make');
+	public $tasks = array('Sync', 'Make');
 
 /**
  * Verbose mode
@@ -42,7 +42,7 @@ class MediaShell extends Shell {
  * @var boolean
  * @access public
  */
-	var $verbose = false;
+	public $verbose = false;
 
 /**
  * Quiet mode
@@ -50,7 +50,7 @@ class MediaShell extends Shell {
  * @var boolean
  * @access public
  */
-	var $quiet = false;
+	public $quiet = false;
 
 /**
  * Startup

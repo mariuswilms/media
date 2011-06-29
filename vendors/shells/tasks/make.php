@@ -25,9 +25,9 @@
  */
 class MakeTask extends MediaShell {
 
-	var $source;
+	public $source;
 
-	var $model;
+	public $model;
 
 	protected $_Model;
 

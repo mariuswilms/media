@@ -50,7 +50,7 @@ class MediaSchema extends CakeSchema {
  * @var array
  * @access public
  */
-	var $attachments = array(
+	public $attachments = array(
 		'id'          => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary', 'extra' => 'auto_increment', 'length' => 10),
 		'model'       => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 255),
 		'foreign_key' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10),

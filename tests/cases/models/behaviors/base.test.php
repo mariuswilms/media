@@ -38,7 +38,7 @@ SimpleTest::ignore('BaseBehaviorTestCase');
  */
 class BaseBehaviorTestCase extends CakeTestCase {
 
-	var $fixtures = array('plugin.media.song', 'core.image');
+	public $fixtures = array('plugin.media.song', 'core.image');
 
 	protected $_behaviorSettings = array();
 

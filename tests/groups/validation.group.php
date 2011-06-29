@@ -1,6 +1,6 @@
 <?php
 class AllValidationGroupTest extends TestSuite {
-	var $label = 'All validation related test cases';
+	public $label = 'All validation related test cases';
 
 	function AllValidationGroupTest() {
 		TestManager::addTestFile(

@@ -1,15 +1,15 @@
 <?php
 class ActorFixture extends CakeTestFixture {
-	var $name = 'Actor';
+	public $name = 'Actor';
 
-	var $fields = array(
+	public $fields = array(
 			'id'		=> array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary', 'extra' => 'auto_increment', 'length' => 10),
 			'movie_id'	=> array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10),
 			'name'		=> array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 255),
 			'indexes'	=> array('PRIMARY' => array('column' => 'id', 'unique' => 1))
 			);
 
-	var $records = array(
+	public $records = array(
 						array(
 							'id'  => 1,
 							'movie_id' => 1,

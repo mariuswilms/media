@@ -33,7 +33,7 @@ class Attachment extends MediaAppModel {
  * @var string
  * @access public
  */
-	var $name = 'Attachment';
+	public $name = 'Attachment';
 
 /**
  * Name of table to use
@@ -41,7 +41,7 @@ class Attachment extends MediaAppModel {
  * @var mixed
  * @access public
  */
-	var $useTable = 'attachments';
+	public $useTable = 'attachments';
 
 /**
  * actsAs property
@@ -49,7 +49,7 @@ class Attachment extends MediaAppModel {
  * @var array
  * @access public
  */
-	var $actsAs = array(
+	public $actsAs = array(
 		'Media.Transfer' => array(
 			'trustClient' => false,
 			'transferDirectory' => MEDIA_TRANSFER,
@@ -88,7 +88,7 @@ class Attachment extends MediaAppModel {
  * @var array
  * @access public
  */
-	var $validate = array(
+	public $validate = array(
 		'file' => array(
 			'resource'   => array('rule' => 'checkResource'),
 			'access'     => array('rule' => 'checkAccess'),
@@ -117,7 +117,7 @@ class Attachment extends MediaAppModel {
  * @var array
  * @access public
  */
-	// var $virtualFields = array(
+	// public $virtualFields = array(
 	//	'path' => "CONCAT_WS('/', dirname, basename)"
 	// );
 

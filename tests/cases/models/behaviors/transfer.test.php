@@ -39,7 +39,7 @@ class TestTransferBehavior extends TransferBehavior {
  */
 class TransferBehaviorTestCase extends BaseBehaviorTestCase {
 
-	var $fixtures = array('plugin.media.movie', 'plugin.media.actor');
+	public $fixtures = array('plugin.media.movie', 'plugin.media.actor');
 
 	function setUp() {
 		parent::setUp();

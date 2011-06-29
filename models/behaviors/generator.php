@@ -30,7 +30,7 @@ require_once 'Mime/Type.php';
  * To connect TransferBehavior and GeneratorBehavior with each other it is important
  * to specify TransferBehavior before GeneratorBehavior:
  * {{{
- *     var $actAs = array(
+ *     public $actAs = array(
  *         'Media.Transfer',
  *         'Media.Generator'
  *     );

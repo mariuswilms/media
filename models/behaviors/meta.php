@@ -45,7 +45,7 @@ class MetaBehavior extends ModelBehavior {
  *
  * @var array
  */
-	var $settings = array();
+	public $settings = array();
 
 /**
  * Default settings

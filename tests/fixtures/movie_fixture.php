@@ -1,15 +1,15 @@
 <?php
 class MovieFixture extends CakeTestFixture {
-	var $name = 'Movie';
+	public $name = 'Movie';
 
-	var $fields = array(
+	public $fields = array(
 			'id'		=> array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary', 'extra' => 'auto_increment', 'length' => 10),
 			'title'		=> array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 255),
 			'director'	=> array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 255),
 			'indexes'	=> array('PRIMARY' => array('column' => 'id', 'unique' => 1))
 			);
 
-	var $records = array(
+	public $records = array(
 						array(
 							'id'  => 1,
 							'title'  => 'Frost/Nixon',
