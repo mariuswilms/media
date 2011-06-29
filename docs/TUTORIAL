@@ -16,7 +16,7 @@ $ git clone git://github.com/davidpersson/media.git plugins/media
 Now we go and load the configuration that comes with the plugin. Edit
 your app's config/core.php and add the following code.
 {{{
-    require APP . '/plugins/media/config/core.php';
+    require APP . '/plugins/media/config/media.php';
 }}}
 
 In order to initialize the directories for storing i.e. uploaded files
@@ -120,7 +120,7 @@ public $virtualFields = array(
 Filtering Uploaded Files
 ------------------------
 Most of this should Just Work(TM) as it is expected that you have a pretty
-default setup. Have a look at the plugin's config/core.php file on more options
+default setup. Have a look at the plugin's config/media.php file on more options
 to configure the Media_Process class which is used by the following behavior
 class if something doesn't work the way expected here.
 
@@ -133,7 +133,7 @@ class Post extends AppModel {
 }}}
 
 As the generator behavior will make versions of the uploaded file according to
-configuration, we open up the plugin's config/core.php to have a look on the
+configuration, we open up the plugin's config/media.php to have a look on the
 defaults.
 {{{
 ...

@@ -80,7 +80,7 @@
   Load the plugin's configuration.
      {{{
          // Within your app's core.php
-         require APP . 'plugins/media/config/core.php';
+         require APP . 'plugins/media/config/media.php';
      }}}
 
   Getting Help

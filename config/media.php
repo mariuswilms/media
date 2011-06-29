@@ -3,7 +3,7 @@
  * Plugin Configuration File
  *
  * In order to make the plugin work you must include this file
- * within either your app’s `core.php` or `bootstrap.php`.
+ * within either your app’s `media.php` or `bootstrap.php`.
  *
  * To overwrite defaults you'll define constants before including this file,
  * and overwrite other settings selectively with `Configure::write()`
@@ -11,7 +11,7 @@
  *
  * {{{
  *     define('MEDIA', ROOT . DS . 'media' . DS);
- *     require APP . 'plugins/media/config/core.php';
+ *     require APP . 'plugins/media/config/media.php';
  *
  *     Configure::write('Media.filter.document.xs', array(
  *         'convert' => 'image/png',  'compress' => 9.6, 'zoomCrop' => array(16,16)

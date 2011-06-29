@@ -84,7 +84,7 @@ class TransferBehavior extends ModelBehavior {
  *
  *   The directory will be used as a basis for the relative path returned by
  *   transferTo(). This options defaults to MEDIA_TRANSFER which is defined in
- *   the plugin’s core.php.
+ *   the plugin’s media.php.
  *
  * createDirectory
  *   false - Fail on missing directories
