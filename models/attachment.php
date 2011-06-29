@@ -28,22 +28,6 @@
 class Attachment extends MediaAppModel {
 
 /**
- * Name of model
- *
- * @var string
- * @access public
- */
-	public $name = 'Attachment';
-
-/**
- * Name of table to use
- *
- * @var mixed
- * @access public
- */
-	public $useTable = 'attachments';
-
-/**
  * actsAs property
  *
  * @var array
