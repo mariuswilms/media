@@ -256,17 +256,18 @@ in the end you won't be able to upload files.
 
 Deleting Corresponding Files
 ----------------------------
-Deleting works as you'd expect it with just one exception. It is assumed that
-there is a 1:1 relationship between files and records. When deleting a record,
-coupled to a file it'll also delete that file. When there are also generated
-versions for that file those *will not* get deleted. You'll need to implement
-the logic own your own.
+Deleting works as you'd expect (with one exception). First it is assumed that
+there is a 1:1 relationship between files and records. So when deleting a
+record, coupled to a file, the Coupler behavior will also go and delete that
+file. 
 
-Put the following snippet into the model you've attached 
-the Generator and Coupler behaviors to:
+Now that one exception is generated versions derived from the coupled file
+*will not* get deleted automatically. For this piece of functionality you'll
+need to implement the logic on your own. Following a snippet which does this in
+an exemplaric way.  Add it to to the model you've attached Generator and
+Coupler behaviors to.
 
 {{{
-...
 	public function beforeDelete($cascade = true) {
 		if (!$cascade) {
 			return true;
@@ -307,5 +308,12 @@ the Generator and Coupler behaviors to:
 		}
 		return true;
 	}
-...
 }}}
+
+_Reasoning_: Derived versions are not deleted automatically because there are
+many different scenarios in which some of them don't allow to create a
+relationship between versions and original file. You might know that version
+files a1 and a2 belong to original a but not vice versa.  In order to leave
+wrong assumptions out (which in case of file deletion might cause data loss!)
+the explicit implementation is the most flexible way to do so.
+
