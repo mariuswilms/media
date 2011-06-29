@@ -75,7 +75,7 @@ class GeneratorBehavior extends ModelBehavior {
  *
  * @var array
  */
-	var $_defaultSettings = array(
+	protected $_defaultSettings = array(
 		'baseDirectory'       => MEDIA_TRANSFER,
 		'filterDirectory'     => MEDIA_FILTER,
 		'createDirectory'     => true,

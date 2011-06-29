@@ -71,7 +71,7 @@ class SyncTask extends MediaShell {
  * @var string
  * @access protected
  */
-	var $_answer = 'n';
+	protected $_answer = 'n';
 
 /**
  * Verbosity of output, control via argument `-quiet`
@@ -79,7 +79,7 @@ class SyncTask extends MediaShell {
  * @var boolean
  * @access protected
  */
-	var $_quiet;
+	protected $_quiet;
 
 /**
  * Model
@@ -87,7 +87,7 @@ class SyncTask extends MediaShell {
  * @var Model
  * @access protected
  */
-	var $_Model;
+	protected $_Model;
 
 /**
  * baseDirectory from the model's media behavior settings
@@ -95,7 +95,7 @@ class SyncTask extends MediaShell {
  * @var string
  * @access protected
  */
-	var $_baseDirectory;
+	protected $_baseDirectory;
 
 /**
  * Folder to search
@@ -103,7 +103,7 @@ class SyncTask extends MediaShell {
  * @var Folder
  * @access protected
  */
-	var $_Folder;
+	protected $_Folder;
 
 /**
  * Current item retrieved from the model

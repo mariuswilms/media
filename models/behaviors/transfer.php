@@ -100,7 +100,7 @@ class TransferBehavior extends ModelBehavior {
  *
  * @var array
  */
-	var $_defaultSettings = array(
+	protected $_defaultSettings = array(
 		'trustClient'       => false,
 		'transferDirectory' => MEDIA_TRANSFER,
 		'createDirectory'   => true,
@@ -113,7 +113,7 @@ class TransferBehavior extends ModelBehavior {
  *
  * @var array
  */
-	var $_defaultRuntime = array(
+	protected $_defaultRuntime = array(
 		'source'       => null,
 		'temporary'    => null,
 		'destination'  => null,

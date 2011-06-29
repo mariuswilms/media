@@ -40,7 +40,7 @@ class BaseBehaviorTestCase extends CakeTestCase {
 
 	var $fixtures = array('plugin.media.song', 'core.image');
 
-	var $_behaviorSettings = array();
+	protected $_behaviorSettings = array();
 
 	function start() {
 		parent::start();

@@ -71,7 +71,7 @@ class MediaHelper extends AppHelper {
  *
  * @var array
  */
-	var $_paths = array(
+	protected $_paths = array(
 		MEDIA_STATIC => MEDIA_STATIC_URL,
 		MEDIA_TRANSFER => MEDIA_TRANSFER_URL,
 		MEDIA_FILTER => MEDIA_FILTER_URL

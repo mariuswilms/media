@@ -26,7 +26,7 @@ require_once dirname(__FILE__) . DS . 'base.test.php';
  */
 class GeneratorBehaviorTestCase extends BaseBehaviorTestCase {
 
-	var $_backup;
+	protected $_backup;
 
 	function setUp() {
 		parent::setUp();

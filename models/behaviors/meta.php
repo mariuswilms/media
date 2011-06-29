@@ -57,7 +57,7 @@ class MetaBehavior extends ModelBehavior {
  *
  * @var array
  */
-	var $_defaultSettings = array(
+	protected $_defaultSettings = array(
 		'level' => 1
 	);
 

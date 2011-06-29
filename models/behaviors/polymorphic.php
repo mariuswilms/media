@@ -40,7 +40,7 @@ class PolymorphicBehavior extends ModelBehavior {
  * @var array
  * @access protected
  */
-	var $_defaultSettings = array(
+	protected $_defaultSettings = array(
 		'modelField' => 'model',
 		'foreignKey' => 'foreign_key'
 	);
