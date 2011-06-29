@@ -67,7 +67,7 @@ class MetaBehavior extends ModelBehavior {
  * @var array
  * @access private
  */
-	var $__cached = array();
+	private $__cached = array();
 
 /**
  * Setup behavior settings and cached metadata for the current model

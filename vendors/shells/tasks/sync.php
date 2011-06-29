@@ -111,7 +111,7 @@ class SyncTask extends MediaShell {
  * @var array
  * @access private
  */
-	var $__dbItem;
+	private $__dbItem;
 
 /**
  * Current item retrieved from the filesystem
@@ -119,7 +119,7 @@ class SyncTask extends MediaShell {
  * @var array
  * @access private
  */
-	var $__fsItem;
+	private $__fsItem;
 
 /**
  * Current set of items retrieved from the model
@@ -127,7 +127,7 @@ class SyncTask extends MediaShell {
  * @var array
  * @access private
  */
-	var $__dbMap;
+	private $__dbMap;
 
 /**
  * Current set of items retrieved from the filesystem
@@ -135,7 +135,7 @@ class SyncTask extends MediaShell {
  * @var array
  * @access private
  */
-	var $__fsMap;
+	private $__fsMap;
 
 /**
  * Current file object
@@ -143,7 +143,7 @@ class SyncTask extends MediaShell {
  * @var File
  * @access private
  */
-	var $__File;
+	private $__File;
 
 /**
  * An alternative for the current file
@@ -151,7 +151,7 @@ class SyncTask extends MediaShell {
  * @var mixed
  * @access private
  */
-	var $__alternativeFile;
+	private $__alternativeFile;
 
 /**
  * Main execution method
