@@ -192,7 +192,7 @@ steps:
    After that protect the directories.
    $ cake/console/cake media protect
    
- - Reimplement a special method in models/post.pgp used by the transfer 
+ - Reimplement a special method in models/post.php used by the transfer 
    behavior in order to make it use non-guessable file names.
    {{{
 	function transferTo($via, $from) {
