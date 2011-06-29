@@ -47,7 +47,6 @@ class Attachment extends MediaAppModel {
  * actsAs property
  *
  * @var array
- * @access public
  */
 	public $actsAs = array(
 		'Media.Transfer' => array(
@@ -86,7 +85,6 @@ class Attachment extends MediaAppModel {
  * specify the `'tmp'` extension in case you are using a whitelist.
  *
  * @var array
- * @access public
  */
 	public $validate = array(
 		'file' => array(
@@ -115,7 +113,6 @@ class Attachment extends MediaAppModel {
  * Uncomment to get fancy path field.
  *
  * @var array
- * @access public
  */
 	// public $virtualFields = array(
 	//	'path' => "CONCAT_WS('/', dirname, basename)"

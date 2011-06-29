@@ -38,7 +38,6 @@ class PolymorphicBehavior extends ModelBehavior {
  * defaultSettings property
  *
  * @var array
- * @access protected
  */
 	protected $_defaultSettings = array(
 		'modelField' => 'model',
@@ -51,7 +50,6 @@ class PolymorphicBehavior extends ModelBehavior {
  * @param mixed $Model
  * @param array $config
  * @return void
- * @access public
  */
 	public function setup(&$Model, $config = array()) {
 		$this->settings[$Model->alias] = am ($this->_defaultSettings, $config);
@@ -63,7 +61,6 @@ class PolymorphicBehavior extends ModelBehavior {
  * @param mixed $Model
  * @param mixed $results
  * @param bool $primary
- * @access public
  * @return void
  */
 	public function afterFind(&$Model, $results, $primary = false) {
@@ -128,7 +125,6 @@ class PolymorphicBehavior extends ModelBehavior {
  *
  * @param mixed $id
  * @return string
- * @access public
  */
 	public function display(&$Model, $id = null) {
 		if (!$id) {

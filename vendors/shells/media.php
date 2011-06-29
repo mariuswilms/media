@@ -32,7 +32,6 @@ class MediaShell extends Shell {
  * Tasks
  *
  * @var string
- * @access public
  */
 	public $tasks = array('Sync', 'Make');
 
@@ -40,7 +39,6 @@ class MediaShell extends Shell {
  * Verbose mode
  *
  * @var boolean
- * @access public
  */
 	public $verbose = false;
 
@@ -48,14 +46,12 @@ class MediaShell extends Shell {
  * Quiet mode
  *
  * @var boolean
- * @access public
  */
 	public $quiet = false;
 
 /**
  * Startup
  *
- * @access public
  * @return void
  */
 	 public function startup() {
@@ -67,7 +63,6 @@ class MediaShell extends Shell {
 /**
  * Welcome
  *
- * @access protected
  * @return void
  */
 	protected function _welcome() {
@@ -79,7 +74,6 @@ class MediaShell extends Shell {
 /**
  * Main
  *
- * @access public
  * @return void
  */
 	 public function main() {
@@ -126,7 +120,6 @@ class MediaShell extends Shell {
 /**
  * Initializes directory structure
  *
- * @access public
  * @return void
  */
 	public function init() {
@@ -183,7 +176,6 @@ class MediaShell extends Shell {
 /**
  * Protects the transfer directory
  *
- * @access public
  * @return void
  */
 	public function protect() {
@@ -221,7 +213,6 @@ class MediaShell extends Shell {
 /**
  * Displays help contents
  *
- * @access public
  */
 	public function help() {
 		// 63 chars ===============================================================
@@ -266,7 +257,6 @@ class MediaShell extends Shell {
  *
  * @param mixed $value
  * @param mixed $text
- * @access public
  * @return void
  */
 	public function progress($value, $text = null) {

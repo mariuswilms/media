@@ -53,7 +53,6 @@ class SyncTask extends MediaShell {
  * model
  *
  * @var string
- * @access public
  */
 	public $model;
 
@@ -61,7 +60,6 @@ class SyncTask extends MediaShell {
  * Directory
  *
  * @var string
- * @access public
  */
 	public $directory;
 
@@ -69,7 +67,6 @@ class SyncTask extends MediaShell {
  * Default answer to use if prompted for input
  *
  * @var string
- * @access protected
  */
 	protected $_answer = 'n';
 
@@ -77,7 +74,6 @@ class SyncTask extends MediaShell {
  * Verbosity of output, control via argument `-quiet`
  *
  * @var boolean
- * @access protected
  */
 	protected $_quiet;
 
@@ -85,7 +81,6 @@ class SyncTask extends MediaShell {
  * Model
  *
  * @var Model
- * @access protected
  */
 	protected $_Model;
 
@@ -93,7 +88,6 @@ class SyncTask extends MediaShell {
  * baseDirectory from the model's media behavior settings
  *
  * @var string
- * @access protected
  */
 	protected $_baseDirectory;
 
@@ -101,7 +95,6 @@ class SyncTask extends MediaShell {
  * Folder to search
  *
  * @var Folder
- * @access protected
  */
 	protected $_Folder;
 
@@ -109,7 +102,6 @@ class SyncTask extends MediaShell {
  * Current item retrieved from the model
  *
  * @var array
- * @access private
  */
 	private $__dbItem;
 
@@ -117,7 +109,6 @@ class SyncTask extends MediaShell {
  * Current item retrieved from the filesystem
  *
  * @var array
- * @access private
  */
 	private $__fsItem;
 
@@ -125,7 +116,6 @@ class SyncTask extends MediaShell {
  * Current set of items retrieved from the model
  *
  * @var array
- * @access private
  */
 	private $__dbMap;
 
@@ -133,7 +123,6 @@ class SyncTask extends MediaShell {
  * Current set of items retrieved from the filesystem
  *
  * @var array
- * @access private
  */
 	private $__fsMap;
 
@@ -141,7 +130,6 @@ class SyncTask extends MediaShell {
  * Current file object
  *
  * @var File
- * @access private
  */
 	private $__File;
 
@@ -149,14 +137,12 @@ class SyncTask extends MediaShell {
  * An alternative for the current file
  *
  * @var mixed
- * @access private
  */
 	private $__alternativeFile;
 
 /**
  * Main execution method
  *
- * @access public
  * @return boolean
  */
 	public function execute() {
@@ -209,7 +195,6 @@ class SyncTask extends MediaShell {
 /**
  * Checks if files are in sync with records
  *
- * @access protected
  * @return void
  */
 	protected function _checkFilesWithRecords() {
@@ -253,7 +238,6 @@ class SyncTask extends MediaShell {
 /**
  * Checks if records are in sync with files
  *
- * @access protected
  * @return void
  */
 	protected function _checkRecordsWithFiles() {
@@ -289,7 +273,6 @@ class SyncTask extends MediaShell {
 /**
  * Handles existent but not readable files
  *
- * @access protected
  * @return mixed
  */
 	protected function _handleNotReadable() {
@@ -305,7 +288,6 @@ class SyncTask extends MediaShell {
 /**
  * Handles orphaned records
  *
- * @access protected
  * @return mixed
  */
 	protected function _handleOrphanedRecord() {
@@ -328,7 +310,6 @@ class SyncTask extends MediaShell {
 /**
  * Handles mismatching checksums
  *
- * @access protected
  * @return mixed
  */
 	protected function _handleChecksumMismatch() {
@@ -365,7 +346,6 @@ class SyncTask extends MediaShell {
 /**
  * Handles orphaned files
  *
- * @access protected
  * @return mixed
  */
 	protected function _handleOrphanedFile() {
@@ -390,7 +370,6 @@ class SyncTask extends MediaShell {
 /**
  * Updates a record with an alternative file
  *
- * @access protected
  * @return boolean
  */
 	protected function _fixWithAlternative() {
@@ -421,7 +400,6 @@ class SyncTask extends MediaShell {
 /**
  * Deletes current record
  *
- * @access protected
  * @return booelan
  */
 	protected function _fixDeleteRecord() {
@@ -441,7 +419,6 @@ class SyncTask extends MediaShell {
 /**
  * Generates filesystem and model maps
  *
- * @access protected
  * @return void
  */
 	protected function _generateMaps() {
@@ -474,7 +451,6 @@ class SyncTask extends MediaShell {
  *
  * @param string $checksum
  * @param array $map Map to use as a haystack
- * @access protected
  * @return mixed
  */
 	protected function _findByChecksum($checksum, $map) {
@@ -491,7 +467,6 @@ class SyncTask extends MediaShell {
  *
  * @param string $file
  * @param array $map Map to use as a haystack
- * @access protected
  * @return mixed
  */
 	protected function _findByFile($file, $map) {

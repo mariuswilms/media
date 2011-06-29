@@ -29,7 +29,6 @@ class MediaSchema extends CakeSchema {
  * before
  *
  * @param array $event
- * @access public
  */
 	public function before($event = array()) {
 		return true;
@@ -39,7 +38,6 @@ class MediaSchema extends CakeSchema {
  * after
  *
  * @param array $event
- * @access public
  */
 	public function after($event = array()) {
 	}
@@ -48,7 +46,6 @@ class MediaSchema extends CakeSchema {
  * attachments
  *
  * @var array
- * @access public
  */
 	public $attachments = array(
 		'id'          => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary', 'extra' => 'auto_increment', 'length' => 10),

@@ -34,7 +34,6 @@ class MakeTask extends MediaShell {
 /**
  * Main execution methpd
  *
- * @access public
  * @return void
  */
 	public function execute() {

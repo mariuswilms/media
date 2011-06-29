@@ -65,7 +65,6 @@ class MetaBehavior extends ModelBehavior {
  * Holds cached metadata keyed by model alias
  *
  * @var array
- * @access private
  */
 	private $__cached = array();
 
