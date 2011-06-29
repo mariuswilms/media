@@ -70,7 +70,7 @@ class MediaShell extends Shell {
  * @access protected
  * @return void
  */
-	function _welcome() {
+	protected function _welcome() {
 		$this->hr();
 		$this->out('Media Shell');
 		$this->hr();

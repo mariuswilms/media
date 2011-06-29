@@ -256,7 +256,7 @@ class AttachmentTestCase extends CakeTestCase {
 		$this->assertFalse(file_exists($this->Folder->pwd() . 'transfer' . DS . 'photo' . DS . 'tb.png'));
 	}
 
-	function _model($assocType, $assoc = null) {
+	protected function _model($assocType, $assoc = null) {
 		$Model = ClassRegistry::init('Movie');
 
 		if ($assoc === null) {

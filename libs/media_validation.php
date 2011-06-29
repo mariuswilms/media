@@ -287,7 +287,7 @@ class MediaValidation extends Validation {
  * @param mixed Array containing multiple strings, or a single string
  * @return mixed
  */
-	function _normalize() {
+	protected function _normalize() {
 		$args = func_get_args();
 
 		if (count($args) > 1) {
@@ -323,7 +323,7 @@ class MediaValidation extends Validation {
  * @param string $sizeString `php.ini` style size string e.g. `'16M'`
  * @return int Size in bytes
  */
-	function _toComputableSize($sizeString) {
+	protected function _toComputableSize($sizeString) {
 		if (empty($sizeString)) {
 			return false;
 		}

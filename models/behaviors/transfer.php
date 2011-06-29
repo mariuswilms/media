@@ -475,7 +475,7 @@ class TransferBehavior extends ModelBehavior {
  * @param array|string $resource Transfer resource
  * @return boolean true if transfer is ready to be performed, false on error
  */
-	function _prepare(&$Model, $resource) {
+	protected function _prepare(&$Model, $resource) {
 		$this->runtime[$Model->alias]['isPrepared'] = true;
 
 		extract($this->settings[$Model->alias], EXTR_SKIP);
@@ -535,7 +535,7 @@ class TransferBehavior extends ModelBehavior {
  * @return array|boolean Parsed results on success, false on error
  * @todo evaluate errors in file uploads
  */
-	function _source(&$Model, $resource) {
+	protected function _source(&$Model, $resource) {
 		if (TransferValidation::fileUpload($resource)) {
 			return array_merge(
 				$this->transferMeta($Model, $resource),
@@ -556,7 +556,7 @@ class TransferBehavior extends ModelBehavior {
  * @param array|string $resource Transfer resource good for deriving the temporary data from it
  * @return array|boolean Parsed results on success, false on error
  */
-	function _temporary(&$Model, $resource) {
+	protected function _temporary(&$Model, $resource) {
 		if (TransferValidation::fileUpload($resource)
 		&& TransferValidation::uploadedFile($resource['tmp_name'])) {
 			return array_merge(
@@ -576,7 +576,7 @@ class TransferBehavior extends ModelBehavior {
  * @param array|string $resource Transfer resource good for deriving the destination data from it
  * @return array|boolean Parsed results on success, false on error
  */
-	function _destination(&$Model, $resource) {
+	protected function _destination(&$Model, $resource) {
 		if (MediaValidation::file($resource , false)) {
 			return $this->transferMeta($Model, $resource);
 		}
@@ -835,7 +835,7 @@ class TransferBehavior extends ModelBehavior {
  * @param integer $tries Number of tries
  * @return mixed A string if an alt. name was found, false if number of tries were exceeded
  */
-	function _alternativeFile($file, $tries = 100) {
+	protected function _alternativeFile($file, $tries = 100) {
 		$extension = null;
 		extract(pathinfo($file), EXTR_OVERWRITE);
 

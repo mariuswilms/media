@@ -517,7 +517,7 @@ class MediaHelper extends AppHelper {
  * @param boolean $full When `true` will generate absolute URLs.
  * @return array An array of sources each one with the keys `name`, `mimeType`, `url` and `file`.
  */
-	function _sources($paths, $full = false) {
+	protected function _sources($paths, $full = false) {
 		$sources = array();
 
 		foreach ($paths as $path) {
@@ -561,7 +561,7 @@ class MediaHelper extends AppHelper {
  * @param array $options
  * @return string
  */
-	function _parseAttributes($options) {
+	protected function _parseAttributes($options) {
 		$attributes = array();
 		$minimizedAttributes = array('autoplay', 'controls', 'autobuffer', 'loop');
 
@@ -582,7 +582,7 @@ class MediaHelper extends AppHelper {
  * @param array $options
  * @return string
  */
-	function _parseParameters($options) {
+	protected function _parseParameters($options) {
 		$parameters = array();
 		$options = Set::filter($options);
 

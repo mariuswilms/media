@@ -212,7 +212,7 @@ class SyncTask extends MediaShell {
  * @access protected
  * @return void
  */
-	function _checkFilesWithRecords() {
+	protected function _checkFilesWithRecords() {
 		$this->out('');
 		$this->out('Checking if files are in sync with records');
 		$this->hr();
@@ -256,7 +256,7 @@ class SyncTask extends MediaShell {
  * @access protected
  * @return void
  */
-	function _checkRecordsWithFiles() {
+	protected function _checkRecordsWithFiles() {
 		$this->out('');
 		$this->out('Checking if records are in sync with files');
 		$this->hr();
@@ -292,7 +292,7 @@ class SyncTask extends MediaShell {
  * @access protected
  * @return mixed
  */
-	function _handleNotReadable() {
+	protected function _handleNotReadable() {
 		if (!$this->__File->readable() && $this->__File->exists()) {
 			$message  = 'File `' . $this->shortPath($this->__File->pwd()) . '`';
 			$message .= ' exists but is not readable.';
@@ -308,7 +308,7 @@ class SyncTask extends MediaShell {
  * @access protected
  * @return mixed
  */
-	function _handleOrphanedRecord() {
+	protected function _handleOrphanedRecord() {
 		if ($this->__File->exists()) {
 			return;
 		}
@@ -331,7 +331,7 @@ class SyncTask extends MediaShell {
  * @access protected
  * @return mixed
  */
-	function _handleChecksumMismatch() {
+	protected function _handleChecksumMismatch() {
 		if (!$this->__File->exists()) {
 			return;
 		}
@@ -368,7 +368,7 @@ class SyncTask extends MediaShell {
  * @access protected
  * @return mixed
  */
-	function _handleOrphanedFile() {
+	protected function _handleOrphanedFile() {
 		if ($this->_findByFile($this->__fsItem['file'], $this->__dbMap)) {
 			return;
 		}
@@ -393,7 +393,7 @@ class SyncTask extends MediaShell {
  * @access protected
  * @return boolean
  */
-	function _fixWithAlternative() {
+	protected function _fixWithAlternative() {
 		if (!$this->__alternativeFile) {
 			return false;
 		}
@@ -424,7 +424,7 @@ class SyncTask extends MediaShell {
  * @access protected
  * @return booelan
  */
-	function _fixDeleteRecord() {
+	protected function _fixDeleteRecord() {
 		$input = $this->in('Delete record?', 'y,n', $this->_answer);
 
 		if ($input == 'y') {
@@ -444,7 +444,7 @@ class SyncTask extends MediaShell {
  * @access protected
  * @return void
  */
-	function _generateMaps() {
+	protected function _generateMaps() {
 		$fsFiles = $this->_Folder->findRecursive();
 		$results = $this->_Model->find('all');
 		$fsMap = array();
@@ -477,7 +477,7 @@ class SyncTask extends MediaShell {
  * @access protected
  * @return mixed
  */
-	function _findByChecksum($checksum, $map) {
+	protected function _findByChecksum($checksum, $map) {
 		foreach ($map as $item) {
 			if ($checksum == $item['checksum']) {
 				return $item['file'];
@@ -494,7 +494,7 @@ class SyncTask extends MediaShell {
  * @access protected
  * @return mixed
  */
-	function _findByFile($file, $map) {
+	protected function _findByFile($file, $map) {
 		foreach ($map as $item) {
 			if ($file == $item['file']) {
 				return $item['file'];

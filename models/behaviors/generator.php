@@ -304,7 +304,7 @@ class GeneratorBehavior extends ModelBehavior {
  * @param boolean $overwrite If true will unlink destination if it exists, defaults to false.
  * @return string Path to destination file.
  */
-	function _destinationFile($source, $directory, $extension = null, $overwrite = false) {
+	protected function _destinationFile($source, $directory, $extension = null, $overwrite = false) {
 		$destination = $directory;
 
 		if ($extension) {
@@ -328,7 +328,7 @@ class GeneratorBehavior extends ModelBehavior {
  * @param string $file
  * @return array
  */
-	function _file(&$Model, $file) {
+	protected function _file(&$Model, $file) {
 		extract($this->settings[$Model->alias]);
 		$file = str_replace(array('\\', '/'), DS, $file);
 
