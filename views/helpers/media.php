@@ -185,7 +185,8 @@ class MediaHelper extends AppHelper {
 			'title' => null,
 			'class' => null,
 			'width' => null,
-			'height' => null
+			'height' => null,
+			'itemprop' => null
 		);
 
 		if (isset($options['url'])) {
