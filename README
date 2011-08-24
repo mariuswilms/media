@@ -24,6 +24,3 @@
   Extract the downloaded archive.
   Move or copy the extracted directory davidpersson-media-[hash]
   to /path/to/your/app/plugins/media
-
-  For more information please visit the media wiki at
-  http://github.com/davidpersson/media/wikis
