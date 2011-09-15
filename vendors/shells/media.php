@@ -61,11 +61,12 @@ class MediaShell extends Shell {
 	}
 
 /**
- * Welcome
+ * Welcome method. This method has no visibility set as it overrides a method
+ * which has no visibility defined and is therefore public.
  *
  * @return void
  */
-	protected function _welcome() {
+	function _welcome() {
 		$this->hr();
 		$this->out('Media Shell');
 		$this->hr();
