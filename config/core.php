@@ -141,7 +141,7 @@ $hasImagick = extension_loaded('imagick');
 $mm = dirname(dirname(__FILE__)) . DS . 'libs' . DS . 'mm';
 
 if (strpos(ini_get('include_path'), $mm) === false) {
-	ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $mm . DS . 'src');
+	ini_set('include_path', $mm . DS . 'src' . PATH_SEPARATOR . ini_get('include_path'));
 }
 
 /**
