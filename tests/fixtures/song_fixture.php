@@ -9,7 +9,7 @@ class SongFixture extends CakeTestFixture {
 			'checksum'    => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 255),
 			'indexes'     => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
 			);
-			
+
 	var $records = array(
 						array(
 						'id'  => 1,
@@ -34,7 +34,7 @@ class SongFixture extends CakeTestFixture {
 						'dirname'  => 'static/txt',
 						'basename'  => 'not-existent.txt',
 						'checksum'  => null,
-						)							
+						)
 					);
 }
 ?>
