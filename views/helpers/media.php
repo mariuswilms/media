@@ -219,8 +219,8 @@ class MediaHelper extends AppHelper {
 						'src' => $source['url'],
 						'type' => $source['mimeType']
 					);
-					if (isset($source['codec'])) {
-						$attributes['codec'] = $source['codec'];
+					if (isset($source['codecs'])) {
+						$attributes['type'] = "; codecs={$source['codecs']}";
 					}
 					$body .= sprintf(
 						$this->tags['source'],
@@ -252,8 +252,8 @@ class MediaHelper extends AppHelper {
 						'src' => $source['url'],
 						'type' => $source['mimeType']
 					);
-					if (isset($source['codec'])) {
-						$attributes['codec'] = $source['codec'];
+					if (isset($source['codecs'])) {
+						$attributes['type'] = "; codecs={$source['codecs']}";
 					}
 					$body .= sprintf(
 						$this->tags['source'],
@@ -530,7 +530,7 @@ class MediaHelper extends AppHelper {
  *     'flux1/foo.ogv'
  * )
  * array(
- *     array('path' => 'flux0/foo.ogv', 'codec' => 'theora, vorbis'),
+ *     array('path' => 'flux0/foo.ogv', 'codecs' => 'theora, vorbis'),
  *     array('path' => 'flux1/foo.ogv')
  * )
  *
