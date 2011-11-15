@@ -210,7 +210,7 @@ class MediaHelper extends AppHelper {
 		}
 		$attributes = array_intersect_key($options, $optionalAttributes);
 
-		switch($sources[0]['name']) {
+		switch ($sources[0]['name']) {
 			case 'audio':
 				$body = null;
 
