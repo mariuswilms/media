@@ -579,7 +579,7 @@ class MediaHelper extends AppHelper {
 	}
 
 /**
- * Generates attributes from options. Overwritten from Helper::_parseAttributes
+ * Generates attributes from options. Overwritten from Helper::_parseAttributes()
  * to take new minimized HTML5 attributes used here into account.
  *
  * @fixme Visibility: left undefined/public as method overridden defines none.
