@@ -152,7 +152,8 @@ class MediaHelper extends AppHelper {
  * other media should be passed explictly within the options array in order to prevent
  * the browser refloating the layout.
  *
- * @param string|array $paths Absolute or partial path to a file (or an array thereof)
+ * @param string|array $paths Absolute or partial path to a file (or an array thereof),
+ *                            also see MediaHelper::_sources() for more options.
  * @param array $options The following options control the output of this method:
  *                       - autoplay: Start playback automatically on page load, defaults to `false`.
  *                       - preload: Start buffering when page is loaded, defaults to `false`.
@@ -214,12 +215,17 @@ class MediaHelper extends AppHelper {
 				$body = null;
 
 				foreach ($sources as $source) {
+					$attributes = array(
+						'src' => $source['url'],
+						'type' => $source['mimeType']
+					);
+					if (isset($source['codec'])) {
+						$attributes['codec'] = $source['codec'];
+					}
 					$body .= sprintf(
 						$this->tags['source'],
-						$this->_parseAttributes(array(
-							'src' => $source['url'],
-							'type' => $source['mimeType']
-					)));
+						$this->_parseAttributes($attributes)
+					);
 				}
 				$attributes += compact('autoplay', 'controls', 'preload', 'loop');
 				return sprintf(
@@ -242,12 +248,17 @@ class MediaHelper extends AppHelper {
 				$body = null;
 
 				foreach ($sources as $source) {
+					$attributes = array(
+						'src' => $source['url'],
+						'type' => $source['mimeType']
+					);
+					if (isset($source['codec'])) {
+						$attributes['codec'] = $source['codec'];
+					}
 					$body .= sprintf(
 						$this->tags['source'],
-						$this->_parseAttributes(array(
-							'src' => $source['url'],
-							'type' => $source['mimeType']
-					)));
+						$this->_parseAttributes($attributes)
+					);
 				}
 				if ($poster) {
 					$attributes = $this->_addDimensions($this->file($poster), $attributes);
@@ -513,7 +524,17 @@ class MediaHelper extends AppHelper {
 /**
  * Takes an array of paths and generates and array of source items.
  *
- * @param array $paths An array of  relative or absolute paths to files.
+ * Possible values for $paths:
+ * array(
+ *     'flux0/foo.ogv',
+ *     'flux1/foo.ogv'
+ * )
+ * array(
+ *     array('path' => 'flux0/foo.ogv', 'codec' => 'theora, vorbis'),
+ *     array('path' => 'flux1/foo.ogv')
+ * )
+ *
+ * @param array $paths An array of relative or absolute paths to files or an array of arrays.
  * @param boolean $full When `true` will generate absolute URLs.
  * @return array An array of sources each one with the keys `name`, `mimeType`, `url` and `file`.
  */
@@ -521,18 +542,21 @@ class MediaHelper extends AppHelper {
 		$sources = array();
 
 		foreach ($paths as $path) {
-			if (!$url = $this->url($path, $full)) {
+			if (!is_array($path)) {
+				$path = compact('path');
+			}
+			if (!$url = $this->url($path['path'], $full)) {
 				return;
 			}
-			if (strpos('://', $path) !== false) {
+			if (strpos('://', $path['path']) !== false) {
 				$file = parse_url($url, PHP_URL_PATH);
 			} else {
-				$file = $this->file($path);
+				$file = $this->file($path['path']);
 			}
 			$mimeType = Mime_Type::guessType($file);
 			$name = Mime_Type::guessName($mimeType);
 
-			$sources[] = compact('name', 'mimeType', 'url', 'file');
+			$sources[] = $path + compact('name', 'mimeType', 'url', 'file');
 		}
 		return $sources;
 	}
