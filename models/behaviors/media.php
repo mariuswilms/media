@@ -302,6 +302,9 @@ class MediaBehavior extends ModelBehavior {
 
 		$relativeDirectory = DS . rtrim(dirname($relativeFile), '.');
 
+		//small patch for windows..
+		if(Folder::isWindowsPath($filterDirectory)) $relativeDirectory = str_replace('/', '\\', $relativeDirectory);
+
 		$name = Medium::name($file);
 		$filter = Configure::read('Media.filter.' . strtolower($name));
 
