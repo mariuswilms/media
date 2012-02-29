@@ -1,0 +1,268 @@
+TUTORIAL
+========
+EN
+===
+Imagine an application with a users table, a homeslides table and a screens table linked to a films table such as:
+
+ users      |homeslides | screens   | films
+------------|-----------|-----------|----------
+id          |id         |id         |id
+firstname   |title      |film_id    |title
+name        |basename   |basename   |synopsis
+email       |dirname    |dirname    |created
+password    |created    |created    |modified
+basename    |modified   |modified   |
+dirname     |           |           |
+created     |           |           |
+modified    |           |           |
+
+We want to display user's images in square format, those of the slideshow (homeslides) in panoramic format and those of the movies (screens) in 16/9 format.
+
+======================================
+FR
+===
+Imaginons une application avec une table users, une table homeslides et une table screens relié à une table films telles que:
+
+ users      |homeslides | screens   | films
+------------|-----------|-----------|----------
+id          |id         |id         |id
+firstname   |title      |film_id    |title
+name        |basename   |basename   |synopsis
+email       |dirname    |dirname    |created
+password    |created    |created    |modified
+basename    |modified   |modified   |
+dirname     |           |           |
+created     |           |           |
+modified    |           |           |
+
+Nous voulons afficher les images des users au format carré, celles du diaporama (homeslides) au format panoramique et celles des films (screens) au format 16/9.
+======================================
+
+__________________________
+app/config/bootstrap.php:
+__________________________
+require APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'core.php';
+
+$s = array('fitCrop' => array(50, 50));
+$m = array('fitCrop' => array(100, 100));
+$l = array('fitInside' => array(600, 600));
+
+$pano_s = array('fitCrop' => array(150, 50));
+$pano_l = array('fitCrop' => array(900, 300));
+
+$sd_s = array('fitCrop' => array(80, 45));
+$sd_m = array('fitCrop' => array(512, 288));
+$sd_l = array('fitCrop' => array(1024, 576));
+$hd720 = array('fitCrop' => array(1280, 720));
+$hd1080 = array('fitCrop' => array(1920, 1080));
+
+Configure::write('Media.filter', array(
+	'audio' =>  array(),
+	'document' =>  array(),
+	'generic' => array(),
+	'image' => compact('s', 'm', 'l'),
+	'video' => array()
+));
+Configure::write('Media.pano', array(
+	'audio' =>  array(),
+	'document' =>  array(),
+	'generic' => array(),
+	'image' => compact('pano_s', 'pano_l'),
+	'video' => array()
+));
+Configure::write('Media.video', array(
+	'audio' =>  array(),
+	'document' =>  array(),
+	'generic' => array(),
+	'image' => compact('sd_s', 'sd_m', 'sd_l', 'hd720', 'hd1080'),
+	'video' => array()
+));
+__________________________
+app/model/user.php:
+__________________________
+<?php
+class User extends AppModel {
+
+	[...]
+	
+	var $actsAs = array(
+		'Media.Transfer',
+		'Media.Coupler',
+		'Media.Generator'=> array( // for example
+			'mode' => 0755,
+			'overwrite' => true,
+		)
+	);
+	
+	[...]
+	
+	public function beforeDelete($cascade = true) {
+		if (!$cascade) {
+			return true;
+		}
+
+		$result = $this->find('first', array(
+			'conditions' => array($this->primaryKey => $this->id),
+			'fields'	 => array('dirname', 'basename'),
+			'recursive'  => -1
+		));
+		if (empty($result)) {
+			return false;
+		}
+
+		$pattern  = MEDIA_FILTER . "*/";
+		$pattern .= $result[$this->alias]['dirname'] . '/';
+		$pattern .= pathinfo($result[$this->alias]['basename'], PATHINFO_FILENAME);
+
+		$files = glob("{$pattern}.*");
+
+		$name = Mime_Type::guessName($result[$this->alias]['basename']);
+		$versions = array_keys(Configure::read('Media.filter.' . $name)); //<-- edit switch model
+
+		if (count($files) > count($versions)) {
+			$message  = 'MediaFile::beforeDelete - ';
+			$message .= "Pattern `{$pattern}` matched more than number of versions. ";
+			$message .= "Failing deletion of versions and record for `Media@{$this->id}`.";
+			CakeLog::write('warning', $message);
+			return false;
+		}
+
+		foreach ($files as $file) {
+			$File = new File($file);
+
+			if (!$File->delete()) {
+				return false;
+			}
+		}
+		return true;
+	}
+}
+?>
+
+__________________________
+app/model/homeslide.php:
+__________________________
+<?php
+class Homeslide extends AppModel {
+
+	[...]
+	
+	var $actsAs = array(
+		'Media.Transfer',
+		'Media.Coupler',
+		'Media.Generator'=> array(
+			'filterPreset' => 'pano', //<-- preset pano
+			'mode' => 0755,
+			'overwrite' => true,
+		)
+	);
+	
+	[...]
+	
+	public function beforeDelete($cascade = true) {
+		if (!$cascade) {
+			return true;
+		}
+
+		$result = $this->find('first', array(
+			'conditions' => array($this->primaryKey => $this->id),
+			'fields'	 => array('dirname', 'basename'),
+			'recursive'  => -1
+		));
+		if (empty($result)) {
+			return false;
+		}
+
+		$pattern  = MEDIA_FILTER . "*/";
+		$pattern .= $result[$this->alias]['dirname'] . '/';
+		$pattern .= pathinfo($result[$this->alias]['basename'], PATHINFO_FILENAME);
+
+		$files = glob("{$pattern}.*");
+
+		$name = Mime_Type::guessName($result[$this->alias]['basename']);
+		$versions = array_keys(Configure::read('Media.pano.' . $name)); //<-- edit switch model
+
+		if (count($files) > count($versions)) {
+			$message  = 'MediaFile::beforeDelete - ';
+			$message .= "Pattern `{$pattern}` matched more than number of versions. ";
+			$message .= "Failing deletion of versions and record for `Media@{$this->id}`.";
+			CakeLog::write('warning', $message);
+			return false;
+		}
+
+		foreach ($files as $file) {
+			$File = new File($file);
+
+			if (!$File->delete()) {
+				return false;
+			}
+		}
+		return true;
+	}
+}
+?>
+
+__________________________
+app/model/screen.php:
+__________________________
+<?php
+class Screen extends AppModel {
+
+	[...]
+	
+	var $actsAs = array(
+		'Media.Transfer',
+		'Media.Coupler',
+		'Media.Generator'=> array(
+			'filterPreset' => 'video', //<-- preset video
+			'mode' => 0755,
+			'overwrite' => true,
+		)
+	);
+	
+	[...]
+	
+	public function beforeDelete($cascade = true) {
+		if (!$cascade) {
+			return true;
+		}
+
+		$result = $this->find('first', array(
+			'conditions' => array($this->primaryKey => $this->id),
+			'fields'	 => array('dirname', 'basename'),
+			'recursive'  => -1
+		));
+		if (empty($result)) {
+			return false;
+		}
+
+		$pattern  = MEDIA_FILTER . "*/";
+		$pattern .= $result[$this->alias]['dirname'] . '/';
+		$pattern .= pathinfo($result[$this->alias]['basename'], PATHINFO_FILENAME);
+
+		$files = glob("{$pattern}.*");
+
+		$name = Mime_Type::guessName($result[$this->alias]['basename']);
+		$versions = array_keys(Configure::read('Media.video.' . $name)); //<-- edit switch model
+
+		if (count($files) > count($versions)) {
+			$message  = 'MediaFile::beforeDelete - ';
+			$message .= "Pattern `{$pattern}` matched more than number of versions. ";
+			$message .= "Failing deletion of versions and record for `Media@{$this->id}`.";
+			CakeLog::write('warning', $message);
+			return false;
+		}
+
+		foreach ($files as $file) {
+			$File = new File($file);
+
+			if (!$File->delete()) {
+				return false;
+			}
+		}
+		return true;
+	}
+}
+?>
+
+
