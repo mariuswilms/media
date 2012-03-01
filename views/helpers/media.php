@@ -541,7 +541,7 @@ class MediaHelper extends AppHelper {
  * @return array The modified attributes array.
  */
 	protected function _addDimensions($file, $attributes) {
-		if (isset($attributes['width']) || isset($attribues['height'])) {
+		if (isset($attributes['width']) || isset($attributes['height'])) {
 			return $attributes;
 		}
 		if (function_exists('getimagesize')) {
