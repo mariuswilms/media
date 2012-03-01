@@ -26,7 +26,7 @@ $ cake/console/cake media init
 
 Some directories must be writable so that the webserver (assuming it
 runs under a different user) can store files in there.
-$ chmod −R a+rwX webroot/media/{transfer,filter} 
+$ chmod -R a+rwX webroot/media/{transfer,filter}
 
 Expanding on the blog tutorial we add the following fields to our 
 posts table: dirname, basename. This will allow us to associate 
