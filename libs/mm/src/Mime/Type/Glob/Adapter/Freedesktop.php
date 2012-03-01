@@ -50,8 +50,7 @@ class Mime_Type_Glob_Adapter_Freedesktop extends Mime_Type_Glob_Adapter {
 	protected function _read($file) {
 		$handle = fopen($file, 'rb');
 
-		$itemRegex = '^(\d{2}:)?[-\w.+]*\/[-\w.+]+:[\*\.a-zA-Z0-9]*$';
-
+		$itemRegex = '^(\d{2}:)?[-\w.+]*\/[-\w.+]+:[\*\.a-zA-Z0-9]*\r?$';
 		if (!preg_match("/{$itemRegex}/m", fread($handle, 4096))) {
 			throw new InvalidArgumentException("File `{$file}` has wrong format");
 		}
