@@ -78,6 +78,7 @@ class GeneratorBehavior extends ModelBehavior {
 	var $_defaultSettings = array(
 		'baseDirectory'       => MEDIA_TRANSFER,
 		'filterDirectory'     => MEDIA_FILTER,
+		'filterPreset'		  => 'filter',
 		'createDirectory'     => true,
 		'createDirectoryMode' => 0755,
 		'mode'                => 0644,
@@ -149,7 +150,7 @@ class GeneratorBehavior extends ModelBehavior {
 		list($file, $relativeFile) = $this->_file($Model, $file);
 		$relativeDirectory = DS . rtrim(dirname($relativeFile), '.');
 
-		$filter = Configure::read('Media.filter.' . Mime_Type::guessName($file));
+		$filter = Configure::read('Media.'.$filterPreset.'.' . Mime_Type::guessName($file));
 		$result = true;
 
 		foreach ($filter as $version => $instructions) {
