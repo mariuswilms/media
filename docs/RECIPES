@@ -1,0 +1,127 @@
+
+Recipes
+=======
+
+Introduction
+------------
+Different applications sometimes require different approaches to how media is
+handled. Some applications may only need a way of uploading files others may
+additionally want to couple files to records in one way or the other. The
+plugin and its components are flexible enough to fit for the different
+scenarios. 
+
+The most common use cases or those which are especially tricky are documented
+below. In case you're using the plugin in a way not yet described here feel
+free to add your specific case.
+
+Most of the validation rules used by the Attachment model are documented within 
+the Transfer Behavior.
+
+1. Monolithic Attachment Model 
+------------------------------
+  The Attachment model serves as a central place for uploading, coupling and
+  associating media files. It can be bound to any model of your application. 
+  
+  Since this approach demonstrates all components the plugin includes a
+  blueprint of the model[1] which is already prepared. You can link to this
+  model directly without modifying it or use it as a blueprint by copying it 
+  over to your app's model directory and link this then instead. 
+  
+  But before you proceed you must create a table for it. Just call the schema
+  shell and point it to the sql directory of the plugin:
+  
+  $ cake schema run create -path plugins/media/config/sql -name Media
+  
+  After you've set up the associations in your app's model (here: _Movie_), files
+  can be uploaded and associated with one call to _saveAll()_.
+  
+  In order to be able to save a record along with an attachment, the associations
+  from the original model *to* the _Attachment_ model must be set up correctly. As
+  the _Attachment_ model is a so-called polymorphic model it is very flexible in
+  regards to associating to/from it. 
+  
+  [1] http://github.com/davidpersson/media/blob/master/models/attachment.php
+
+  hasMany
+  -------
+  Example with corresponding controller code. Keep in mind that the data to be
+  saved must be correctly structured according to the association type. For more
+  information see the CakePHP Manual - Saving Your Data[1].
+  
+  {{{ 
+  class Movie extends AppModel {
+      // ...
+      var $hasMany = array(
+          'Attachment' => array(
+              'className' => 'Media.Attachment',
+              'foreignKey' => 'foreign_key',
+              'conditions' => array('Attachment.model' => 'Movie'),
+              'dependent' => true,
+      ));
+      // ...
+  }
+  
+  class MoviesController extends AppController {
+      function edit($id = null) {
+          // ...
+          // $this->data = array(
+          // 'Movie' => array('id' => $id, 'title' => 'Vicky Cristina Barcelona'),
+          // 'Attachment' => array(
+          // 0 => array('file' => transferable item1, 'model' => 'Movie'),
+          // 1 => array('file' => transferable item2, 'model' => 'Movie'),
+          // ));
+          $this->Movie->saveAll($this->data, array('validate' => 'first'));
+          // ...
+      }
+  }
+  }}}
+  
+  [1] http://book.cakephp.org/view/75/Saving-Your-Data.
+  
+  hasOne
+  ------
+  {{{ 
+  class Movie extends AppModel {
+      // ...
+       var $hasOne = array(
+          'Attachment' => array(
+              'className' => 'Media.Attachment',
+              'foreignKey' => 'foreign_key',
+              'conditions' => array('Attachment.model' => 'Movie'),
+              'dependent' => true,
+       ));
+      // ...
+  }
+  }}}
+  
+  hasMany with grouping
+  ---------------------
+  This makes sense if you e.g. already have a _Movie_ model and want to associate
+  a poster, some images or a trailer video with it. 
+  
+  {{{ 
+  class Movie extends AppModel {
+      // ...
+      var $hasMany = array(
+          'Poster' => array(
+              'className' => 'Media.Attachment',
+              'foreignKey' => 'foreign_key',
+              'conditions' => array('Poster.model' => 'Movie', 'Poster.group' => 'poster'),
+              'dependent' => true,
+          ),
+          'Photo' => array(
+              'className' => 'Media.Attachment',
+              'foreignKey' => 'foreign_key',
+              'conditions' => array('Photo.model' => 'Movie', 'Photo.group' => 'photo'),
+              'dependent' => true,
+          ),
+          'Trailer' => array(
+              'className' => 'Media.Attachment',
+              'foreignKey' => 'foreign_key',
+              'conditions' => array('Trailer.model' => 'Movie', 'Trailer.group' => 'trailer'),
+              'dependent' => true,
+          ));
+      // ...
+  }
+  }}}
+

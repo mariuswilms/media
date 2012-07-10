@@ -1,0 +1,319 @@
+TUTORIAL
+========
+This is a very basic tutorial which walks you through most of the 
+components of the plugin. For more information see the documentation
+within the docs directory or read the API documentation of the classes.
+
+Preparation Work
+----------------
+First switch to your application directory. 
+$ cd /path/to/app
+
+Now let's get us a fresh copy of the plugin and directly clone it into the
+application's plugins directory.
+$ git clone git://github.com/davidpersson/media.git plugins/media
+
+Now we go and load the configuration that comes with the plugin. Edit
+your app's config/core.php and add the following code.
+{{{
+    require APP . '/plugins/media/config/core.php';
+}}}
+
+In order to initialize the directories for storing i.e. uploaded files
+we use the shell which comes with the plugin. You can also do this 
+manually of course.
+$ cake/console/cake media init
+
+Some directories must be writable so that the webserver (assuming it
+runs under a different user) can store files in there.
+$ chmod -R a+rwX webroot/media/{transfer,filter}
+
+Expanding on the blog tutorial we add the following fields to our 
+posts table: dirname, basename. This will allow us to associate 
+a file with each post we do.
+
+Uploading
+---------
+We now go and change a few things in order to allow for uploading
+files via the form. Modify the template in views/posts/add and change
+the form create statement by specifying type file as well as adding
+an input for the file to be uploaded.
+{{{
+echo $form->create('Post', array('type' => 'file));
+...
+echo $form->input('file', array('type' => 'file'));
+...
+}}}
+
+When you now go and inspect $this->data within in your Posts controller's
+add action, you should see something like this after you tried 
+uploading a file. The file gets submitted but will discarded as it's
+currently not handled by any code.
+{{{
+Array 
+( 
+	[Post] => Array 
+	( 
+	[title] => Demo 
+	[file] => Array 
+		( 
+			[name] => clipboard.jpg 
+			[type] => image/jpeg 
+			[tmp_name] => /private/var/tmp/php4zN7BY 
+			[error] => 0 
+			[size] => 32405 
+		) 
+	) 
+) 
+}}}
+
+Until now nearly everything you did wasn't really taking advantage of
+the plugin. We'll change that now by editing the post model in 
+models/posts.php by adding the transfer behavior to the actsAs property.
+{{{
+class Post extends AppModel {
+	var $actsAs = array('Media.Transfer');
+}
+}}}
+
+If you now go and repeat submitting the file via the add form, this
+time the file should end up being stored below webroot/media/transfer
+in img/clipboard.jpg.
+
+Coupling
+--------
+In order associate the file with the new post record (in this case titled Demo) 
+we add another behavior from the plugin to the mix.
+{{{
+class Post extends AppModel {
+	var $actsAs = array('Media.Transfer', 'Media.Coupler');
+}
+}}}
+ 
+Repeating the upload now will not only store the file in the transfer 
+directory but additionally store it's dirname and basename within
+the new record which should look something like this.
+{{{
+$result = $this->Post->findById($this->Post->getLastInsertID()); 
+var_dump($result);
+
+Array 
+( 
+    [Post] => Array 
+    ( 
+      [id] => 1
+      [title] => Demo 
+      [dirname] => img
+      [basename] => clipboard.jpg
+    ) 
+) 
+}}}
+
+If you want to get fancy, make use of the virtual fields feature
+in CakePHP 1.3 by adding the following field definition to you model.
+{{{
+var $virtualFields = array(
+    'path' => "CONCAT_WS('/', dirname, basename)"
+);
+}}}
+
+Filtering Uploaded Files
+------------------------
+Most of this should Just Work(TM) as it is expected that you have a pretty
+default setup. Have a look at the plugin's config/core.php file on more options
+to configure the Media_Process class which is used by the following behavior
+class if something doesn't work the way expected here.
+
+In order to generate versions from the uploaded file we add the generator 
+behavior to the mix.
+{{{
+class Post extends AppModel {
+	var $actsAs = array('Media.Transfer', 'Media.Generator', 'Media.Coupler');
+}
+}}}
+
+As the generator behavior will make versions of the uploaded file according to
+configuration, we open up the plugin's config/core.php to have a look on the
+defaults.
+{{{
+...
+$s = array('convert' => 'image/png', 'zoomCrop' => array(100, 100));
+$m = array('convert' => 'image/png', 'fitCrop' => array(300, 300));
+$l = array('convert' => 'image/png', 'fit' => array(600, 440));
+
+Configure::write('Media.filter', array(
+    ...
+	'image' => compact('s', 'm', 'l')
+    ...
+));
+...
+}}}
+
+This set of configurations is called instructions. Basically these are methods
+which get called on the Media_Process_* class. However the defaults should work
+fine for us. Keep in mind that if you'd like to change the defaults you should
+do so in your app's config/core.php right after the statement where you load
+the plugin's configuration.
+
+Repeat uploading the file as you did in prior steps. This time - assuming 
+you've been uploading an image file - you should see the following files 
+being generated.
+
+webroot/media/transfer/img/test.jpg
+webroot/media/filter/s/img/test.jpg
+webroot/media/filter/m/img/test.jpg
+webroot/media/filter/l/img/test.jpg
+
+Protecting the transfer directory
+---------------------------------
+Currently your transfer directory is open to the public, which means 
+user's can access any files they uploaded there. If you can't trust
+the user's being able to upload stuff you better go with the following
+steps:
+
+ - Relocate the transfer directory. In your app's config/core.php add
+   following code right above the statement where you load the plugin
+   configuration.
+   {{{
+   define('MEDIA_TRANSFER', APP . 'transfer' . DS);
+   define('MEDIA_TRANSFER_URL', false);
+   }}}
+
+   After that reinitialize the directories.
+   $ cake/console/cake media init
+
+ - Block requests through the webserver's configuration. In your app's
+   config/core.php add following code right above the statement where you load
+   the plugin configuration.
+   {{{   
+   define('MEDIA_TRANSFER_URL', false);
+   }}}
+
+   After that protect the directories.
+   $ cake/console/cake media protect
+   
+ - Reimplement a special method in models/post.php used by the transfer 
+   behavior in order to make it use non-guessable file names.
+   {{{
+	function transferTo($via, $from) {
+		extract($from);
+
+		$irregular = array(
+			'image' => 'img',
+			'text' => 'txt'
+		);
+		$name = Mime_Type::guessName($mimeType ? $mimeType : $file);
+
+		if (isset($irregular[$name])) {
+			$short = $irregular[$name];
+		} else {
+			$short = substr($name, 0, 3);
+		}
+
+		$path  = $short . DS;
+		$path .= uniqid(); // <--- This is the important part.
+		$path .= !empty($extension) ? '.' . strtolower($extension) : null;
+
+		return $path;
+	}
+   }}}
+   
+Validate incoming transfers
+---------------------------
+You should always validate incoming transfers for following reasons.
+
+ 1. Check that there's actually been an upload.
+ 2. Avoid overwhelming your server (too many pixels, too many megabytes).
+ 3. The uploaded file has the correct type (real MIME-type sniffed from contents, extension).
+ 4. The file's origin is correct (i.e. it is stored in the tmp directory).
+
+Here we add a bunch of validation rules to the post model. Please read up on 
+the transfer behavior's documentation for information about the rules.
+
+{{{
+...
+	var $validate = array(
+		'file' => array(
+			'resource'   => array('rule' => 'checkResource'),
+			'access'     => array('rule' => 'checkAccess'),
+			'location'   => array('rule' => array('checkLocation', array(
+				MEDIA_TRANSFER, '/tmp/'
+			))),
+			'permission' => array('rule' => array('checkPermission', '*')),
+			'size'       => array('rule' => array('checkSize', '5M')),
+			'pixels'     => array('rule' => array('checkPixels', '1600x1600')),
+			'extension'  => array('rule' => array('checkExtension', false, array(
+				'jpg', 'jpeg', 'png', 'tif', 'tiff', 'gif', 'pdf', 'tmp'
+			))),
+			'mimeType'   => array('rule' => array('checkMimeType', false, array(
+				'image/jpeg', 'image/png', 'image/tiff', 'image/gif', 'application/pdf'
+	)))));
+...
+}}}
+
+Be advised that some of these rules may be to strict or cause other trouble so that
+in the end you won't be able to upload files.
+
+Deleting Corresponding Files
+----------------------------
+Deleting works as you'd expect (with one exception). First it is assumed that
+there is a 1:1 relationship between files and records. So when deleting a
+record, coupled to a file, the Coupler behavior will also go and delete that
+file. 
+
+Now that one exception is generated versions derived from the coupled file
+*will not* get deleted automatically. For this piece of functionality you'll
+need to implement the logic on your own. Following a snippet which does this in
+an exemplaric way.  Add it to to the model you've attached Generator and
+Coupler behaviors to.
+
+{{{
+	public function beforeDelete($cascade = true) {
+		if (!$cascade) {
+			return true;
+		}
+
+		$result = $this->find('first', array(
+			'conditions' => array($this->primaryKey => $this->id),
+			'fields'	 => array('dirname', 'basename'),
+			'recursive'  => -1
+		));
+		if (empty($result)) {
+			return false;
+		}
+
+		$pattern  = MEDIA_FILTER . "*/";
+		$pattern .= $result[$this->alias]['dirname'] . '/';
+		$pattern .= pathinfo($result[$this->alias]['basename'], PATHINFO_FILENAME);
+
+		$files = glob("{$pattern}.*");
+
+		$name = Mime_Type::guessName($result[$this->alias]['basename']);
+		$versions = array_keys(Configure::read('Media.filter.' . $name));
+
+		if (count($files) > count($versions)) {
+			$message  = 'MediaFile::beforeDelete - ';
+			$message .= "Pattern `{$pattern}` matched more than number of versions. ";
+			$message .= "Failing deletion of versions and record for `Media@{$this->id}`.";
+			CakeLog::write('warning', $message);
+			return false;
+		}
+
+		foreach ($files as $file) {
+			$File = new File($file);
+
+			if (!$File->delete()) {
+				return false;
+			}
+		}
+		return true;
+	}
+}}}
+
+_Reasoning_: Derived versions are not deleted automatically because there are
+many different scenarios in which some of them don't allow to create a
+relationship between versions and original file. You might know that version
+files a1 and a2 belong to original a but not vice versa.  In order to leave
+wrong assumptions out (which in case of file deletion might cause data loss!)
+the explicit implementation is the most flexible way to do so.
+

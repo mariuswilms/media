@@ -14,11 +14,12 @@ class Actor extends CakeTestModel {
 class Unicorn extends CakeTestModel {
 	var $name = 'Unicorn';
 	var $useTable = false;
-	var $beforeMakeArgs = array();
+	var $makeVersionArgs = array();
+	var $returnMakeVersion = true;
 
-	function beforeMake() {
-		$this->beforeMakeArgs[] = func_get_args();
-		return false;
+	function makeVersion() {
+		$this->makeVersionArgs[] = func_get_args();
+		return $this->returnMakeVersion;
 	}
 }
 

@@ -2,20 +2,21 @@
 /**
  * Attachment Model File
  *
- * Copyright (c) 2007-2010 David Persson
+ * Copyright (c) 2007-2012 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
  *
  * PHP version 5
- * CakePHP version 1.2
+ * CakePHP version 1.3
  *
  * @package    media
  * @subpackage media.models
- * @copyright  2007-2010 David Persson <davidpersson@gmx.de>
+ * @copyright  2007-2012 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
+
 /**
  * Attachment Model Class
  *
@@ -25,6 +26,7 @@
  * @subpackage media.models
  */
 class Attachment extends MediaAppModel {
+
 /**
  * Name of model
  *
@@ -32,6 +34,7 @@ class Attachment extends MediaAppModel {
  * @access public
  */
 	var $name = 'Attachment';
+
 /**
  * Name of table to use
  *
@@ -39,6 +42,7 @@ class Attachment extends MediaAppModel {
  * @access public
  */
 	var $useTable = 'attachments';
+
 /**
  * actsAs property
  *
@@ -46,22 +50,26 @@ class Attachment extends MediaAppModel {
  * @access public
  */
 	var $actsAs = array(
-		'Media.Polymorphic' => array(
-			'classField' => 'model',
-			'foreignKey' => 'foreign_key',
-		),
 		'Media.Transfer' => array(
-			'trustClient'     => false,
-			'destinationFile' => ':Medium.short::DS::Source.basename:',
-			'baseDirectory'   => MEDIA_TRANSFER,
+			'trustClient' => false,
+			'transferDirectory' => MEDIA_TRANSFER,
 			'createDirectory' => true,
 			'alternativeFile' => 100
 		),
-		'Media.Media' => array(
-			'metadataLevel'   => 2,
-			'makeVersions'    => true,
+		'Media.Generator' => array(
+			'baseDirectory' => MEDIA_TRANSFER,
 			'filterDirectory' => MEDIA_FILTER,
-	));
+			'createDirectory' => true,
+		),
+		'Media.Polymorphic',
+		'Media.Coupler' => array(
+			'baseDirectory' => MEDIA_TRANSFER
+		),
+		'Media.Meta' => array(
+			'level' => 2
+		)
+	);
+
 /**
  * Validation rules for file and alternative fields
  *
@@ -102,25 +110,50 @@ class Attachment extends MediaAppModel {
 			'required'   => false,
 			'allowEmpty' => true,
 		));
+
 /**
- * beforeMake Callback
+ * Uncomment to get fancy path field.
  *
- * Called from within `MediaBehavior::make()`
+ * @var array
+ * @access public
+ */
+	// var $virtualFields = array(
+	//	'path' => "CONCAT_WS('/', dirname, basename)"
+	// );
+
+/**
+ * Generate a version of a file
+ *
+ * Uncomment to force Generator Behavior to use this method when
+ * generating versions of files.
+ *
+ * If you want to fall back from your code back to the default method use:
+ * `return $this->Behaviors->Generator->makeVersion($this, $file, $process);`
  *
  * $process an array with the following contents:
- *	overwrite - If the destination file should be overwritten if it exists
- *	directory - The destination directory (guranteed to exist)
- *  name - Medium name of $file (e.g. `'Image'`)
- *	version - The version requested to be processed (e.g. `'xl'`)
- *	instructions - An array containing which names of methods to be called
+ *  directory - The destination directory (If this method was called
+ *              by `make()` the directory is already created)
+ *  version - The version requested to be processed (e.g. `l`)
+ *  instructions - An array containing which names of methods to be called
  *
- * @param string $file Absolute path to the source file
- * @param array $process directory, version, name, instructions, overwrite
- * @access public
- * @return boolean True signals that the file has been processed,
- * 	false or null signals that the behavior should process the file
+ * @param file $file Absolute path to source file
+ * @param array $process version, directory, instructions
+ * @return boolean `true` if version for the file was successfully stored
  */
-	function beforeMake($file, $process) {
-	}
+	// function makeVersion($file, $process) {
+	// }
+
+/**
+ * Returns the relative path to the destination file
+ *
+ * Uncomment to force Transfer Behavior to use this method when
+ * determining the destination path instead of the builtin one.
+ *
+ * @param array $via Information about the temporary file
+ * @param array $from Information about the source file
+ * @return string The path to the destination file or false
+ */
+	// function transferTo($via, $from) {
+	// }
 }
 ?>

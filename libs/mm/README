@@ -1,0 +1,147 @@
+
+  xx xx  xx xx
+  x x x  x x x
+  x   x  x   x
+  The PHP media library
+
+
+  ---- The PHP media library.
+
+  Synopsis
+  --------
+  Making media processing portable isn't easy. Retrieving meta data from media
+  through one of the thousand extension is by times overwhelming. Dealing with
+  MIME-types is most often limited to magic lookup.
+
+  This library is concerned with three aspects of media and organized
+  accordingly:
+
+  * Processing of media
+  * Retrieving media metadata
+  * Determining a file's MIME-type
+
+  The set of Media_* classes provide abstractions from underlying extensions or
+  libraries and most common methods for operations like resizing and conversion
+  (even between i.e. PDFs, movies and images).
+
+  The Mime_Type class helps with determining the MIME-type or correct extension
+  of a file or stream. It comes with adapters for the fileinfo extension, glob
+  and magic databases from the freedesktop project, as well as modmime style
+  databases.
+
+  The files required to make MIME detection work autonomously (i.e. without the
+  fileinfo extension installed) are shipped with the library. You'll find those
+  files in the data directory. Please note that the MIME magic implementation in
+  pure PHP will always be a lot slower than the PHP extensions in C and currently
+  has to be considered experimental
+
+  Authors
+  -------
+  See the AUTHORS file.
+
+  Copyright & License
+  -------------------
+  Mm, the PHP media library is Copyright (c) 2007-2010 David Persson
+  if not otherwise stated. The code is distributed under the terms
+  of the MIT License. For the full license text see the LICENSE file.
+
+  Donations
+  ---------
+  If you enjoy working with this library and this open source project is of
+  great use to you, consider buying me a book from my amazon wish list.
+
+  http://amzn.com/w/1YHE04BY8UDI - Your donation is much appreciated.
+
+  Versions & Requirements
+  -----------------------
+  1.0.0, PHP >=5.2.1 (in progress)
+
+  The library is known to run fine under linux and darwin. Depending on
+  the adapters you are using you may need (this is a selection):
+
+  - fileinfo extension
+  - gd extension
+  - ghostscript
+  - imagemagick with ghostscript support
+  - imagick extension
+  - ffmpeg
+  - sox
+
+  Download
+  --------
+  http://github.com/davidpersson/mm/downloads
+
+  Installation
+  ------------
+  1. Extract the downloaded archive.
+  2. Move or copy the extracted directory davidpersson-mm-[hash]
+     to /path/to/your/libraries.
+  3. Put the src directory of it in your include path.
+     {{{
+          ini_set('include_path',ini_get('include_path') . PATH_SEPARATOR . '/path/to/mm/src');
+     }}}
+  4. Classes must be configured prior to using them.
+     {{{
+          require 'Mime/Type.php';
+          require 'Media/Process.php';
+          require 'Media/Info.php';
+
+          Mime_Type::config('Magic', array(
+          	'adapter' => 'Fileinfo'
+          ));
+          Mime_Type::config('Glob', array(
+          	'adapter' => 'Freedesktop',
+          	'file' => '/path/to/mm/data/glob.db'
+          ));
+
+          Media_Process::config(array(
+          	// 'audio' => 'SoxShell',
+          	// 'document' => 'Imagick',
+          	'image' => 'Gd',
+          	// 'video' => 'FfmpegShell'
+          ));
+
+          Media_Info::config(array(
+          	// 'audio' => array('SoxShell'),
+          	// 'document' => array('Imagick'),
+          	'image' => array('ImageBasic'),
+          	// 'video' => array('FfmpegShell')
+          ));
+     }}}
+
+  Running the Tests
+  -----------------
+  Tests for this library are PHPUnit based. To run the tests you'll need
+  to have PHPUnit installed[1]. Following commands will run all the tests.
+
+  $ cd /path/to/mm/src
+  $ phpunit ../tests
+
+  [1] http://www.phpunit.de/manual/current/en/installation.html
+
+  Bugs
+  ----
+  If you've found a bug or would like to suggest a feature create a ticket in the
+  issue tracker. You'll find the tracker at:
+
+  http://github.com/davidpersson/mm/issues
+
+  Contributing
+  ------------
+  If you have some ideas for improving this library just fork the repository,
+  make your changes and when ready send a pull request to notify me about the
+  changes you made. I'll review them and see if I can merge them back. Please
+  style your code according to the code which is already there.
+
+  Please note that code which is supposed to be merged into this (blessed)
+  repository must carry the same header (including the copyright statement) as
+  all code in the library and should be free of any @author tags. This may seem
+  a little strange at first. But let me explain: Multiple copyright
+  holders/licenses complicate things where not necessary. @author tags seem to
+  mark sections of code as belonging to, owned or claimed by the specific author.
+
+  As an alternative the project has a dedicated AUTHORS file where every contributor
+  is listed with her/his name/nick along with an email address.
+
+
+

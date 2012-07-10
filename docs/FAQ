@@ -1,0 +1,80 @@
+Frequently Asked Questions
+==========================
+
+  Q: The docs are lacking some information, how can I help?
+  A: Fork the repository, add or update the documentation and send a pull request.
+
+--
+
+  Q: The fileinfo or mime_magic extension isn't available in my environment. 
+     Can I still use this plugin?
+  A: Yes. The files required to make MIME detection work without the extensions
+     installed are shipped with the plugin. *For all other versions follow the
+     instructions below.*  Please note that the MIME magic implementation in pure
+     PHP will always be a lot slower than the PHP extensions in C and currently 
+     has to be considered experimental.  
+
+     1. You'll need a magic.db file. You can either use the file which comes with 
+        the plugin or with apache's mod_mime_magic module (e.g. /etc/apache2/magic) 
+        or if you've got the Freedesktop Shared MIME-info Database[1] installed, a 
+        valid file can probably be found in e.g. /usr/share/mime/magic. 
+
+     2. Copy the file into your vendors directory and name it magic.db.
+
+	[1] http://standards.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-0.13.html
+
+-- 
+
+   Q: Why aren't generated versions of files automatically deleted?
+   A: The directory structure and versions you create from files are very
+      specific to your application. Also deleting multiple files by globbing is
+      potentially critical.
+
+      From an architectural point of view there is no correct place for
+      deleting versions except in the model (the specific implementation) itself.
+      The Generator behavior - otherwise best candidate for containing this
+      functionality - doesn't "know" about the record and therefore about any
+      relationship between the file and record which is about to be deleted.
+
+--
+
+   Q: What is the purpose of storing the file's hash in the table?
+   A: This way it's possible to check if a file has in some way been modified since a
+      link to it has been stored in the table. E.g. the SyncTask checks the consistency 
+      of those links by comparing the hashes stored with the actual hash values of the 
+      files (and vice versa).
+
+--
+
+  Q: Why is it recommended to move all media files to a directory below webroot?
+  A: Using a directory outside webroot to store media and serve those files
+     through the framework can get inefficient if your site is very media heavy.
+     It's much faster to let the webserver serve them. 
+
+     An excerpt from the Django docs which is more or less applicable:
+
+     >> Django itself doesn’t serve static (media) files, such as images, style sheets, 
+        or video. It leaves that job to whichever Web server you choose. [...] standard 
+        Web servers, such as Apache and lighttpd, are much more fine-tuned at serving static 
+        files than a Web application framework.
+
+--
+
+   Q: Why is there no support for storing files as BLOBs in the database? 
+   A: Storing files in the database is not considered a best practice. But amongst
+      other things, best practice is what CakePHP and its plugins are about. For
+      further information on the topic I recommend reading: I Will Not
+      BLOB (http://mysqldatabaseadministration.blogspot.com/2008/01/i-will-not-blob.html)
+      by Farhan Mashraqi who ends his post with this thought: 
+
+      >> If you're storing your BLOBs, especially large media files in database, aren't 
+         you choosing the most expensive file system available?
+
+--
+
+   Q: This is not what I wanted, I'm searching for something different.
+   A: Have a look at:
+      
+      * "The Bakery":http://bakery.cakephp.org/articles/search/3/upload
+      * "Mi Base Behaviors":http://trac.assembla.com/mi/browser/branches/base/models/behaviors
+

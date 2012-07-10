@@ -1,0 +1,15 @@
+# LANGUAGE translation of CakePHP Application
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  Revision: 7483 /pieces_factory/vendors/cake/cake/libs/error.php
+#  Revision: 7222 /pieces_factory/vendors/cake/cake/console/libs/shell.php
+#  Revision: 7152 /pieces_factory/vendors/cake/cake/libs/view/scaffolds/index.ctp
+#  Revision: 7548 /pieces_factory/vendors/cake/cake/libs/view/scaffolds/view.ctp
+#  Revision: 7152 /pieces_factory/vendors/cake/cake/libs/view/scaffolds/edit.ctp
+#  Revision: 7100 /pieces_factory/vendors/cake/cake/console/libs/i18n.php
+#  Revision: 7301 /pieces_factory/vendors/cake/cake/console/libs/tasks/controller.php
+#  Revision: 7563 /pieces_factory/vendors/cake/cake/console/libs/tasks/model.php
+#  Revision: 7572 /pieces_factory/vendors/cake/cake/libs/controller/components/auth.php
+#  Revision: 7214 /pieces_factory/vendors/cake/app/webroot/test.php
+#  Revision: 7214 /pieces_factory/vendors/cake/cake/console/libs/templates/skel/webroot/test.php
+#  Revision:

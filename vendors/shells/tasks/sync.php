@@ -2,27 +2,53 @@
 /**
  * Sync Task File
  *
- * Copyright (c) 2007-2010 David Persson
+ * Copyright (c) 2007-2012 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
  *
  * PHP version 5
- * CakePHP version 1.2
+ * CakePHP version 1.3
  *
  * @package    media
  * @subpackage media.shells.tasks
- * @copyright  2007-2010 David Persson <davidpersson@gmx.de>
+ * @copyright  2007-2012 David Persson <davidpersson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
+
 /**
  * Sync Task Class
+ *
+ * By default the task starts in interactive mode. Below you’ll find an example
+ * for a cronjob for invoking the task on a regular basis to automate repairing
+ * files and records which are not in sync.
+ * {{{
+ *     #!/bin/bash
+ *
+ *     CAKE_CORE_INCLUDE_PATH=/usr/local/share/cake-1.2.x.x
+ *     CAKE_CONSOLE=${CAKE_CORE_INCLUDE_PATH}/cake/console/cake
+ *     APP="/path/to/your/app"
+ *     MODELS="example attachments" # Models separated by one space
+ *     AUTO="-auto" # Enables automatic (destructive) repair!
+ *
+ *     if [ ! -x $CAKE_CONSOLE ] || [ ! -x $APP ]; then
+ *     exit 1
+ *     fi
+ *
+ *     for MODEL in $MODELS; do
+ *         $CAKE_CONSOLE media sync -app $APP -quiet $AUTO $MODEL
+ *         test $? != 0 && exit 1
+ *     done
+ *
+ *     exit 0
+ * }}}
  *
  * @package    media
  * @subpackage media.shells.tasks
  */
 class SyncTask extends MediaShell {
+
 /**
  * model
  *
@@ -30,6 +56,7 @@ class SyncTask extends MediaShell {
  * @access public
  */
 	var $model;
+
 /**
  * Directory
  *
@@ -37,6 +64,7 @@ class SyncTask extends MediaShell {
  * @access public
  */
 	var $directory;
+
 /**
  * Default answer to use if prompted for input
  *
@@ -44,6 +72,15 @@ class SyncTask extends MediaShell {
  * @access protected
  */
 	var $_answer = 'n';
+
+/**
+ * Verbosity of output, control via argument `-quiet`
+ *
+ * @var boolean
+ * @access protected
+ */
+	var $_quiet;
+
 /**
  * Model
  *
@@ -51,6 +88,7 @@ class SyncTask extends MediaShell {
  * @access protected
  */
 	var $_Model;
+
 /**
  * baseDirectory from the model's media behavior settings
  *
@@ -58,6 +96,7 @@ class SyncTask extends MediaShell {
  * @access protected
  */
 	var $_baseDirectory;
+
 /**
  * Folder to search
  *
@@ -65,6 +104,7 @@ class SyncTask extends MediaShell {
  * @access protected
  */
 	var $_Folder;
+
 /**
  * Current item retrieved from the model
  *
@@ -72,6 +112,7 @@ class SyncTask extends MediaShell {
  * @access private
  */
 	var $__dbItem;
+
 /**
  * Current item retrieved from the filesystem
  *
@@ -79,6 +120,7 @@ class SyncTask extends MediaShell {
  * @access private
  */
 	var $__fsItem;
+
 /**
  * Current set of items retrieved from the model
  *
@@ -86,6 +128,7 @@ class SyncTask extends MediaShell {
  * @access private
  */
 	var $__dbMap;
+
 /**
  * Current set of items retrieved from the filesystem
  *
@@ -93,6 +136,7 @@ class SyncTask extends MediaShell {
  * @access private
  */
 	var $__fsMap;
+
 /**
  * Current file object
  *
@@ -100,6 +144,7 @@ class SyncTask extends MediaShell {
  * @access private
  */
 	var $__File;
+
 /**
  * An alternative for the current file
  *
@@ -107,6 +152,7 @@ class SyncTask extends MediaShell {
  * @access private
  */
 	var $__alternativeFile;
+
 /**
  * Main execution method
  *
@@ -117,6 +163,7 @@ class SyncTask extends MediaShell {
 		$this->_answer = isset($this->params['auto']) ? 'y' : 'n';
 		$this->model = array_shift($this->args);
 		$this->directory = array_shift($this->args);
+		$this->_quiet = isset($this->params['quiet']);
 
 		if (!isset($this->model)) {
 			$this->model = $this->in('Name of model:', null, 'Media.Attachment');
@@ -127,13 +174,13 @@ class SyncTask extends MediaShell {
 
 		$this->_Model = ClassRegistry::init($this->model);
 
-		if (!isset($this->_Model->Behaviors->Media)) {
-			$this->err('MediaBehavior is not attached to Model');
+		if (!isset($this->_Model->Behaviors->Coupler)) {
+			$this->err('CouplerBehavior is not attached to Model');
 			return false;
 		}
-		$this->_baseDirectory = $this->_Model->Behaviors->Media->settings[$this->_Model->alias]['baseDirectory'];
+		$this->_baseDirectory = $this->_Model->Behaviors->Coupler->settings[$this->_Model->alias]['baseDirectory'];
 		$this->_Folder = new Folder($this->directory);
-		$this->interactive = isset($this->model, $this->directory);
+		$this->interactive = !isset($this->model, $this->directory);
 
 		if ($this->interactive) {
 			$input = $this->in('Interactive?', 'y/n', 'y');
@@ -145,19 +192,20 @@ class SyncTask extends MediaShell {
 
 		$this->out();
 		$this->out(sprintf('%-25s: %s', 'Model', $this->_Model->name));
-		$this->out(sprintf('%-25s: %s', 'Search directory', $this->shortPath($this->_Folder->pwd())));
+		$this->out(sprintf('%-25s: %s', 'Search directory', $this->_Folder->pwd()));
 		$this->out(sprintf('%-25s: %s', 'Automatic repair', $this->_answer == 'y' ? 'yes' : 'no'));
 
 		if ($this->in('Looks OK?', 'y,n', 'y') == 'n') {
 			return false;
 		}
-		$this->_Model->Behaviors->disable('Media');
+		$this->_Model->Behaviors->disable('Coupler');
 		$this->_checkFilesWithRecords();
 		$this->_checkRecordsWithFiles();
-		$this->_Model->Behaviors->enable('Media');
+		$this->_Model->Behaviors->enable('Coupler');
 		$this->out();
 		return true;
 	}
+
 /**
  * Checks if files are in sync with records
  *
@@ -165,7 +213,7 @@ class SyncTask extends MediaShell {
  * @return void
  */
 	function _checkFilesWithRecords() {
-		$this->out();
+		$this->out('');
 		$this->out('Checking if files are in sync with records');
 		$this->hr();
 
@@ -177,8 +225,9 @@ class SyncTask extends MediaShell {
 				$this->shortPath($dbItem['file']),
 				$this->_Model->name, $dbItem['id']
 			);
-			$this->out();
-			$this->out($message);
+			if (!$this->_quiet) {
+				$this->out($message);
+			}
 
 			$this->__dbItem = $dbItem;
 			$this->__File = new File($dbItem['file']);
@@ -198,7 +247,9 @@ class SyncTask extends MediaShell {
 				continue;
 			}
 		}
+		$this->out('Done.');
 	}
+
 /**
  * Checks if records are in sync with files
  *
@@ -206,7 +257,7 @@ class SyncTask extends MediaShell {
  * @return void
  */
 	function _checkRecordsWithFiles() {
-		$this->out();
+		$this->out('');
 		$this->out('Checking if records are in sync with files');
 		$this->hr();
 
@@ -219,8 +270,9 @@ class SyncTask extends MediaShell {
 				$this->_Model->name,
 				'?'
 			);
-			$this->out();
-			$this->out($message);
+			if (!$this->_quiet) {
+				$this->out($message);
+			}
 
 			$this->__File = new File($fsItem['file']);
 			$this->__fsItem = $fsItem;
@@ -229,6 +281,7 @@ class SyncTask extends MediaShell {
 				continue;
 			}
 		}
+		$this->out('Done.');
 	}
 
 	/* handle methods */
@@ -241,10 +294,14 @@ class SyncTask extends MediaShell {
  */
 	function _handleNotReadable() {
 		if (!$this->__File->readable() && $this->__File->exists()) {
-			$this->out('File exists but is not readable');
+			$message  = 'File `' . $this->shortPath($this->__File->pwd()) . '`';
+			$message .= ' exists but is not readable.';
+			$this->out($message);
 			return true;
 		}
+		return false;
 	}
+
 /**
  * Handles orphaned records
  *
@@ -255,7 +312,9 @@ class SyncTask extends MediaShell {
 		if ($this->__File->exists()) {
 			return;
 		}
-		$this->out('Orphaned');
+		$message  = "Record is orphaned. It's pointing to non-existent ";
+		$message .= 'file `' . $this->shortPath($this->__File->pwd()) . '`.';
+		$this->out($message);
 
 		if ($this->_fixWithAlternative()) {
 			return true;
@@ -265,6 +324,7 @@ class SyncTask extends MediaShell {
 		}
 		return false;
 	}
+
 /**
  * Handles mismatching checksums
  *
@@ -272,10 +332,15 @@ class SyncTask extends MediaShell {
  * @return mixed
  */
 	function _handleChecksumMismatch() {
+		if (!$this->__File->exists()) {
+			return;
+		}
 		if ($this->__dbItem['checksum'] == $this->__File->md5(true)) {
 			return;
 		}
-		$this->out('Checksums mismatch');
+		$message  = 'The checksums for file `' . $this->shortPath($this->__File->pwd()) . '`';
+		$message .= ' and its corresponding record mismatch.';
+		$this->out($message);
 
 		if ($this->_fixWithAlternative()) {
 			return true;
@@ -296,6 +361,7 @@ class SyncTask extends MediaShell {
 			return true;
 		}
 	}
+
 /**
  * Handles orphaned files
  *
@@ -306,12 +372,14 @@ class SyncTask extends MediaShell {
 		if ($this->_findByFile($this->__fsItem['file'], $this->__dbMap)) {
 			return;
 		}
-		$this->out('Orphaned');
+		$message  = 'File `' . $this->shortPath($this->__File->pwd()) . '`';
+		$message .= ' is orphaned.';
+		$this->out($message);
 
 		$input = $this->in('Delete file?', 'y,n', $this->_answer);
 
 		if ($input == 'y') {
-			$File->delete();
+			$this->__File->delete();
 			$this->out('File deleted');
 			return true;
 		}
@@ -349,6 +417,7 @@ class SyncTask extends MediaShell {
 		$this->out('Corrected dirname and basename');
 		return true;
 	}
+
 /**
  * Deletes current record
  *
@@ -367,6 +436,7 @@ class SyncTask extends MediaShell {
 	}
 
 	/* map related methods */
+
 
 /**
  * Generates filesystem and model maps
@@ -398,6 +468,7 @@ class SyncTask extends MediaShell {
 		}
 		return array($fsMap, $dbMap);
 	}
+
 /**
  * Finds an item's file by it's checksum
  *
@@ -414,6 +485,7 @@ class SyncTask extends MediaShell {
 		}
 		return false;
 	}
+
 /**
  * Finds an item's file by it's name
  *
