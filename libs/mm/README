@@ -41,7 +41,7 @@
 
   Copyright & License
   -------------------
-  Mm, the PHP media library is Copyright (c) 2007-2010 David Persson
+  Mm, the PHP media library is Copyright (c) 2007-2012 David Persson
   if not otherwise stated. The code is distributed under the terms
   of the MIT License. For the full license text see the LICENSE file.
 
@@ -111,6 +111,11 @@
 
   Running the Tests
   -----------------
+  This library is continously integrated. Please check the following URL
+  for information on the status of the latest builds:
+
+  http://travis-ci.org/#!/davidpersson/mm
+
   Tests for this library are PHPUnit based. To run the tests you'll need
   to have PHPUnit installed[1]. Following commands will run all the tests.
 

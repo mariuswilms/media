@@ -2,12 +2,12 @@
 /**
  * mm: the PHP media library
  *
- * Copyright (c) 2007-2010 David Persson
+ * Copyright (c) 2007-2012 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright  2007-2010 David Persson <nperson@gmx.de>
+ * @copyright  2007-2012 David Persson <nperson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/mm
  */
@@ -52,7 +52,7 @@ class Media_InfoTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(is_a($result, 'Media_Info_Document'));
 
 		$result = Media_Info::factory(array('source' => "{$this->_files}/audio_ogg_snippet.ogg"));
-		$this->assertType('Media_Info_Audio', $result);
+		$this->assertInstanceOf('Media_Info_Audio', $result);
 	}
 
 	public function testMediaFactorySourceFailStream() {

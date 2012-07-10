@@ -2,12 +2,12 @@
 /**
  * mm: the PHP media library
  *
- * Copyright (c) 2007-2010 David Persson
+ * Copyright (c) 2007-2012 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright  2007-2010 David Persson <nperson@gmx.de>
+ * @copyright  2007-2012 David Persson <nperson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/mm
  */
@@ -69,7 +69,7 @@ class Media_Process_Generic {
 	 * command is incomplete or doesn't make sense.
 	 *
 	 * @param string|integer $key
-	 * @param mixed $value Optional.
+	 * @param mixed $value Optional when `$key` is a boolean switch.
 	 * @return boolean `true` on success, `false` if something went wrong.
 	 */
 	public function passthru($key, $value = null) {
@@ -86,27 +86,33 @@ class Media_Process_Generic {
 	}
 
 	/**
-	 * Stores the media to a file.
+	 * Stores the media to a file or resource.
 	 *
-	 * @param string $file Absolute path to a file
-	 * @param boolean $overwrite Controls overwriting of an existent file, defaults to `false`
-	 * @return string|boolean
+	 * @param string|resource $source Eitehr an absolute path to a file or a writable ressource.
+	 * @param boolean $overwrite Controls overwriting of an existent file, defaults to `false`.
+	 * @return string|resource|boolean
 	 */
-	public function store($file, array $options = array()) {
+	public function store($source, array $options = array()) {
 		$options += array('overwrite' => false);
 
-		if (file_exists($file)) {
-			if ($options['overwrite']) {
-				unlink($file);
-			} else {
-				return false;
-			}
-		}
-		$handle = fopen($file, 'wb');
-		$result = $this->_adapter->store($handle);
-		fclose($handle);
+		if (is_resource($source)) {
+			$handle = $source;
 
-		return $result ? $file : false;
+			rewind($handle);
+			$result = $this->_adapter->store($handle);
+		} else {
+			if (file_exists($source)) {
+				if ($options['overwrite']) {
+					unlink($source);
+				} else {
+					return false;
+				}
+			}
+			$handle = fopen($source, 'wb');
+			$result = $this->_adapter->store($handle);
+			fclose($handle);
+		}
+		return $result ? $source : false;
 	}
 
 	/**

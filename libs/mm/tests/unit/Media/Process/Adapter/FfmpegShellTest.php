@@ -2,12 +2,12 @@
 /**
  * mm: the PHP media library
  *
- * Copyright (c) 2007-2010 David Persson
+ * Copyright (c) 2007-2012 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright  2007-2010 David Persson <nperson@gmx.de>
+ * @copyright  2007-2012 David Persson <nperson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/mm
  */
@@ -65,7 +65,7 @@ class Media_Process_Adapter_FfmpegShellTest extends PHPUnit_Framework_TestCase {
 		$subject->convert('image/png');
 		$result = $subject->store($target);
 
-		$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_INT, $result);
+		$this->assertInternalType('integer', $result);
 		$this->assertEquals('image/png', Mime_Type::guessType($target));
 
 		fclose($source);
@@ -80,7 +80,7 @@ class Media_Process_Adapter_FfmpegShellTest extends PHPUnit_Framework_TestCase {
 		$subject->convert('video/mpeg');
 		$result = $subject->store($target);
 
-		$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_INT, $result);
+		$this->assertInternalType('integer', $result);
 		$this->assertEquals('video/mpeg', Mime_Type::guessType($target));
 
 		fclose($source);

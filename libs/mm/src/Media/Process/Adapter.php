@@ -2,12 +2,12 @@
 /**
  * mm: the PHP media library
  *
- * Copyright (c) 2007-2010 David Persson
+ * Copyright (c) 2007-2012 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright  2007-2010 David Persson <nperson@gmx.de>
+ * @copyright  2007-2012 David Persson <nperson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/mm
  */
@@ -46,7 +46,7 @@ abstract class Media_Process_Adapter {
 	 * Allows for direct manipulation.
 	 *
 	 * @param string|integer $key
-	 * @param mixed $value
+	 * @param mixed $value Value `null` should be passed if `$key` is a boolean switch.
 	 * @return boolean `true` on success, `false` if something went wrong.
 	 */
 	abstract public function passthru($key, $value);

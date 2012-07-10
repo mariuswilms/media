@@ -2,12 +2,12 @@
 /**
  * mm: the PHP media library
  *
- * Copyright (c) 2007-2010 David Persson
+ * Copyright (c) 2007-2012 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright  2007-2010 David Persson <nperson@gmx.de>
+ * @copyright  2007-2012 David Persson <nperson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/mm
  */
@@ -31,7 +31,7 @@ class Media_Process_Adapter_FfmpegShell extends Media_Process_Adapter {
 	protected $_height;
 
 	protected $_command;
-	protected $_options = array();
+	protected $_options = array('overwrite' => '-y');
 
 	protected $_targetType;
 
@@ -62,7 +62,7 @@ class Media_Process_Adapter_FfmpegShell extends Media_Process_Adapter {
 		return true;
 	}
 
-	public function passthru($key, $value = null) {
+	public function passthru($key, $value) {
 		if ($value === null) {
 			$this->_options[$key] = "-{$key}";
 		} elseif (is_array($value)) {
@@ -74,7 +74,9 @@ class Media_Process_Adapter_FfmpegShell extends Media_Process_Adapter {
 	}
 
 	public function store($handle) {
-		if ($this->_targetType != $this->_objectType || $this->_options) {
+		$original = get_class_vars(__CLASS__);
+
+		if ($this->_targetType != $this->_objectType || $original['_options'] != $this->_options) {
 			if (!$this->_process()) {
 				return false;
 			}

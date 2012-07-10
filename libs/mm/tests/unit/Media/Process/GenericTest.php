@@ -2,12 +2,12 @@
 /**
  * mm: the PHP media library
  *
- * Copyright (c) 2007-2010 David Persson
+ * Copyright (c) 2007-2012 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright  2007-2010 David Persson <nperson@gmx.de>
+ * @copyright  2007-2012 David Persson <nperson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/mm
  */
@@ -30,24 +30,24 @@ class Media_Process_GenericTest extends PHPUnit_Framework_TestCase {
 			'source' => "{$this->_files}/image_jpg.jpg",
 			'adapter' => new Media_Process_Adapter_GenericMock(null)
 		));
-		$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $result);
+		$this->assertInternalType('object', $result);
 
 		$result = new Media_Process_Generic(array(
 			'source' => fopen("{$this->_files}/image_jpg.jpg", 'rb'),
 			'adapter' => new Media_Process_Adapter_GenericMock(null)
 		));
-		$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $result);
+		$this->assertInternalType('object', $result);
 
 		$result = new Media_Process_Generic(array(
 			'source' => "{$this->_files}/image_jpg.jpg",
 			'adapter' => new Media_Process_Adapter_GenericMock('test')
 		));
-		$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $result);
+		$this->assertInternalType('object', $result);
 
 		$result = new Media_Process_Generic(array(
 			'adapter' => new Media_Process_Adapter_GenericMock('test')
 		));
-		$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $result);
+		$this->assertInternalType('object', $result);
 	}
 
 	public function testConstructFailWithNoArgs() {

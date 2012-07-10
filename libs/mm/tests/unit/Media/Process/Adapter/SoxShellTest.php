@@ -2,12 +2,12 @@
 /**
  * mm: the PHP media library
  *
- * Copyright (c) 2007-2010 David Persson
+ * Copyright (c) 2007-2012 David Persson
  *
  * Distributed under the terms of the MIT License.
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright  2007-2010 David Persson <nperson@gmx.de>
+ * @copyright  2007-2012 David Persson <nperson@gmx.de>
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/mm
  */
@@ -62,7 +62,7 @@ class Media_Process_Adapter_SoxShellTest extends PHPUnit_Framework_TestCase {
 		$subject->convert('audio/x-wav');
 		$result = $subject->store($target);
 
-		$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_INT, $result);
+		$this->assertInternalType('integer', $result);
 		$this->assertEquals('audio/x-wav', Mime_Type::guessType($target));
 
 		fclose($source);
