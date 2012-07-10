@@ -34,7 +34,7 @@
   necessarily software projects. Another - probably more technical reason - is
   that I want to make things more generic and not specific to a certain frame-
   work anymore. Parts of this plugin have already been extracted and will live
-  in under https://github.com/davidpersson/mm.
+  under https://github.com/davidpersson/mm.
 
   Thanks for all the discussion surrounding this plugin,
   the support, watching, following and contributions!
