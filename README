@@ -56,6 +56,9 @@ Versions & Requirements
 0.6.x, CakePHP 1.2.x, PHP >=5.1.0
 0.5.x, CakePHP 1.2.x, PHP >=5.1.0
 
+Please see the corresponding docs/CHANGES-*.x file for
+migration and update instructions.
+
 The plugin is known to run fine under linux and darwin. There exist some
 issues on windows (http://github.com/davidpersson/media/issues#issue/8),
 though.
