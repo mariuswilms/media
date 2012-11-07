@@ -20,21 +20,24 @@ allows you to use only the functionality you really need.
 Status
 ------
 Originally written for CakePHP 1.2 and 1.3 and maintained since as early as
-2007 this project will not receive any future updates. There will be no port of
-it - lead by myself - to make it compatible with CakePHP 2.x or any future
-version thereafter.
+2007 this project w̶i̶l̶l̶ ̶n̶o̶t̶ ̶r̶e̶c̶e̶i̶v̶e̶ ̶a̶n̶y̶ ̶f̶u̶t̶u̶r̶e̶ ̶u̶p̶d̶a̶t̶e̶s̶ keeps on moving slowly
+but steady. There will be n̶o̶ a port of it - lead by myself - to make it com-
+patible with CakePHP 2.x o̶r̶ ̶a̶n̶y̶ ̶f̶u̶t̶u̶r̶e̶ ̶v̶e̶r̶s̶i̶o̶n̶ ̶t̶h̶e̶r̶e̶a̶f̶t̶e̶r̶.
 
 This project forms my very first successful open source project. It was
-originally been written to scratch my own itch (namely http://npiece.com). I
-saw how this plugin also added missing functionality to the CakePHP universe
-and was indeed useful to a lot of CakePHP users.
+originally been written to scratch my own itch (namely http://npiece.com). I̶
+s̶a̶w̶ ̶h̶o̶w̶ ̶t̶h̶i̶s̶ ̶p̶l̶u̶g̶i̶n̶ ̶a̶l̶s̶o̶ ̶a̶d̶d̶e̶d̶ ̶m̶i̶s̶s̶i̶n̶g̶ ̶f̶u̶n̶c̶t̶i̶o̶n̶a̶l̶i̶t̶y̶ ̶t̶o̶ ̶t̶h̶e̶ ̶C̶a̶k̶e̶P̶H̶P̶ ̶u̶n̶i̶v̶e̶r̶s̶e̶
+a̶n̶d̶ ̶w̶a̶s̶ ̶i̶n̶d̶e̶e̶d̶ ̶u̶s̶e̶f̶u̶l̶ ̶t̶o̶ ̶a̶ ̶l̶o̶t̶ ̶o̶f̶ ̶C̶a̶k̶e̶P̶H̶P̶ ̶u̶s̶e̶r̶s̶.̶ I'm seeing how this plugin
+is also adding missing functionality to the CakePHP universe and is indeed
+useful to a lot of CakePHP users.
 
-I'm leaving this project behind for several reasons. The most important one
-being that I want to regain the ability to focus on new projects - not
-necessarily software projects. Another - probably more technical reason - is
-that I want to make things more generic and not specific to a certain frame-
-work anymore. Parts of this plugin have already been extracted and will live
-under https://github.com/davidpersson/mm.
+I̶'̶m̶ ̶l̶e̶a̶v̶i̶n̶g̶ ̶t̶h̶i̶s̶ ̶p̶r̶o̶j̶e̶c̶t̶ ̶b̶e̶h̶i̶n̶d̶ ̶f̶o̶r̶ ̶s̶e̶v̶e̶r̶a̶l̶ ̶r̶e̶a̶s̶o̶n̶s̶.̶ I'm releasing focus on
+this project for several reasons. The most important one being that I want
+to regain the ability to focus on new projects - not necessarily software
+projects. Another - probably more technical reason - is that I want to make
+things more generic and not specific to a certain framework anymore. Parts
+of this plugin have already been extracted and will live under
+https://github.com/davidpersson/mm.
 
 Thanks for all the discussion surrounding this plugin,
 the support, watching, following and contributions!
