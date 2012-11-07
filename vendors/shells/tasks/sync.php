@@ -154,16 +154,10 @@ class SyncTask extends MediaShell {
 		if (!isset($this->model)) {
 			$this->model = $this->in('Name of model:', null, 'Media.Attachment');
 		}
-		$this->_Model = ClassRegistry::init($this->model);
-
 		if (!isset($this->directory)) {
-			$directory = null;
-
-			if (isset($this->_Model->Behaviors->Transfer)) {
-				$directory = $this->_Model->Behaviors->Transfer->settings[$this->_Model->alias]['transferDirectory'];
-			}
-			$this->directory = $this->in('Directory to search:', null, $directory);
+			$this->directory = $this->in('Directory to search:', null, MEDIA_TRANSFER);
 		}
+		$this->_Model = ClassRegistry::init($this->model);
 
 		if (!isset($this->_Model->Behaviors->Coupler)) {
 			$this->err('CouplerBehavior is not attached to Model');
