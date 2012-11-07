@@ -244,20 +244,10 @@ class MediaValidation extends Validation {
 /**
  * Normalizes Parameters
  *
- * @param mixed Array containing multiple strings, or a single string
+ * @param mixed $param
  * @return mixed
  */
-	protected function _normalize() {
-		$args = func_get_args();
-
-		if (count($args) > 1) {
-			foreach($args as $param) {
-				$result[] = self::_normalize($param);
-			}
-			return $result;
-		}
-
-		$param = $args[0];
+	protected function _normalize($param) {
 		switch ($param) {
 			case '*':
 			case array('*'):
