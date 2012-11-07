@@ -394,11 +394,11 @@ class TransferBehavior extends ModelBehavior {
  * If you experience problems with the model not validating, try commenting the
  * mimeType rule or provide less strict settings for the rules.
  *
- * For users on Windows it is important to know that checkExtension and
- * checkMimeType take both a blacklist and a whitelist and you make sure that you
- * additionally specify tmp as an extension in case you are using a whitelist:
+ * Imortant for users on Windows: You must explictly and additionaly whitelist
+ * `'tmp'`  when using `checkExtension` as Windows will create temporary files
+ * with that suffix.
  * {{{
- *     'extension' => array('rule' => array('checkExtension', array('bin', 'exe'), array('jpg', 'tmp')))
+ *     'extension' => array('rule' => array('checkExtension', array('jpg', 'tmp')))
  * }}}
  *
  * @see checkLocation()
@@ -749,26 +749,23 @@ class TransferBehavior extends ModelBehavior {
 	}
 
 /**
- * Checks if resource has (not) one of given extensions
+ * Checks if resource has one of the given extensions
  *
  * @param Model $Model
  * @param array $field
- * @param mixed $deny True or * blocks any extension,
- * 	an array containing extensions (w/o leading dot) selectively blocks,
- * 	false blocks no extension
  * @param mixed $allow True or * allows any extension,
  * 	an array containing extensions (w/o leading dot) selectively allows,
  * 	false allows no extension
  * @return boolean
  */
-	public function checkExtension(&$Model, $field, $deny = false, $allow = true) {
+	public function checkExtension(&$Model, $field, $allow = true) {
 		extract($this->runtime[$Model->alias]);
 
 		foreach (array('source', 'temporary', 'destination') as $type) {
 			if (($type == 'temporary' && empty($$type)) || !isset(${$type}['extension'])) {
 				continue;
 			}
-			if (!MediaValidation::extension(${$type}['extension'], $deny, $allow)) {
+			if (!MediaValidation::extension(${$type}['extension'], $allow)) {
 				return false;
 			}
 		}
@@ -776,25 +773,22 @@ class TransferBehavior extends ModelBehavior {
 	}
 
 /**
- * Checks if resource has (not) one of given MIME types
+ * Checks if resource has one of the given MIME types
  *
  * This check is less strict in that it isn't sensitive to MIME types with or
  * without properties or experimental indicators. This holds true for the type
- * which is subject of the check as well as types provided for $deny and
- * $allow. I.e. `audio/x-ogg` will be allowed if $allow contains `audio/ogg`
- * and `video/ogg` works also if $allow contains the stricter `video/x-ogg`.
+ * which is subject of the check as well as types provided for $allow. I.e.
+ * `audio/x-ogg` will be allowed if $allow contains `audio/ogg` and `video/ogg`
+ * works also if $allow contains the stricter `video/x-ogg`.
  *
  * @param Model $Model
  * @param array $field
- * @param mixed $deny True or * blocks any MIME type,
- * 	an array containing MIME types selectively blocks,
- * 	false blocks no MIME type
  * @param mixed $allow True or * allows any extension,
  * 	an array containing extensions selectively allows,
  * 	false allows no MIME type
  * @return boolean
  */
-	public function checkMimeType(&$Model, $field, $deny = false, $allow = true) {
+	public function checkMimeType(&$Model, $field, $allow = true) {
 		extract($this->runtime[$Model->alias]);
 		extract($this->settings[$Model->alias], EXTR_SKIP);
 
@@ -816,8 +810,8 @@ class TransferBehavior extends ModelBehavior {
 			if (!isset(${$type}['mimeType']) && !$trustClient) {
 				continue;
 			}
-			$result  = MediaValidation::mimeType(${$type}['mimeType'], $deny, $allow);
-			$result |= MediaValidation::mimeType(Mime_Type::simplify(${$type}['mimeType']), $deny, $allow);
+			$result  = MediaValidation::mimeType(${$type}['mimeType'], $allow);
+			$result |= MediaValidation::mimeType(Mime_Type::simplify(${$type}['mimeType']), $allow);
 
 			return $result;
 		}

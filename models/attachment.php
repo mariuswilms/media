@@ -64,9 +64,9 @@ class Attachment extends MediaAppModel {
  * try commenting the mimeType rule or providing less strict
  * settings for single rules.
  *
- * `checkExtension()` and `checkMimeType()` take both a blacklist and
- * a whitelist. If you are on windows make sure that you addtionally
- * specify the `'tmp'` extension in case you are using a whitelist.
+ * Imortant for users on Windows: You must explictly and additionaly whitelist
+ * `'tmp'` when using `checkExtension` as Windows will create temporary files
+ * with that suffix.
  *
  * @var array
  */
@@ -80,10 +80,10 @@ class Attachment extends MediaAppModel {
 			'permission' => array('rule' => array('checkPermission', '*')),
 			'size'       => array('rule' => array('checkSize', '5M')),
 			'pixels'     => array('rule' => array('checkPixels', '1600x1600')),
-			'extension'  => array('rule' => array('checkExtension', false, array(
+			'extension'  => array('rule' => array('checkExtension', array(
 				'jpg', 'jpeg', 'png', 'tif', 'tiff', 'gif', 'pdf', 'tmp'
 			))),
-			'mimeType'   => array('rule' => array('checkMimeType', false, array(
+			'mimeType'   => array('rule' => array('checkMimeType', array(
 				'image/jpeg', 'image/png', 'image/tiff', 'image/gif', 'application/pdf'
 		)))),
 		'alternative' => array(

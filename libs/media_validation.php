@@ -27,57 +27,37 @@ App::import('Core', 'Validation');
 class MediaValidation extends Validation {
 
 /**
- * Checks if MIME type is (not) one of given MIME types
+ * Checks if MIME type is one of given MIME types
  *
  * @param string $check Mime type to check e.g. image/jpeg
- * @param mixed $deny True or * blocks any MIME type,
- * 	an array containing MIME types selectively blocks,
- * 	false blocks no MIME type
  * @param mixed $allow True or * allows any MIME type,
  * 	an array containing MIME types selectively allows,
  * 	false allows no MIME type
  * @return boolean
  */
-	public function mimeType($check, $deny = false, $allow = true) {
+	public function mimeType($check, $allow = true) {
 		if (!is_string($check) || !preg_match('/^[-\w.\+]+\/[-\w.\+]+$/', $check)) {
 			return false;
 		}
-		list($deny, $allow) = self::_normalize($deny, $allow);
-
-		if ($deny === true || (is_array($deny) && in_array($check, $deny))) {
-			return false;
-		}
-		if($allow !== true && (is_array($allow) && !in_array($check, $allow))) {
-			return false;
-		}
-		return true;
+		$allow = self::_normalize($allow);
+		return $allow === true || (is_array($allow) && in_array($check, $allow));
 	}
 
 /**
- * Checks if extension is (not) one of given extensions
+ * Checks if extension is one of given extensions
  *
  * @param string $check Extension to check (without leading dot)
- * @param mixed $deny True or * blocks any extension,
- * 	an array containing extensions (without a leading dot) selectively blocks,
- * 	false blocks no extension
  * @param mixed $allow True or * allows any extension,
  * 	an array containing extensions (without leading dot) selectively allows,
  * 	false allows no extension
  * @return boolean
  */
-	public function extension($check, $deny = false, $allow = true) {
+	public function extension($check, $allow = true) {
 		if (!is_string($check) || !preg_match('/^[\w0-9]+(\.[\w0-9]+)?$/', $check)) {
 			return false;
 		}
-		list($deny, $allow) = self::_normalize($deny, $allow);
-
-		if ($deny === true || (is_array($deny) && Validation::extension($check, $deny))) {
-			return false;
-		}
-		if ($allow !== true && (is_array($allow) && !Validation::extension($check, $allow))) {
-			return false;
-		}
-		return true;
+		$allow = self::_normalize($allow);
+		return $allow === true || (is_array($allow) && Validation::extension($check, $allow));
 	}
 
 /**
