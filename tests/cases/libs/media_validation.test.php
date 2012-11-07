@@ -101,26 +101,23 @@ class MediaValidationTest extends CakeTestCase {
 		$result = MediaValidation::extension($check);
 		$this->assertFalse($result);
 
-		$deny = array('bin', 'class', 'dll', 'dms', 'exe', 'lha');
 		$allow = array('pdf');
 		$check = 'tmp';
-		$result = MediaValidation::extension($check, $deny, $allow);
+		$result = MediaValidation::extension($check, $allow);
 		$this->assertFalse($result);
 
 		$check = 'tmp';
 		$result = MediaValidation::extension($check);
 		$this->assertTrue($result);
 
-		$deny = array('bin', 'class', 'dll', 'dms', 'exe', 'lha');
 		$allow = array('pdf', 'tmp');
 		$check = 'tmp';
-		$result = MediaValidation::extension($check);
+		$result = MediaValidation::extension($check, $allow);
 		$this->assertTrue($result);
 
-		$deny = array('bin', 'class', 'dll', 'dms', 'exe', 'lha');
 		$allow = array('*');
 		$check = 'tmp';
-		$result = MediaValidation::extension($check);
+		$result = MediaValidation::extension($check, $allow);
 		$this->assertTrue($result);
 	}
 
