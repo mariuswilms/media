@@ -579,29 +579,6 @@ class MediaHelper extends AppHelper {
 	}
 
 /**
- * Generates attributes from options. Overwritten from Helper::_parseAttributes()
- * to take new minimized HTML5 attributes used here into account.
- *
- * @fixme Visibility: left undefined/public as method overridden defines none.
- * @param array $options
- * @return string
- */
-	function _parseAttributes($options) {
-		$attributes = array();
-		$minimizedAttributes = array('autoplay', 'controls', 'autobuffer', 'loop');
-
-		foreach ($options as $key => $value) {
-			if (in_array($key, $minimizedAttributes)) {
-				if ($value === 1 || $value === true || $value === 'true' || $value == $key) {
-					$attributes[] = sprintf('%s="%s"', $key, $key);
-					unset($options[$key]);
-				}
-			}
-		}
-		return parent::_parseAttributes($options) . ' ' . implode(' ', $attributes);
-	}
-
-/**
  * Generates `param` tags
  *
  * @param array $options
