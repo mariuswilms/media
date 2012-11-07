@@ -83,10 +83,6 @@ class MediaValidation extends Validation {
 /**
  * Checks if size is within limits
  *
- * Please note that the size will always be checked against
- * limitations set in `php.ini` for `post_max_size` and `upload_max_filesize`
- * even if $max is set to false.
- *
  * @param integer $check Size to check in bytes
  * @param mixed $max String (e.g. 8M) containing maximum allowed size, false allows any size
  * @return boolean
@@ -96,26 +92,10 @@ class MediaValidation extends Validation {
 			return false;
 		}
 
-		$max = self::_normalize($max);
-		$maxSizes = array();
-
-		if ($max !== false && $max = self::_toComputableSize($max)) {
-			 $maxSizes[] = $max;
-		}
-		if ($max = self::_toComputableSize(ini_get('post_max_size'))) {
-			$maxSizes[] = $max;
-		}
-		if ($max = self::_toComputableSize(ini_get('upload_max_filesize'))) {
-			$maxSizes[] = $max;
-		}
-		if (empty($maxSizes)) {
+		if (!$max = self::_normalize($max)) {
 			return false;
 		}
-
-		sort($maxSizes);
-		$max = $maxSizes[0];
-
-		return $check <= $max;
+		return $check <= self::_toComputableSize($max);
 	}
 
 /**

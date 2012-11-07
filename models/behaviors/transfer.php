@@ -703,10 +703,6 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Checks if resource doesn't exceed provided size
  *
- * Please note that the size will always be checked against
- * limitations set in `php.ini` for `post_max_size` and `upload_max_filesize`
- * even if $max is set to false.
- *
  * @param Model $Model
  * @param array $field
  * @param mixed $max String (e.g. 8M) containing maximum allowed size, false allows any size
