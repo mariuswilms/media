@@ -75,14 +75,28 @@ https://github.com/davidpersson/media/downloads
 
 Installation
 ------------
-Extract the downloaded archive.
-Move or copy the extracted directory davidpersson-media-[hash]
-   to /path/to/your/app/plugins/media.
-Load the plugin's configuration.
-   {{{
-       // Within your app's core.php
-       require APP . 'plugins/media/config/media.php';
-   }}}
+1. Change into your app's directory.
+   ```
+   cd /path/to/your/app
+   ```
+
+2. Add the plugin as a submodule. It finally should
+   be placed at /path/to/your/app/plugins/media.
+   ```
+   git submodule add https://github.com/davidpersson/media.git plugins/media
+   ```
+
+   Please note that the plugin itself also contains a submodule. Because of GIT's
+   nature you'll have to recursively update/init your app's submodules from now on.
+   ```
+   git submodule update --init --recursive
+   ```
+
+3. To bootstrap, load the plugin's configuration file; preferably from within
+   your app's main configuration file (config/core.php).
+   ```
+   require APP . 'plugins/media/config/media.php';
+   ```
 
 Getting Help
 ------------
