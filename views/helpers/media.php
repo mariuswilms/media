@@ -215,16 +215,16 @@ class MediaHelper extends AppHelper {
 				$body = null;
 
 				foreach ($sources as $source) {
-					$attributes = array(
+					$sourceAttributes = array(
 						'src' => $source['url'],
 						'type' => $source['mimeType']
 					);
 					if (isset($source['codecs'])) {
-						$attributes['type'] = "; codecs={$source['codecs']}";
+						$sourceAttributes['type'] .= "; codecs=\"{$source['codecs']}\"";
 					}
 					$body .= sprintf(
 						$this->tags['source'],
-						$this->_parseAttributes($attributes)
+						$this->_parseAttributes($sourceAttributes)
 					);
 				}
 				$attributes += compact('autoplay', 'controls', 'preload', 'loop');
@@ -248,16 +248,16 @@ class MediaHelper extends AppHelper {
 				$body = null;
 
 				foreach ($sources as $source) {
-					$attributes = array(
+					$sourceAttributes = array(
 						'src' => $source['url'],
 						'type' => $source['mimeType']
 					);
 					if (isset($source['codecs'])) {
-						$attributes['type'] = "; codecs={$source['codecs']}";
+						$sourceAttributes['type'] .= "; codecs=\"{$source['codecs']}\"";
 					}
 					$body .= sprintf(
 						$this->tags['source'],
-						$this->_parseAttributes($attributes)
+						$this->_parseAttributes($sourceAttributes)
 					);
 				}
 				if ($poster) {
