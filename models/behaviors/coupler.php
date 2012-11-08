@@ -173,9 +173,12 @@ class CouplerBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$file  = $baseDirectory;
-		$file .= $result[$Model->alias]['dirname'];
-		$file .= DS . $result[$Model->alias]['basename'];
+		$file = $baseDirectory;
+
+		if ($result[$Model->alias]['dirname']) {
+			$file .= $result[$Model->alias]['dirname'] . DS;
+		}
+		$file .= $result[$Model->alias]['basename'];
 
 		$File = new File($file);
 		return $File->delete();
@@ -199,9 +202,12 @@ class CouplerBehavior extends ModelBehavior {
 			if (!isset($result[$Model->alias]['dirname'], $result[$Model->alias]['basename'])) {
 				continue;
 			}
-			$file  = $baseDirectory;
-			$file .= $result[$Model->alias]['dirname'];
-			$file .= DS . $result[$Model->alias]['basename'];
+			$file = $baseDirectory;
+
+			if ($result[$Model->alias]['dirname']) {
+				$file .= $result[$Model->alias]['dirname'] . DS;
+			}
+			$file .= $result[$Model->alias]['basename'];
 			$file = str_replace(array('\\', '/'), DS, $file);
 
 			$result[$Model->alias]['file'] = $file;
