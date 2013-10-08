@@ -11,7 +11,7 @@ Plugin for CakePHP
 Synopsis
 --------
 This plugin was conceived as a thorough solution to all the needs coming from
-dealing with media files in a web application. Moreover the idea was to show
+dealing with media files in a web application. Moreover the idea is to show
 how much a well maintained plugin can be worth it and inspire others to do the
 same. The plugin slowly evolved (and in fact still does) from a very distinct
 set of tightly coupled components into something much more flexible. This
