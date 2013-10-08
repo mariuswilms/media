@@ -37,6 +37,12 @@ require_once 'Media/Info.php';
  */
 class AttachmentTestCase extends CakeTestCase {
 
+	public $Data;
+
+	public $Folder;
+
+	protected $_backup = array();
+
 	public $fixtures = array(
 		'plugin.media.movie', 'plugin.media.actor',
 		'plugin.media.attachment', 'plugin.media.pirate'
@@ -45,15 +51,38 @@ class AttachmentTestCase extends CakeTestCase {
 	public function setUp() {
 		$this->Data = new TestData();
 		$this->Folder = new Folder(TMP . 'tests' . DS, true);
+
 		new Folder($this->Folder->pwd() . 'transfer' . DS, true);
 		new Folder($this->Folder->pwd() . 'static' . DS, true);
 		new Folder($this->Folder->pwd() . 'filter' . DS, true);
+
+		$this->_backup['config'] = Configure::read('Media');
+		$this->_backup['process'] = Media_Process::config();
+		$this->_backup['info'] = Media_Info::config();
+
+		$s = array('convert' => 'image/png', 'zoomCrop' => array(100, 100));
+		$m = array('convert' => 'image/png', 'fitCrop' => array(300, 300));
+		$l = array('convert' => 'image/png', 'fit' => array(600, 440));
+
+		Configure::write('Media.filter', array(
+			'audio' => compact('s', 'm'),
+			'document' => compact('s', 'm'),
+			'generic' => array(),
+			'image' => compact('s', 'm', 'l'),
+			'video' => compact('s', 'm')
+		));
+
+
 	}
 
 	public function tearDown() {
 		$this->Data->flushFiles();
 		$this->Folder->delete();
 		ClassRegistry::flush();
+
+		Media_Process::config($this->_backup['process']);
+		Media_Info::config($this->_backup['info']);
+		Configure::write('Media', $this->_backup['config']);
 	}
 
 	public function testHasOne() {
@@ -137,22 +166,6 @@ class AttachmentTestCase extends CakeTestCase {
 	}
 
 	public function testHasManyWithMissingMediaAdapters() {
-		$_backupConfig = Configure::read('Media');
-		$_backupProcess = Media_Process::config();
-		$_backupInfo = Media_Info::config();
-
-		$s = array('convert' => 'image/png', 'zoomCrop' => array(100, 100));
-		$m = array('convert' => 'image/png', 'fitCrop' => array(300, 300));
-		$l = array('convert' => 'image/png', 'fit' => array(600, 440));
-
-		Configure::write('Media.filter', array(
-			'audio' => compact('s', 'm'),
-			'document' => compact('s', 'm'),
-			'generic' => array(),
-			'image' => compact('s', 'm', 'l'),
-			'video' => compact('s', 'm')
-		));
-
 		Media_Process::config(array('image' => null));
 		Media_Info::config(array('image' => null));
 
@@ -189,9 +202,6 @@ class AttachmentTestCase extends CakeTestCase {
 		);
 		$this->assertEqual($result['Attachment'], $expected);
 
-		Media_Process::config($_backupProcess);
-		Media_Info::config($_backupInfo);
-		Configure::write('Media', $_backupConfig);
 	}
 
 	public function testGroupedHasMany() {
