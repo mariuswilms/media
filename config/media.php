@@ -5,17 +5,12 @@
  * In order to make the plugin work you must include this file
  * within either your app’s `media.php` or `bootstrap.php`.
  *
- * To overwrite defaults you'll define constants before including this file,
- * and overwrite other settings selectively with `Configure::write()`
- * calls after including it.
+ * To overwrite defaults you'll define constants before including this file.
  *
  * {{{
  *     define('MEDIA', ROOT . DS . 'media' . DS);
  *     require APP . 'plugins/media/config/media.php';
- *
- *     Configure::write('Media.filter.document.xs', array(
- *         'convert' => 'image/png',  'compress' => 9.6, 'zoomCrop' => array(16,16)
- *     ));
+ *     // ...
  * }}}
  *
  * Copyright (c) 2007-2013 David Persson

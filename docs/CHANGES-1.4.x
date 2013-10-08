@@ -10,6 +10,20 @@ Configuration
 -------------
 The plugin configuration file is now named `media.php`.
 
+Support for centralized filter settings has been removed in the Generator behavior. 
+You must now provide the settings as part of the setting up the behavior or by
+adding an instructions() method to the model. 
+
+In order to keep using existing centralized filter settings implement the
+following on the model the generator behavior is attached to.
+
+// ...
+	public function instructions() {
+		return Configure::read('Media.filter');
+	}
+// ...
+
+
 Validation
 ----------
 Blacklisting support has been removed from both checkExtension and

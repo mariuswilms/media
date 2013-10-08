@@ -73,6 +73,24 @@ class GeneratorBehavior extends ModelBehavior {
  *           type of the destination file.
  *   true - Try to guess extension by looking at the MIME type of the resulting file.
  *
+ * instructions
+ *   Holds instruction sets for generating versions. Allow you to control how and when
+ *   versions are generated. For more detailed information see the documentation of
+ *   `GeneratorBehavior::makeVersion`.
+ *
+ *   {{{
+ *   // ...
+ *   'instructions' => array(
+ *       'image' => array(
+ *            'fix0' => array('convert' => 'image/png', 'fit' => array(300, 400)),
+ *            'fix1' => array('convert' => 'image/png', 'fit' => array(500, 600))
+ *   // ...
+ *   }}}
+ *
+ *   If you want to compile your instruction sets dynamically you can do so by adding an
+ *   `instructions` method to your model. The Generator behavior will then call that method
+ *   in order get the value for this setting.
+ *
  * @var array
  */
 	protected $_defaultSettings = array(
@@ -82,7 +100,8 @@ class GeneratorBehavior extends ModelBehavior {
 		'createDirectoryMode' => 0755,
 		'mode'                => 0644,
 		'overwrite'           => false,
-		'guessExtension'      => true
+		'guessExtension'      => true,
+		'instructions'        => array()
 	);
 
 /**
@@ -95,6 +114,10 @@ class GeneratorBehavior extends ModelBehavior {
 	public function setup(&$Model, $settings = array()) {
 		$settings = (array)$settings;
 		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
+
+		if (method_exists($Model, 'instructions')) {
+			$this->settings[$Model->alias] = $Model->instructions();
+		}
 	}
 
 /**
@@ -146,10 +169,14 @@ class GeneratorBehavior extends ModelBehavior {
 	public function make(&$Model, $file) {
 		extract($this->settings[$Model->alias]);
 
+		if (!$filter) {
+			return array();
+		}
+
 		list($file, $relativeFile) = $this->_file($Model, $file);
 		$relativeDirectory = DS . rtrim(dirname($relativeFile), '.');
 
-		$filter = Configure::read('Media.filter.' . Mime_Type::guessName($file));
+		$filter = $filters[Mime_Type::guessName($file)];
 		$results = array();
 
 		foreach ($filter as $version => $instructions) {
