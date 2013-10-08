@@ -6,6 +6,10 @@ This page lists all changes necessary for migrating to a new version of the
 plugin. Please note that instructions for migrations to non-stable versions are
 still in-flux.
 
+Configuration
+-------------
+The plugin configuration file is now named `media.php`.
+
 Validation
 ----------
 Blacklisting support has been removed from both checkExtension and
