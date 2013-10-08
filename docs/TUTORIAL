@@ -122,28 +122,29 @@ class Post extends AppModel {
 }
 }}}
 
-As the generator behavior will make versions of the uploaded file according to
-configuration, we open up the plugin's config/media.php to have a look on the
-defaults.
+The generator behavior will make versions of the uploaded file according to the settings 
+for `instructions` as follows.
 {{{
-...
-$s = array('convert' => 'image/png', 'zoomCrop' => array(100, 100));
-$m = array('convert' => 'image/png', 'fitCrop' => array(300, 300));
-$l = array('convert' => 'image/png', 'fit' => array(600, 440));
-
-Configure::write('Media.filter', array(
-    ...
-	'image' => compact('s', 'm', 'l')
-    ...
-));
-...
+class Post extends AppModel {
+	public $actsAs = array(
+		'Media.Transfer', 
+		'Media.Generator' => array(
+			'instructions' => array(
+				'image' => array(
+					's' => array('convert' => 'image/png', 'zoomCrop' => array(100, 100)),
+					'm' => array('convert' => 'image/png', 'fitCrop' => array(300, 300)),
+					'l' => array('convert' => 'image/png', 'fit' => array(600, 440))
+				)
+			)
+		), 
+		'Media.Coupler'
+);
+}
 }}}
 
 This set of configurations is called instructions. Basically these are methods
-which get called on the Media_Process_* class. However the defaults should work
-fine for us. Keep in mind that if you'd like to change the defaults you should
-do so in your app's config/core.php right after the statement where you load
-the plugin's configuration.
+which get called on the Media_Process_* class. However these defaults should 
+work fine for us. 
 
 Repeat uploading the file as you did in prior steps. This time - assuming 
 you've been uploading an image file - you should see the following files 
