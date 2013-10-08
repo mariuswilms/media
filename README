@@ -42,6 +42,12 @@ within your app's main configuration file (config/core.php) like this:
 require APP . 'plugins/media/config/media.php';
 // ...
 
+Documentation
+-------------
+A FAQ, migration instructions and a tutorial are available in the `docs/`
+subdirectory. For more information consult the API documentation in the
+source code.
+
 Getting Help
 ------------
 You can post questions regarding the usage of the plugin to the very active
