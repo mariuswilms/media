@@ -41,10 +41,10 @@ class MediaValidationTest extends CakeTestCase {
 
 		$check = 'image/png';
 		$result = MediaValidation::mimeType($check,array('image/png'));
-		$this->assertFalse($result);
+		$this->assertTrue($result);
 
-		$check = 'image/png';
-		$result = MediaValidation::mimeType($check,array('image/png'),array('image/png'));
+		$check = 'image/jpeg';
+		$result = MediaValidation::mimeType($check,array('image/png'));
 		$this->assertFalse($result);
 
 		$check = 'in/val/id';
@@ -62,19 +62,19 @@ class MediaValidationTest extends CakeTestCase {
 		$this->assertTrue($result);
 
 		$check = 'tar.gz';
-		$result = MediaValidation::extension($check, false, array('tar', 'gz'));
+		$result = MediaValidation::extension($check, array('tar', 'gz'));
 		$this->assertTrue($result);
 
 		$check = 'tar.gz';
-		$result = MediaValidation::extension($check, false, array('tar.gz'));
+		$result = MediaValidation::extension($check, array('tar.gz'));
 		$this->assertFalse($result);
 
 		$check = 'png';
 		$result = MediaValidation::extension($check, array('png'));
-		$this->assertFalse($result);
+		$this->assertTrue($result);
 
-		$check = 'png';
-		$result = MediaValidation::extension($check, array('png'), array('png'));
+		$check = 'jpg';
+		$result = MediaValidation::extension($check, array('png'));
 		$this->assertFalse($result);
 
 		$check = 'in.va.lid';
