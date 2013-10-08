@@ -27,6 +27,33 @@ Versions compatible with CakePHP 1.3 are actively mainainted and developed.
 There will be no a port of it lead by myself - yet - to make it compatible
 with CakePHP 2.x or any future version thereafter.
 
+Installation
+------------
+Add the plugin as a submodule to an exisiting app repository.
+
+$ cd /path/to/project
+$ git submodule add https://github.com/davidpersson/media.git app/plugins/media
+$ git submodule update --init --recursive
+
+In order to bootstrap, load the plugin's configuration file; preferably from
+within your app's main configuration file (config/core.php) like this:
+
+// ...
+require APP . 'plugins/media/config/media.php';
+// ...
+
+Getting Help
+------------
+You can post questions regarding the usage of the plugin to the very active
+Official CakePHP Mailinglist (http://groups.google.com/group/cake-php). When
+question are answered there it helps everybody reading the list.
+
+Commercial support is available. You may book me for paid professional
+support. Please contact me for more details via nperson@gmx.de.
+
+For bugs please do not mail me directly, but use the project's issue tracker
+instead: https://github.com/davidpersson/media/issues
+
 Future
 ------
 To keep maintainance cost low this plugin will try to reduce framework specific
@@ -88,30 +115,4 @@ Versions prior to 1.3.0 used to follow a different naming scheme. This has
 been changed in retrospect (i.e. 0.6x is now known as 0.6.x) in order to
 make a clean and comprehensible chronology.
 
-Installation
-------------
-Add the plugin as a submodule to an exisiting app repository.
-
-$ cd /path/to/project
-$ git submodule add https://github.com/davidpersson/media.git app/plugins/media
-$ git submodule update --init --recursive
-
-In order to bootstrap, load the plugin's configuration file; preferably from
-within your app's main configuration file (config/core.php) like this:
-
-// ...
-require APP . 'plugins/media/config/media.php';
-// ...
-
-Getting Help
-------------
-You can post questions regarding the usage of the plugin to the very active
-Official CakePHP Mailinglist (http://groups.google.com/group/cake-php). When
-question are answered there it helps everybody reading the list.
-
-Commercial support is available. You may book me for paid professional
-support. Please contact me for more details via nperson@gmx.de.
-
-For bugs please do not mail me directly, but use the project's issue tracker
-instead: https://github.com/davidpersson/media/issues
 
