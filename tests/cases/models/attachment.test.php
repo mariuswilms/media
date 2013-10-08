@@ -181,6 +181,9 @@ class AttachmentTestCase extends CakeTestCase {
 		$this->expectError();
 		$this->expectError();
 		$this->expectError();
+		$this->expectError();
+		$this->expectError();
+		$this->expectError();
 
 		$Model->create();
 		$result = $Model->saveAll($data, array('validate' => 'first'));
