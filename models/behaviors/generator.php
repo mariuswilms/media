@@ -116,7 +116,7 @@ class GeneratorBehavior extends ModelBehavior {
 		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
 
 		if (method_exists($Model, 'instructions')) {
-			$this->settings[$Model->alias] = $Model->instructions();
+			$this->settings[$Model->alias]['instructions'] = $Model->instructions();
 		}
 	}
 
