@@ -32,7 +32,9 @@ Installation
 Add the plugin as a submodule to an exisiting app repository.
 
 $ cd /path/to/project
-$ git submodule add https://github.com/davidpersson/media.git app/plugins/media
+$ git submodule add \
+    https://github.com/davidpersson/media.git \
+    app/plugins/media
 $ git submodule update --init --recursive
 
 In order to bootstrap, load the plugin's configuration file; preferably from
