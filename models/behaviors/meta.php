@@ -18,6 +18,7 @@
  */
 App::import('Core', 'Inflector');
 App::import('Core', 'Cache');
+App::import('Core', 'File');
 require_once 'Mime/Type.php';
 require_once 'Media/Info.php';
 

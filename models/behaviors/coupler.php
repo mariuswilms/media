@@ -17,6 +17,8 @@
  * @link       http://github.com/davidpersson/media
  */
 
+App::import('Core', 'File');
+
 /**
  * Coupler Behavior Class
  *
