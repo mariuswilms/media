@@ -339,7 +339,7 @@ class GeneratorBehavior extends ModelBehavior {
 		} else {
 			$destination .= basename($source);
 		}
-		if (file_exists($destination)) {
+		if (file_exists($destination) || is_link($destination)) {
 			if (!$overwrite) {
 				return false;
 			}
