@@ -169,14 +169,14 @@ class GeneratorBehavior extends ModelBehavior {
 	public function make(&$Model, $file) {
 		extract($this->settings[$Model->alias]);
 
-		if (!$filter) {
+		if (!$instructions) {
 			return array();
 		}
 
 		list($file, $relativeFile) = $this->_file($Model, $file);
 		$relativeDirectory = DS . rtrim(dirname($relativeFile), '.');
 
-		$filter = $filters[Mime_Type::guessName($file)];
+		$filter = $instructions[Mime_Type::guessName($file)];
 		$results = array();
 
 		foreach ($filter as $version => $instructions) {
