@@ -159,55 +159,53 @@ Protecting the transfer directory
 ---------------------------------
 Currently your transfer directory is open to the public, which means 
 user's can access any files they uploaded there. If you can't trust
-the user's being able to upload stuff you better go with the following
-steps:
+the user's being able to upload stuff you should follow with these steps:
 
- - Relocate the transfer directory. In your app's config/core.php add
-   following code right above the statement where you load the plugin
-   configuration.
-   {{{
-   define('MEDIA_TRANSFER', APP . 'transfer' . DS);
-   define('MEDIA_TRANSFER_URL', false);
-   }}}
+ Relocate the transfer directory. In your app's config/core.php add
+ following code right above the statement where you load the plugin
+ configuration.
+ {{{
+     define('MEDIA_TRANSFER', APP . 'transfer' . DS);
+     define('MEDIA_TRANSFER_URL', false);
+ }}}
 
-   After that reinitialize the directories.
-   $ cake/console/cake media init
+ After that reinitialize the directories.
+ $ cake/console/cake media init
 
- - Block requests through the webserver's configuration. In your app's
-   config/core.php add following code right above the statement where you load
-   the plugin configuration.
-   {{{   
-   define('MEDIA_TRANSFER_URL', false);
-   }}}
+ Bow block requests through the webserver's configuration. In your app's
+ config/core.php add following code right above the statement where you load
+ the plugin configuration.
+ {{{   
+     define('MEDIA_TRANSFER_URL', false);
+ }}}
 
-   After that protect the directories.
-   $ cake/console/cake media protect
-   
- - Reimplement a special method in models/post.php used by the transfer 
-   behavior in order to make it use non-guessable file names.
-   {{{
-	public function transferTo($via, $from) {
-		extract($from);
 
-		$irregular = array(
-			'image' => 'img',
-			'text' => 'txt'
-		);
-		$name = Mime_Type::guessName($mimeType ? $mimeType : $file);
+ As an alternative to the above steps you can also reimplement a special method
+ in models/post.php used by the transfer behavior in order to make it use
+ non-guessable file names.
+ {{{
+  public function transferTo($via, $from) {
+  	extract($from);
 
-		if (isset($irregular[$name])) {
-			$short = $irregular[$name];
-		} else {
-			$short = substr($name, 0, 3);
-		}
+  	$irregular = array(
+  		'image' => 'img',
+  		'text' => 'txt'
+  	);
+  	$name = Mime_Type::guessName($mimeType ? $mimeType : $file);
 
-		$path  = $short . DS;
-		$path .= uniqid(); // <--- This is the important part.
-		$path .= !empty($extension) ? '.' . strtolower($extension) : null;
+  	if (isset($irregular[$name])) {
+  		$short = $irregular[$name];
+  	} else {
+  		$short = substr($name, 0, 3);
+  	}
 
-		return $path;
-	}
-   }}}
+  	$path  = $short . DS;
+  	$path .= uniqid(); // <--- This is the important part.
+  	$path .= !empty($extension) ? '.' . strtolower($extension) : null;
+
+  	return $path;
+  }
+ }}}
    
 Validate incoming transfers
 ---------------------------

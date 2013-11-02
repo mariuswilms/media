@@ -79,7 +79,6 @@ class MediaShell extends Shell {
  */
 	 public function main() {
 		$this->out('[I]nitialize Media Directory');
-		$this->out('[P]rotect Transfer Directory');
 		$this->out('[S]ynchronize');
 		$this->out('[M]ake');
 		$this->out('[H]elp');
@@ -96,9 +95,6 @@ class MediaShell extends Shell {
 		switch (strtoupper($action)) {
 			case 'I':
 				$this->init();
-				break;
-			case 'P':
-				$this->protect();
 				break;
 			case 'S':
 				$this->Sync->execute();
@@ -170,45 +166,7 @@ class MediaShell extends Shell {
 		}
 
 		$this->out();
-		$this->protect();
 		$this->out('Remember to set the correct permissions on transfer and filter directory.');
-	}
-
-/**
- * Protects the transfer directory
- *
- * @return void
- */
-	public function protect() {
-		if (MEDIA_TRANSFER_URL === false) {
-			$this->out('The content of the transfer directory is not served.');
-			return true;
-		}
-
-		$file = MEDIA_TRANSFER . '.htaccess';
-
-		if (is_file($file)) {
-			$this->err($this->shortPath($file) . ' is already present.');
-			return true;
-		}
-		if (strpos(MEDIA_TRANSFER, WWW_ROOT) === false) {
-			$this->err($this->shortPath($file) . ' is not in your webroot.');
-			return;
-		}
-		$this->out('Your transfer directory is missing a htaccess file to block requests.');
-
-		if ($this->in('Do you want to create it now?', 'y,n', 'n') == 'n') {
-			return false;
-		}
-
-		$File = new File($file);
-		$File->append("Order deny,allow\n");
-		$File->append("Deny from all\n");
-		$File->close();
-
-		$this->out($this->shortPath($File->pwd()) . ' created.');
-		$this->out('');
-		return true;
 	}
 
 /**
@@ -226,9 +184,6 @@ class MediaShell extends Shell {
 		$this->out("COMMANDS");
 		$this->out("\tinit");
 		$this->out("\t\tInitializes the media directory structure.");
-		$this->out('');
-		$this->out("\tprotect");
-		$this->out("\t\tCreates a htaccess file to protect the transfer dir.");
 		$this->out('');
 		$this->out("\tsync [-auto] [model] [searchdir]");
 		$this->out("\t\tChecks if records are in sync with files and vice versa.");

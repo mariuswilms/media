@@ -71,23 +71,22 @@
  * don't affect i.e. resized images) or for being able to password protect those
  * files you can use the following methods.
  *
- * 1. Put a .htaccess file in the directory (in case you're using Apache).
- *    {{{
- *      # webroot/media/transfer/.htaccess
- *      Order deny,allow
- *      Deny from all
- *    }}}
+ * Put a .htaccess file in the directory (in case you're using Apache).
+ * {{{
+ *   # webroot/media/transfer/.htaccess
+ *   Order deny,allow
+ *   Deny from all
+ * }}}
  *
- * 2. Create the .htaccess file from the shell with:
- *    $ cake media protect
+ * _or_
  *
- * 3. Relocate the transfer directory by defining the following constants.
- *    The first definition points to the new location of the directory, the second
- *    disables generation of URLs for files below the transfer directory.
- *    {{{
- *        define('MEDIA_TRANSFER', APP . 'transfer' . DS);
- *        define('MEDIA_TRANSFER_URL', false);
- *    }}}
+ * Relocate the transfer directory by defining the following constants.
+ * The first definition points to the new location of the directory, the second
+ * disables generation of URLs for files below the transfer directory.
+ * {{{
+ *     define('MEDIA_TRANSFER', APP . 'transfer' . DS);
+ *     define('MEDIA_TRANSFER_URL', false);
+ * }}}
  *
  * @see MediaHelper::webroot()
  */
